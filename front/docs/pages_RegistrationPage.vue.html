@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/RegistrationPage.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/RegistrationPage.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//sprawdzenie w bazie danych czy nazwa użytkownika i e-mail juą są
+
+&lt;template>
+  &lt;base-card class="card">
+    &lt;!-- Title for the registration form -->
+    &lt;h3>Rejestracja&lt;/h3>
+    &lt;!-- Registration form -->
+    &lt;form @submit.prevent="submitRegistrationForm" class="form">
+      &lt;!-- Input field for entering the username -->
+      &lt;base-text-input
+        v-model="registrationForm.username"
+        type="text"
+        label="Nazwa użytkownika"
+      >&lt;/base-text-input>
+      &lt;!-- Input field for entering the email -->
+      &lt;base-text-input
+        v-model="registrationForm.email"
+        type="email"
+        label="E-mail"
+      >&lt;/base-text-input>
+      &lt;!-- Input field for entering the password -->
+      &lt;base-text-input
+        v-model="registrationForm.password"
+        type="password"
+        label="Hasło"
+      >&lt;/base-text-input>
+      &lt;!-- Button to submit the registration form -->
+      &lt;base-button class="button" type="submit">Zarejestruj się&lt;/base-button>
+    &lt;/form>
+    &lt;div class="link">
+      Masz już konto?
+      &lt;!-- Link to the login page -->
+      &lt;router-link @click="scrollToTop" class="link_login" to="/login"
+        >Zaloguj się!&lt;/router-link
+      >
+    &lt;/div>
+  &lt;/base-card>
+&lt;/template>
+
+&lt;script>
+import { ref } from "vue";
+import { useMutation } from "@vue/apollo-composable";
+import { gql } from "@apollo/client/core";
+import DOMPurify from "dompurify";
+import { scrollToTop } from "../helpers/displayHelpers.js";
+
+/**
+ * @component RegistrationForm
+ * @description This component renders a registration form and handles user registration.
+ * @see submitRegistrationForm
+ */
+export default {
+  name: "RegistrationForm",
+
+  setup() {
+    // Object to store registration form data
+    const registrationForm = ref({
+      username: "",
+      email: "",
+      password: "",
+    });
+
+    // GraphQL mutation for user registration
+    const { mutate: registerUser } = useMutation(gql`
+      mutation registerUser($input: UserInput!) {
+        registerUser(userInput: $input) {
+          _id
+          username
+          email
+          password
+        }
+      }
+    `);
+
+    /**
+     * Function to handle the submission of the registration form.
+     * Sanitizes user input and sends a GraphQL mutation to register the user.
+     * @async
+     * @function submitRegistrationForm
+     * @returns {Promise&lt;void>} Resolves when the form submission process is complete.
+     * @throws {Error} Throws an error if the form submission fails.
+     */
+    const submitRegistrationForm = async () => {
+      try {
+        const form = registrationForm.value;
+
+        // Sanitize input data from the form
+        const sanitizedUsername = DOMPurify.sanitize(form.username);
+        const sanitizedEmail = DOMPurify.sanitize(form.email);
+        const sanitizedPassword = DOMPurify.sanitize(form.password);
+
+        // Create an object with sanitized form data
+        const registrationFormData = {
+          username: sanitizedUsername,
+          email: sanitizedEmail,
+          password: sanitizedPassword,
+        };
+
+        // Send the GraphQL mutation to register the user
+        const { data } = await registerUser({
+          input: {
+            username: registrationFormData.username,
+            email: registrationFormData.email,
+            password: registrationFormData.password,
+          },
+        });
+        console.log("Created user:", data.registerUser);
+      } catch (error) {
+        console.error("Error submitting form", error);
+      }
+    };
+
+    return { registrationForm, submitRegistrationForm, scrollToTop };
+  },
+};
+&lt;/script>
+
+&lt;style scoped>
+.card {
+  width: 50%;
+  margin-right: 25vw;
+  margin-left: 25vw;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  padding-right: 50px;
+  padding-left: 50px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.button {
+  width: 40%;
+  align-self: center;
+  color: var(--secondary-color);
+  margin-top: 20px;
+}
+
+.button:hover,
+.button:active {
+  color: var(--primary-color);
+}
+
+.link {
+  font-size: 12px;
+  margin-top: 20px;
+}
+
+.link_login {
+  color: var(--primary-color);
+}
+&lt;/style></code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AddDestillation.html">AddDestillation</a></li><li><a href="module-App.html">App</a></li><li><a href="module-BaseButton.html">BaseButton</a></li><li><a href="module-BaseCard.html">BaseCard</a></li><li><a href="module-BaseDatePicker.html">BaseDatePicker</a></li><li><a href="module-BaseInputDatePicker.html">BaseInputDatePicker</a></li><li><a href="module-BaseModal.html">BaseModal</a></li><li><a href="module-BaseRadioInput.html">BaseRadioInput</a></li><li><a href="module-BaseTextInput.html">BaseTextInput</a></li><li><a href="module-DestillationForm.html">DestillationForm</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-PlantData.html">PlantData</a></li><li><a href="module-PlantForm.html">PlantForm</a></li><li><a href="module-PlantIdentification.html">PlantIdentification</a></li><li><a href="module-PlantOrigin.html">PlantOrigin</a></li><li><a href="module-RegistrationPage.html">RegistrationPage</a></li><li><a href="module-TheFooter.html">TheFooter</a></li><li><a href="module-TheHeader.html">TheHeader</a></li><li><a href="module-main.html">main</a></li><li><a href="module-plantActions.html">plantActions</a></li><li><a href="module-plantGetters.html">plantGetters</a></li><li><a href="module-plantMutations.html">plantMutations</a></li><li><a href="module-plantStore.html">plantStore</a></li><li><a href="module-router.html">router</a></li><li><a href="module-store.html">store</a></li></ul><h3>Global</h3><ul><li><a href="global.html#changeValue">changeValue</a></li><li><a href="global.html#changeVisibility">changeVisibility</a></li><li><a href="global.html#closeModal">closeModal</a></li><li><a href="global.html#formatedDate">formatedDate</a></li><li><a href="global.html#plantFormValidation">plantFormValidation</a></li><li><a href="global.html#sendDate">sendDate</a></li><li><a href="global.html#setIntegerNumber">setIntegerNumber</a></li><li><a href="global.html#setIntegerValue">setIntegerValue</a></li><li><a href="global.html#setKeyboard">setKeyboard</a></li><li><a href="global.html#setKeyboardFormatedNumber">setKeyboardFormatedNumber</a></li><li><a href="global.html#setKeyboardIntegerNumber">setKeyboardIntegerNumber</a></li><li><a href="global.html#setNumberFormat">setNumberFormat</a></li><li><a href="global.html#setValue">setValue</a></li><li><a href="global.html#storeDate">storeDate</a></li><li><a href="global.html#submitPlantForm">submitPlantForm</a></li><li><a href="global.html#submitRegistrationForm">submitRegistrationForm</a></li><li><a href="global.html#updateDate">updateDate</a></li><li><a href="global.html#updateValue">updateValue</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Mon May 27 2024 15:11:48 GMT+0200 (czas środkowoeuropejski letni)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

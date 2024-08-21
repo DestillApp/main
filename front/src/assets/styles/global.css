@@ -1,0 +1,20 @@
+:root {
+    --font: Avenir,
+        Helvetica,
+        Arial,
+        sans-serif;
+    --text-color: #463927;
+    --primary-color: #C5E5A5;
+    --secondary-color: #98B66E;
+    --third-color: #f9edc8;
+    --border-color: #0000009d;
+    --error-color:#ff0202;
+    --placeholder-color: rgba(148, 147, 147, 0.53);
+    --box-shadow: 0px 0px 19px 0px rgba(66, 68, 90, 0.29);
+    --box-shadow-bottom: 0 19px 19px rgba(66, 68, 90, 0.29),
+    --box-shadow-top: 0 -19px 19px rgba(66, 68, 90, 0.29),
+    --box-shadow-right: 19px 0 19px rgba(66, 68, 90, 0.29),
+    --box-shadow-left: -19px 0 19px rgba(66, 68, 90, 0.29);
+    --card-border-radius: 10px;
+    --input-border-radius: 5px;
+}

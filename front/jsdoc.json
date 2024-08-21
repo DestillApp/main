@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "node_modules/jsdoc-vuejs"
+  ],
+  "source": {
+    "includePattern": "\\.(vue|js)$",
+    "include": ["src", "src/components", "src/components/destillation", "src/components/plant", "src/layout", "src/pages", "src/pages/my-account", "src/store", "src/store/auth", "src/store/plant", "src/ui"]
+  },
+    "opts": {
+    "destination": "docs"
+  }
+}
+
