@@ -1,0 +1,105 @@
+/**
+ * @module graphql/resolvers/plantResolvers
+ * @description Plant resolvers for GraphQL queries and mutations.
+ * Handles fetching and creating plants.
+ */
+
+// Importing the Plant model
+const Plant = require("../../database/plant");
+
+// Importing required modules
+const DOMPurify = require("../../util/sanitizer");
+
+// Utility function to filter data
+function filterPlantData(data) {
+  const filteredData = {};
+
+  if (data.plantOrigin === "kupno") {
+    data.harvestEndTime = "";
+    data.harvestStartTime = "";
+  }
+
+  for (const key in data) {
+    if (data[key] !== null && data[key] !== "") {
+      filteredData[key] = data[key];
+    }
+  }
+  return filteredData;
+}
+
+const plantResolver = {
+  Query: {
+    /**
+     * @async
+     * @function getPlants
+     * @description Fetches all plants from the database.
+     * @returns {Promise<Array>} Array of plants.
+     */
+    getPlants: async () => {
+      try {
+        return await Plant.find(); // Fetch all plants from the database
+      } catch (err) {
+        throw new Error("Failed to fetch plants");
+      }
+    },
+  },
+  Mutation: {
+    /**
+     * @async
+     * @function createPlant
+     * @description Creates a new plant and saves it to the database.
+     * @param {Object} _ - Unused.
+     * @param {Object} plantInput - Input data for the new plant.
+     * @returns {Promise<Object>} The created plant.
+     */
+    createPlant: async (_, { plantInput }) => {
+      // Sanitizing the input data
+      const sanitizedData = {
+        plantName: DOMPurify.sanitize(plantInput.plantName),
+        plantPart: DOMPurify.sanitize(plantInput.plantPart),
+        plantOrigin: DOMPurify.sanitize(plantInput.plantOrigin),
+        plantBuyDate: DOMPurify.sanitize(plantInput.plantBuyDate),
+        plantProducer: DOMPurify.sanitize(plantInput.plantProducer),
+        countryOfOrigin: DOMPurify.sanitize(plantInput.countryOfOrigin),
+        harvestDate: DOMPurify.sanitize(plantInput.harvestDate),
+        harvestTemperature: plantInput.harvestTemperature
+          ? Number(DOMPurify.sanitize(plantInput.harvestTemperature))
+          : null,
+        harvestStartTime: DOMPurify.sanitize(plantInput.harvestStartTime),
+        harvestEndTime: DOMPurify.sanitize(plantInput.harvestEndTime),
+        plantWeight: plantInput.plantWeight
+          ? Number(DOMPurify.sanitize(plantInput.plantWeight))
+          : null,
+        plantState: DOMPurify.sanitize(plantInput.plantState),
+        dryingTime: plantInput.dryingTime
+          ? Number(DOMPurify.sanitize(plantInput.dryingTime))
+          : null,
+        plantAge: plantInput.plantAge
+          ? Number(DOMPurify.sanitize(plantInput.plantAge))
+          : null,
+        isPlantSoaked: Boolean(DOMPurify.sanitize(plantInput.isPlantSoaked)),
+        soakingTime: plantInput.soakingTime
+          ? Number(DOMPurify.sanitize(plantInput.soakingTime))
+          : null,
+        weightAfterSoaking: plantInput.weightAfterSoaking
+          ? Number(DOMPurify.sanitize(plantInput.weightAfterSoaking))
+          : null,
+      };
+      // Filtering out null or empty string values
+      const filteredData = filterPlantData(sanitizedData);
+
+      try {
+        // Creating a new Plant instance
+        const plant = new Plant(filteredData);
+        // Saving the plant to the database
+        const result = await plant.save();
+        return result;
+      } catch (err) {
+        throw new Error("Failed to create plant");
+      }
+    },
+  },
+};
+
+// Exporting the plant resolvers
+module.exports = plantResolver;
