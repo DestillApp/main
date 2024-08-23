@@ -9,6 +9,7 @@ const Plant = require("../../database/plant");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
+const formatDate = require("../../util/dateformater");
 
 // Utility function to filter data
 function filterPlantData(data) {
@@ -32,17 +33,41 @@ const plantResolver = {
     /**
      * @async
      * @function getPlants
-     * @description Fetches all plants from the database.
+     * @description Fetches plants from the database.
      * @returns {Promise<Array>} Array of plants.
      */
-    getPlants: async () => {
+    getPlants: async (_, { fields }) => {
       try {
-        return await Plant.find(); // Fetch all plants from the database
+        // Build a projection object based on the fields argument
+        const projection = {};
+        fields.forEach((field) => {
+          projection[field] = 1;
+        });
+        // Fetch plants with the specified fields from database
+        const plants = await Plant.find({}, projection);
+
+        // Format date fields before returning the result
+        return plants.map((plant) => {
+          const formattedPlant = { ...plant._doc }; // or plant._doc for Mongoose
+
+          // Format specific date fields
+          if (formattedPlant.harvestDate) {
+            formattedPlant.harvestDate = formatDate(formattedPlant.harvestDate);
+          }
+          if (formattedPlant.plantBuyDate) {
+            formattedPlant.plantBuyDate = formatDate(
+              formattedPlant.plantBuyDate
+            );
+          }
+
+          return formattedPlant;
+        });
       } catch (err) {
         throw new Error("Failed to fetch plants");
       }
     },
   },
+
   Mutation: {
     /**
      * @async

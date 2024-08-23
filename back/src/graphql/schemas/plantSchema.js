@@ -49,8 +49,7 @@ const plantSchema = gql`
   }
 
   type Query {
-    getPlants: [Plant!]!
-    # plant(id: ID!): Plant
+    getPlants(fields: [String]!): [Plant]
   }
 
   type Mutation {
