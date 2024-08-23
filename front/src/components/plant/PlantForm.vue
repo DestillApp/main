@@ -1,4 +1,3 @@
-// add plant's country (API to the name of all countries?)
 // plant api?????
 // documentation without helpers and ui
 
