@@ -123,6 +123,16 @@ const plantResolver = {
         throw new Error("Failed to create plant");
       }
     },
+
+    deletePlant: async (_, { id }) => {
+      try {
+        await Plant.findByIdAndDelete(id);
+        return true;
+      } catch (error) {
+        console.error("Failed to delete plant:", error);
+        return false;
+      }
+    },
   },
 };
 

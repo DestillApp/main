@@ -55,7 +55,7 @@ const plantSchema = gql`
   type Mutation {
     createPlant(plantInput: PlantInput!): Plant!
     # updatePlant(id: ID!, plantInput: PlantInput!): Plant!
-    # deletePlant(id: ID!): Plant!
+    deletePlant(id: ID!): Boolean
   }
 `;
 
