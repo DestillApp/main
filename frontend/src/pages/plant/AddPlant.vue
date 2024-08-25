@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import PlantForm from "@/components/plant/PlantForm.vue";
+import PlantForm from "@/components/plant/form/PlantForm.vue";
 import DestillationForm from "@/components/destillation/DestillationForm.vue";
 
 /**

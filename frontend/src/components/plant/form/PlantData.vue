@@ -69,7 +69,7 @@
       </base-text-input>
       <!-- Input field for entering plant age, displayed if plant state is 'suchy' -->
       <base-text-input
-        v-if="formData.plantState === 'suchy'"
+        v-if="formData.plantState === 'suchy' && formData.plantOrigin === 'kupno'"
         v-model="formData.plantAge"
         type="number"
         classType="number"
