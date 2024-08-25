@@ -16,16 +16,15 @@ import BaseButton from "@/ui/BaseButton.vue";
 export default {
   name: "PlantDeleteModal",
   components: { BaseModal, BaseButton },
-  emits: ["close-delete-modal"],
-  props: ["id"],
-  setup(props, context) {
+  emits: ["close-delete-modal", "delete-plant"],
+  setup(_, context) {
+
     const deletePlant = () => {
-      console.log(props.id);
+      context.emit("delete-plant");
     };
 
     const closeDeleteModal = () => {
       context.emit("close-delete-modal");
-      console.log("closeModal!");
     };
 
     return { deletePlant, closeDeleteModal };

@@ -1,4 +1,5 @@
 //pagination
+//opening plant details - router link
 // no docs
 <template>
   <h3 class="plant_list-title">Zapisane surowce</h3>
@@ -29,15 +30,15 @@
         <button @click="openPlantDetails" class="plant_button-details">
           Zobacz szczegóły
         </button>
-        <button @click="openDeleteModal" class="plant_button-delete">
+        <button @click="openDeleteModal(plant._id)" class="plant_button-delete">
           Usuń
         </button>
       </div>
       <plant-delete-modal
         v-if="isModalOpen"
-        :id="plant._id"
         @close-modal="closeDeleteModal"
         @close-delete-modal="closeDeleteModal"
+        @delete-plant="deletePlant"
       ></plant-delete-modal>
     </li>
   </ul>
@@ -45,8 +46,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watchEffect } from "vue";
-import { useRoute } from "vue-router";
+import { ref, onMounted} from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 
@@ -65,21 +65,28 @@ const GET_PLANTS = gql`
   }
 `;
 
+const DELETE_PLANT = gql`
+  mutation DeletePlant($id: ID!) {
+    deletePlant(id: $id)
+  }
+`;
+
 export default {
   name: "PlantListPage",
   components: { PlantDeleteModal },
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
-    const route = useRoute();
 
     const plantList = ref([]);
     const isModalOpen = ref(false);
+    const selectedPlantId = ref(null);
 
     const fetchPlantList = async () => {
       try {
         const { data } = await apolloClient.query({
           query: GET_PLANTS,
+          fetchPolicy: 'network-only', 
           variables: {
             fields: [
               "plantName",
@@ -92,7 +99,6 @@ export default {
           },
         });
         plantList.value = data.getPlants;
-        console.log("plantList", plantList.value);
       } catch (error) {
         console.error("Failed to get plant list:");
         plantList.value = [];
@@ -103,30 +109,46 @@ export default {
       fetchPlantList();
     });
 
-    watchEffect(() => {
-      if (route.name === "PlantListPage") {
-        fetchPlantList();
-      }
-    });
-
     const openPlantDetails = () => {
       console.log("Plant details!");
     };
 
-    const openDeleteModal = () => {
+    const openDeleteModal = (id) => {
+      selectedPlantId.value = id;
       isModalOpen.value = true;
-      console.log("Open modal!");
     };
 
     const closeDeleteModal = () => {
+      selectedPlantId.value = null;
       isModalOpen.value = false;
     };
+
+    const deletePlant = async () => {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: DELETE_PLANT,
+          variables: { id: selectedPlantId.value },
+        });
+        if (data.deletePlant) {
+          deletePlantFromList(selectedPlantId.value);
+        }
+        closeDeleteModal();
+      } catch (error) {
+        console.error("Failed to delete plant:", error);
+      }
+    };
+
+    const deletePlantFromList = (id) => {
+      plantList.value = plantList.value.filter((plant) => plant._id !== id);
+    }
+
     return {
       plantList,
       isModalOpen,
       openPlantDetails,
       openDeleteModal,
       closeDeleteModal,
+      deletePlant
     };
   },
 };
