@@ -9,7 +9,7 @@ import store from "@/store/index.js";
 import MainPage from "./pages/MainPage.vue";
 
 // Lazy-loaded pages
-const AddPlant = () => import("./pages/AddPlant.vue");
+const AddPlant = () => import("./pages/plant/AddPlant.vue");
 const AddDestillation = () => import("./pages/AddDestillation.vue");
 const LoginPage = () => import("./pages/LoginPage.vue");
 const RegistrationPage = () => import("./pages/RegistrationPage.vue");
@@ -43,34 +43,45 @@ const router = createRouter({
       component: RegistrationPage,
       meta: { public: true },
     },
-    { path: "/add-plant", component: AddPlant, meta: { requiresAuth: true } },
+    {
+      path: "/add-plant",
+      name: AddPlant,
+      component: AddPlant,
+      meta: { requiresAuth: true },
+    },
     {
       path: "/add-destillation",
+      name: AddDestillation,
       component: AddDestillation,
       meta: { requiresAuth: true },
     },
     {
       path: "/my-account",
+      name: MyAccountPage,
       component: MyAccountPage,
       meta: { requiresAuth: true },
       children: [
         {
           path: "destillations-in-progress",
+          name: InProgressDestillationsPage,
           component: InProgressDestillationsPage,
           meta: { requiresAuth: true },
         },
         {
           path: "plant-list",
+          name: PlantListPage,
           component: PlantListPage,
           meta: { requiresAuth: true },
         },
         {
           path: "saved-destillations",
+          name: SavedDestillationsPage,
           component: SavedDestillationsPage,
           meta: { requiresAuth: true },
         },
         {
           path: "my-data",
+          name: MyDataPage,
           component: MyDataPage,
           meta: { requiresAuth: true },
         },

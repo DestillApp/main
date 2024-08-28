@@ -1,4 +1,3 @@
-// add plant's country (API to the name of all countries?)
 // plant api?????
 // documentation without helpers and ui
 
@@ -23,9 +22,9 @@
 </template>
 
 <script>
-import PlantIdentification from "@/components/plant/PlantIdentification.vue";
-import PlantOrigin from "@/components/plant/PlantOrigin.vue";
-import PlantData from "@/components/plant/PlantData.vue";
+import PlantIdentification from "@/components/plant/form/PlantIdentification.vue";
+import PlantOrigin from "@/components/plant/form/PlantOrigin.vue";
+import PlantData from "@/components/plant/form/PlantData.vue";
 
 import { useStore } from "vuex";
 import { computed, ref, onMounted } from "vue";
@@ -133,7 +132,7 @@ export default {
       }
 
       // Additional validation for "suchy" state
-      if (form.plantState === "suchy") {
+      if (form.plantState === "suchy" && form.plantOrigin === "kupno") {
         if (form.plantAge === null) {
           isFormValid.value = false;
         }
