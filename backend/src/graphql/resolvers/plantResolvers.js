@@ -62,8 +62,31 @@ const plantResolver = {
 
           return formattedPlant;
         });
-      } catch (err) {
-        throw new Error("Failed to fetch plants");
+      } catch (error) {
+        throw new Error("Failed to fetch plants", error);
+      }
+    },
+
+    getPlantById: async (_, { id }) => {
+      try {
+        const plant = await Plant.findById(id);
+        if (!plant) {
+          throw new Error("Plant not found");
+        }
+
+        // Format specific date fields
+        if (plant.plantBuyDate) {
+          plant.plantBuyDate = formatDate(plant.plantBuyDate);
+        }
+        if (plant.harvestDate) {
+          plant.harvestDate = formatDate(plant.harvestDate);
+        }
+
+        console.log("buy Date:", plant.plantBuyDate);
+        console.log("harvest Date:", plant.harvestDate);
+        return plant;
+      } catch (error) {
+        throw new Error("Failed to fetch plant by ID", error);
       }
     },
   },
