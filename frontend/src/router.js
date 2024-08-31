@@ -20,6 +20,7 @@ const InProgressDestillationsPage = () =>
 const PlantListPage = () => import("./pages/my-account/PlantListPage.vue");
 const SavedDestillationsPage = () =>
   import("./pages/my-account/SavedDestillationsPage.vue");
+const PlantDetailsPage = () => import("./pages/plant/PlantDetailsPage.vue");
 
 // Create the router
 const router = createRouter({
@@ -45,43 +46,50 @@ const router = createRouter({
     },
     {
       path: "/add-plant",
-      name: AddPlant,
+      name: "AddPlant",
       component: AddPlant,
       meta: { requiresAuth: true },
     },
     {
       path: "/add-destillation",
-      name: AddDestillation,
+      name: "AddDestillation",
       component: AddDestillation,
       meta: { requiresAuth: true },
     },
     {
       path: "/my-account",
-      name: MyAccountPage,
+      name: "MyAccountPage",
       component: MyAccountPage,
       meta: { requiresAuth: true },
       children: [
         {
           path: "destillations-in-progress",
-          name: InProgressDestillationsPage,
+          name: "InProgressDestillationsPage",
           component: InProgressDestillationsPage,
           meta: { requiresAuth: true },
         },
         {
           path: "plant-list",
-          name: PlantListPage,
+          name: "PlantListPage",
           component: PlantListPage,
           meta: { requiresAuth: true },
         },
         {
+          path: "plant-details/:id",
+          name: "PlantDetailsPage",
+          component: PlantDetailsPage,
+          props: true,
+          meta: { requiresAuth: true },
+        },
+        {
           path: "saved-destillations",
-          name: SavedDestillationsPage,
+          name: "SavedDestillationsPage",
           component: SavedDestillationsPage,
           meta: { requiresAuth: true },
         },
         {
           path: "my-data",
-          name: MyDataPage,
+          name: "MyDataPage",
           component: MyDataPage,
           meta: { requiresAuth: true },
         },

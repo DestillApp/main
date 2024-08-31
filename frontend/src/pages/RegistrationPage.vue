@@ -1,4 +1,5 @@
 //sprawdzenie w bazie danych czy nazwa użytkownika i e-mail juą są
+// redirecting to another page afer registration
 
 <template>
   <base-card class="card">

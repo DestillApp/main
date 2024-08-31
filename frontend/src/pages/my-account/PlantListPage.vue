@@ -1,15 +1,10 @@
 //pagination
-//opening plant details - router link
+// spinner
 // no docs
 <template>
-  <h3 class="plant_list-title">Zapisane surowce</h3>
+  <h3 class="plant_list--title">Zapisane surowce</h3>
   <ul v-if="plantList.length >= 1" class="plant_list">
-    <li
-      v-for="plant in plantList"
-      :key="plant._id"
-      id="plant._id"
-      class="plant"
-    >
+    <li v-for="plant in plantList" :key="plant._id" class="plant">
       <div class="plant_data">
         <div class="plant_weight">
           <p class="plant_weight_state">na stanie:</p>
@@ -27,26 +22,22 @@
         <div class="plant_part">{{ plant.plantPart }}</div>
       </div>
       <div class="plant_buttons">
-        <button @click="openPlantDetails" class="plant_button-details">
-          Zobacz szczegóły
-        </button>
-        <button @click="openDeleteModal(plant._id)" class="plant_button-delete">
+        <router-link :to="{ name: 'PlantDetailsPage', params: { id: plant._id } }" class="plant_button--details">
+          <button>Zobacz szczegóły</button>
+        </router-link>
+        <button @click="openDeleteModal(plant._id, plant.plantName, plant.plantPart)" class="plant_button--delete">
           Usuń
         </button>
       </div>
-      <plant-delete-modal
-        v-if="isModalOpen"
-        @close-modal="closeDeleteModal"
-        @close-delete-modal="closeDeleteModal"
-        @delete-plant="deletePlant"
-      ></plant-delete-modal>
     </li>
   </ul>
-  <div v-else>magazyn jest pusty...</div>
+  <plant-delete-modal v-if="isModalOpen" :plantName="plantName" :plantPart="plantPart" @close-modal="closeDeleteModal"
+    @close-delete-modal="closeDeleteModal" @delete-plant="deletePlant"></plant-delete-modal>
+  <div v-if="plantList.length < 1">magazyn jest pusty...</div>
 </template>
 
 <script>
-import { ref, onMounted} from "vue";
+import { ref, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 
@@ -81,12 +72,14 @@ export default {
     const plantList = ref([]);
     const isModalOpen = ref(false);
     const selectedPlantId = ref(null);
+    const plantName = ref(null);
+    const plantPart = ref(null);
 
     const fetchPlantList = async () => {
       try {
         const { data } = await apolloClient.query({
           query: GET_PLANTS,
-          fetchPolicy: 'network-only', 
+          fetchPolicy: "network-only",
           variables: {
             fields: [
               "plantName",
@@ -100,7 +93,7 @@ export default {
         });
         plantList.value = data.getPlants;
       } catch (error) {
-        console.error("Failed to get plant list:");
+        console.error("Failed to get plant list:", error);
         plantList.value = [];
       }
     };
@@ -109,17 +102,17 @@ export default {
       fetchPlantList();
     });
 
-    const openPlantDetails = () => {
-      console.log("Plant details!");
-    };
-
-    const openDeleteModal = (id) => {
+    const openDeleteModal = (id, name, part) => {
       selectedPlantId.value = id;
+      plantName.value = name;
+      plantPart.value = part;
       isModalOpen.value = true;
     };
 
     const closeDeleteModal = () => {
       selectedPlantId.value = null;
+      plantName.value = null;
+      plantPart.value = null;
       isModalOpen.value = false;
     };
 
@@ -140,22 +133,23 @@ export default {
 
     const deletePlantFromList = (id) => {
       plantList.value = plantList.value.filter((plant) => plant._id !== id);
-    }
+    };
 
     return {
       plantList,
       isModalOpen,
-      openPlantDetails,
+      plantName,
+      plantPart,
       openDeleteModal,
       closeDeleteModal,
-      deletePlant
+      deletePlant,
     };
   },
 };
 </script>
 
 <style scoped>
-.plant_list-title {
+.plant_list--title {
   margin-bottom: 20px;
 }
 
@@ -223,15 +217,16 @@ export default {
   font-size: 11px;
 }
 
-.plant_button-details {
+.plant_button--details {
+  display: flex;
   color: var(--secondary-color);
 }
 
-.plant_button-details:hover {
+.plant_button--details:hover {
   color: var(--primary-color);
 }
 
-.plant_button-delete:hover {
+.plant_button--delete:hover {
   color: red;
 }
 </style>
