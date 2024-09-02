@@ -69,9 +69,10 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: "plant-list",
+          path: "plant-list/:page",
           name: "PlantListPage",
           component: PlantListPage,
+          props: true,
           meta: { requiresAuth: true },
         },
         {

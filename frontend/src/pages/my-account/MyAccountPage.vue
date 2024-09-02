@@ -4,7 +4,7 @@
       <h3 class="nav_title">Moje konto</h3>
       <ul class="nav_list">
         <li><router-link to="/my-account/destillations-in-progress">Destylacje w toku</router-link></li>
-        <li><router-link to="/my-account/plant-list">Zapisane surowce</router-link></li>
+        <li><router-link to="/my-account/plant-list/1">Magazyn surowców</router-link></li>
         <li><router-link to="/my-account/saved-destillations">Archiwum destylacji</router-link></li>
         <li><router-link to="/my-account/my-data">Moje dane</router-link></li>
       </ul>

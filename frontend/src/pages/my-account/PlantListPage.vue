@@ -1,47 +1,77 @@
-//pagination
+// pagination
 // spinner
+// after deleting changing the amount of the plants (pagination)
+// searching the specific plant
+// filter by list length, when plant was added etc.... (?)
 // no docs
 <template>
-  <h3 class="plant_list--title">Zapisane surowce</h3>
-  <ul v-if="plantList.length >= 1" class="plant_list">
-    <li v-for="plant in plantList" :key="plant._id" class="plant">
-      <div class="plant_data">
-        <div class="plant_weight">
-          <p class="plant_weight_state">na stanie:</p>
-          {{ plant.plantWeight }} kg
+  <div>
+    <h3 class="plant_list--title">Magazyn surowców</h3>
+    <ul v-if="plantList.length >= 1" class="plant_list">
+      <li v-for="plant in plantList" :key="plant._id" class="plant">
+        <div class="plant_data">
+          <div class="plant_weight">
+            <p class="plant_weight_state">na stanie:</p>
+            {{ plant.plantWeight }} kg
+          </div>
+          <div class="plant_date" v-if="plant.harvestDate !== null">
+            zbiór: {{ plant.harvestDate }}
+          </div>
+          <div class="plant_date" v-if="plant.plantBuyDate !== null">
+            kupno: {{ plant.plantBuyDate }}
+          </div>
         </div>
-        <div class="plant_date" v-if="plant.harvestDate !== null">
-          zbiór: {{ plant.harvestDate }}
+        <div class="plant_identification">
+          <div class="plant_name">{{ plant.plantName }}</div>
+          <div class="plant_part">{{ plant.plantPart }}</div>
         </div>
-        <div class="plant_date" v-if="plant.plantBuyDate !== null">
-          kupno: {{ plant.plantBuyDate }}
+        <div class="plant_buttons">
+          <router-link
+            :to="{ name: 'PlantDetailsPage', params: { id: plant._id } }"
+            class="plant_button--details"
+          >
+            <button>Zobacz szczegóły</button>
+          </router-link>
+          <button
+            @click="
+              openDeleteModal(plant._id, plant.plantName, plant.plantPart)
+            "
+            class="plant_button--delete"
+          >
+            Usuń
+          </button>
         </div>
-      </div>
-      <div class="plant_identification">
-        <div class="plant_name">{{ plant.plantName }}</div>
-        <div class="plant_part">{{ plant.plantPart }}</div>
-      </div>
-      <div class="plant_buttons">
-        <router-link :to="{ name: 'PlantDetailsPage', params: { id: plant._id } }" class="plant_button--details">
-          <button>Zobacz szczegóły</button>
-        </router-link>
-        <button @click="openDeleteModal(plant._id, plant.plantName, plant.plantPart)" class="plant_button--delete">
-          Usuń
-        </button>
-      </div>
-    </li>
-  </ul>
-  <plant-delete-modal v-if="isModalOpen" :plantName="plantName" :plantPart="plantPart" @close-modal="closeDeleteModal"
-    @close-delete-modal="closeDeleteModal" @delete-plant="deletePlant"></plant-delete-modal>
-  <div v-if="plantList.length < 1">magazyn jest pusty...</div>
+      </li>
+    </ul>
+    <plant-delete-modal
+      v-if="isModalOpen"
+      :plantName="plantName"
+      :plantPart="plantPart"
+      @close-modal="closeDeleteModal"
+      @close-delete-modal="closeDeleteModal"
+      @delete-plant="deletePlant"
+    ></plant-delete-modal>
+    <div v-if="plantList.length < 1">magazyn jest pusty...</div>
+    <v-pagination
+      v-if="plantsAmount > plantsPerPage"
+      v-model="page"
+      :length="paginationLength"
+      rounded="circle"
+      :total-visible="4"
+      :active-color="`var(--secondary-color)`"
+      class="plant_pagination"
+    ></v-pagination>
+  </div>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
+import { useRoute, useRouter } from "vue-router";
 
 import PlantDeleteModal from "@/components/plant/PlantDeleteModal.vue";
+import { scrollToTop } from "@/helpers/displayHelpers";
 
 const GET_PLANTS = gql`
   query GetPlants($fields: [String]!) {
@@ -70,10 +100,22 @@ export default {
     const apolloClient = resolveClient();
 
     const plantList = ref([]);
+
     const isModalOpen = ref(false);
     const selectedPlantId = ref(null);
     const plantName = ref(null);
     const plantPart = ref(null);
+
+    const route = useRoute();
+    const router = useRouter();
+
+    const plantsAmount = ref(null);
+    const page = ref(Number(route.params.page));
+    const plantsPerPage = ref(10);
+
+    const paginationLength = computed(() => {
+      return Math.ceil(plantsAmount.value / plantsPerPage.value);
+    });
 
     const fetchPlantList = async () => {
       try {
@@ -91,15 +133,28 @@ export default {
             ],
           },
         });
-        plantList.value = data.getPlants;
+        plantsAmount.value = data.getPlants.length;
+
+        const start = (page.value - 1) * plantsPerPage.value;
+        const end = page.value * plantsPerPage.value;
+
+        plantList.value = data.getPlants.slice(start, end);
+
       } catch (error) {
         console.error("Failed to get plant list:", error);
+        plantsAmount.value = null;
         plantList.value = [];
       }
     };
 
     onMounted(() => {
       fetchPlantList();
+    });
+
+    watch(page, (newPage) => {
+      router.push({ name: "PlantListPage", params: { page: newPage } });
+      fetchPlantList();
+      scrollToTop();
     });
 
     const openDeleteModal = (id, name, part) => {
@@ -140,6 +195,10 @@ export default {
       isModalOpen,
       plantName,
       plantPart,
+      plantsAmount,
+      page,
+      plantsPerPage,
+      paginationLength,
       openDeleteModal,
       closeDeleteModal,
       deletePlant,
@@ -228,5 +287,9 @@ export default {
 
 .plant_button--delete:hover {
   color: red;
+}
+
+.plant_pagination {
+  margin-top: 20px;
 }
 </style>
