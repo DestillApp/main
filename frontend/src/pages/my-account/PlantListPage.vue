@@ -1,13 +1,19 @@
-// pagination
-// spinner
-// after deleting changing the amount of the plants (pagination)
+// after deleting changing the amount of the plants (test pagination)
 // searching the specific plant
 // filter by list length, when plant was added etc.... (?)
 // no docs
 <template>
   <div>
     <h3 class="plant_list--title">Magazyn surowców</h3>
-    <ul v-if="plantList.length >= 1" class="plant_list">
+    <v-progress-circular
+      v-if="isLoading"
+      class="spinner"
+      color="var(--secondary-color)"
+      :size="60"
+      :width="6"
+      indeterminate
+    ></v-progress-circular>
+    <ul v-if="!isLoading && plantList.length >= 1" class="plant_list">
       <li v-for="plant in plantList" :key="plant._id" class="plant">
         <div class="plant_data">
           <div class="plant_weight">
@@ -51,9 +57,9 @@
       @close-delete-modal="closeDeleteModal"
       @delete-plant="deletePlant"
     ></plant-delete-modal>
-    <div v-if="plantList.length < 1">magazyn jest pusty...</div>
+    <div v-if="!isLoading && plantList.length < 1">magazyn jest pusty...</div>
     <v-pagination
-      v-if="plantsAmount > plantsPerPage"
+      v-if="!isLoading && plantsAmount > plantsPerPage"
       v-model="page"
       :length="paginationLength"
       rounded="circle"
@@ -113,12 +119,15 @@ export default {
     const page = ref(Number(route.params.page));
     const plantsPerPage = ref(10);
 
+    const isLoading = ref(true);
+
     const paginationLength = computed(() => {
       return Math.ceil(plantsAmount.value / plantsPerPage.value);
     });
 
     const fetchPlantList = async () => {
       try {
+        isLoading.value = true;
         const { data } = await apolloClient.query({
           query: GET_PLANTS,
           fetchPolicy: "network-only",
@@ -139,11 +148,12 @@ export default {
         const end = page.value * plantsPerPage.value;
 
         plantList.value = data.getPlants.slice(start, end);
-
       } catch (error) {
         console.error("Failed to get plant list:", error);
         plantsAmount.value = null;
         plantList.value = [];
+      } finally {
+        isLoading.value = false;
       }
     };
 
@@ -198,6 +208,7 @@ export default {
       plantsAmount,
       page,
       plantsPerPage,
+      isLoading,
       paginationLength,
       openDeleteModal,
       closeDeleteModal,
