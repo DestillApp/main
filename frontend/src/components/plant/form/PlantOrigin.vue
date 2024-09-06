@@ -3,39 +3,68 @@
   <div class="plant_origin">
     <div>
       <!-- Radio input for plant origin selection -->
-      <base-radio-input v-model="formData.plantOrigin" :options="origins" :title="title" name="plantOrigin">
+      <base-radio-input
+        v-model="formData.plantOrigin"
+        :options="origins"
+        :title="title"
+        name="plantOrigin"
+      >
         <template v-slot:message>
-          <span v-if="isFormValid === false && formData.plantOrigin === ''">Wybierz pochodzenie surowca</span>
+          <span v-if="isFormValid === false && formData.plantOrigin === ''"
+            >Wybierz pochodzenie surowca</span
+          >
           <span v-else>&nbsp;</span>
-        </template></base-radio-input>
+        </template></base-radio-input
+      >
     </div>
     <!-- Container for harvest details, displayed if plant origin is 'zbiór' -->
     <div v-if="formData.plantOrigin === 'zbiór'" class="plant_origin--harvest">
       <div>
         <!-- Date picker for selecting harvest date -->
-        <base-input-date-picker label="Data zbioru" title="Wybierz datę zbioru" id="harvestDate"
-          :value="formData.harvestDate" @date:value="storeDate"
-          :invalidInput="isFormValid === false && formData.harvestDate === ''">
+        <base-input-date-picker
+          label="Data zbioru"
+          title="Wybierz datę zbioru"
+          id="harvestDate"
+          :value="formData.harvestDate"
+          @date:value="storeDate"
+          :invalidInput="isFormValid === false && formData.harvestDate === ''"
+        >
         </base-input-date-picker>
         <div class="message">
-          <span v-if="isFormValid === false && formData.harvestDate === ''">Wybierz datę zbioru</span>
+          <span v-if="isFormValid === false && formData.harvestDate === ''"
+            >Wybierz datę zbioru</span
+          >
           <span v-else>&nbsp;</span>
         </div>
       </div>
       <div class="harvest_conditions">
         <!-- Input field for entering harvest temperature -->
-        <base-text-input v-model="formData.harvestTemperature" type="number" classType="number" placeholder="°C"
+        <base-text-input
+          v-model="formData.harvestTemperature"
+          type="number"
+          classType="number"
+          placeholder="°C"
           :invalidInput="
             isFormValid === false && formData.harvestTemperature === null
-          " @update:modelValue="setIntegerNumber" @set:keyboard="setKeyboardIntegerNumber"
-          label="Temperatura podczas zbioru" id="harvestTemperature" min="-15" max="40" step="1">
+          "
+          @update:modelValue="setIntegerNumber"
+          @set:keyboard="setKeyboardIntegerNumber"
+          label="Temperatura podczas zbioru"
+          id="harvestTemperature"
+          min="-15"
+          max="40"
+          step="1"
+        >
           <template v-slot:unit>
             <div v-if="formData.harvestTemperature !== null">°C</div>
           </template>
           <template v-slot:message>
-            <span v-if="
+            <span
+              v-if="
                 isFormValid === false && formData.harvestTemperature === null
-              ">Wpisz temperaturę zbioru</span>
+              "
+              >Wpisz temperaturę zbioru</span
+            >
             <span v-else>&nbsp;</span>
           </template>
         </base-text-input>
@@ -43,15 +72,32 @@
           <!-- Label for the harvest hours slider -->
           <label for="hours_slider" class="hours_label">Godziny zbioru</label>
           <!-- Range slider for selecting harvest hours -->
-          <v-range-slider v-model="formData.harvestRange" class="slider" id="hours_slider" :min="300" :max="1320"
-            :step="15" color="var(--secondary-color)">
+          <v-range-slider
+            v-model="formData.harvestRange"
+            class="slider"
+            id="hours_slider"
+            :min="300"
+            :max="1320"
+            :step="15"
+            color="var(--secondary-color)"
+          >
             <template v-slot:prepend>
-              <base-text-input v-model="formData.harvestStartTime" type="text" classType="time" id="start_time"
-                disabled="disabled"></base-text-input>
+              <base-text-input
+                v-model="formData.harvestStartTime"
+                type="text"
+                classType="time"
+                id="start_time"
+                disabled="disabled"
+              ></base-text-input>
             </template>
             <template v-slot:append>
-              <base-text-input v-model="formData.harvestEndTime" type="text" classType="time" id="end_time"
-                disabled="disabled"></base-text-input>
+              <base-text-input
+                v-model="formData.harvestEndTime"
+                type="text"
+                classType="time"
+                id="end_time"
+                disabled="disabled"
+              ></base-text-input>
             </template>
           </v-range-slider>
         </div>
@@ -61,31 +107,57 @@
     <div v-if="formData.plantOrigin === 'kupno'" class="plant_origin--buy">
       <div>
         <!-- Date picker for selecting purchase date -->
-        <base-input-date-picker label="Data zakupu" title="Wybierz datę zakupu" id="plantBuyDate"
-          :value="formData.plantBuyDate" @date:value="storeDate"
-          :invalidInput="isFormValid === false && formData.plantBuyDate === ''"></base-input-date-picker>
+        <base-input-date-picker
+          label="Data zakupu"
+          title="Wybierz datę zakupu"
+          id="plantBuyDate"
+          :value="formData.plantBuyDate"
+          @date:value="storeDate"
+          :invalidInput="isFormValid === false && formData.plantBuyDate === ''"
+        ></base-input-date-picker>
         <div class="message">
-          <span v-if="isFormValid === false && formData.plantBuyDate === ''">Wybierz datę zakupu</span>
+          <span v-if="isFormValid === false && formData.plantBuyDate === ''"
+            >Wybierz datę zakupu</span
+          >
           <span v-else>&nbsp;</span>
         </div>
       </div>
       <!-- Input field for entering the name of the producer -->
       <div class="buy_containter">
-        <base-text-input class="buy_producer" v-model="formData.plantProducer" type="text" label="Nazwa producenta"
-          id="plantProducer" :invalidInput="isFormValid === false && formData.plantProducer === ''"
-          @update:modelValue="setValue">
+        <base-text-input
+          class="buy_producer"
+          v-model="formData.plantProducer"
+          type="text"
+          label="Nazwa producenta"
+          id="plantProducer"
+          :invalidInput="isFormValid === false && formData.plantProducer === ''"
+          @update:modelValue="setValue"
+        >
           <template v-slot:message>
-            <span v-if="isFormValid === false && formData.plantProducer === ''">Wpisz nazwę producenta</span>
+            <span v-if="isFormValid === false && formData.plantProducer === ''"
+              >Wpisz nazwę producenta</span
+            >
             <span v-else>&nbsp;</span>
           </template>
         </base-text-input>
         <!-- Autocomplete input for the country of origin -->
-        <base-autocomplete-input v-model="formData.countryOfOrigin" class="buy_country" label="Kraj pochodzenia"
-          id="countryOfOrigin" :results="countryNames" :invalidInput="
+        <base-autocomplete-input
+          v-model="formData.countryOfOrigin"
+          class="buy_country"
+          label="Kraj pochodzenia"
+          id="countryOfOrigin"
+          :results="countryNames"
+          :invalidInput="
             isFormValid === false && formData.countryOfOrigin === ''
-          " @update:modelValue="setValue" @input="onInput">
+          "
+          @update:modelValue="setValue"
+          @input="onInput"
+        >
           <template v-slot:message>
-            <span v-if="isFormValid === false && formData.countryOfOrigin === ''">Wybierz kraj pochodzenia</span>
+            <span
+              v-if="isFormValid === false && formData.countryOfOrigin === ''"
+              >Wybierz kraj pochodzenia</span
+            >
             <span v-else>&nbsp;</span>
           </template>
         </base-autocomplete-input>
@@ -99,10 +171,10 @@
 import { useStore } from "vuex";
 import { ref, reactive, computed, watch, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { gql } from "@apollo/client/core";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
+import { GET_COUNTRY_NAMES } from "@/graphql/queries/country.js";
 
 /**
  * @component PlantOrigin
@@ -112,14 +184,6 @@ import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
  * @see setKeyboardIntegerNumber
  * @see storeDate
  */
-
-// GraphQL query to retrieve country names based on a given name.
-const GET_COUNTRY_NAMES = gql`
-  query GetCountryNames($name: String!) {
-    getCountryNames(name: $name)
-  }
-`;
-
 export default {
   name: "PlantOrigin",
   components: { BaseInputDatePicker, BaseTextInput, BaseAutocompleteInput },
@@ -256,13 +320,13 @@ export default {
     const apolloClient = resolveClient();
 
     /**
-      * Async function to fetch country names based on user input for the autocomplete component.
-      * @async
-      * @function fetchCountries
-      * @param {string} name - The search query to fetch country names for.
-      * @returns {Promise<void>} Resolves when the country names are fetched and stored in the reactive variable.
-      * @throws {Error} Throws an error if the fetching fails.
-      */
+     * Async function to fetch country names based on user input for the autocomplete component.
+     * @async
+     * @function fetchCountries
+     * @param {string} name - The search query to fetch country names for.
+     * @returns {Promise<void>} Resolves when the country names are fetched and stored in the reactive variable.
+     * @throws {Error} Throws an error if the fetching fails.
+     */
     const fetchCountries = async (name) => {
       try {
         const { data } = await apolloClient.query({
@@ -278,13 +342,13 @@ export default {
     };
 
     /**
- * Handles the input event for the search or autocomplete component.
- * Updates the search query and manages the debounce timer to limit the frequency of fetch requests.
- * 
- * @function onInput
- * @param {Event} e - The input event triggered by user interaction.
- * @returns {void}
- */
+     * Handles the input event for the search or autocomplete component.
+     * Updates the search query and manages the debounce timer to limit the frequency of fetch requests.
+     *
+     * @function onInput
+     * @param {Event} e - The input event triggered by user interaction.
+     * @returns {void}
+     */
     const onInput = (e) => {
       searchQuery.value = e.target.value;
       console.log(searchQuery.value);
@@ -311,7 +375,7 @@ export default {
       setKeyboardIntegerNumber,
       storeDate,
       onInput,
-      countryNames
+      countryNames,
     };
   },
 };

@@ -1,32 +1,39 @@
-//no docs // edytuj button, router-link to edditing the plant data // button
-destyluj, router-link to add destilation form with plant ID? // miesiąc,
-miesiące, miesięcy // redirecting to the previous plant list page (now it is 1)
-//spinner
+// no docs 
+// redirecting to the previous plant list page (now it is 1)
+// edytuj button, router-link to edditing the plant data 
+// button destyluj, router-link to add destilation form with plant ID? 
+// miesiąc, miesiące, miesięcy 
 <template>
   <div>
+    <!-- Spinner that shows when data is loading -->
     <v-progress-circular
-    v-if="isLoading"
-    class="spinner"
+      v-if="isLoading"
+      class="spinner"
       color="var(--secondary-color)"
       :size="60"
       :width="6"
       indeterminate
     ></v-progress-circular>
+    <!-- Display plant details once data is loaded and no longer loading -->
     <div v-if="plantDetails && !isLoading" class="plant">
       <div class="plant_container--one">
+        <!-- Display available stock -->
         <div class="plant_instock">
           <p class="plant_instock--state">na stanie:</p>
           <br />{{ plantDetails.plantWeight }} kg
         </div>
+        <!-- Display plant identification information -->
         <div class="plant_identification">
           <h3>{{ plantDetails.plantName }}</h3>
           <div>{{ plantDetails.plantPart }}</div>
         </div>
+        <!-- Edit and delete buttons for the plant -->
         <div class="plant_buttons">
           <button class="plant_button--edit">Edytuj</button>
           <button class="plant_button--delete" @click="openDeleteModal">
             Usuń
           </button>
+          <!-- Modal for deleting the plant -->
           <plant-delete-modal
             v-if="isModalOpen"
             :plantName="plantDetails.plantName"
@@ -37,7 +44,9 @@ miesiące, miesięcy // redirecting to the previous plant list page (now it is 1
           ></plant-delete-modal>
         </div>
       </div>
+      <!-- Display additional plant data -->
       <div class="plant_container--two">
+        <!-- Show specific data if plant origin is 'zbiór' -->
         <div v-if="plantDetails.plantOrigin === 'zbiór'" class="plant_info">
           <h5 class="plant_title">warunki zbioru</h5>
           <div class="plant_data">
@@ -51,6 +60,7 @@ miesiące, miesięcy // redirecting to the previous plant list page (now it is 1
             {{ plantDetails.harvestEndTime }}
           </div>
         </div>
+        <!-- Show specific data if plant origin is 'kupno' -->
         <div v-if="plantDetails.plantOrigin === 'kupno'" class="plant_info">
           <h5 class="plant_title">dane zakupu</h5>
           <div class="plant_data">
@@ -80,6 +90,7 @@ miesiące, miesięcy // redirecting to the previous plant list page (now it is 1
           </div>
         </div>
       </div>
+      <!-- Button to navigate to the distillation form -->
       <router-link to="/add-destillation" class="plant_distill"
         ><base-button class="destill_button">Destyluj</base-button></router-link
       >
@@ -89,41 +100,23 @@ miesiące, miesięcy // redirecting to the previous plant list page (now it is 1
 
 <script>
 import { ref, onMounted } from "vue";
-import { gql } from "@apollo/client/core";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 
 import PlantDeleteModal from "@/components/plant/PlantDeleteModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 
-const GET_PLANT_BY_ID = gql`
-  query GetPlantById($id: ID!) {
-    getPlantById(id: $id) {
-      _id
-      plantName
-      plantPart
-      plantOrigin
-      plantBuyDate
-      plantProducer
-      countryOfOrigin
-      harvestDate
-      harvestTemperature
-      harvestStartTime
-      harvestEndTime
-      plantWeight
-      plantState
-      dryingTime
-      plantAge
-    }
-  }
-`;
+import { GET_PLANT_BY_ID } from "@/graphql/queries/plant.js";
+import { DELETE_PLANT } from "@/graphql/mutations/plant.js"
 
-const DELETE_PLANT = gql`
-  mutation DeletePlant($id: ID!) {
-    deletePlant(id: $id)
-  }
-`;
-
+/**
+ * @component PlantDetailsPage
+ * @description This component fetches and displays the details of a specific plant, allows for deleting the plant, and navigating to the distillation form.
+ * @see fetchPlantDetails
+ * @see openDeleteModal
+ * @see closeDeleteModal
+ * @see deletePlant
+ */
 export default {
   name: "PlantDetailsPage",
   components: { PlantDeleteModal, BaseButton },
@@ -131,15 +124,26 @@ export default {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
 
+    // Route object to access route params
     const route = useRoute();
+    // Router object for navigation
     const router = useRouter();
 
+    // Reactive reference to store the plant ID from the route
     const plantId = ref(route.params.id);
+    // Reactive reference to store fetched plant details
     const plantDetails = ref(null);
+    // Reactive reference to track if the delete modal is open
     const isModalOpen = ref(false);
-
+    // Reactive reference to track loading state
     const isLoading = ref(true);
 
+    /**
+     * @async
+     * @function fetchPlantDetails
+     * @description Fetches the plant details by plant ID from GraphQL API.
+     * @returns {Promise<void>}
+     */
     const fetchPlantDetails = async () => {
       try {
         isLoading.value = true;
@@ -157,18 +161,33 @@ export default {
       }
     };
 
+    // Fetch plant details when the component is mounted
     onMounted(() => {
       fetchPlantDetails();
     });
 
+    /**
+     * @function openDeleteModal
+     * @description Opens the delete confirmation modal.
+     */
     const openDeleteModal = () => {
       isModalOpen.value = true;
     };
 
+    /**
+     * @function closeDeleteModal
+     * @description Closes the delete confirmation modal.
+     */
     const closeDeleteModal = () => {
       isModalOpen.value = false;
     };
 
+    /**
+     * @async
+     * @function deletePlant
+     * @description Deletes the plant by ID and navigates back to the plant list.
+     * @returns {Promise<void>}
+     */
     const deletePlant = async () => {
       try {
         const { data } = await apolloClient.mutate({
@@ -178,7 +197,7 @@ export default {
         console.log(data.deletePlant);
         if (data.deletePlant) {
           await apolloClient.resetStore();
-          router.push({ name: "PlantListPage", params: { id: 1 } });
+          router.push({ name: "PlantListPage", params: { page: 1 } });
         }
         closeDeleteModal();
       } catch (error) {

@@ -1,5 +1,5 @@
-import { gql } from "@apollo/client/core";
 import { apolloClient } from "@/main";
+import { VERIFY_AUTH, LOGIN, LOGOUT } from "@/graphql/queries/auth.js";
 
 /**
  * Auth module actions for handling data fetching.
@@ -8,13 +8,6 @@ import { apolloClient } from "@/main";
 export default {
   async fetchUserAuthenticationStatus(context) {
     console.log("userAuthQuery");
-    const VERIFY_AUTH = gql`
-      query VerifyAuth {
-        verifyAuth {
-          isAuthenticated
-        }
-      }
-    `;
     try {
       const { data } = await apolloClient.query({
         query: VERIFY_AUTH,
@@ -33,11 +26,6 @@ export default {
   },
 
   async login({ commit }, { email, password }) {
-    const LOGIN = gql`
-      mutation Login($email: String!, $password: String!) {
-        login(email: $email, password: $password)
-      }
-    `;
     try {
       const response = await apolloClient.mutate({
         mutation: LOGIN,
@@ -58,12 +46,6 @@ export default {
   },
 
   async logout(context) {
-    const LOGOUT = gql`
-      mutation Logout {
-        logout
-      }
-    `;
-
     try {
       await apolloClient.mutate({ mutation: LOGOUT });
       context.commit("setUserAuthenticationStatus", false);

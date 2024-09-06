@@ -41,9 +41,9 @@
 <script>
 import { ref } from "vue";
 import { useMutation } from "@vue/apollo-composable";
-import { gql } from "@apollo/client/core";
 import DOMPurify from "dompurify";
 import { scrollToTop } from "../helpers/displayHelpers.js";
+import { REGISTER_USER } from "@/graphql/mutations/auth.js";
 
 /**
  * @component RegistrationForm
@@ -61,17 +61,8 @@ export default {
       password: "",
     });
 
-    // GraphQL mutation for user registration
-    const { mutate: registerUser } = useMutation(gql`
-      mutation registerUser($input: UserInput!) {
-        registerUser(userInput: $input) {
-          _id
-          username
-          email
-          password
-        }
-      }
-    `);
+    // Using GraphQL mutation for user registration
+    const { mutate: registerUser } = useMutation(REGISTER_USER);
 
     /**
      * Function to handle the submission of the registration form.

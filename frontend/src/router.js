@@ -133,24 +133,3 @@ router.beforeEach(async (to, from, next) => {
 
 export default router;
 
-// const VERIFY_AUTH = gql`
-//   query VerifyAuth {
-//     verifyAuth {
-//       isAuthenticated
-//     }
-//   }
-// `;
-
-// export async function checkAuthStatus() {
-//   console.log("checkAuthStatus called");
-//   try {
-//     const { data } = await apolloClient.query({
-//       query: VERIFY_AUTH,
-//     });
-//     return data.verifyAuth.isAuthenticated;
-//   } catch (error) {
-//     return false;
-//   }
-// }
-
-// Vuex store

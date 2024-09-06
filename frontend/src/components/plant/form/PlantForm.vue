@@ -16,7 +16,9 @@
       <!-- Button to submit the plant form -->
       <base-button type="submit">Zapisz</base-button>
       <!-- Button to submit and go to the distillation form -->
-      <base-button type="submit">Zapisz i przejdź do formularza procesu destylacji</base-button>
+      <base-button type="submit"
+        >Zapisz i przejdź do formularza procesu destylacji</base-button
+      >
     </form>
   </base-card>
 </template>
@@ -26,10 +28,11 @@ import PlantIdentification from "@/components/plant/form/PlantIdentification.vue
 import PlantOrigin from "@/components/plant/form/PlantOrigin.vue";
 import PlantData from "@/components/plant/form/PlantData.vue";
 
+import { CREATE_PLANT } from "@/graphql/mutations/plant.js";
+
 import { useStore } from "vuex";
 import { computed, ref, onMounted } from "vue";
 import { useMutation } from "@vue/apollo-composable";
-import { gql } from "@apollo/client/core";
 import DOMPurify from "dompurify";
 
 /**
@@ -57,36 +60,13 @@ export default {
       isFormValid.value = null;
     });
 
-    // GraphQL mutation for creating a new plant
-    const { mutate: createPlant } = useMutation(gql`
-      mutation createPlant($input: PlantInput!) {
-        createPlant(plantInput: $input) {
-          _id
-          plantName
-          plantPart
-          plantOrigin
-          plantBuyDate
-          plantProducer
-          countryOfOrigin
-          harvestDate
-          harvestTemperature
-          harvestStartTime
-          harvestEndTime
-          plantWeight
-          plantState
-          dryingTime
-          plantAge
-          isPlantSoaked
-          soakingTime
-          weightAfterSoaking
-        }
-      }
-    `);
+    // Using GraphQL mutation for creating a new plant
+    const { mutate: createPlant } = useMutation(CREATE_PLANT);
 
     /**
-     * Function to validate the plant form data
      * @async
      * @function plantFormValidation
+     * @description Function to validate the plant form data
      */
     const plantFormValidation = async () => {
       const form = plantForm.value;
@@ -107,7 +87,11 @@ export default {
 
       // Additional validation for "kupno" origin
       if (form.plantOrigin === "kupno") {
-        if (form.plantBuyDate === "" || form.plantProducer === "" || form.countryOfOrigin === "") {
+        if (
+          form.plantBuyDate === "" ||
+          form.plantProducer === "" ||
+          form.countryOfOrigin === ""
+        ) {
           isFormValid.value = false;
         }
       }
@@ -147,9 +131,9 @@ export default {
     };
 
     /**
-     * Function to handle the submission of the plant form.
      * @async
      * @function submitPlantForm
+     * @description Function to handle the submission of the plant form.
      * @returns {Promise<void>} Resolves when the form submission process is complete.
      * @throws {Error} Throws an error if the form submission fails.
      */
@@ -171,18 +155,29 @@ export default {
             plantProducer: DOMPurify.sanitize(form.plantProducer),
             countryOfOrigin: DOMPurify.sanitize(form.countryOfOrigin),
             harvestDate: DOMPurify.sanitize(form.harvestDate),
-            harvestTemperature: form.harvestTemperature ? Number(DOMPurify.sanitize(form.harvestTemperature)) : null,
+            harvestTemperature: form.harvestTemperature
+              ? Number(DOMPurify.sanitize(form.harvestTemperature))
+              : null,
             harvestStartTime: DOMPurify.sanitize(form.harvestStartTime),
             harvestEndTime: DOMPurify.sanitize(form.harvestEndTime),
-            plantWeight: form.plantWeight ? Number(DOMPurify.sanitize(form.plantWeight)) : null,
+            plantWeight: form.plantWeight
+              ? Number(DOMPurify.sanitize(form.plantWeight))
+              : null,
             plantState: DOMPurify.sanitize(form.plantState),
-            dryingTime: form.dryingTime ? Number(DOMPurify.sanitize(form.dryingTime)) : null,
-            plantAge: form.plantAge ? Number(DOMPurify.sanitize(form.plantAge)) : null,
+            dryingTime: form.dryingTime
+              ? Number(DOMPurify.sanitize(form.dryingTime))
+              : null,
+            plantAge: form.plantAge
+              ? Number(DOMPurify.sanitize(form.plantAge))
+              : null,
             isPlantSoaked: Boolean(DOMPurify.sanitize(form.isPlantSoaked)),
-            soakingTime: form.soakingTime ? Number(DOMPurify.sanitize(form.soakingTime)) : null,
-            weightAfterSoaking: form.weightAfterSoaking ? Number(DOMPurify.sanitize(form.weightAfterSoaking)) : null,
+            soakingTime: form.soakingTime
+              ? Number(DOMPurify.sanitize(form.soakingTime))
+              : null,
+            weightAfterSoaking: form.weightAfterSoaking
+              ? Number(DOMPurify.sanitize(form.weightAfterSoaking))
+              : null,
           };
-
 
           // Send the GraphQL mutation to create a new plant
           const { data } = await createPlant({

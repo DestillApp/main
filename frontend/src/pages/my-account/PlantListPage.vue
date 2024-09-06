@@ -1,10 +1,12 @@
 // after deleting changing the amount of the plants (test pagination)
-// searching the specific plant
+// searching the specific plant (?)
 // filter by list length, when plant was added etc.... (?)
 // no docs
 <template>
   <div>
+    <!-- Title for the plant list -->
     <h3 class="plant_list--title">Magazyn surowców</h3>
+    <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
       class="spinner"
@@ -13,7 +15,9 @@
       :width="6"
       indeterminate
     ></v-progress-circular>
+    <!-- Plant list -->
     <ul v-if="!isLoading && plantList.length >= 1" class="plant_list">
+      <!-- Iterate through plantList and display each plant's data -->
       <li v-for="plant in plantList" :key="plant._id" class="plant">
         <div class="plant_data">
           <div class="plant_weight">
@@ -49,6 +53,7 @@
         </div>
       </li>
     </ul>
+    <!-- Delete plant modal -->
     <plant-delete-modal
       v-if="isModalOpen"
       :plantName="plantName"
@@ -57,7 +62,9 @@
       @close-delete-modal="closeDeleteModal"
       @delete-plant="deletePlant"
     ></plant-delete-modal>
+    <!-- Message displayed when no plants are available -->
     <div v-if="!isLoading && plantList.length < 1">magazyn jest pusty...</div>
+    <!-- Pagination for navigating plant list -->
     <v-pagination
       v-if="!isLoading && plantsAmount > plantsPerPage"
       v-model="page"
@@ -73,58 +80,62 @@
 <script>
 import { ref, onMounted, watch, computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { gql } from "@apollo/client/core";
 import { useRoute, useRouter } from "vue-router";
 
 import PlantDeleteModal from "@/components/plant/PlantDeleteModal.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
-const GET_PLANTS = gql`
-  query GetPlants($fields: [String]!) {
-    getPlants(fields: $fields) {
-      plantName
-      plantPart
-      plantWeight
-      harvestDate
-      plantBuyDate
-      _id
-    }
-  }
-`;
+import { GET_PLANTS } from "@/graphql/queries/plant.js";
+import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
-const DELETE_PLANT = gql`
-  mutation DeletePlant($id: ID!) {
-    deletePlant(id: $id)
-  }
-`;
+/**
+ * @component PlantListPage
+ * @description This component displays a paginated list of plants and allows deletion of plants.
+ * @see fetchPlantList
+ * @see deletePlant
+ */
 
 export default {
   name: "PlantListPage",
   components: { PlantDeleteModal },
   setup() {
+    // Apollo client instance
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
 
-    const plantList = ref([]);
+    // Route object to access route params
+    const route = useRoute();
+    // Router object for navigation
+    const router = useRouter();
 
-    const isModalOpen = ref(false);
+    // Reactive references for plant data
+    const plantList = ref([]);
     const selectedPlantId = ref(null);
     const plantName = ref(null);
     const plantPart = ref(null);
 
-    const route = useRoute();
-    const router = useRouter();
+    // Reactive reference to track if the delete modal is open
+    const isModalOpen = ref(false);
 
+    // Reactive references for pagination
     const plantsAmount = ref(null);
     const page = ref(Number(route.params.page));
     const plantsPerPage = ref(10);
 
+    // Reactive reference for loading state
     const isLoading = ref(true);
 
+    // Computed property for pagination length
     const paginationLength = computed(() => {
       return Math.ceil(plantsAmount.value / plantsPerPage.value);
     });
 
+    /**
+     * @async
+     * @function fetchPlantList
+     * @description Fetch the list of plants from the GraphQL server.
+     * @returns {Promise<void>}
+     */
     const fetchPlantList = async () => {
       try {
         isLoading.value = true;
@@ -157,16 +168,25 @@ export default {
       }
     };
 
+    // Fetch plant list when the component is mounted
     onMounted(() => {
       fetchPlantList();
     });
 
+    // Watch for changes in the page number and refetch plant list.
     watch(page, (newPage) => {
       router.push({ name: "PlantListPage", params: { page: newPage } });
       fetchPlantList();
       scrollToTop();
     });
 
+    /**
+     * @function
+     * @description Open the delete modal for a specific plant.
+     * @param {String} id - The ID of the plant to delete.
+     * @param {String} name - The name of the plant.
+     * @param {String} part - The part of the plant.
+     */
     const openDeleteModal = (id, name, part) => {
       selectedPlantId.value = id;
       plantName.value = name;
@@ -174,6 +194,10 @@ export default {
       isModalOpen.value = true;
     };
 
+    /**
+     * @function
+     * @description Close the delete modal.
+     */
     const closeDeleteModal = () => {
       selectedPlantId.value = null;
       plantName.value = null;
@@ -181,6 +205,12 @@ export default {
       isModalOpen.value = false;
     };
 
+    /**
+     * @async
+     * @function deletePlant
+     * @description Delete the selected plant from the list.
+     * @returns {Promise<void>}
+     */
     const deletePlant = async () => {
       try {
         const { data } = await apolloClient.mutate({
@@ -196,6 +226,11 @@ export default {
       }
     };
 
+    /**
+     * @function
+     * @description Remove the deleted plant from the plant list.
+     * @param {String} id - The ID of the deleted plant.
+     */
     const deletePlantFromList = (id) => {
       plantList.value = plantList.value.filter((plant) => plant._id !== id);
     };

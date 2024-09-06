@@ -54,11 +54,13 @@ import DOMPurify from "dompurify";
 /**
  * @component LoginForm
  * @description This component renders a login form and handles user authentication.
+ * @see loginFormValidation
+ * @see loginUser
  */
 export default {
   name: "LoginForm",
   setup() {
-    //useRouter hook
+    // Router object for navigation
     const router = useRouter();
 
     // Vuex store instance
