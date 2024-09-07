@@ -12,7 +12,7 @@
         </li>
         <!-- Link to the add distillation page -->
         <li v-if="isAuthenticated">
-          <router-link to="/add-destillation">Dodaj destylację</router-link>
+          <router-link to="/add-distillation">Dodaj destylację</router-link>
         </li>
         <li v-if="isAuthenticated">
           <router-link to="/my-account">Moje konto</router-link>

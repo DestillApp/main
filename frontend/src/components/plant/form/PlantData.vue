@@ -7,7 +7,8 @@
       type="number"
       classType="number"
       :invalidInput="isFormValid === false && formData.plantWeight === null"
-      @change:modelValue="setNumberFormat"
+      :storeName="storeName"
+      @change:modelValue="setNumber"
       @set:keyboard="setKeyboardFormatedNumber"
       label="Waga surowca"
       id="plantWeight"
@@ -49,7 +50,8 @@
         type="number"
         classType="number"
         :invalidInput="isFormValid === false && formData.dryingTime === null"
-        @update:modelValue="setIntegerNumber"
+        :storeName="storeName"
+        @update:modelValue="setInteger"
         @set:keyboard="setKeyboardIntegerNumber"
         label="Czas podsuszania"
         id="dryingTime"
@@ -69,12 +71,15 @@
       </base-text-input>
       <!-- Input field for entering plant age, displayed if plant state is 'suchy' -->
       <base-text-input
-        v-if="formData.plantState === 'suchy' && formData.plantOrigin === 'kupno'"
+        v-if="
+          formData.plantState === 'suchy' && formData.plantOrigin === 'kupno'
+        "
         v-model="formData.plantAge"
         type="number"
         classType="number"
         :invalidInput="isFormValid === false && formData.plantAge === null"
-        @update:modelValue="setIntegerNumber"
+        :storeName="storeName"
+        @update:modelValue="setInteger"
         @set:keyboard="setKeyboardIntegerNumber"
         label="Wiek surowca w miesiącach"
         id="plantAge"
@@ -100,79 +105,25 @@
         </template>
       </base-text-input>
     </div>
-    <!-- Checkbox for indicating if the plant was soaked -->
-    <v-checkbox
-      v-model="formData.isPlantSoaked"
-      label="Surowiec namaczany przed destylacją"
-      color="var(--secondary-color)"
-    ></v-checkbox>
-    <!-- Additional inputs displayed if the plant was soaked -->
-    <div v-if="formData.isPlantSoaked">
-      <!-- Input field for entering the soaking time -->
-      <base-text-input
-        v-model="formData.soakingTime"
-        type="number"
-        classType="number"
-        :invalidInput="isFormValid === false && formData.soakingTime === null"
-        @update:modelValue="setIntegerNumber"
-        @set:keyboard="setKeyboardIntegerNumber"
-        label="Czas namaczania"
-        placeholder="h"
-        id="soakingTime"
-        min="1"
-        step="1"
-      >
-        <template v-slot:unit>
-          <div v-if="formData.soakingTime !== null">h</div>
-        </template>
-        <template v-slot:message>
-          <span v-if="isFormValid === false && formData.soakingTime === null"
-            >Wpisz czas namaczania</span
-          >
-          <span v-else>&nbsp;</span>
-        </template>
-      </base-text-input>
-      <!-- Input field for entering the weight after soaking -->
-      <base-text-input
-        v-model="formData.weightAfterSoaking"
-        type="number"
-        classType="number"
-        :invalidInput="
-          isFormValid === false && formData.weightAfterSoaking === null
-        "
-        @change:modelValue="setNumberFormat"
-        @set:keyboard="setKeyboardFormatedNumber"
-        label="Waga surowca po namoczeniu"
-        placeholder="kg"
-        id="weightAfterSoaking"
-        min="0.1"
-        step="0.1"
-      >
-        <template v-slot:unit>
-          <div v-if="formData.weightAfterSoaking !== null">kg</div>
-        </template>
-        <template v-slot:message>
-          <span
-            v-if="isFormValid === false && formData.weightAfterSoaking === null"
-            >Wpisz wagę po namaczaniu</span
-          >
-          <span v-else>&nbsp;</span>
-        </template>
-      </base-text-input>
-    </div>
   </div>
 </template>
 
 <script>
 import { useStore } from "vuex";
 import { ref, reactive, computed, watch, onMounted } from "vue";
+import {
+  setIntegerNumber,
+  setNumberFormat,
+  setKeyboardIntegerNumber,
+  setKeyboardFormatedNumber,
+} from "@/helpers/formatHelpers.js";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 /**
  * @component PlantData
  * @description This component renders a form to input and manage data related to plant material used in distillation, including weight, state, and soaking information.
  * @see setNumberFormat
- * @see setIntegerValue
+ * @see setIntegerNumber
  * @see setKeyboardIntegerNumber
  * @see setKeyboardFormatedNumber
  */
@@ -188,10 +139,12 @@ export default {
 
     // Vuex store
     const store = useStore();
+    // Name of the vuex store module
+    const storeName = "plant";
+
     // Computed properties to get form data from Vuex store
     const formData = computed(() => store.getters["plant/plantForm"]);
     const plantState = computed(() => store.getters["plant/plantState"]);
-    const isPlantSoaked = computed(() => store.getters["plant/isPlantSoaked"]);
 
     // Fetch initial data from local storage on component mount
     onMounted(() => {
@@ -199,59 +152,16 @@ export default {
       store.dispatch("plant/fetchLocalStorageData", "plantState");
       store.dispatch("plant/fetchLocalStorageData", "dryingTime");
       store.dispatch("plant/fetchLocalStorageData", "plantAge");
-      store.dispatch("plant/fetchLocalStorageData", "isPlantSoaked");
-      store.dispatch("plant/fetchLocalStorageData", "soakingTime");
-      store.dispatch("plant/fetchLocalStorageData", "weightAfterSoaking");
     });
 
-    /**
-     * Formats the number input and dispatches the formatted value to the store.
-     * @function setNumberFormat
-     * @param {number} currentValue - The current value of the input.
-     * @param {string} input - The input identifier.
-     */
-    const setNumberFormat = (currentValue, input) => {
-      if (!currentValue || isNaN(currentValue)) {
-        store.dispatch("plant/setValue", { input, value: null });
-      } else {
-        store.dispatch("plant/setNumberFormat", { input, value: currentValue });
-      }
+    // Using the format function
+    const setInteger = (value, id, storeName) => {
+      setIntegerNumber(store, value, id, storeName);
     };
 
-    /**
-     * Formats the number input to an integer and dispatches the value to the store.
-     * @function setIntegerValue
-     * @param {number} currentValue - The current value of the input.
-     * @param {string} input - The input identifier.
-     */
-    const setIntegerNumber = (currentValue, input) => {
-      if (!currentValue || isNaN(currentValue)) {
-        store.dispatch("plant/setValue", { input, value: null });
-      } else {
-        store.dispatch("plant/setIntegerValue", { input, value: currentValue });
-      }
-    };
-
-    /**
-     * Prevents keyboard input for non-integer values.
-     * @function setKeyboardIntegerNumber
-     * @param {Event} e - The keyboard event.
-     */
-    const setKeyboardIntegerNumber = (e) => {
-      if (e.key === "." || e.key === ",") {
-        e.preventDefault();
-      }
-    };
-
-    /**
-     * Prevents keyboard input for non-formatted number values.
-     * @function setKeyboardFormatedNumber
-     * @param {Event} e - The keyboard event.
-     */
-    const setKeyboardFormatedNumber = (e) => {
-      if (e.key === "." || e.key === "-") {
-        e.preventDefault();
-      }
+    // Using the format function
+    const setNumber = (value, id, storeName) => {
+      setNumberFormat(store, value, id, storeName);
     };
 
     // Watcher to handle changes in the plant state. Updates related fields and dispatches changes to the store.
@@ -323,45 +233,13 @@ export default {
       }
     );
 
-    // Watcher to handle changes in the isPlantSoaked state. Updates related fields and dispatches changes to the store.
-    watch(
-      () => isPlantSoaked.value, // Watch the value of isPlantSoaked
-      (newValue, oldValue) => {
-        // If the old value is false, update the soaked state in the store
-        if (oldValue === false) {
-          store.dispatch("plant/setValue", {
-            input: "isPlantSoaked",
-            value: newValue,
-          });
-        }
-
-        // If the new value is false
-        if (newValue === false) {
-          // Clear soaking-related fields if the previous state was true
-          if (oldValue === true) {
-            store.dispatch("plant/setValue", {
-              input: "soakingTime",
-              value: null,
-            });
-            store.dispatch("plant/setValue", {
-              input: "weightAfterSoaking",
-              value: null,
-            });
-            store.dispatch("plant/setValue", {
-              input: "isPlantSoaked",
-              value: newValue,
-            });
-          }
-        }
-      }
-    );
-
     return {
+      storeName,
       formData,
       states,
       title,
-      setNumberFormat,
-      setIntegerNumber,
+      setNumber,
+      setInteger,
       setKeyboardIntegerNumber,
       setKeyboardFormatedNumber,
     };

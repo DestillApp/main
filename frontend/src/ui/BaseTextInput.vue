@@ -61,15 +61,18 @@ export default {
     "placeholder",
     "classType",
     "invalidInput",
+    "storeName"
   ],
+  emits: ['update:modelValue', 'change:modelValue', 'set:keyboard'],
 
   setup(props, context) {
+
     /**
      * Updates the model value when input changes
      * @function updateValue
      */
     const updateValue = (e) => {
-      context.emit("update:modelValue", e.target.value, props.id);
+      context.emit("update:modelValue", e.target.value, props.id, props.storeName);
     };
 
     /**
@@ -85,7 +88,7 @@ export default {
      * @function changeValue
      */
     const changeValue = (e) => {
-      context.emit("change:modelValue", e.target.value, props.id);
+      context.emit("change:modelValue", e.target.value, props.id, props.storeName);
     };
 
     // Computed property to determine if input is of type number

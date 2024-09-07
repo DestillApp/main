@@ -47,7 +47,7 @@
           :invalidInput="
             isFormValid === false && formData.harvestTemperature === null
           "
-          @update:modelValue="setIntegerNumber"
+          @update:modelValue="setInteger"
           @set:keyboard="setKeyboardIntegerNumber"
           label="Temperatura podczas zbioru"
           id="harvestTemperature"
@@ -174,13 +174,17 @@ import { useApolloClient } from "@vue/apollo-composable";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
+import {
+  setIntegerNumber,
+  setKeyboardIntegerNumber,
+} from "@/helpers/formatHelpers.js";
 import { GET_COUNTRY_NAMES } from "@/graphql/queries/country.js";
 
 /**
  * @component PlantOrigin
  * @description This component renders a form to input and manage data related to plant used in distillation, including origin, harvest date, harvest temperature, harvest range, buy date and producer details.
  * @see setValue
- * @see setIntegerValue
+ * @see setIntegerNumber
  * @see setKeyboardIntegerNumber
  * @see storeDate
  */
@@ -222,30 +226,9 @@ export default {
       store.dispatch("plant/setValue", { input, value: currentValue });
     };
 
-    /**
-     * Function to format number input to integer and dispatch to store
-     * @function setIntegerNumber
-     * @param {number} currentValue - The current value to be formatted.
-     * @param {string} input - The input field name.
-     */
-    //Function to format number input to integer and dispatch to store
-    const setIntegerNumber = (currentValue, input) => {
-      if (!currentValue || isNaN(currentValue)) {
-        store.dispatch("plant/setValue", { input, value: null });
-      } else {
-        store.dispatch("plant/setIntegerValue", { input, value: currentValue });
-      }
-    };
-
-    /**
-     * Prevent keyboard input for non-integer values
-     * @function setKeyboardIntegerNumber
-     * @param {Event} e - The keyboard event.
-     */
-    const setKeyboardIntegerNumber = (e) => {
-      if (e.key === "." || e.key === ",") {
-        e.preventDefault();
-      }
+    // Using the format function
+    const setInteger = (value, id, storeName) => {
+      setIntegerNumber(store, value, id, storeName);
     };
 
     /**
@@ -371,7 +354,7 @@ export default {
       title,
       origins,
       setValue,
-      setIntegerNumber,
+      setInteger,
       setKeyboardIntegerNumber,
       storeDate,
       onInput,

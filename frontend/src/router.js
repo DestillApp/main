@@ -10,16 +10,16 @@ import MainPage from "./pages/MainPage.vue";
 
 // Lazy-loaded pages
 const AddPlant = () => import("./pages/plant/AddPlant.vue");
-const AddDestillation = () => import("./pages/AddDestillation.vue");
+const AddDistillation = () => import("./pages/AddDistillation.vue");
 const LoginPage = () => import("./pages/LoginPage.vue");
 const RegistrationPage = () => import("./pages/RegistrationPage.vue");
 const MyAccountPage = () => import("./pages/my-account/MyAccountPage.vue");
 const MyDataPage = () => import("./pages/my-account/MyDataPage.vue");
-const InProgressDestillationsPage = () =>
+const InProgressDistillationsPage = () =>
   import("./pages/my-account/InProgressDistillationsPage.vue");
 const PlantListPage = () => import("./pages/my-account/PlantListPage.vue");
-const SavedDestillationsPage = () =>
-  import("./pages/my-account/SavedDestillationsPage.vue");
+const SavedDistillationsPage = () =>
+  import("./pages/my-account/SavedDistillationsPage.vue");
 const PlantDetailsPage = () => import("./pages/plant/PlantDetailsPage.vue");
 
 // Create the router
@@ -51,9 +51,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/add-destillation",
-      name: "AddDestillation",
-      component: AddDestillation,
+      path: "/add-distillation",
+      name: "AddDistillation",
+      component: AddDistillation,
       meta: { requiresAuth: true },
     },
     {
@@ -63,9 +63,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         {
-          path: "destillations-in-progress",
-          name: "InProgressDestillationsPage",
-          component: InProgressDestillationsPage,
+          path: "distillations-in-progress",
+          name: "InProgressDistillationsPage",
+          component: InProgressDistillationsPage,
           meta: { requiresAuth: true },
         },
         {
@@ -83,9 +83,9 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: "saved-destillations",
-          name: "SavedDestillationsPage",
-          component: SavedDestillationsPage,
+          path: "saved-distillations",
+          name: "SavedDistillationsPage",
+          component: SavedDistillationsPage,
           meta: { requiresAuth: true },
         },
         {
@@ -132,4 +132,3 @@ router.beforeEach(async (to, from, next) => {
 });
 
 export default router;
-

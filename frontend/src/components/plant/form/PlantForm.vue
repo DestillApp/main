@@ -121,13 +121,6 @@ export default {
           isFormValid.value = false;
         }
       }
-
-      // Additional validation for soaked plants
-      if (form.isPlantSoaked) {
-        if (form.soakingTime === null || form.weightAfterSoaking === null) {
-          isFormValid.value = false;
-        }
-      }
     };
 
     /**
@@ -170,13 +163,6 @@ export default {
             plantAge: form.plantAge
               ? Number(DOMPurify.sanitize(form.plantAge))
               : null,
-            isPlantSoaked: Boolean(DOMPurify.sanitize(form.isPlantSoaked)),
-            soakingTime: form.soakingTime
-              ? Number(DOMPurify.sanitize(form.soakingTime))
-              : null,
-            weightAfterSoaking: form.weightAfterSoaking
-              ? Number(DOMPurify.sanitize(form.weightAfterSoaking))
-              : null,
           };
 
           // Send the GraphQL mutation to create a new plant
@@ -196,9 +182,6 @@ export default {
               plantState: plantFormData.plantState,
               dryingTime: plantFormData.dryingTime,
               plantAge: plantFormData.plantAge,
-              isPlantSoaked: plantFormData.isPlantSoaked,
-              soakingTime: plantFormData.soakingTime,
-              weightAfterSoaking: plantFormData.weightAfterSoaking,
             },
           });
           console.log("Created plant:", data.createPlant);

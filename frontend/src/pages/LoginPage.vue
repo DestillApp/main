@@ -96,6 +96,9 @@ export default {
      * @throws {Error} Throws an error if the login fails.
      */
     const loginUser = async () => {
+      console.log("form:", loginForm.value);
+      console.log("Email:", loginForm.value.email);
+      console.log("Password:", loginForm.value.password);
       // Validate the form
       await loginFormValidation();
       if (isLoginFormValid.value) {

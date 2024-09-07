@@ -16,7 +16,7 @@
 
 <script>
 import PlantForm from "@/components/plant/form/PlantForm.vue";
-import DestillationForm from "@/components/destillation/DestillationForm.vue";
+import DestillationForm from "@/components/destillation/DistillationForm.vue";
 
 /**
  * @component AddDestillation

@@ -19,9 +19,6 @@ export const CREATE_PLANT = gql`
       plantState
       dryingTime
       plantAge
-      isPlantSoaked
-      soakingTime
-      weightAfterSoaking
     }
   }
 `;
