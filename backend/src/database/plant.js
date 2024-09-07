@@ -16,7 +16,7 @@ const plantSchema = new Schema({
   plantOrigin: { type: String, required: true },
   plantBuyDate: { type: String, required: false },
   plantProducer: { type: String, required: false },
-  countryOfOrigin: {type: String, required: false},
+  countryOfOrigin: { type: String, required: false },
   harvestDate: { type: String, required: false },
   harvestTemperature: { type: Number, required: false },
   harvestStartTime: { type: String, required: false },
@@ -25,9 +25,6 @@ const plantSchema = new Schema({
   plantState: { type: String, required: true },
   dryingTime: { type: Number, required: false },
   plantAge: { type: Number, required: false },
-  isPlantSoaked: { type: Boolean, required: true },
-  soakingTime: { type: Number, required: false },
-  weightAfterSoaking: { type: Number, required: false },
 });
 
 // Exporting the Plant model based on the plantSchema

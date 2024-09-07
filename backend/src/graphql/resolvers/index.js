@@ -10,12 +10,14 @@ const { mergeResolvers } = require("@graphql-tools/merge");
 const plantResolver = require("./plantResolvers");
 const userResolver = require("./userResolvers");
 const countryResolver = require("./countryResolvers");
+const distillationResolvers = require("./distillationResolvers");
 
 // Merging the individual resolvers into a single resolvers object
 const resolvers = mergeResolvers([
   plantResolver,
   userResolver,
   countryResolver,
+  distillationResolvers,
 ]);
 
 // Exporting the merged resolvers object

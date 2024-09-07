@@ -23,9 +23,6 @@ const plantSchema = gql`
     plantState: String!
     dryingTime: Int
     plantAge: Int
-    isPlantSoaked: Boolean!
-    soakingTime: Int
-    weightAfterSoaking: Float
   }
 
   input PlantInput {
@@ -43,9 +40,6 @@ const plantSchema = gql`
     plantState: String!
     dryingTime: Int
     plantAge: Int
-    isPlantSoaked: Boolean!
-    soakingTime: Int
-    weightAfterSoaking: Float
   }
 
   type Query {

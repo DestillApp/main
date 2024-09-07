@@ -125,13 +125,6 @@ const plantResolver = {
         plantAge: plantInput.plantAge
           ? Number(DOMPurify.sanitize(plantInput.plantAge))
           : null,
-        isPlantSoaked: Boolean(DOMPurify.sanitize(plantInput.isPlantSoaked)),
-        soakingTime: plantInput.soakingTime
-          ? Number(DOMPurify.sanitize(plantInput.soakingTime))
-          : null,
-        weightAfterSoaking: plantInput.weightAfterSoaking
-          ? Number(DOMPurify.sanitize(plantInput.weightAfterSoaking))
-          : null,
       };
       // Filtering out null or empty string values
       const filteredData = filterPlantData(sanitizedData);
