@@ -3,24 +3,22 @@
 
 <template>
   <base-card>
-    <!-- Title for the plant information form -->
-    <h3 class="plant_title">Informacje o surowcu</h3>
-    <!-- Plant form -->
-    <form @submit.prevent="submitPlantForm" class="plant_form">
-      <!-- Plant identification component -->
-      <plant-identification :isFormValid="isFormValid"></plant-identification>
-      <!-- Plant origin component -->
-      <plant-origin :isFormValid="isFormValid"></plant-origin>
-      <!-- Plant data component -->
-      <plant-data :isFormValid="isFormValid"></plant-data>
-      <!-- Button to submit the plant form -->
-      <base-button type="submit">Zapisz</base-button>
-      <!-- Button to submit and go to the distillation form -->
-      <base-button type="submit"
-        >Zapisz i przejdź do formularza procesu destylacji</base-button
-      >
-    </form>
-  </base-card>
+  <!-- Plant form -->
+  <form @submit.prevent="submitPlantForm" class="plant_form">
+    <!-- Title for the plant form -->
+    <h3 class="form_title">Informacje o surowcu</h3>
+    <!-- Plant identification component -->
+    <plant-identification :isFormValid="isFormValid"></plant-identification>
+    <!-- Plant origin component -->
+    <plant-origin :isFormValid="isFormValid"></plant-origin>
+    <!-- Plant data component -->
+    <plant-data :isFormValid="isFormValid"></plant-data>
+    <!-- Button to submit the plant form -->
+    <base-button type="submit">Zapisz</base-button>
+    <!-- Button to submit and go to the distillation form -->
+    <base-button type="submit">Zapisz i przejdź do formularza procesu destylacji</base-button>
+  </form>
+</base-card>
 </template>
 
 <script>
@@ -36,14 +34,14 @@ import { useMutation } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
 
 /**
- * @component PlantForm
+ * @component AddPlantPage
  * @description This component renders a plant form and handles sending plant data.
  * @see plantFormValidation
  * @see submitPlantForm
  */
 
 export default {
-  name: "PlantForm",
+  name: "AddPlantPage",
   components: { PlantIdentification, PlantOrigin, PlantData },
   setup() {
     // Vuex store instance
@@ -202,12 +200,7 @@ export default {
 </script>
 
 <style scoped>
-.title {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.plant_title {
+.form_title {
   margin-bottom: 30px;
 }
 

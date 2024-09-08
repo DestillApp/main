@@ -9,8 +9,9 @@ import store from "@/store/index.js";
 import MainPage from "./pages/MainPage.vue";
 
 // Lazy-loaded pages
-const AddPlant = () => import("./pages/plant/AddPlant.vue");
+const AddPlantPage = () => import("./pages/plant/AddPlantPage.vue");
 const AddDistillation = () => import("./pages/AddDistillation.vue");
+const EditPlantPage = () => import("./pages/plant/EditPlantPage.vue");
 const LoginPage = () => import("./pages/LoginPage.vue");
 const RegistrationPage = () => import("./pages/RegistrationPage.vue");
 const MyAccountPage = () => import("./pages/my-account/MyAccountPage.vue");
@@ -46,8 +47,15 @@ const router = createRouter({
     },
     {
       path: "/add-plant",
-      name: "AddPlant",
-      component: AddPlant,
+      name: "AddPlantPage",
+      component: AddPlantPage,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/edit-plant/:id",
+      name: "EditPlantPage",
+      component: EditPlantPage,
+      props: true,
       meta: { requiresAuth: true },
     },
     {

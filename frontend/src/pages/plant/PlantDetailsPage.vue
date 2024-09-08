@@ -29,7 +29,9 @@
         </div>
         <!-- Edit and delete buttons for the plant -->
         <div class="plant_buttons">
-          <button class="plant_button--edit">Edytuj</button>
+          <router-link :to="{ name: 'EditPlantPage', params: { id: plantId } }"
+            ><button class="plant_button--edit">Edytuj</button></router-link
+          >
           <button class="plant_button--delete" @click="openDeleteModal">
             Usuń
           </button>
@@ -91,8 +93,8 @@
         </div>
       </div>
       <!-- Button to navigate to the distillation form -->
-      <router-link to="/add-destillation" class="plant_distill"
-        ><base-button class="destill_button">Destyluj</base-button></router-link
+      <router-link to="/add-distillation" class="plant_distill"
+        ><base-button class="distill_button">Destyluj</base-button></router-link
       >
     </div>
   </div>
@@ -107,7 +109,7 @@ import PlantDeleteModal from "@/components/plant/PlantDeleteModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant.js";
-import { DELETE_PLANT } from "@/graphql/mutations/plant.js"
+import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 /**
  * @component PlantDetailsPage
@@ -209,6 +211,7 @@ export default {
       plantDetails,
       isModalOpen,
       isLoading,
+      plantId,
       openDeleteModal,
       closeDeleteModal,
       deletePlant,
@@ -297,7 +300,7 @@ export default {
   padding-block: 10px;
 }
 
-.destill_button:hover {
+.distill_button:hover {
   color: var(--secondary-color);
 }
 </style>
