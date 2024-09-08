@@ -44,7 +44,7 @@ export default {
    * @param {number} payload.value - The integer value to set.
    */
   setIntegerValue(context, { input, value }) {
-    context.commit("setIntegerNumber", { input, value });
+    context.commit("changeIntegerNumber", { input, value });
   },
 
   /**

@@ -10,7 +10,7 @@ import MainPage from "./pages/MainPage.vue";
 
 // Lazy-loaded pages
 const AddPlantPage = () => import("./pages/plant/AddPlantPage.vue");
-const AddDistillation = () => import("./pages/AddDistillation.vue");
+const AddDistillationPage = () => import("./pages/AddDistillationPage.vue");
 const EditPlantPage = () => import("./pages/plant/EditPlantPage.vue");
 const LoginPage = () => import("./pages/LoginPage.vue");
 const RegistrationPage = () => import("./pages/RegistrationPage.vue");
@@ -60,8 +60,8 @@ const router = createRouter({
     },
     {
       path: "/add-distillation",
-      name: "AddDistillation",
-      component: AddDistillation,
+      name: "AddDistillationPage",
+      component: AddDistillationPage,
       meta: { requiresAuth: true },
     },
     {
@@ -110,8 +110,6 @@ const router = createRouter({
 let authInitialized = false;
 
 router.beforeEach(async (to, from, next) => {
-  console.log("Navigation guard called");
-
   if (!authInitialized) {
     console.log("Initializing auth status");
     await store.dispatch("auth/fetchUserAuthenticationStatus");
@@ -123,7 +121,6 @@ router.beforeEach(async (to, from, next) => {
     const isAuthenticated = store.getters["auth/isAuthenticated"];
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     const isPublicRoute = to.matched.some((record) => record.meta.public);
-    console.log(isAuthenticated);
 
     if (requiresAuth && !isAuthenticated && !isPublicRoute) {
       next({

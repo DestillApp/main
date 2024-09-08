@@ -130,8 +130,8 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 export default {
   name: "PlantData",
   components: { BaseTextInput },
-  props: ["isFormValid"],
-  setup() {
+  props: ["isFormValid", "isResetting"],
+  setup(props) {
     // Options for plant state
     const states = reactive(["świeży", "podsuszony", "suchy"]);
     // Title of the radio inputs
@@ -168,67 +168,71 @@ export default {
     watch(
       () => plantState.value, // Watch the value of plantState
       (newValue, oldValue) => {
-        // If the old value is an empty string, update the plant state in the store
-        if (oldValue === "") {
-          store.dispatch("plant/setValue", {
-            input: "plantState",
-            value: newValue,
-          });
-        }
+        if (props.isResetting) {
+          return;
+        } else {
+          // If the old value is an empty string, update the plant state in the store
+          if (oldValue === "") {
+            store.dispatch("plant/setValue", {
+              input: "plantState",
+              value: newValue,
+            });
+          }
 
-        // If the new plant state is 'świeży'
-        if (newValue === "świeży") {
-          // Clear the drying time if the previous state was 'podsuszony'
-          if (oldValue === "podsuszony") {
+          // If the new plant state is 'świeży'
+          if (newValue === "świeży") {
+            // Clear the drying time if the previous state was 'podsuszony'
+            if (oldValue === "podsuszony") {
+              store.dispatch("plant/setValue", {
+                input: "dryingTime",
+                value: null,
+              });
+            }
+            // Clear the plant age if the previous state was 'suchy'
+            if (oldValue === "suchy") {
+              store.dispatch("plant/setValue", {
+                input: "plantAge",
+                value: null,
+              });
+            }
+            // Update the plant state in the store
             store.dispatch("plant/setValue", {
-              input: "dryingTime",
-              value: null,
+              input: "plantState",
+              value: newValue,
             });
           }
-          // Clear the plant age if the previous state was 'suchy'
-          if (oldValue === "suchy") {
-            store.dispatch("plant/setValue", {
-              input: "plantAge",
-              value: null,
-            });
-          }
-          // Update the plant state in the store
-          store.dispatch("plant/setValue", {
-            input: "plantState",
-            value: newValue,
-          });
-        }
 
-        // If the new plant state is 'podsuszony'
-        if (newValue === "podsuszony") {
-          // Clear the plant age if the previous state was 'suchy'
-          if (oldValue === "suchy") {
+          // If the new plant state is 'podsuszony'
+          if (newValue === "podsuszony") {
+            // Clear the plant age if the previous state was 'suchy'
+            if (oldValue === "suchy") {
+              store.dispatch("plant/setValue", {
+                input: "plantAge",
+                value: null,
+              });
+            }
+            // Update the plant state in the store
             store.dispatch("plant/setValue", {
-              input: "plantAge",
-              value: null,
+              input: "plantState",
+              value: newValue,
             });
           }
-          // Update the plant state in the store
-          store.dispatch("plant/setValue", {
-            input: "plantState",
-            value: newValue,
-          });
-        }
 
-        // If the new plant state is 'suchy'
-        if (newValue === "suchy") {
-          // Clear the drying time if the previous state was 'podsuszony'
-          if (oldValue === "podsuszony") {
+          // If the new plant state is 'suchy'
+          if (newValue === "suchy") {
+            // Clear the drying time if the previous state was 'podsuszony'
+            if (oldValue === "podsuszony") {
+              store.dispatch("plant/setValue", {
+                input: "dryingTime",
+                value: null,
+              });
+            }
+            // Update the plant state in the store
             store.dispatch("plant/setValue", {
-              input: "dryingTime",
-              value: null,
+              input: "plantState",
+              value: newValue,
             });
           }
-          // Update the plant state in the store
-          store.dispatch("plant/setValue", {
-            input: "plantState",
-            value: newValue,
-          });
         }
       }
     );

@@ -47,6 +47,7 @@
           :invalidInput="
             isFormValid === false && formData.harvestTemperature === null
           "
+          :storeName="storeName"
           @update:modelValue="setInteger"
           @set:keyboard="setKeyboardIntegerNumber"
           label="Temperatura podczas zbioru"
@@ -191,8 +192,8 @@ import { GET_COUNTRY_NAMES } from "@/graphql/queries/country.js";
 export default {
   name: "PlantOrigin",
   components: { BaseInputDatePicker, BaseTextInput, BaseAutocompleteInput },
-  props: ["isFormValid"],
-  setup() {
+  props: ["isFormValid", "isResetting"],
+  setup(props) {
     // Title of the radio inputs
     const title = ref("Pochodzenie surowca");
     // Options for plant origin
@@ -200,6 +201,9 @@ export default {
 
     // Vuex store
     const store = useStore();
+    // Name of the vuex store module
+    const storeName = "plant";
+
     // Computed properties to get form data from Vuex store
     const formData = computed(() => store.getters["plant/plantForm"]);
     const harvestRange = computed(() => store.getters["plant/harvestRange"]);
@@ -243,54 +247,62 @@ export default {
 
     // Watcher to handle changes in harvest range
     watch(harvestRange, (newValue) => {
-      store.dispatch("plant/setStartTime");
-      store.dispatch("plant/setEndTime");
-      store.dispatch("plant/setValue", {
-        input: "harvestRange",
-        value: newValue,
-      });
+      if (props.isResetting) {
+        return;
+      } else {
+        store.dispatch("plant/setStartTime");
+        store.dispatch("plant/setEndTime");
+        store.dispatch("plant/setValue", {
+          input: "harvestRange",
+          value: newValue,
+        });
+      }
     });
 
     // Watcher to handle changes in the plant origin
     watch(
       () => plantOrigin.value, // Watch the value of plantOrigin
       (newValue, oldValue) => {
-        store.dispatch("plant/setValue", {
-          input: "plantOrigin",
-          value: newValue,
-        });
+        if (props.isResetting) {
+          return;
+        } else {
+          store.dispatch("plant/setValue", {
+            input: "plantOrigin",
+            value: newValue,
+          });
 
-        // If the new plant origin is 'kupno'
-        if (newValue === "kupno") {
-          // Set data to initial values if the previous origin was 'zbiór'
-          if (oldValue === "zbiór") {
-            store.dispatch("plant/setValue", {
-              input: "harvestDate",
-              value: "",
-            });
-            store.dispatch("plant/setValue", {
-              input: "harvestTemperature",
-              value: null,
-            });
-            store.dispatch("plant/setValue", {
-              input: "harvestRange",
-              value: [600, 900],
-            });
+          // If the new plant origin is 'kupno'
+          if (newValue === "kupno") {
+            // Set data to initial values if the previous origin was 'zbiór'
+            if (oldValue === "zbiór") {
+              store.dispatch("plant/setValue", {
+                input: "harvestDate",
+                value: "",
+              });
+              store.dispatch("plant/setValue", {
+                input: "harvestTemperature",
+                value: null,
+              });
+              store.dispatch("plant/setValue", {
+                input: "harvestRange",
+                value: [600, 900],
+              });
+            }
           }
-        }
 
-        // If the new plant origin is 'zbiór'
-        if (newValue === "zbiór") {
-          // Set data to initial values if the previous origin was 'kupno'
-          if (oldValue === "kupno") {
-            store.dispatch("plant/setValue", {
-              input: "plantBuyDate",
-              value: "",
-            });
-            store.dispatch("plant/setValue", {
-              input: "plantProducer",
-              value: "",
-            });
+          // If the new plant origin is 'zbiór'
+          if (newValue === "zbiór") {
+            // Set data to initial values if the previous origin was 'kupno'
+            if (oldValue === "kupno") {
+              store.dispatch("plant/setValue", {
+                input: "plantBuyDate",
+                value: "",
+              });
+              store.dispatch("plant/setValue", {
+                input: "plantProducer",
+                value: "",
+              });
+            }
           }
         }
       }
@@ -349,6 +361,7 @@ export default {
     };
 
     return {
+      storeName,
       formData,
       plantOrigin,
       title,

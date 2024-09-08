@@ -17,14 +17,14 @@ export default {
   },
 
   /**
-   * Mutation to set an integer value in the distillation form.
-   * @function setIntegerNumber
+   * @function changeIntegerNumber
+   * @description Mutation to change a value to an integer value in the distillation form.
    * @param {Object} state - The current state object.
    * @param {Object} payload - Payload containing the input field name and its new integer value.
    * @param {string} payload.input - The name of the input field to be updated.
    * @param {number} payload.value - The new integer value for the input field.
    */
-  setIntegerNumber(state, { input, value }) {
+  changeIntegerNumber(state, { input, value }) {
     const integerNumber = parseInt(value);
     state.distillationForm[input] = integerNumber;
     localStorage.setItem(input, JSON.stringify(integerNumber));

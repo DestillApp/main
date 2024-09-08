@@ -45,7 +45,7 @@ export default {
    * @param {number} payload.value - The integer value to set.
    */
   setIntegerValue(context, { input, value }) {
-    context.commit("setIntegerNumber", { input, value });
+    context.commit("changeIntegerNumber", { input, value });
   },
 
   /**
@@ -77,5 +77,14 @@ export default {
    */
   setNumberFormat(context, { input, value }) {
     context.commit("changeNumberFormat", { input, value });
+  },
+
+  /**
+   * @function setPlantForm
+   * @description Sets the plantForm in the state and localStorage.
+   * @param {Object} context - The Vuex context.
+   */
+  setPlantForm(context) {
+    context.commit("resetPlantForm");
   },
 };

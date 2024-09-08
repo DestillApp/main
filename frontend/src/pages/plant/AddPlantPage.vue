@@ -1,35 +1,38 @@
 // plant api?????
 // documentation without helpers and ui
-
+// add code docs
+// change docs
 <template>
   <base-card>
-  <!-- Plant form -->
-  <form @submit.prevent="submitPlantForm" class="plant_form">
-    <!-- Title for the plant form -->
-    <h3 class="form_title">Informacje o surowcu</h3>
-    <!-- Plant identification component -->
-    <plant-identification :isFormValid="isFormValid"></plant-identification>
-    <!-- Plant origin component -->
-    <plant-origin :isFormValid="isFormValid"></plant-origin>
-    <!-- Plant data component -->
-    <plant-data :isFormValid="isFormValid"></plant-data>
-    <!-- Button to submit the plant form -->
-    <base-button type="submit">Zapisz</base-button>
-    <!-- Button to submit and go to the distillation form -->
-    <base-button type="submit">Zapisz i przejdź do formularza procesu destylacji</base-button>
-  </form>
-</base-card>
+    <!-- Plant form -->
+    <form @submit.prevent="savePlant" class="plant_form">
+      <!-- Title for the plant form -->
+      <h3 class="form_title">Informacje o surowcu</h3>
+      <!-- Plant identification component -->
+      <plant-identification :isFormValid="isFormValid"></plant-identification>
+      <!-- Plant origin component -->
+      <plant-origin :isFormValid="isFormValid" :isResetting="isResetting"></plant-origin>
+      <!-- Plant data component -->
+      <plant-data :isFormValid="isFormValid" :isResetting="isResetting"></plant-data>
+      <!-- Button to submit the plant form -->
+      <base-button type="submit">Zapisz</base-button>
+      <!-- Button to submit and go to the distillation form -->
+      <base-button @click="savePlantAndDestill">Zapisz i dodaj destylację</base-button>
+    </form>
+  </base-card>
 </template>
 
 <script>
 import PlantIdentification from "@/components/plant/form/PlantIdentification.vue";
 import PlantOrigin from "@/components/plant/form/PlantOrigin.vue";
 import PlantData from "@/components/plant/form/PlantData.vue";
+import { initialPlantForm } from "@/helpers/formsInitialState";
 
 import { CREATE_PLANT } from "@/graphql/mutations/plant.js";
 
 import { useStore } from "vuex";
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, nextTick } from "vue";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
 
@@ -52,6 +55,12 @@ export default {
 
     // Reactive reference to track form validity
     const isFormValid = ref(null);
+
+    //Reactive reference to track when component is resetting
+    const isResetting = ref(false);
+
+    // Router object for navigation
+    const router = useRouter();
 
     // Lifecycle hook to reset form validity on component mount
     onMounted(() => {
@@ -165,24 +174,12 @@ export default {
 
           // Send the GraphQL mutation to create a new plant
           const { data } = await createPlant({
-            input: {
-              plantName: plantFormData.plantName,
-              plantPart: plantFormData.plantPart,
-              plantOrigin: plantFormData.plantOrigin,
-              plantBuyDate: plantFormData.plantBuyDate,
-              plantProducer: plantFormData.plantProducer,
-              countryOfOrigin: plantFormData.countryOfOrigin,
-              harvestDate: plantFormData.harvestDate,
-              harvestTemperature: plantFormData.harvestTemperature,
-              harvestStartTime: plantFormData.harvestStartTime,
-              harvestEndTime: plantFormData.harvestEndTime,
-              plantWeight: plantFormData.plantWeight,
-              plantState: plantFormData.plantState,
-              dryingTime: plantFormData.dryingTime,
-              plantAge: plantFormData.plantAge,
-            },
+            input: plantFormData,
           });
           console.log("Created plant:", data.createPlant);
+
+          // store.dispatch('plant/setPlantForm');
+          // console.log(plantForm.value);
         } catch (error) {
           console.log("error", isFormValid.value);
           console.error("Error submitting form", error);
@@ -194,7 +191,55 @@ export default {
       }
     };
 
-    return { submitPlantForm, isFormValid };
+    const savePlant = async () => {
+      try {
+        await submitPlantForm();
+        if (!isFormValid.value) {
+          return;
+        } else {
+          router.push({ name: "PlantListPage", params: { page: 1 } });
+        }
+      } catch (error) {
+        return;
+      }
+    };
+
+    const savePlantAndDestill = async () => {
+      try {
+        await submitPlantForm();
+        if (!isFormValid.value) {
+          return;
+        } else {
+          router.push({ name: "AddDistillationPage" });
+        }
+      } catch (error) {
+        return;
+      }
+    };
+
+    // try to clean the vuex store and the local storage - problem with four keys
+    onBeforeRouteLeave(async(to, from, next) => {
+      if (to.path !== from.path) {
+        isResetting.value = true;
+  
+        // Dispatch Vuex action to reset the form in store
+        store.dispatch("plant/setPlantForm");
+
+        // Wait for the next tick to ensure state updates are complete
+        await nextTick();
+
+        console.log(plantForm.value);
+
+        // Removing plant form value from local storage by its key
+        for (const key in initialPlantForm) {
+          localStorage.removeItem(key);
+        }
+        isResetting.value = false;
+      }
+      next();
+    });
+
+    return { savePlant, savePlantAndDestill, isFormValid, isResetting };
   },
 };
 </script>
