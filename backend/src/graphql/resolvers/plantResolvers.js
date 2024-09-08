@@ -140,6 +140,46 @@ const plantResolver = {
       }
     },
 
+    // Update an existing plant
+    updatePlant: async (_, { id, plantInput }) => {
+      // Sanitizing the input data
+      const sanitizedData = {
+        plantName: DOMPurify.sanitize(plantInput.plantName),
+        plantPart: DOMPurify.sanitize(plantInput.plantPart),
+        plantOrigin: DOMPurify.sanitize(plantInput.plantOrigin),
+        plantBuyDate: DOMPurify.sanitize(plantInput.plantBuyDate),
+        plantProducer: DOMPurify.sanitize(plantInput.plantProducer),
+        countryOfOrigin: DOMPurify.sanitize(plantInput.countryOfOrigin),
+        harvestDate: DOMPurify.sanitize(plantInput.harvestDate),
+        harvestTemperature: plantInput.harvestTemperature
+          ? Number(DOMPurify.sanitize(plantInput.harvestTemperature))
+          : null,
+        harvestStartTime: DOMPurify.sanitize(plantInput.harvestStartTime),
+        harvestEndTime: DOMPurify.sanitize(plantInput.harvestEndTime),
+        plantWeight: plantInput.plantWeight
+          ? Number(DOMPurify.sanitize(plantInput.plantWeight))
+          : null,
+        plantState: DOMPurify.sanitize(plantInput.plantState),
+        dryingTime: plantInput.dryingTime
+          ? Number(DOMPurify.sanitize(plantInput.dryingTime))
+          : null,
+        plantAge: plantInput.plantAge
+          ? Number(DOMPurify.sanitize(plantInput.plantAge))
+          : null,
+      };
+      // Filtering out null or empty string values
+      const filteredData = filterPlantData(sanitizedData);
+
+      try {
+        const updatedPlant = await Plant.findByIdAndUpdate(id, filteredData, {
+          new: true,
+        });
+        return updatedPlant;
+      } catch (error) {
+        throw new Error("Plant not found");
+      }
+    },
+
     deletePlant: async (_, { id }) => {
       try {
         await Plant.findByIdAndDelete(id);
