@@ -66,6 +66,15 @@ export default {
     context.commit("changeEndTimeFormat");
   },
 
+  /**
+   * @function setHarvestRange
+   * @description Commits the harvest range change.
+   * @param {Object} context - The Vuex context.
+   */
+  setHarvestRange(context) {
+    context.commit("changeHarvestRange");
+  },
+
   //Functions used in plant data
   /**
    * @function setNumberFormat

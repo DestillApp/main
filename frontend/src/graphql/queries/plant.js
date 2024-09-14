@@ -14,10 +14,10 @@ export const GET_PLANTS = gql`
   }
 `;
 
-// GraphQL query to get plant details by ID
+// GraphQL query to get plant details by ID with formating date boolean
 export const GET_PLANT_BY_ID = gql`
-  query GetPlantById($id: ID!) {
-    getPlantById(id: $id) {
+  query GetPlantById($id: ID!, $formatDates: Boolean!) {
+    getPlantById(id: $id, formatDates: $formatDates) {
       _id
       plantName
       plantPart

@@ -1,4 +1,7 @@
-import { setTimeFromMinutesAmount } from "@/helpers/dateHelpers";
+import {
+  setTimeFromMinutesAmount,
+  getMinutesFromTime,
+} from "@/helpers/dateHelpers";
 import { initialPlantForm } from "@/helpers/formsInitialState";
 
 /**
@@ -54,6 +57,19 @@ export default {
     const endTime = setTimeFromMinutesAmount(state.plantForm.harvestRange[1]);
     state.plantForm.harvestEndTime = endTime;
     localStorage.setItem("harvestEndTime", JSON.stringify(endTime));
+  },
+
+  /**
+   * @function changeHarvestRange
+   * @description Mutation to change the harvest range by formating the harvestStartTime and harvestEndTime.
+   * @param {Object} state - The current state object.
+   */
+  changeHarvestRange(state) {
+    const startMinutes = getMinutesFromTime(state.plantForm.harvestStartTime);
+    const endMinutes = getMinutesFromTime(state.plantForm.harvestEndTime);
+    const range = [startMinutes, endMinutes];
+    state.plantForm.harvestRange = range;
+    localStorage.setItem("harvestRange", JSON.stringify(range));
   },
 
   //Functions used in plant data

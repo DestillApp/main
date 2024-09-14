@@ -29,7 +29,7 @@
         </div>
         <!-- Edit and delete buttons for the plant -->
         <div class="plant_buttons">
-          <router-link :to="{ name: 'EditPlantPage', params: { id: plantId } }"
+          <router-link :to="{ name: 'EditPlantPage', params: { page: page, id: plantId } }"
             ><button class="plant_button--edit">Edytuj</button></router-link
           >
           <button class="plant_button--delete" @click="openDeleteModal">
@@ -131,8 +131,9 @@ export default {
     // Router object for navigation
     const router = useRouter();
 
-    // Reactive reference to store the plant ID from the route
+    // Reactive reference to store the plant ID and plant page number from the route
     const plantId = ref(route.params.id);
+    const page = ref(Number(route.params.page));
     // Reactive reference to store fetched plant details
     const plantDetails = ref(null);
     // Reactive reference to track if the delete modal is open
@@ -151,7 +152,7 @@ export default {
         isLoading.value = true;
         const { data } = await apolloClient.query({
           query: GET_PLANT_BY_ID,
-          variables: { id: plantId.value },
+          variables: { id: plantId.value, formatDates: true },
         });
         plantDetails.value = data.getPlantById;
         console.log(plantDetails.value, plantDetails.value.plantName);
@@ -212,6 +213,7 @@ export default {
       isModalOpen,
       isLoading,
       plantId,
+      page,
       openDeleteModal,
       closeDeleteModal,
       deletePlant,

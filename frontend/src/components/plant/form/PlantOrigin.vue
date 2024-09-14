@@ -1,3 +1,4 @@
+//autocomplete inupt - add selecting country after click on it
 <template>
   <!-- Container for the plant orgin form -->
   <div class="plant_origin">

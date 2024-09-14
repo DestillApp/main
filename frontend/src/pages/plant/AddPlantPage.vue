@@ -1,6 +1,5 @@
 // plant api?????
 // documentation without helpers and ui
-// add code docs
 // change docs
 <template>
   <base-card>
@@ -17,7 +16,7 @@
       <!-- Button to submit the plant form -->
       <base-button type="submit">Zapisz</base-button>
       <!-- Button to submit and go to the distillation form -->
-      <base-button @click="savePlantAndDestill">Zapisz i dodaj destylację</base-button>
+      <base-button @click="savePlantAndDistill">Zapisz i dodaj destylację</base-button>
     </form>
   </base-card>
 </template>
@@ -27,6 +26,7 @@ import PlantIdentification from "@/components/plant/form/PlantIdentification.vue
 import PlantOrigin from "@/components/plant/form/PlantOrigin.vue";
 import PlantData from "@/components/plant/form/PlantData.vue";
 import { initialPlantForm } from "@/helpers/formsInitialState";
+import { plantFormValidation } from "@/helpers/formsValidation";
 
 import { CREATE_PLANT } from "@/graphql/mutations/plant.js";
 
@@ -41,6 +41,8 @@ import DOMPurify from "dompurify";
  * @description This component renders a plant form and handles sending plant data.
  * @see plantFormValidation
  * @see submitPlantForm
+ * @see savePlant
+ * @see savePlantAndDistill
  */
 
 export default {
@@ -70,65 +72,6 @@ export default {
     // Using GraphQL mutation for creating a new plant
     const { mutate: createPlant } = useMutation(CREATE_PLANT);
 
-    /**
-     * @async
-     * @function plantFormValidation
-     * @description Function to validate the plant form data
-     */
-    const plantFormValidation = async () => {
-      const form = plantForm.value;
-      console.log("form", form.plantOrigin);
-
-      // Initial form validation for required fields
-      if (
-        form.plantName === "" ||
-        form.plantPart === "" ||
-        form.plantOrigin === "" ||
-        form.plantWeight === null ||
-        form.plantState === ""
-      ) {
-        isFormValid.value = false;
-      } else {
-        isFormValid.value = true;
-      }
-
-      // Additional validation for "kupno" origin
-      if (form.plantOrigin === "kupno") {
-        if (
-          form.plantBuyDate === "" ||
-          form.plantProducer === "" ||
-          form.countryOfOrigin === ""
-        ) {
-          isFormValid.value = false;
-        }
-      }
-
-      // Additional validation for "zbiór" origin
-      if (form.plantOrigin === "zbiór") {
-        if (
-          form.harvestDate === "" ||
-          form.harvestTemperature === null ||
-          form.harvestStartTime === "" ||
-          form.harvestEndTime === ""
-        ) {
-          isFormValid.value = false;
-        }
-      }
-
-      // Additional validation for "podsuszony" state
-      if (form.plantState === "podsuszony") {
-        if (form.dryingTime === null) {
-          isFormValid.value = false;
-        }
-      }
-
-      // Additional validation for "suchy" state
-      if (form.plantState === "suchy" && form.plantOrigin === "kupno") {
-        if (form.plantAge === null) {
-          isFormValid.value = false;
-        }
-      }
-    };
 
     /**
      * @async
@@ -139,7 +82,7 @@ export default {
      */
     const submitPlantForm = async () => {
       // Validate the form
-      await plantFormValidation();
+      isFormValid.value = plantFormValidation(plantForm.value);
 
       if (isFormValid.value) {
         try {
@@ -177,9 +120,6 @@ export default {
             input: plantFormData,
           });
           console.log("Created plant:", data.createPlant);
-
-          // store.dispatch('plant/setPlantForm');
-          // console.log(plantForm.value);
         } catch (error) {
           console.log("error", isFormValid.value);
           console.error("Error submitting form", error);
@@ -191,12 +131,18 @@ export default {
       }
     };
 
+    /**
+ * @function savePlant
+ * @description Function to save creating plant and navigate to the plant list.
+ */
     const savePlant = async () => {
       try {
+        // Submit the plant form
         await submitPlantForm();
         if (!isFormValid.value) {
           return;
         } else {
+          // If valid, navigate to the plant list page
           router.push({ name: "PlantListPage", params: { page: 1 } });
         }
       } catch (error) {
@@ -204,12 +150,18 @@ export default {
       }
     };
 
-    const savePlantAndDestill = async () => {
+    /**
+* @function savePlantAndDistill
+* @description Function to save creating plant and navigate to the add distillation page.
+*/
+    const savePlantAndDistill = async () => {
       try {
+        // Submit the plant form
         await submitPlantForm();
         if (!isFormValid.value) {
           return;
         } else {
+          // If valid, navigate to the add distillation page
           router.push({ name: "AddDistillationPage" });
         }
       } catch (error) {
@@ -217,19 +169,14 @@ export default {
       }
     };
 
-    // try to clean the vuex store and the local storage - problem with four keys
+    //Navigation guard that reset the form data in vuex state and local storage before navigating away from the route.
     onBeforeRouteLeave(async(to, from, next) => {
       if (to.path !== from.path) {
         isResetting.value = true;
-  
         // Dispatch Vuex action to reset the form in store
         store.dispatch("plant/setPlantForm");
-
         // Wait for the next tick to ensure state updates are complete
         await nextTick();
-
-        console.log(plantForm.value);
-
         // Removing plant form value from local storage by its key
         for (const key in initialPlantForm) {
           localStorage.removeItem(key);
@@ -239,7 +186,7 @@ export default {
       next();
     });
 
-    return { savePlant, savePlantAndDestill, isFormValid, isResetting };
+    return { savePlant, savePlantAndDistill, isFormValid, isResetting };
   },
 };
 </script>

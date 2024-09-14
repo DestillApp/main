@@ -19,7 +19,24 @@ const store = createStore({
     auth: authModule,
     distillation: distillationModule,
   },
-  state() {},
+  state() {
+    return {
+      comingFromRoute: false,
+    };
+  },
+  mutations: {
+    changeComingFromRoute(state, value) {
+      state.comingFromRoute = value;
+    },
+  },
+  actions: {
+    setComingFromRoute(context, value) {
+      context.commit("changeComingFromRoute", value);
+    },
+  },
+  getters: {
+    comingFromRoute: (state) => state.comingFromRoute,
+  },
 });
 
 export default store;

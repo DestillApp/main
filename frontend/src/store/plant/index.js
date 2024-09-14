@@ -32,9 +32,6 @@ export default {
         plantState: "",
         dryingTime: null,
         plantAge: null,
-        isPlantSoaked: false,
-        soakingTime: null,
-        weightAfterSoaking: null,
       },
     };
   },

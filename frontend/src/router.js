@@ -52,7 +52,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/edit-plant/:id",
+      path: "/edit-plant/:page/:id",
       name: "EditPlantPage",
       component: EditPlantPage,
       props: true,
@@ -84,7 +84,7 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: "plant-details/:id",
+          path: "plant-details/:page/:id",
           name: "PlantDetailsPage",
           component: PlantDetailsPage,
           props: true,

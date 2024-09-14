@@ -9,7 +9,6 @@
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
-      class="spinner"
       color="var(--secondary-color)"
       :size="60"
       :width="6"
@@ -37,7 +36,7 @@
         </div>
         <div class="plant_buttons">
           <router-link
-            :to="{ name: 'PlantDetailsPage', params: { id: plant._id } }"
+            :to="{ name: 'PlantDetailsPage', params: { page: page, id: plant._id } }"
             class="plant_button--details"
           >
             <button>Zobacz szczegóły</button>
