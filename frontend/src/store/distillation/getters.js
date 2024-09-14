@@ -14,6 +14,16 @@ export default {
   },
 
   /**
+   * @function isPlantShredded
+   * @description Gets the shredded status of the plant from the plant form data.
+   * @param {Object} state - The Vuex state.
+   * @returns {boolean} Whether the plant is shredded.
+   */
+  isPlantShredded(state) {
+    return state.distillationForm.isPlantShredded;
+  },
+
+  /**
    * @function isPlantSoaked
    * @description Gets the soaked status of the plant from the plant form data.
    * @param {Object} state - The Vuex state.

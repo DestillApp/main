@@ -5,9 +5,11 @@ export const CREATE_DISTILLATION = gql`
   mutation createDistillation($input: DistillationInput!) {
     createDistillation(distillationInput: $input) {
       _id
+      weightForDistillation
       isPlantSoaked
       soakingTime
       weightAfterSoaking
+      isPlantShredded
     }
   }
 `;

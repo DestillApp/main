@@ -57,6 +57,11 @@ export default {
       const form = distillationForm.value;
       console.log("form", form);
 
+      if (form.weightForDistillation === null) {
+        isFormValid.value = false;
+      } else {
+        isFormValid.value = true;
+      }
       // Additional validation for soaked plants
       if (form.isPlantSoaked) {
         if (form.soakingTime === null || form.weightAfterSoaking === null) {
@@ -85,6 +90,9 @@ export default {
           const form = distillationForm.value;
 
           const distillationFormData = {
+            weightForDistillation: form.weightForDistillation
+              ? Number(DOMPurify.sanitize(form.weightForDistillation))
+              : null,
             isPlantSoaked: Boolean(DOMPurify.sanitize(form.isPlantSoaked)),
             soakingTime: form.soakingTime
               ? Number(DOMPurify.sanitize(form.soakingTime))
@@ -92,13 +100,16 @@ export default {
             weightAfterSoaking: form.weightAfterSoaking
               ? Number(DOMPurify.sanitize(form.weightAfterSoaking))
               : null,
+            isPlantShredded: Boolean(DOMPurify.sanitize(form.isPlantShredded)),
           }
 
           const { data } = await createDistillation({
             input: {
+              weightForDistillation: distillationFormData.weightForDistillation,
               isPlantSoaked: distillationFormData.isPlantSoaked,
               soakingTime: distillationFormData.soakingTime,
               weightAfterSoaking: distillationFormData.weightAfterSoaking,
+              isPlantShredded: distillationFormData.isPlantShredded,
             }
           });
           console.log("Created distillation:", data.createDistillation);

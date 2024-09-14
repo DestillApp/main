@@ -17,9 +17,11 @@ export default {
   state() {
     return {
       distillationForm: {
+        weightForDistillation: null,
         isPlantSoaked: false,
         soakingTime: null,
         weightAfterSoaking: null,
+        isPlantShredded: false,
       },
     };
   },
