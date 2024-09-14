@@ -67,7 +67,7 @@ const plantResolver = {
       }
     },
 
-    getPlantById: async (_, { id }) => {
+    getPlantById: async (_, { id, formatDates = true }) => {
       try {
         const plant = await Plant.findById(id);
         if (!plant) {
@@ -75,11 +75,13 @@ const plantResolver = {
         }
 
         // Format specific date fields
-        if (plant.plantBuyDate) {
-          plant.plantBuyDate = formatDate(plant.plantBuyDate);
-        }
-        if (plant.harvestDate) {
-          plant.harvestDate = formatDate(plant.harvestDate);
+        if (formatDates) {
+          if (plant.plantBuyDate) {
+            plant.plantBuyDate = formatDate(plant.plantBuyDate);
+          }
+          if (plant.harvestDate) {
+            plant.harvestDate = formatDate(plant.harvestDate);
+          }
         }
 
         console.log("buy Date:", plant.plantBuyDate);

@@ -44,7 +44,7 @@ const plantSchema = gql`
 
   type Query {
     getPlants(fields: [String]!): [Plant]
-    getPlantById(id: ID!): Plant
+    getPlantById(id: ID!, formatDates: Boolean!): Plant
   }
 
   type Mutation {
