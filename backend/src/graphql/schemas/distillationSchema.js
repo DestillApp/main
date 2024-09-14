@@ -9,15 +9,19 @@ const { gql } = require("apollo-server-express");
 const distillationSchema = gql`
   type Distillation {
     _id: ID!
+    weightForDistillation: Float!
     isPlantSoaked: Boolean!
     soakingTime: Int
     weightAfterSoaking: Float
+    isPlantShredded: Boolean!
   }
 
   input DistillationInput {
+    weightForDistillation: Float!
     isPlantSoaked: Boolean!
     soakingTime: Int
     weightAfterSoaking: Float
+    isPlantShredded: Boolean!
   }
 
   type Mutation {

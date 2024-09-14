@@ -35,6 +35,9 @@ const distillationResolvers = {
     createDistillation: async (_, { distillationInput }) => {
       // Sanitizing the input data
       const sanitizedData = {
+        weightForDistillation: distillationInput.weightForDistillation
+          ? Number(DOMPurify.sanitize(distillationInput.weightForDistillation))
+          : null,
         isPlantSoaked: Boolean(
           DOMPurify.sanitize(distillationInput.isPlantSoaked)
         ),
@@ -44,6 +47,9 @@ const distillationResolvers = {
         weightAfterSoaking: distillationInput.weightAfterSoaking
           ? Number(DOMPurify.sanitize(distillationInput.weightAfterSoaking))
           : null,
+        isPlantShredded: Boolean(
+          DOMPurify.sanitize(distillationInput.isPlantShredded)
+        ),
       };
       // Filtering out null or empty string values
       const filteredData = filterDistillationData(sanitizedData);
