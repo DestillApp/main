@@ -1,4 +1,3 @@
-//add clicking option in the list item
 <template>
   <!-- Container for the input field -->
   <div class="input-wrap">
@@ -19,12 +18,18 @@
           :placeholder="placeholder"
           @input="updateValue"
           v-bind="$attrs"
+          @blur="handleBlur"
         />
         <!-- Slot for optional unit display -->
         <slot name="unit"></slot>
       </div>
       <ul v-if="results.length && modelValue !== ''" class="list">
-        <li v-for="result in results" :key="result.id">
+        <li
+          class="list_item"
+          @mousedown="chooseItem"
+          v-for="result in results"
+          :key="result.id"
+        >
           {{ result }}
         </li>
       </ul>
@@ -37,6 +42,7 @@
 </template>
 
 <script>
+import { ref } from "vue";
 
 /**
  * @component BaseTextInput
@@ -49,7 +55,11 @@
  * @props {string} classType - The class type for conditional styling (e.g., "number" or "time").
  * @props {boolean} invalidInput - Flag to indicate if the input is invalid.
  * @emits update:modelValue - Emitted when the input value changes.
+ * @emits choose:item - Emitted when the user click on the list item
+ * @emits update:onBlur - Emitted when the input loose its focus and disableBlur is false
  * @see updateValue
+ * @see chooseItem
+ * @see handleBlur
  */
 export default {
   props: [
@@ -60,21 +70,52 @@ export default {
     "placeholder",
     "classType",
     "invalidInput",
-    "results"
+    "results",
   ],
-
+  emits: ["update:modelValue", "choose:item", "update:onBlur"],
   setup(props, context) {
+    const disableBlur = ref(false);
 
     /**
-     * Updates the model value when input changes
      * @function updateValue
+     * @description Updates the model value when input changes
+     * @returns {void}
      */
     const updateValue = (e) => {
       context.emit("update:modelValue", e.target.value, props.id);
     };
 
+    /**
+     * @function chooseItem
+     * @description Updates the model value after click on the list item. It temporarily disables the blur event to prevent unintended triggers when the user clicks on an item. After emitting the chosen item, blur is re-enabled after a short delay.
+     * @param {Event} e - The click event triggered when the user selects an item from the list.
+     * @emits choose:item - Emits the selected item value and id to the parent component.
+     * @returns {void}
+     */
+    const chooseItem = (e) => {
+      disableBlur.value = true;
+      context.emit("choose:item", e.target.textContent, props.id);
+      setTimeout(() => {
+        disableBlur.value = false; // Re-enable blur after a short delay
+      }, 500);
+    };
+
+    /**
+     * @function handleBlur
+     * @description Handles the blur event for the input field. It checks whether the blur event is disabled (when selecting an item). If blur is not disabled, it emits the onBlur event to the parent component.
+     * @emits update:onBlur - Emits the blur event to notify the parent component that the input has lost focus.
+     * @returns {void}
+     */
+    const handleBlur = () => {
+      if (!disableBlur.value) {
+        context.emit("update:onBlur");
+      }
+    };
+
     return {
       updateValue,
+      chooseItem,
+      handleBlur,
     };
   },
 };
@@ -151,5 +192,9 @@ export default {
   border: 2px var(--secondary-color) solid;
   padding-inline: 20px;
   padding-block: 10px;
+}
+
+.list_item {
+  cursor: pointer;
 }
 </style>

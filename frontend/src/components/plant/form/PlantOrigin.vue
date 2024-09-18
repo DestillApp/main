@@ -1,4 +1,4 @@
-//autocomplete inupt - add selecting country after click on it
+// update arch docs
 <template>
   <!-- Container for the plant orgin form -->
   <div class="plant_origin">
@@ -143,8 +143,9 @@
           </template>
         </base-text-input>
         <!-- Autocomplete input for the country of origin -->
+        <!-- @send:value="setSearchQuery" -->
         <base-autocomplete-input
-          v-model="formData.countryOfOrigin"
+          v-model="countryName"
           class="buy_country"
           label="Kraj pochodzenia"
           id="countryOfOrigin"
@@ -152,8 +153,9 @@
           :invalidInput="
             isFormValid === false && formData.countryOfOrigin === ''
           "
-          @update:modelValue="setValue"
-          @input="onInput"
+          @update:modelValue="onInput"
+          @choose:item="setCountry"
+          @update:onBlur="onBlur"
         >
           <template v-slot:message>
             <span
@@ -195,15 +197,23 @@ export default {
   components: { BaseInputDatePicker, BaseTextInput, BaseAutocompleteInput },
   props: ["isFormValid", "isResetting"],
   setup(props) {
-    // Title of the radio inputs
-    const title = ref("Pochodzenie surowca");
-    // Options for plant origin
-    const origins = reactive(["zbiór", "kupno"]);
+    const { resolveClient } = useApolloClient();
+    const apolloClient = resolveClient();
 
     // Vuex store
     const store = useStore();
     // Name of the vuex store module
     const storeName = "plant";
+
+    // Title of the radio inputs
+    const title = ref("Pochodzenie surowca");
+    // Options for plant origin
+    const origins = reactive(["zbiór", "kupno"]);
+    //Reactive references related to fetching country
+    const countryNames = ref([]);
+    const searchQuery = ref("");
+    const countryName = ref("");
+    const timeout = ref(null);
 
     // Computed properties to get form data from Vuex store
     const formData = computed(() => store.getters["plant/plantForm"]);
@@ -215,10 +225,11 @@ export default {
       store.dispatch("plant/fetchLocalStorageData", "plantOrigin");
       store.dispatch("plant/fetchLocalStorageData", "plantBuyDate");
       store.dispatch("plant/fetchLocalStorageData", "plantProducer");
-      store.dispatch("plant/fetchLocalStorageData", "countryOfOrigin");
       store.dispatch("plant/fetchLocalStorageData", "harvestDate");
       store.dispatch("plant/fetchLocalStorageData", "harvestTemperature");
       store.dispatch("plant/fetchLocalStorageData", "harvestRange");
+      store.dispatch("plant/fetchLocalStorageData", "countryOfOrigin");
+      countryName.value = formData.value.countryOfOrigin;
     });
 
     /**
@@ -309,11 +320,12 @@ export default {
       }
     );
 
-    const countryNames = ref([]);
-    const searchQuery = ref("");
-    const timeout = ref(null);
-    const { resolveClient } = useApolloClient();
-    const apolloClient = resolveClient();
+    const setCountry = (currentValue, input) => {
+      setValue(currentValue, input);
+      searchQuery.value = "";
+      countryName.value = currentValue;
+      countryNames.value = [];
+    };
 
     /**
      * Async function to fetch country names based on user input for the autocomplete component.
@@ -329,7 +341,7 @@ export default {
           query: GET_COUNTRY_NAMES,
           variables: { name },
         });
-        countryNames.value = data.getCountryNames;
+        countryNames.value = data.getCountryNames.slice(0, 10);
         console.log("countryNames", countryNames.value);
       } catch (error) {
         console.error("Failed to get country names:", error);
@@ -345,9 +357,10 @@ export default {
      * @param {Event} e - The input event triggered by user interaction.
      * @returns {void}
      */
-    const onInput = (e) => {
-      searchQuery.value = e.target.value;
-      console.log(searchQuery.value);
+    const onInput = (value, input) => {
+      setValue("", input);
+      searchQuery.value = value;
+      countryName.value = searchQuery.value;
       if (timeout.value) {
         clearTimeout(timeout.value);
       }
@@ -361,6 +374,19 @@ export default {
       }, 500);
     };
 
+    /**
+     * @function onBlur
+     * @description Handles the blur event for the country input field. When the input field loses focus, it checks whether the user has selected a country. If no country is selected, it clears the country list and resets the search query and country name.
+     * @returns {void}
+     */
+    const onBlur = () => {
+      if (formData.value.countryOfOrigin === "") {
+        countryNames.value = [];
+        searchQuery.value = "";
+        countryName.value = "";
+      }
+    };
+
     return {
       storeName,
       formData,
@@ -371,8 +397,11 @@ export default {
       setInteger,
       setKeyboardIntegerNumber,
       storeDate,
+      setCountry,
       onInput,
+      onBlur,
       countryNames,
+      countryName,
     };
   },
 };
