@@ -43,7 +43,7 @@ const plantSchema = gql`
   }
 
   type Query {
-    getPlants(fields: [String]!): [Plant]
+    getPlants(fields: [String]!, name: String): [Plant]
     getPlantById(id: ID!, formatDates: Boolean!): Plant
   }
 

@@ -36,15 +36,24 @@ const plantResolver = {
      * @description Fetches plants from the database.
      * @returns {Promise<Array>} Array of plants.
      */
-    getPlants: async (_, { fields }) => {
+    getPlants: async (_, { fields, name }) => {
       try {
         // Build a projection object based on the fields argument
         const projection = {};
         fields.forEach((field) => {
           projection[field] = 1;
         });
+
+        // Build a query object for filtering
+        const filter = {};
+        console.log("name", name);
+        // If a name is provided, add it to the filter
+        if (name) {
+          filter.plantName = { $regex: new RegExp(name, "i") }; // Case-insensitive search
+        }
+
         // Fetch plants with the specified fields from database
-        const plants = await Plant.find({}, projection);
+        const plants = await Plant.find(filter, projection);
 
         // Format date fields before returning the result
         return plants.map((plant) => {
