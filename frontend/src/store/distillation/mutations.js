@@ -17,6 +17,19 @@ export default {
   },
 
   /**
+   * Mutation to change the value of a field in the plant form choosedPlant.
+   * @function changeValue
+   * @param {Object} state - The current state object.
+   * @param {Object} payload - Payload containing the input field name and its new value.
+   * @param {string} payload.key - The name of the key in the choosedPlant object to be updated.
+   * @param {any} payload.value - The new value for the key field.
+   */
+  changeChoosedPlant(state, { key, value }) {
+    state.distillationForm.choosedPlant[key] = value;
+    localStorage.setItem(key, JSON.stringify(value));
+  },
+
+  /**
    * @function changeIntegerNumber
    * @description Mutation to change a value to an integer value in the distillation form.
    * @param {Object} state - The current state object.

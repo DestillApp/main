@@ -1,3 +1,4 @@
+
 <template>
   <!-- Container for the input field -->
   <div class="input-wrap">
@@ -7,30 +8,29 @@
     <div class="container">
       <div class="input_container">
         <!-- Input field -->
-        <input
-          class="input"
-          :class="{
+        <input class="input" :class="{
             input_invalid: invalidInput,
-          }"
-          :id="id"
-          :value="modelValue"
-          :disabled="disabled"
-          :placeholder="placeholder"
-          @input="updateValue"
-          v-bind="$attrs"
-          @blur="handleBlur"
-        />
+          }" :id="id" :value="modelValue" :disabled="disabled" :placeholder="placeholder" @input="updateValue"
+          v-bind="$attrs" @blur="handleBlur" />
         <!-- Slot for optional unit display -->
         <slot name="unit"></slot>
       </div>
-      <ul v-if="results.length && modelValue !== ''" class="list">
-        <li
-          class="list_item"
-          @mousedown="chooseItem"
-          v-for="result in results"
-          :key="result.id"
-        >
+      <ul v-if="results.length && modelValue !== '' && id === 'countryOfOrigin'" class="list">
+        <li class="list_item" @mousedown="() => chooseItem(result)" v-for="result in results" :key="result.id">
           {{ result }}
+        </li>
+      </ul>
+      <ul v-if="results.length && modelValue !== '' && id === 'choosedPlant'" class="list">
+        <li class="list_item" @mousedown="() => chooseItem(result)" v-for="result in results" :key="result._id">
+          <div class="plant_item">
+            <div class="plant_identification">
+              <span>{{ result.plantName }}</span>
+              <span class="plant_small">({{ result.plantPart }})</span>
+            </div>
+            <div class="plant_small" v-if="result.plantBuyDate">kupno: <span>{{ result.plantBuyDate }}</span></div>
+            <div class="plant_small" v-if="result.harvestDate">zbiór: <span>{{ result.harvestDate }}</span></div>
+            <div class="plant_small">na stanie: <span>{{ result.plantWeight }} kg</span></div>
+          </div>
         </li>
       </ul>
     </div>
@@ -92,9 +92,9 @@ export default {
      * @emits choose:item - Emits the selected item value and id to the parent component.
      * @returns {void}
      */
-    const chooseItem = (e) => {
+    const chooseItem = (result) => {
       disableBlur.value = true;
-      context.emit("choose:item", e.target.textContent, props.id);
+      context.emit("choose:item", result, props.id);
       setTimeout(() => {
         disableBlur.value = false; // Re-enable blur after a short delay
       }, 500);
@@ -186,6 +186,8 @@ export default {
 
 .list {
   position: absolute;
+  background-color: white;
+  z-index: 10;
   top: 31px;
   width: 100%;
   border-radius: var(--input-border-radius);
@@ -197,4 +199,22 @@ export default {
 .list_item {
   cursor: pointer;
 }
+
+.plant_item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plant_identification {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.plant_small {
+  font-size: 12px;
+}
+
 </style>

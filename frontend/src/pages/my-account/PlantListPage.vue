@@ -135,7 +135,7 @@ export default {
      * @description Fetch the list of plants from the GraphQL server.
      * @returns {Promise<void>}
      */
-    const fetchPlantList = async () => {
+    const fetchPlantList = async (name = null) => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -151,6 +151,7 @@ export default {
               "_id",
             ],
           },
+          name: name
         });
         plantsAmount.value = data.getPlants.length;
 

@@ -143,16 +143,12 @@
           </template>
         </base-text-input>
         <!-- Autocomplete input for the country of origin -->
-        <!-- @send:value="setSearchQuery" -->
         <base-autocomplete-input
           v-model="countryName"
           class="buy_country"
           label="Kraj pochodzenia"
           id="countryOfOrigin"
           :results="countryNames"
-          :invalidInput="
-            isFormValid === false && formData.countryOfOrigin === ''
-          "
           @update:modelValue="onInput"
           @choose:item="setCountry"
           @update:onBlur="onBlur"
@@ -351,7 +347,7 @@ export default {
 
     /**
      * Handles the input event for the search or autocomplete component.
-     * Updates the search query and manages the debounce timer to limit the frequency of fetch requests.
+     * Updates the search query and manages the timer to limit the frequency of fetch requests.
      *
      * @function onInput
      * @param {Event} e - The input event triggered by user interaction.

@@ -9,13 +9,18 @@ export default {
    * @param {Object} context - The Vuex context.
    * @param {string} key - The key to fetch from local storage.
    */
-  fetchLocalStorageData(context, key) {
+  fetchLocalStorageData(context, { key, isPlant }) {
     try {
       const value = JSON.parse(localStorage.getItem(key));
       if (value === null) {
         return;
       } else {
-        context.commit("changeValue", { input: key, value });
+        if (!isPlant) {
+          context.commit("changeValue", { input: key, value });
+        }
+        if (isPlant) {
+          context.commit("changeChoosedPlant", { key: key, value });
+        }
       }
     } catch (error) {
       console.log("error", error);
@@ -33,6 +38,18 @@ export default {
    */
   setValue(context, { input, value }) {
     context.commit("changeValue", { input, value });
+  },
+
+  /**
+   * @function setChoosedPlant
+   * @description Sets a value in the state.
+   * @param {Object} context - The Vuex context.
+   * @param {Object} payload - The payload containing the input and value.
+   * @param {string} payload.key - The input field to set.
+   * @param {any} payload.value - The value to set.
+   */
+  setChoosedPlant(context, { key, value }) {
+    context.commit("changeChoosedPlant", { key, value });
   },
 
   /**

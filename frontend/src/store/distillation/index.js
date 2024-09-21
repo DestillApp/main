@@ -17,6 +17,14 @@ export default {
   state() {
     return {
       distillationForm: {
+        choosedPlant: {
+          id: null,
+          name: "",
+          part: "",
+          availableWeight: null,
+          harvestDate: "",
+          buyDate: "",
+        },
         weightForDistillation: null,
         isPlantSoaked: false,
         soakingTime: null,
