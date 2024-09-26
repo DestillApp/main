@@ -23,7 +23,7 @@ import BaseModal from "./ui/BaseModal.vue";
 // Apollo for graphql
 // HTTP connection to the API
 const httpLink = createHttpLink({
-  uri: "http://localhost:3000/graphql",
+  uri: "http://backend:3000/graphql",
   credentials: "include",
 });
 

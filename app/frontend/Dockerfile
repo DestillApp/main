@@ -13,9 +13,15 @@ RUN npm install
 # Copy the rest of the application code to the working directory
 COPY . .
 
-# Expose port 3000 for development
-EXPOSE 3000 8080
+# Build the Vue.js application for production
+RUN npm run build
 
-# Run the application in development mode
-CMD ["npm", "run", "serve"]
+# Install the serve package to serve static files
+RUN npm install -g serve
+
+# Expose port 80 for serving the app
+EXPOSE 80 8080
+
+# Run the application in production mode
+CMD ["serve", "-s", "dist"]
 

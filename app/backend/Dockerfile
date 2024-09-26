@@ -8,13 +8,14 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install && npm install -g nodemon
 
 # Copy the rest of the application code
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 3000 27017 8080
+EXPOSE 3000
 
 # Start the backend application
 CMD ["npm", "start"]
+

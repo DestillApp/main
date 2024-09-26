@@ -98,7 +98,7 @@ app.get("/my-account/my-data", authenticate, (req, res) => {
 
 // Connecting to MongoDB database
 mongoose
-  .connect("mongodb://127.0.0.1:27017/destillit") // MongoDB connection string
+  .connect("mongodb://mongodb:27017/destillit") // MongoDB connection string
   .then((result) => {
     // If connection is successful
     // Starting the Apollo Server
