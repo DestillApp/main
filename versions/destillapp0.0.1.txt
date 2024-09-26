@@ -1,0 +1,10 @@
+In v0.0.1 application is contenerized, services are communicating with API and API with DB.
+
+However this does not mean application work as intended. On frontend, only first page is displayed
+(poorly) and login button does nothing due to "Firefox can’t establish a connection to the server at ws://172.20.0.2:8080/ws."
+As for the backend "Cannot perform GET /" or something like that.
+This is the case when accessed from the outside of the network, within Tailnet.
+
+For the next version the plan is to implement Nginx reverse proxy to allow non problematic communication between services. 
+
+Adding another container creates a need for container management tool. Kubernetes is considered to be implemented in the next releases.
