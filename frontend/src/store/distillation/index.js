@@ -30,6 +30,8 @@ export default {
         soakingTime: null,
         weightAfterSoaking: null,
         isPlantShredded: false,
+        distillationType: "",
+        distillationDate: "",
       },
     };
   },

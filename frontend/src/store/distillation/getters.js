@@ -15,7 +15,7 @@ export default {
 
   /**
    * @function isPlantShredded
-   * @description Gets the shredded status of the plant from the plant form data.
+   * @description Gets the shredded status of the plant from the distillation form data.
    * @param {Object} state - The Vuex state.
    * @returns {boolean} Whether the plant is shredded.
    */
@@ -25,11 +25,21 @@ export default {
 
   /**
    * @function isPlantSoaked
-   * @description Gets the soaked status of the plant from the plant form data.
+   * @description Gets the soaked status of the plant from the distillation form data.
    * @param {Object} state - The Vuex state.
    * @returns {boolean} Whether the plant is soaked.
    */
   isPlantSoaked(state) {
     return state.distillationForm.isPlantSoaked;
+  },
+
+  /**
+   * @function distillationDate
+   * @description Gets the distillation date from the distillation form data.
+   * @param {Object} state - The Vuex state.
+   * @returns {boolean} Distillation date.
+   */
+  distillationDate(state) {
+    return state.distillationForm.distillationDate;
   },
 };

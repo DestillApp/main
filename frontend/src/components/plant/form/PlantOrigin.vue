@@ -226,6 +226,7 @@ export default {
       store.dispatch("plant/fetchLocalStorageData", "harvestRange");
       store.dispatch("plant/fetchLocalStorageData", "countryOfOrigin");
       countryName.value = formData.value.countryOfOrigin;
+      console.log("origin date", formData.value.harvestDate);
     });
 
     /**

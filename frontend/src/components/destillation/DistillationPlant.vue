@@ -124,6 +124,7 @@
           <!-- Input field for entering the weight after soaking -->
           <base-text-input
             v-model="formData.weightAfterSoaking"
+            class="weightAfterSoaking"
             type="number"
             classType="number"
             :invalidInput="
@@ -423,7 +424,6 @@ export default {
 
 .plant_informations {
   gap: 20px;
-  margin-bottom: 10px;
 }
 
 .plant_information {
@@ -449,6 +449,11 @@ export default {
 
 .checkbox {
   color: black;
+  margin-bottom: 10px;
+}
+
+.checkbox :deep(.v-input__details) {
+  display: none
 }
 
 .checkbox_container--isSoaked {
@@ -457,6 +462,10 @@ export default {
 
 .container--isSoaked {
   gap: 20px;
+}
+
+.weightAfterSoaking {
+  margin-bottom: 20px;
 }
 
 .checkbox_isPlantShredded {

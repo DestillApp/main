@@ -6,30 +6,97 @@
     <label class="label" :for="id">{{ label }}</label>
     <!-- Container for the input element and optional unit slot -->
     <div class="container">
-      <div class="input_container">
+      <div v-if="choose" class="input_container input_container--choose">
         <!-- Input field -->
-        <input class="input" :class="{
+        <input
+          class="input"
+          :class="{
             input_invalid: invalidInput,
-          }" :id="id" :value="modelValue" :disabled="disabled" :placeholder="placeholder" @input="updateValue"
-          v-bind="$attrs" @blur="handleBlur" />
+          }"
+          :id="id"
+          :value="modelValue"
+          :disabled="disabled"
+          :placeholder="placeholder"
+          @input="updateValue"
+          v-bind="$attrs"
+        />
+        <svg-icon
+          v-if="choose"
+          class="icon"
+          type="mdi"
+          :path="path"
+          size="36"
+          :color="'var(--secondary-color)'"
+          @click="openList"
+        ></svg-icon>
         <!-- Slot for optional unit display -->
         <slot name="unit"></slot>
       </div>
-      <ul v-if="results.length && modelValue !== '' && id === 'countryOfOrigin'" class="list">
-        <li class="list_item" @mousedown="() => chooseItem(result)" v-for="result in results" :key="result.id">
+      <div v-if="!choose" class="input_container">
+        <!-- Input field -->
+        <input
+          class="input"
+          :class="{
+            input_invalid: invalidInput,
+          }"
+          :id="id"
+          :value="modelValue"
+          :disabled="disabled"
+          :placeholder="placeholder"
+          @input="updateValue"
+          v-bind="$attrs"
+          @blur="handleBlur"
+        />
+        <!-- Slot for optional unit display -->
+        <slot name="unit"></slot>
+      </div>
+      <ul v-if="isOpen && id === 'distillationType'" class="list list--choose">
+        <li
+          class="list_item list_item--choose"
+          @mousedown="() => chooseItem(result)"
+          v-for="result in results"
+          :key="result.id"
+        >
           {{ result }}
         </li>
       </ul>
-      <ul v-if="results.length && modelValue !== '' && id === 'choosedPlant'" class="list">
-        <li class="list_item" @mousedown="() => chooseItem(result)" v-for="result in results" :key="result._id">
+      <ul
+        v-if="results.length && modelValue !== '' && id === 'countryOfOrigin'"
+        class="list"
+      >
+        <li
+          class="list_item"
+          @mousedown="() => chooseItem(result)"
+          v-for="result in results"
+          :key="result.id"
+        >
+          {{ result }}
+        </li>
+      </ul>
+      <ul
+        v-if="results.length && modelValue !== '' && id === 'choosedPlant'"
+        class="list"
+      >
+        <li
+          class="list_item"
+          @mousedown="() => chooseItem(result)"
+          v-for="result in results"
+          :key="result._id"
+        >
           <div class="plant_item">
             <div class="plant_identification">
               <span>{{ result.plantName }}</span>
               <span class="plant_small">({{ result.plantPart }})</span>
             </div>
-            <div class="plant_small" v-if="result.plantBuyDate">kupno: <span>{{ result.plantBuyDate }}</span></div>
-            <div class="plant_small" v-if="result.harvestDate">zbiór: <span>{{ result.harvestDate }}</span></div>
-            <div class="plant_small">na stanie: <span>{{ result.plantWeight }} kg</span></div>
+            <div class="plant_small" v-if="result.plantBuyDate">
+              kupno: <span>{{ result.plantBuyDate }}</span>
+            </div>
+            <div class="plant_small" v-if="result.harvestDate">
+              zbiór: <span>{{ result.harvestDate }}</span>
+            </div>
+            <div class="plant_small">
+              na stanie: <span>{{ result.plantWeight }} kg</span>
+            </div>
           </div>
         </li>
       </ul>
@@ -43,6 +110,8 @@
 
 <script>
 import { ref } from "vue";
+import SvgIcon from "@jamescoyle/vue-icon";
+import { mdiArrowDownBoldBox } from "@mdi/js";
 
 /**
  * @component BaseTextInput
@@ -62,6 +131,7 @@ import { ref } from "vue";
  * @see handleBlur
  */
 export default {
+  components: { SvgIcon },
   props: [
     "label",
     "modelValue",
@@ -71,10 +141,15 @@ export default {
     "classType",
     "invalidInput",
     "results",
+    "toChoose",
   ],
-  emits: ["update:modelValue", "choose:item", "update:onBlur"],
+  emits: ["update:modelValue", "choose:item", "update:onBlur", "open:list"],
   setup(props, context) {
     const disableBlur = ref(false);
+    const choose = ref(props.toChoose || false);
+    const isOpen = ref(false);
+    // Reference for the SVG icon path
+    const path = ref(mdiArrowDownBoldBox);
 
     /**
      * @function updateValue
@@ -98,6 +173,9 @@ export default {
       setTimeout(() => {
         disableBlur.value = false; // Re-enable blur after a short delay
       }, 500);
+      if (props.toChoose) {
+        isOpen.value = false;
+      }
     };
 
     /**
@@ -109,6 +187,14 @@ export default {
     const handleBlur = () => {
       if (!disableBlur.value) {
         context.emit("update:onBlur");
+      } 
+    };
+
+    const openList = () => {
+      if (!isOpen.value) {
+        isOpen.value = true;
+      } else {
+        isOpen.value = false;
       }
     };
 
@@ -116,6 +202,10 @@ export default {
       updateValue,
       chooseItem,
       handleBlur,
+      openList,
+      choose,
+      path,
+      isOpen,
     };
   },
 };
@@ -148,6 +238,11 @@ export default {
   align-items: center;
 }
 
+.input_container--choose {
+  position: relative;
+  padding-right: 40px;
+}
+
 .input {
   font-size: 15px;
   color: var(--text-color);
@@ -178,6 +273,16 @@ export default {
   border: 2px solid var(--error-color);
 }
 
+.icon {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+}
+
+.icon:hover {
+  color: var(--primary-color);
+}
+
 .message {
   color: var(--error-color);
   font-size: 12px;
@@ -196,8 +301,16 @@ export default {
   padding-block: 10px;
 }
 
+.list--choose {
+  width: calc(100% - 40px);
+}
+
 .list_item {
   cursor: pointer;
+}
+
+.list_item--choose {
+  text-align: left;
 }
 
 .plant_item {
@@ -216,5 +329,4 @@ export default {
 .plant_small {
   font-size: 12px;
 }
-
 </style>

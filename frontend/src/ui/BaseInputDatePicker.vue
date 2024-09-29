@@ -93,6 +93,17 @@ export default {
       isOpen.value = false;
     };
 
+    // Watch for changes in props.value
+    watch(
+      () => props.value,
+      (newValue) => {
+        if (newValue !== "") {
+          date.value = newValue;
+        }
+      },
+      { immediate: true } // Ensure the watcher runs immediately on component creation
+    );
+
     /**
      * Computed property to format the selected date
      * @function formatedDate

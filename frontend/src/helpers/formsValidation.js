@@ -54,3 +54,25 @@ export const plantFormValidation = (form) => {
   }
   return isFormValid;
 };
+
+/**
+ * @function distillationFormValidation
+ * @description Function to validate the distillation form data
+ */
+export const distillationFormValidation = (form) => {
+  console.log("form", form);
+  let isFormValid = true;
+
+  if (form.choosedPlant.name === "" || form.weightForDistillation === null) {
+    isFormValid = false;
+  }
+
+  // Additional validation for soaked plants
+  if (form.isPlantSoaked) {
+    if (form.soakingTime === null || form.weightAfterSoaking === null) {
+      isFormValid = false;
+    }
+  }
+
+  return isFormValid;
+};

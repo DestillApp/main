@@ -1,5 +1,4 @@
 // no arch docs and code comments
-// wrong validation
 <template>
   <base-card>
     <!-- Distillation form -->
@@ -8,6 +7,8 @@
       <h3 class="form_title">Informacje o procesie destylacji</h3>
       <!-- Distillation plan component -->
       <distillation-plant :isFormValid="isFormValid"></distillation-plant>
+      <!-- Distillation process component -->
+      <distillation-process :isFormValid="isFormValid"></distillation-process>
       <!-- Button to submit the distilation form -->
       <base-button type="submit">Zapisz</base-button>
       <!-- Button to submit and go to the distillation results form -->
@@ -20,6 +21,8 @@
 
 <script>
 import DistillationPlant from "../components/destillation/DistillationPlant.vue";
+import DistillationProcess from "../components/destillation/DistillationProcess.vue";
+import { distillationFormValidation } from "@/helpers/formsValidation";
 
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
 
@@ -34,7 +37,7 @@ import DOMPurify from "dompurify";
  */
 export default {
   name: "DistillationForm",
-  components: { DistillationPlant },
+  components: { DistillationPlant, DistillationProcess },
   setup() {
     // Vuex store instance
     const store = useStore();
@@ -52,33 +55,6 @@ export default {
       isFormValid.value = null;
     });
 
-    /**
-     * @async
-     * @function distillationFormValidation
-     * @description Function to validate the plant form data
-     */
-    const distillationFormValidation = async () => {
-      const form = distillationForm.value;
-      console.log("form", form);
-
-      if (
-        form.choosedPlant.name === "" &&
-        form.weightForDistillation === null
-      ) {
-        isFormValid.value = false;
-      } else {
-        isFormValid.value = true;
-      }
-      // Additional validation for soaked plants
-      if (form.isPlantSoaked) {
-        if (form.soakingTime === null || form.weightAfterSoaking === null) {
-          isFormValid.value = false;
-        } else {
-          isFormValid.value = true;
-        }
-      }
-    };
-
     // Using GraphQL mutation for creating a new plant
     const { mutate: createDistillation } = useMutation(CREATE_DISTILLATION);
 
@@ -91,7 +67,8 @@ export default {
      */
     const submitDistillationForm = async () => {
       // Validate the form
-      await distillationFormValidation();
+        isFormValid.value = distillationFormValidation(distillationForm.value);
+        console.log("valid?", isFormValid.value);
       if (isFormValid.value) {
         try {
           const form = distillationForm.value;
@@ -144,6 +121,5 @@ export default {
 .distillation_form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 </style>
