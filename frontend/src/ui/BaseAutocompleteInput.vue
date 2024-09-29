@@ -10,9 +10,6 @@
         <!-- Input field -->
         <input
           class="input"
-          :class="{
-            input_invalid: invalidInput,
-          }"
           :id="id"
           :value="modelValue"
           :disabled="disabled"
@@ -26,7 +23,11 @@
           type="mdi"
           :path="path"
           size="36"
-          :color="'var(--secondary-color)'"
+          :color="
+            invalidInput === true
+              ? 'var(--error-color)'
+              : 'var(--secondary-color)'
+          "
           @click="openList"
         ></svg-icon>
         <!-- Slot for optional unit display -->
@@ -50,7 +51,13 @@
         <!-- Slot for optional unit display -->
         <slot name="unit"></slot>
       </div>
-      <ul v-if="isOpen && id === 'distillationType'" class="list list--choose">
+      <ul
+        v-if="
+          (isOpen && id === 'distillationType') ||
+          (isOpen && id === 'distillationApparatus')
+        "
+        class="list list--choose"
+      >
         <li
           class="list_item list_item--choose"
           @mousedown="() => chooseItem(result)"
@@ -187,10 +194,11 @@ export default {
     const handleBlur = () => {
       if (!disableBlur.value) {
         context.emit("update:onBlur");
-      } 
+      }
     };
 
     const openList = () => {
+      console.log("CLICK");
       if (!isOpen.value) {
         isOpen.value = true;
       } else {

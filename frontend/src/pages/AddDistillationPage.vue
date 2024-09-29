@@ -85,6 +85,12 @@ export default {
               ? Number(DOMPurify.sanitize(form.weightAfterSoaking))
               : null,
             isPlantShredded: Boolean(DOMPurify.sanitize(form.isPlantShredded)),
+            distillationType: DOMPurify.sanitize(form.distillationType),
+            distillationDate: DOMPurify.sanitize(form.distillationDate),
+            distillationApparatus: DOMPurify.sanitize(form.distillationApparatus),
+            waterForDistillation: form.waterForDistillation
+              ? Number(DOMPurify.sanitize(form.waterForDistillation))
+              : null,
           };
 
           const { data } = await createDistillation({
@@ -94,6 +100,10 @@ export default {
               soakingTime: distillationFormData.soakingTime,
               weightAfterSoaking: distillationFormData.weightAfterSoaking,
               isPlantShredded: distillationFormData.isPlantShredded,
+              distillationType: distillationFormData.distillationType,
+              distillationDate: distillationFormData.distillationDate,
+              distillationApparatus: distillationFormData.distillationApparatus,
+              waterForDistillation: distillationFormData.waterForDistillation,
             },
           });
           console.log("Created distillation:", data.createDistillation);

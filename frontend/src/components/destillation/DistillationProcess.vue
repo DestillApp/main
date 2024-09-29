@@ -1,4 +1,4 @@
-// fetching apparatus form the my account 
+// fetching apparatus form the my account saved distillation apparatus
 <template>
   <div class="distillation__process">
     <!--Title for process part of distillation form-->
@@ -16,6 +16,9 @@
         placeholder="wybierz rodzaj destylacji"
         @update:modelValue="setValue"
         @choose:item="setDistillationType"
+        :invalidInput="
+          isFormValid === false && formData.distillationType === ''
+        "
       >
         <template v-slot:message>
           <span v-if="isFormValid === false && formData.distillationType === ''"
@@ -44,43 +47,79 @@
         </div>
       </div>
     </div>
-    <div>
-      <!-- Autocomplete input for the country of origin -->
-      <base-autocomplete-input
-        v-model="distillationApparatus"
-        class="distillationApparatus"
-        label="Rodzaj destylatora"
-        id="distillationApparatus"
-        :results="distillationTypes"
-        :toChoose="toChoose"
-        disabled="disabled"
-        placeholder="wybierz rodzaj destylatora"
-        @update:modelValue="setValue"
-        @choose:item="setDistillationType"
-      >
-        <template v-slot:message>
-          <span v-if="isFormValid === false && formData.distillationType === ''"
-            >Wybierz rodzaj destylacji</span
-          >
-          <span v-else>&nbsp;</span>
-        </template>
-      </base-autocomplete-input>
-    </div>
+    <!-- Autocomplete input for the distillation apparatus -->
+    <base-autocomplete-input
+      v-model="distillationApparatus"
+      class="distillationApparatus"
+      label="Rodzaj destylatora"
+      id="distillationApparatus"
+      :results="apparatus"
+      :toChoose="toChoose"
+      disabled="disabled"
+      placeholder="wybierz rodzaj destylatora"
+      @update:modelValue="setValue"
+      @choose:item="setDistillationApparatus"
+      :invalidInput="
+        isFormValid === false && formData.distillationApparatus === ''
+      "
+    >
+      <template v-slot:message>
+        <span
+          v-if="isFormValid === false && formData.distillationApparatus === ''"
+          >Wybierz rodzaj destylacji</span
+        >
+        <span v-else>&nbsp;</span>
+      </template>
+    </base-autocomplete-input>
+    <base-text-input
+      v-model="formData.waterForDistillation"
+      type="number"
+      classType="number"
+      placeholder="l"
+      :invalidInput="
+        isFormValid === false && formData.waterForDistillation === null
+      "
+      :storeName="storeName"
+      @update:modelValue="setInteger"
+      @set:keyboard="setKeyboardIntegerNumber"
+      label="Ilość wody użytej do destylacji"
+      id="waterForDistillation"
+      min="0"
+      step="1"
+    >
+      <template v-slot:unit>
+        <div v-if="formData.waterForDistillation !== null">l</div>
+      </template>
+      <template v-slot:message>
+        <span
+          v-if="isFormValid === false && formData.waterForDistillation === null"
+          >Wpisz ilość wody użytej do destylacji</span
+        >
+        <span v-else>&nbsp;</span>
+      </template>
+    </base-text-input>
   </div>
 </template>
 
 <script>
 import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
+import BaseTextInput from "@/ui/BaseTextInput.vue";
+import {
+  setIntegerNumber,
+  setKeyboardIntegerNumber,
+} from "@/helpers/formatHelpers.js";
 import { useStore } from "vuex";
 import { computed, ref, onMounted } from "vue";
 
 export default {
-  components: { BaseAutocompleteInput, BaseInputDatePicker },
+  components: { BaseAutocompleteInput, BaseInputDatePicker, BaseTextInput },
   props: ["isFormValid"],
   setup() {
     // Vuex store
     const store = useStore();
+    // Name of the vuex store module
+    const storeName = "distillation";
 
     // Computed properties to get form data from Vuex store
     const formData = computed(
@@ -97,7 +136,11 @@ export default {
 
     const distillationType = ref("");
     const distillationTypes = ref(["wodna", "wodno-parowa", "parowa"]);
-    const distillationApparatus = ref('');
+    const distillationApparatus = ref("");
+    const apparatus = ref([
+      "destylator stal nierdzewna 200l",
+      "destylator stal nierdzewna 100l",
+    ]);
 
     const fetchData = (key, value) => {
       store.dispatch("distillation/fetchLocalStorageData", {
@@ -108,6 +151,11 @@ export default {
 
     onMounted(() => {
       fetchData("distillationDate", false);
+      fetchData("distillationType", false);
+      fetchData("distillationApparatus", false);
+      fetchData("waterForDistillation", false);
+      distillationType.value = formData.value.distillationType;
+      distillationApparatus.value = formData.value.distillationApparatus;
     });
 
     const setValue = (value, input) => {
@@ -117,9 +165,22 @@ export default {
     const setDistillationType = (value, input) => {
       setValue(value, input);
       distillationType.value = value;
+      console.log("setDistill", value, input);
+    };
+
+    const setDistillationApparatus = (value, input) => {
+      setValue(value, input);
+      distillationApparatus.value = value;
+      console.log("setApparatus", value, input);
+    };
+
+    // Using the format function
+    const setInteger = (value, id, storeName) => {
+      setIntegerNumber(store, value, id, storeName);
     };
 
     return {
+      storeName,
       formData,
       distillationDate,
       toChoose,
@@ -127,24 +188,22 @@ export default {
       distillationType,
       distillationTypes,
       distillationApparatus,
+      apparatus,
       setValue,
       setDistillationType,
+      setDistillationApparatus,
+      setInteger,
+      setKeyboardIntegerNumber,
     };
   },
 };
 </script>
 
-<template>
-  <base-card>
-    <h3>Zapisane destylatory</h3>
-    <base-button>Dodaj destylator</base-button>
-  </base-card>
-</template>
-
 <style scoped>
 .distillation__process {
   display: flex;
   flex-direction: column;
+  gap: 30px;
 }
 
 .distillation__title {

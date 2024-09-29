@@ -63,7 +63,14 @@ export const distillationFormValidation = (form) => {
   console.log("form", form);
   let isFormValid = true;
 
-  if (form.choosedPlant.name === "" || form.weightForDistillation === null) {
+  if (
+    form.choosedPlant.name === "" ||
+    form.weightForDistillation === null ||
+    form.distillationType === "" ||
+    form.distillationDate === "" ||
+    form.distillationApparatus === "" ||
+    form.waterForDistillation === null
+  ) {
     isFormValid = false;
   }
 

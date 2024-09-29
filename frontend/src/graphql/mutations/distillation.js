@@ -10,6 +10,10 @@ export const CREATE_DISTILLATION = gql`
       soakingTime
       weightAfterSoaking
       isPlantShredded
+      distillationType
+      distillationDate
+      distillationApparatus
+      waterForDistillation
     }
   }
 `;
