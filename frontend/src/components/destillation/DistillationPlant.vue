@@ -1,4 +1,4 @@
-// no arch docs and code comments
+// no arch docs
 // choosed plant informations are not connected to distillation database
 <template>
   <div class="distillation_plant">
@@ -211,6 +211,12 @@ export default {
       () => store.getters["distillation/isPlantShredded"]
     );
 
+    /**
+* @function fetchData
+* @description Fetches initial data from local storage via the Vuex store for a specified key.
+* @param {string} key - The key for the specific data to fetch.
+* @param {boolean} value - Indicates if the fetched data is related to plant information.
+*/
     const fetchData = (key, value) => {
       store.dispatch("distillation/fetchLocalStorageData", {
         key: key,
@@ -234,6 +240,12 @@ export default {
       plant.value = formData.value.choosedPlant.name;
     });
 
+    /**
+     * @function setPlantState
+     * @description Updates the selected plant's state in Vuex by dispatching key-value pairs.
+     * @param {string} key - The key of the plant attribute.
+     * @param {any} value - The value of the plant attribute.
+     */
     const setPlantState = (key, value) => {
       store.dispatch("distillation/setChoosedPlant", {
         key: key,
@@ -241,6 +253,12 @@ export default {
       });
     };
 
+    /**
+     * @function setPlant
+     * @desctiption Sets the selected plant details in the form, including plant ID, name, part, and weight. Clears the search input and list of plants after selection.
+     * @param {Object} value - The selected plant object from the plant list.
+     * @param {string} input - The input identifier triggering the event.
+     */
     const setPlant = (value, input) => {
       setPlantState("id", value._id);
       setPlantState("name", value.plantName);
@@ -288,10 +306,8 @@ export default {
     };
 
     /**
-     * Handles the input event for the search or autocomplete component.
-     * Updates the search query and manages the timer to limit the frequency of fetch requests.
-     *
      * @function onInput
+     * @description Handles the input event for the search or autocomplete component. Updates the search query and manages the timer to limit the frequency of fetch requests.
      * @param {Event} e - The input event triggered by user interaction.
      * @returns {void}
      */
@@ -319,6 +335,10 @@ export default {
       }, 500);
     };
 
+    /**
+     * @function onBlur
+     * @description Handles the blur event when the input field loses focus. Clears the plant list and resets the input value if no plant is selected.
+     */
     const onBlur = () => {
       if (formData.value.choosedPlant.name === "") {
         plants.value = [];
@@ -453,7 +473,7 @@ export default {
 }
 
 .checkbox :deep(.v-input__details) {
-  display: none
+  display: none;
 }
 
 .checkbox_container--isSoaked {
