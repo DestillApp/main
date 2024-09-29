@@ -50,6 +50,18 @@ const distillationResolvers = {
         isPlantShredded: Boolean(
           DOMPurify.sanitize(distillationInput.isPlantShredded)
         ),
+        distillationType: DOMPurify.sanitize(
+          distillationInput.distillationType
+        ),
+        distillationDate: DOMPurify.sanitize(
+          distillationInput.distillationDate
+        ),
+        distillationApparatus: DOMPurify.sanitize(
+          distillationInput.distillationApparatus
+        ),
+        waterForDistillation: distillationInput.waterForDistillation
+          ? Number(DOMPurify.sanitize(distillationInput.waterForDistillation))
+          : null,
       };
       // Filtering out null or empty string values
       const filteredData = filterDistillationData(sanitizedData);

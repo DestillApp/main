@@ -14,6 +14,10 @@ const distillationSchema = gql`
     soakingTime: Int
     weightAfterSoaking: Float
     isPlantShredded: Boolean!
+    distillationType: String!
+    distillationDate: String!
+    distillationApparatus: String!
+    waterForDistillation: Int!
   }
 
   input DistillationInput {
@@ -22,6 +26,10 @@ const distillationSchema = gql`
     soakingTime: Int
     weightAfterSoaking: Float
     isPlantShredded: Boolean!
+    distillationType: String!
+    distillationDate: String!
+    distillationApparatus: String!
+    waterForDistillation: Int!
   }
 
   type Mutation {

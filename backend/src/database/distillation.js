@@ -16,6 +16,10 @@ const distillationSchema = new Schema({
   soakingTime: { type: Number, required: false },
   weightAfterSoaking: { type: Number, required: false },
   isPlantShredded: { type: Boolean, required: true },
+  distillationType: { type: String, required: true },
+  distillationDate: { type: String, required: true },
+  distillationApparatus: { type: String, required: true },
+  waterForDistillation: { type: Number, required: true },
 });
 
 // Exporting the Distillation model based on the distillationSchema
