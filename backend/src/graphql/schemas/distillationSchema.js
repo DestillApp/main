@@ -7,8 +7,37 @@
 const { gql } = require("apollo-server-express");
 
 const distillationSchema = gql`
+  type ChoosedPlant {
+    id: ID!
+    name: String!
+    part: String!
+    availableWeight: Float!
+    harvestDate: String
+    buyDate: String
+  }
+
+  input ChoosedPlantInput {
+    id: ID!
+    name: String!
+    part: String!
+    availableWeight: Float!
+    harvestDate: String
+    buyDate: String
+  }
+
+  type DistillationTime {
+    distillationHours: Int
+    distillationMinutes: Int
+  }
+
+  input DistillationTimeInput {
+    distillationHours: Int
+    distillationMinutes: Int
+  }
+
   type Distillation {
     _id: ID!
+    choosedPlant: ChoosedPlant!
     weightForDistillation: Float!
     isPlantSoaked: Boolean!
     soakingTime: Int
@@ -18,9 +47,11 @@ const distillationSchema = gql`
     distillationDate: String!
     distillationApparatus: String!
     waterForDistillation: Int!
+    distillationTime: DistillationTime!
   }
 
   input DistillationInput {
+    choosedPlant: ChoosedPlantInput!
     weightForDistillation: Float!
     isPlantSoaked: Boolean!
     soakingTime: Int
@@ -30,6 +61,7 @@ const distillationSchema = gql`
     distillationDate: String!
     distillationApparatus: String!
     waterForDistillation: Int!
+    distillationTime: DistillationTimeInput!
   }
 
   type Mutation {

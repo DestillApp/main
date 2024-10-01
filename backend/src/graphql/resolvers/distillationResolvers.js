@@ -33,8 +33,51 @@ const distillationResolvers = {
      * @returns {Promise<Object>} The created distillation.
      */
     createDistillation: async (_, { distillationInput }) => {
+      // Sanitizing and filtering the nested input objects
+
+      const sanitizedDistillationTime = distillationInput.distillationTime
+        ? {
+            distillationHours: distillationInput.distillationTime
+              .distillationHours
+              ? Number(
+                  DOMPurify.sanitize(
+                    distillationInput.distillationTime.distillationHours
+                  )
+                )
+              : null,
+            distillationMinutes: distillationInput.distillationTime
+              .distillationMinutes
+              ? Number(
+                  DOMPurify.sanitize(
+                    distillationInput.distillationTime.distillationMinutes
+                  )
+                )
+              : null,
+          }
+        : null;
+
       // Sanitizing the input data
       const sanitizedData = {
+        choosedPlant: {
+          id: distillationInput.choosedPlant.id
+            ? DOMPurify.sanitize(distillationInput.choosedPlant.id)
+            : null,
+          name: DOMPurify.sanitize(distillationInput.choosedPlant.name || ""),
+          part: DOMPurify.sanitize(distillationInput.choosedPlant.part || ""),
+          availableWeight: distillationInput.choosedPlant.availableWeight
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationInput.choosedPlant.availableWeight
+                )
+              )
+            : null,
+          harvestDate: DOMPurify.sanitize(
+            distillationInput.choosedPlant.harvestDate || ""
+          ),
+          buyDate: DOMPurify.sanitize(
+            distillationInput.choosedPlant.buyDate || ""
+          ),
+        },
         weightForDistillation: distillationInput.weightForDistillation
           ? Number(DOMPurify.sanitize(distillationInput.weightForDistillation))
           : null,
@@ -62,6 +105,18 @@ const distillationResolvers = {
         waterForDistillation: distillationInput.waterForDistillation
           ? Number(DOMPurify.sanitize(distillationInput.waterForDistillation))
           : null,
+        distillationTime: {
+          distillationHours: Number(
+            DOMPurify.sanitize(
+              distillationInput.distillationTime.distillationHours
+            )
+          ),
+          distillationMinutes: Number(
+            DOMPurify.sanitize(
+              distillationInput.distillationTime.distillationMinutes
+            )
+          ),
+        },
       };
       // Filtering out null or empty string values
       const filteredData = filterDistillationData(sanitizedData);
