@@ -121,7 +121,7 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 /**
  * @component PlantData
- * @description This component renders a form to input and manage data related to plant material used in distillation, including weight, state, and soaking information.
+ * @description This component renders inputs and manage data related to plant material used in distillation, including weight, state, and soaking information.
  * @see setNumberFormat
  * @see setIntegerNumber
  * @see setKeyboardIntegerNumber

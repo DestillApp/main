@@ -1,8 +1,8 @@
-import distillationMutations from "./mutations.js";
+import distillationMutations from "./mutations";
 import distillationActions from "./actions.js";
 import distillationGetters from "./getters.js";
 
-/**
+/**distillationLength
  * Plant module Vuex store.
  * @module distillationStore
  */
@@ -34,6 +34,10 @@ export default {
         distillationDate: "",
         distillationApparatus: "",
         waterForDistillation: null,
+        distillationTime: {
+          distillationHours: null,
+          distillationMinutes: null,
+        },
       },
     };
   },

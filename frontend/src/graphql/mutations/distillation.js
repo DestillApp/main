@@ -5,6 +5,14 @@ export const CREATE_DISTILLATION = gql`
   mutation createDistillation($input: DistillationInput!) {
     createDistillation(distillationInput: $input) {
       _id
+      choosedPlant {
+        id
+        name
+        part
+        availableWeight
+        harvestDate
+        buyDate
+      }
       weightForDistillation
       isPlantSoaked
       soakingTime
@@ -14,6 +22,10 @@ export const CREATE_DISTILLATION = gql`
       distillationDate
       distillationApparatus
       waterForDistillation
+      distillationTime {
+        distillationHours
+        distillationMinutes
+      }
     }
   }
 `;

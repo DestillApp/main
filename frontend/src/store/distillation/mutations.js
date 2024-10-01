@@ -30,6 +30,20 @@ export default {
   },
 
   /**
+   * Mutation to change the value of a field in the in distillation time object.
+   * @function changeDistillationTime
+   * @param {Object} state - The current state object.
+   * @param {Object} payload - Payload containing the input field name and its new value.
+   * @param {string} payload.key - The name of the key in the distillationTime object to be updated.
+   * @param {any} payload.value - The new value for the key field.
+   */
+  changeDistillationTime(state, { key, value }) {
+    const integerNumber = parseInt(value);
+    state.distillationForm.distillationTime[key] = integerNumber;
+    localStorage.setItem(key, JSON.stringify(integerNumber));
+  },
+
+  /**
    * @function changeIntegerNumber
    * @description Mutation to change a value to an integer value in the distillation form.
    * @param {Object} state - The current state object.

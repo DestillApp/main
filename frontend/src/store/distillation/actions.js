@@ -29,6 +29,26 @@ export default {
   },
 
   /**
+   * @function fetchTimeFromLocalStorageData
+   * @description Fetches time data from local storage and commits it to the state.
+   * @param {Object} context - The Vuex context.
+   * @param {string} key - The key to fetch from local storage.
+   */
+  fetchTimeFromLocalStorageData(context, key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key));
+      if (value === null) {
+        return;
+      } else {
+        context.commit("changeDistillationTime", { key: key, value });
+      }
+    } catch (error) {
+      console.log("error", error);
+      return;
+    }
+  },
+
+  /**
    * @function setValue
    * @description Sets a value in the state.
    * @param {Object} context - The Vuex context.
@@ -50,6 +70,18 @@ export default {
    */
   setChoosedPlant(context, { key, value }) {
     context.commit("changeChoosedPlant", { key, value });
+  },
+
+  /**
+   * @function setDistillationTime
+   * @description Sets a value in the state.
+   * @param {Object} context - The Vuex context.
+   * @param {Object} payload - The payload containing the input and value.
+   * @param {string} payload.key - The input field to set.
+   * @param {any} payload.value - The value to set.
+   */
+  setDistillationTime(context, { key, value }) {
+    context.commit("changeDistillationTime", { key, value });
   },
 
   /**

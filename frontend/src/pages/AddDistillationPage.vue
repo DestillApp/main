@@ -9,6 +9,8 @@
       <distillation-plant :isFormValid="isFormValid"></distillation-plant>
       <!-- Distillation process component -->
       <distillation-process :isFormValid="isFormValid"></distillation-process>
+      <!-- Distillation data component -->
+      <distillation-data :isFormValid="isFormValid"></distillation-data>
       <!-- Button to submit the distilation form -->
       <base-button type="submit">Zapisz</base-button>
       <!-- Button to submit and go to the distillation results form -->
@@ -22,6 +24,7 @@
 <script>
 import DistillationPlant from "../components/destillation/DistillationPlant.vue";
 import DistillationProcess from "../components/destillation/DistillationProcess.vue";
+import DistillationData from "../components/destillation/DistillationData.vue";
 import { distillationFormValidation } from "@/helpers/formsValidation";
 
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
@@ -36,8 +39,8 @@ import DOMPurify from "dompurify";
  * @description This component renders a destillation form and handles sending destillation data.
  */
 export default {
-  name: "DistillationForm",
-  components: { DistillationPlant, DistillationProcess },
+  name: "AddDistillationPage",
+  components: { DistillationPlant, DistillationProcess, DistillationData },
   setup() {
     // Vuex store instance
     const store = useStore();
@@ -53,6 +56,7 @@ export default {
     // Lifecycle hook to reset form validity on component mount
     onMounted(() => {
       isFormValid.value = null;
+      console.log(distillationForm.value);
     });
 
     // Using GraphQL mutation for creating a new plant
@@ -67,13 +71,23 @@ export default {
      */
     const submitDistillationForm = async () => {
       // Validate the form
-        isFormValid.value = distillationFormValidation(distillationForm.value);
-        console.log("valid?", isFormValid.value);
+      isFormValid.value = distillationFormValidation(distillationForm.value);
+      console.log("valid?", isFormValid.value);
       if (isFormValid.value) {
         try {
           const form = distillationForm.value;
 
           const distillationFormData = {
+            choosedPlant: {
+              id: DOMPurify.sanitize(form.choosedPlant.id),
+              name: DOMPurify.sanitize(form.choosedPlant.name),
+              part: DOMPurify.sanitize(form.choosedPlant.part),
+              availableWeight: form.choosedPlant.availableWeight
+                ? Number(DOMPurify.sanitize(form.choosedPlant.availableWeight))
+                : null,
+              harvestDate: DOMPurify.sanitize(form.choosedPlant.harvestDate),
+              buyDate: DOMPurify.sanitize(form.choosedPlant.buyDate),
+            },
             weightForDistillation: form.weightForDistillation
               ? Number(DOMPurify.sanitize(form.weightForDistillation))
               : null,
@@ -87,14 +101,23 @@ export default {
             isPlantShredded: Boolean(DOMPurify.sanitize(form.isPlantShredded)),
             distillationType: DOMPurify.sanitize(form.distillationType),
             distillationDate: DOMPurify.sanitize(form.distillationDate),
-            distillationApparatus: DOMPurify.sanitize(form.distillationApparatus),
+            distillationApparatus: DOMPurify.sanitize(
+              form.distillationApparatus
+            ),
             waterForDistillation: form.waterForDistillation
               ? Number(DOMPurify.sanitize(form.waterForDistillation))
               : null,
+            distillationTime: {
+              distillationHours: form.distillationTime.distillationHours ? Number(DOMPurify.sanitize(form.distillationTime.distillationHours)) : null,
+              distillationMinutes: form.distillationTime.distillationMinutes ? Number(DOMPurify.sanitize(form.distillationTime.distillationMinutes)) : null,
+            },
           };
+
+          console.log(distillationFormData);
 
           const { data } = await createDistillation({
             input: {
+              choosedPlant: distillationFormData.choosedPlant,
               weightForDistillation: distillationFormData.weightForDistillation,
               isPlantSoaked: distillationFormData.isPlantSoaked,
               soakingTime: distillationFormData.soakingTime,
@@ -104,6 +127,7 @@ export default {
               distillationDate: distillationFormData.distillationDate,
               distillationApparatus: distillationFormData.distillationApparatus,
               waterForDistillation: distillationFormData.waterForDistillation,
+              distillationTime: distillationFormData.distillationTime,
             },
           });
           console.log("Created distillation:", data.createDistillation);

@@ -180,6 +180,22 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
 
+/**
+ * @component DistillationPlant
+ * @description This component manages the selection of plant material for distillation, including details like plant part, weight, and optional soaking or shredding steps.
+ * It also interacts with Vuex for data persistence and handles the fetching of plants from an Apollo GraphQL server.
+ * @see fetchData
+ * @see setPlantState
+ * @see setPlant
+ * @see fetchPlantList
+ * @see onInput
+ * @see onBlur
+ * @see setNumberFormat
+ * @see setIntegerNumber
+ * @see setKeyboardIntegerNumber
+ * @see setKeyboardFormatedNumber
+ */
+
 export default {
   name: "DistillationPlant",
   components: { BaseTextInput, BaseAutocompleteInput },
@@ -431,7 +447,6 @@ export default {
 }
 
 .plant_title {
-  margin-bottom: 20px;
   font-size: 16px;
 }
 
