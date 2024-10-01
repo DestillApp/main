@@ -18,3 +18,27 @@ export const initialPlantForm = {
   soakingTime: null,
   weightAfterSoaking: null,
 };
+
+export const initialDistillationForm = {
+  choosedPlant: {
+    id: null,
+    name: "",
+    part: "",
+    availableWeight: null,
+    harvestDate: "",
+    buyDate: "",
+  },
+  weightForDistillation: null,
+  isPlantSoaked: false,
+  soakingTime: null,
+  weightAfterSoaking: null,
+  isPlantShredded: false,
+  distillationType: "",
+  distillationDate: "",
+  distillationApparatus: "",
+  waterForDistillation: null,
+  distillationTime: {
+    distillationHours: null,
+    distillationMinutes: null,
+  },
+};

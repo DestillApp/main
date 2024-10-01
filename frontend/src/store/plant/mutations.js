@@ -94,6 +94,5 @@ export default {
    */
   resetPlantForm(state) {
     state.plantForm = { ...initialPlantForm };
-    console.log("from vuex", state.plantForm);
   },
 };

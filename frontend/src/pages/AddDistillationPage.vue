@@ -2,7 +2,7 @@
 <template>
   <base-card>
     <!-- Distillation form -->
-    <form @submit.prevent="submitDistillationForm" class="distillation_form">
+    <form @submit.prevent="saveDistillation" class="distillation_form">
       <!-- Title for the plant information form -->
       <h3 class="form_title">Informacje o procesie destylacji</h3>
       <!-- Distillation plan component -->
@@ -14,8 +14,8 @@
       <!-- Button to submit the distilation form -->
       <base-button type="submit">Zapisz</base-button>
       <!-- Button to submit and go to the distillation results form -->
-      <base-button type="submit"
-        >Zapisz i przejdź do formularza wyników destylacji</base-button
+      <base-button @click="saveDistillationAddResults"
+        >Zapisz i dodaj wyniki destylacji</base-button
       >
     </form>
   </base-card>
@@ -26,12 +26,14 @@ import DistillationPlant from "../components/destillation/DistillationPlant.vue"
 import DistillationProcess from "../components/destillation/DistillationProcess.vue";
 import DistillationData from "../components/destillation/DistillationData.vue";
 import { distillationFormValidation } from "@/helpers/formsValidation";
+import { initialDistillationForm } from "@/helpers/formsInitialState";
 
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
 
 import { useStore } from "vuex";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
 import DOMPurify from "dompurify";
 
 /**
@@ -53,10 +55,12 @@ export default {
     // Reactive reference to track form validity
     const isFormValid = ref(null);
 
+    // Router object for navigation
+    const router = useRouter();
+
     // Lifecycle hook to reset form validity on component mount
     onMounted(() => {
       isFormValid.value = null;
-      console.log(distillationForm.value);
     });
 
     // Using GraphQL mutation for creating a new plant
@@ -72,7 +76,6 @@ export default {
     const submitDistillationForm = async () => {
       // Validate the form
       isFormValid.value = distillationFormValidation(distillationForm.value);
-      console.log("valid?", isFormValid.value);
       if (isFormValid.value) {
         try {
           const form = distillationForm.value;
@@ -113,22 +116,8 @@ export default {
             },
           };
 
-          console.log(distillationFormData);
-
           const { data } = await createDistillation({
-            input: {
-              choosedPlant: distillationFormData.choosedPlant,
-              weightForDistillation: distillationFormData.weightForDistillation,
-              isPlantSoaked: distillationFormData.isPlantSoaked,
-              soakingTime: distillationFormData.soakingTime,
-              weightAfterSoaking: distillationFormData.weightAfterSoaking,
-              isPlantShredded: distillationFormData.isPlantShredded,
-              distillationType: distillationFormData.distillationType,
-              distillationDate: distillationFormData.distillationDate,
-              distillationApparatus: distillationFormData.distillationApparatus,
-              waterForDistillation: distillationFormData.waterForDistillation,
-              distillationTime: distillationFormData.distillationTime,
-            },
+            input: distillationFormData,
           });
           console.log("Created distillation:", data.createDistillation);
         } catch (error) {
@@ -142,7 +131,56 @@ export default {
       }
     };
 
-    return { submitDistillationForm, isFormValid };
+    const saveDistillation = async () => {
+      try {
+        await submitDistillationForm();
+        if (!isFormValid.value) {
+          return
+        } else {
+          router.push({ name: "InProgressDistillationsPage" });
+        }
+      } catch (error) {
+        return;
+      }
+    };
+
+    const saveDistillationAddResults = async () => {
+      try {
+        // Submit the distillation form
+        await submitDistillationForm();
+        if (!isFormValid.value) {
+          return;
+        } else {
+          // If valid, navigate to the add distillation page
+          router.push({ name: "AddResultsPage" });
+        }
+      } catch (error) {
+        return;
+      }
+    };
+
+    //Navigation guard that reset the form data in vuex state and local storage before navigating away from the route.
+    onBeforeRouteLeave(async (to, from, next) => {
+      if (to.path !== from.path) {
+        // Dispatch Vuex action to reset the form in store
+        store.dispatch("distillation/setDistillationForm");
+        // // Wait for the next tick to ensure state updates are complete
+        await nextTick();
+        // // Removing distillation form value from local storage by its key
+        for (const key in initialDistillationForm) {
+          localStorage.removeItem(key);
+        }
+        for (const key in initialDistillationForm.choosedPlant) {
+          localStorage.removeItem(key);
+        }
+        for (const key in initialDistillationForm.distillationTime) {
+          localStorage.removeItem(key);
+        }
+      }
+      next();
+    });
+
+    return { saveDistillation, saveDistillationAddResults, isFormValid };
   },
 };
 </script>

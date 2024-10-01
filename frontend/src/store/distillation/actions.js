@@ -107,4 +107,13 @@ export default {
   setNumberFormat(context, { input, value }) {
     context.commit("changeNumberFormat", { input, value });
   },
+
+  /**
+   * @function setDistillationForm
+   * @description Sets the distillationForm in the state and localStorage.
+   * @param {Object} context - The Vuex context.
+   */
+  setDistillationForm(context) {
+    context.commit("resetDistillationForm");
+  },
 };

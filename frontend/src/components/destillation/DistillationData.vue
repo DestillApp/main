@@ -8,7 +8,7 @@
       classType="number"
       placeholder="l"
       :invalidInput="
-        isFormValid === false && formData.waterForDistillation === null
+        isFormValid === false && !formData.waterForDistillation
       "
       :storeName="storeName"
       @update:modelValue="setInteger"
@@ -19,11 +19,11 @@
       step="1"
     >
       <template v-slot:unit>
-        <div v-if="formData.waterForDistillation !== null">l</div>
+        <div v-if="!formData.waterForDistillation">l</div>
       </template>
       <template v-slot:message>
         <span
-          v-if="isFormValid === false && formData.waterForDistillation === null"
+          v-if="isFormValid === false && !formData.waterForDistillation"
           >Wpisz ilość wody użytej do destylacji</span
         >
         <span v-else>&nbsp;</span>
@@ -36,7 +36,7 @@
         classType="number"
         placeholder="h"
         :invalidInput="
-          !isFormValid &&
+          isFormValid === false &&
           !formData.distillationTime.distillationHours &&
           !formData.distillationTime.distillationMinutes
         "
@@ -54,7 +54,7 @@
         <template v-slot:message>
           <span
             v-if="
-              !isFormValid &&
+              isFormValid === false &&
               !formData.distillationTime.distillationHours &&
               !formData.distillationTime.distillationMinutes
             "
@@ -70,7 +70,7 @@
         class="distillation__minutes"
         placeholder="min"
         :invalidInput="
-              !isFormValid &&
+              isFormValid === false &&
               !formData.distillationTime.distillationHours &&
               !formData.distillationTime.distillationMinutes
         "

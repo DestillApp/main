@@ -11,6 +11,7 @@ import MainPage from "./pages/MainPage.vue";
 // Lazy-loaded pages
 const AddPlantPage = () => import("./pages/plant/AddPlantPage.vue");
 const AddDistillationPage = () => import("./pages/AddDistillationPage.vue");
+const AddResultsPage = () => import("./pages/AddResultsPage.vue");
 const EditPlantPage = () => import("./pages/plant/EditPlantPage.vue");
 const LoginPage = () => import("./pages/LoginPage.vue");
 const RegistrationPage = () => import("./pages/RegistrationPage.vue");
@@ -62,6 +63,12 @@ const router = createRouter({
       path: "/add-distillation",
       name: "AddDistillationPage",
       component: AddDistillationPage,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/add-results",
+      name: "AddResultsPage",
+      component: AddResultsPage,
       meta: { requiresAuth: true },
     },
     {

@@ -1,3 +1,5 @@
+import { initialDistillationForm } from "@/helpers/formsInitialState";
+
 /**
  * Destillation module mutations for updating the state.
  * @module distillationMutations
@@ -69,5 +71,17 @@ export default {
     const formatedNumber = parseFloat(parseFloat(value).toFixed(1));
     state.distillationForm[input] = formatedNumber;
     localStorage.setItem(input, JSON.stringify(formatedNumber));
+  },
+
+  /**
+   * @function resetDistillationForm
+   * @description Mutation to reset the distillationForm and remove distillationForm from localStorage.
+   * @param {Object} state - The current state object.
+   */
+  resetDistillationForm(state) {
+    state.distillationForm = JSON.parse(
+      JSON.stringify(initialDistillationForm)
+    );
+    console.log("from vuex", state.distillationForm);
   },
 };
