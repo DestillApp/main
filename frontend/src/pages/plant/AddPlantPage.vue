@@ -120,6 +120,7 @@ export default {
             input: plantFormData,
           });
           console.log("Created plant:", data.createPlant);
+          return data.createPlant;
         } catch (error) {
           console.log("error", isFormValid.value);
           console.error("Error submitting form", error);
@@ -157,12 +158,16 @@ export default {
     const savePlantAndDistill = async () => {
       try {
         // Submit the plant form
-        await submitPlantForm();
+        const data = await submitPlantForm();
         if (!isFormValid.value) {
           return;
         } else {
+          console.log("data", data);
           // If valid, navigate to the add distillation page
-          router.push({ name: "AddDistillationPage" });
+          router.push({
+            name: "AddDistillationPage", params: {
+              id: data._id,
+          } });
         }
       } catch (error) {
         return;

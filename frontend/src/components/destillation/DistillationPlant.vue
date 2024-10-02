@@ -1,5 +1,5 @@
-// no arch docs
-// choosed plant informations are not connected to distillation database
+// no arch docs //no some code docs
+database
 <template>
   <div class="distillation_plant">
     <!--Title for plant part of distillation form-->
@@ -168,6 +168,7 @@
 <script>
 import { useStore } from "vuex";
 import { onMounted, computed, watch, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import {
@@ -179,6 +180,7 @@ import {
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
+import { GET_BASIC_PLANT_BY_ID } from "@/graphql/queries/plant.js";
 
 /**
  * @component DistillationPlant
@@ -200,6 +202,7 @@ export default {
   name: "DistillationPlant",
   components: { BaseTextInput, BaseAutocompleteInput },
   props: ["isFormValid"],
+
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
@@ -210,6 +213,8 @@ export default {
 
     // Name of the vuex store module
     const storeName = "distillation";
+
+    const route = useRoute();
 
     const searchQuery = ref("");
     const plant = ref("");
@@ -226,13 +231,26 @@ export default {
     const isPlantShredded = computed(
       () => store.getters["distillation/isPlantShredded"]
     );
+    const comingFromRoute = computed(() => store.getters.comingFromRoute);
+
+    const getPlantData = async () => {
+      try {
+        const { data } = await apolloClient.query({
+          query: GET_BASIC_PLANT_BY_ID,
+          variables: { id: route.params.id, formatDates: true },
+        });
+        return data.getPlantById;
+      } catch (error) {
+        console.error("Failed to get plant details:", error);
+      }
+    };
 
     /**
-* @function fetchData
-* @description Fetches initial data from local storage via the Vuex store for a specified key.
-* @param {string} key - The key for the specific data to fetch.
-* @param {boolean} value - Indicates if the fetched data is related to plant information.
-*/
+     * @function fetchData
+     * @description Fetches initial data from local storage via the Vuex store for a specified key.
+     * @param {string} key - The key for the specific data to fetch.
+     * @param {boolean} value - Indicates if the fetched data is related to plant information.
+     */
     const fetchData = (key, value) => {
       store.dispatch("distillation/fetchLocalStorageData", {
         key: key,
@@ -241,19 +259,54 @@ export default {
     };
 
     // Fetch initial data from local storage on component mount
-    onMounted(() => {
-      fetchData("id", true);
-      fetchData("name", true);
-      fetchData("part", true);
-      fetchData("availableWeight", true);
-      fetchData("harvestDate", true);
-      fetchData("buyDate", true);
-      fetchData("weightForDistillation", false);
-      fetchData("isPlantSoaked", false);
-      fetchData("soakingTime", false);
-      fetchData("weightAfterSoaking", false);
-      fetchData("isPlantShredded", false);
-      plant.value = formData.value.choosedPlant.name;
+    onMounted(async () => {
+      if (comingFromRoute.value) {
+          if (route.params.id) {
+          const plantData = await getPlantData();
+          store.dispatch("distillation/setChoosedPlant", {
+            key: "id",
+            value: plantData._id,
+          });
+          store.dispatch("distillation/setChoosedPlant", {
+            key: "name",
+            value: plantData.plantName,
+          });
+          store.dispatch("distillation/setChoosedPlant", {
+            key: "part",
+            value: plantData.plantPart,
+          });
+          store.dispatch("distillation/setChoosedPlant", {
+            key: "availableWeight",
+            value: plantData.plantWeight,
+          });
+          store.dispatch("distillation/setChoosedPlant", {
+            key: "harvestDate",
+            value: plantData.harvestDate,
+          });
+          store.dispatch("distillation/setChoosedPlant", {
+            key: "buyDate",
+            value: plantData.plantBuyDate,
+          });
+            plant.value = formData.value.choosedPlant.name;
+          console.log("id", route.params.id);
+          console.log("plantData", plantData);
+          } else {
+            return;
+        }
+      } else {
+        fetchData("id", true);
+        fetchData("name", true);
+        fetchData("part", true);
+        fetchData("availableWeight", true);
+        fetchData("harvestDate", true);
+        fetchData("buyDate", true);
+        fetchData("weightForDistillation", false);
+        fetchData("isPlantSoaked", false);
+        fetchData("soakingTime", false);
+        fetchData("weightAfterSoaking", false);
+        fetchData("isPlantShredded", false);
+        plant.value = formData.value.choosedPlant.name;
+      }
     });
 
     /**
@@ -419,6 +472,12 @@ export default {
         }
       }
     );
+
+    // onBeforeRouteUpdate((to, from, next) => {
+    //   console.log("It is working!");
+    //   console.log(to, from);
+    //   next();
+    // });
 
     return {
       storeName,

@@ -70,6 +70,7 @@ export default {
   //Navigation guard that handles the logic before navigating to this route
   beforeRouteEnter(to, from, next) {
     //check if the route comes from another named route, then update the store
+    console.log("hi");
     if (from && from.name) {
       store.dispatch("setComingFromRoute", true);
     } else {

@@ -27,6 +27,7 @@ import DistillationProcess from "../components/destillation/DistillationProcess.
 import DistillationData from "../components/destillation/DistillationData.vue";
 import { distillationFormValidation } from "@/helpers/formsValidation";
 import { initialDistillationForm } from "@/helpers/formsInitialState";
+import store from "@/store/index";
 
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
 
@@ -43,6 +44,18 @@ import DOMPurify from "dompurify";
 export default {
   name: "AddDistillationPage",
   components: { DistillationPlant, DistillationProcess, DistillationData },
+
+  // Navigation guard that handles the logic before navigating to this route
+  beforeRouteEnter(to, from, next) {
+    //check if the route comes from another named route, then update the store
+    if (from && from.name) {
+      store.dispatch("setComingFromRoute", true);
+    } else {
+      store.dispatch("setComingFromRoute", false);
+    }
+    next();
+  },
+
   setup() {
     // Vuex store instance
     const store = useStore();

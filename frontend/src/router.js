@@ -60,9 +60,10 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/add-distillation",
+      path: "/add-distillation/:id?",
       name: "AddDistillationPage",
       component: AddDistillationPage,
+      props: true,
       meta: { requiresAuth: true },
     },
     {
