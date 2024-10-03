@@ -20,6 +20,7 @@ const plantSchema = gql`
     harvestStartTime: String
     harvestEndTime: String
     plantWeight: Float!
+    availableWeight: Float!
     plantState: String!
     dryingTime: Int
     plantAge: Int
@@ -37,6 +38,7 @@ const plantSchema = gql`
     harvestStartTime: String
     harvestEndTime: String
     plantWeight: Float!
+    availableWeight: Float!
     plantState: String!
     dryingTime: Int
     plantAge: Int

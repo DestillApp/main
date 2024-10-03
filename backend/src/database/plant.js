@@ -22,6 +22,7 @@ const plantSchema = new Schema({
   harvestStartTime: { type: String, required: false },
   harvestEndTime: { type: String, required: false },
   plantWeight: { type: Number, required: true },
+  availableWeight: { type: Number, required: true },
   plantState: { type: String, required: true },
   dryingTime: { type: Number, required: false },
   plantAge: { type: Number, required: false },

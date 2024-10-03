@@ -129,6 +129,9 @@ const plantResolver = {
         plantWeight: plantInput.plantWeight
           ? Number(DOMPurify.sanitize(plantInput.plantWeight))
           : null,
+        availableWeight: plantInput.plantWeight
+          ? Number(DOMPurify.sanitize(plantInput.plantWeight))
+          : null,
         plantState: DOMPurify.sanitize(plantInput.plantState),
         dryingTime: plantInput.dryingTime
           ? Number(DOMPurify.sanitize(plantInput.dryingTime))
@@ -169,6 +172,9 @@ const plantResolver = {
         harvestEndTime: DOMPurify.sanitize(plantInput.harvestEndTime),
         plantWeight: plantInput.plantWeight
           ? Number(DOMPurify.sanitize(plantInput.plantWeight))
+          : null,
+        availableWeight: plantInput.availableWeight
+          ? Number(DOMPurify.sanitize(plantInput.availableWeight))
           : null,
         plantState: DOMPurify.sanitize(plantInput.plantState),
         dryingTime: plantInput.dryingTime
