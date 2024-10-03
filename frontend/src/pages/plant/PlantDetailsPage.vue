@@ -27,9 +27,9 @@
             Usuń
           </button>
           <!-- Modal for deleting the plant -->
-          <plant-delete-modal v-if="isModalOpen" :plantName="plantDetails.plantName" :plantPart="plantDetails.plantPart"
+          <delete-item-modal v-if="isModalOpen" :plantName="plantDetails.plantName" :plantPart="plantDetails.plantPart"
             @close-modal="closeDeleteModal" @close-delete-modal="closeDeleteModal"
-            @delete-plant="deletePlant"></plant-delete-modal>
+            @delete-plant="deletePlant"></delete-item-modal>
         </div>
       </div>
       <!-- Display additional plant data -->
@@ -87,7 +87,7 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 
-import PlantDeleteModal from "@/components/plant/PlantDeleteModal.vue";
+import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant.js";
@@ -103,7 +103,7 @@ import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
  */
 export default {
   name: "PlantDetailsPage",
-  components: { PlantDeleteModal, BaseButton },
+  components: { DeleteItemModal, BaseButton },
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();

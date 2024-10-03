@@ -1,46 +1,92 @@
 //no arch docs no code docs
+// refreshing after deleting the distillation
 <template>
-    <div>
-        <!-- Title for the distillation list -->
-        <h3 class="distillation_list--title">Destylacje w toku</h3>
-        <!-- Loading spinner while data is being fetched -->
-        <v-progress-circular v-if="isLoading" color="var(--secondary-color-distillation)" :size="60" :width="6"
-            indeterminate></v-progress-circular>
-        <!-- Distillation list -->
-        <ul v-if="!isLoading && distillationsList.length >= 1" class="distillation_list">
-            <!-- Iterate through distillationList and display each distillation's data -->
-            <li v-for="distillation in distillationsList" :key="distillation.id" class="distillation">
-                <div class="distillation_data">
-                    <div class="distillation_type">
-                        <p class="distillation_type_state">typ destylacji:</p>
-                        {{ distillation.distillationType }}
-                    </div>
-                    <div class="distillation_date">
-                        data destylacji: {{ distillation.distillationDate }}
-                    </div>
-                </div>
-                <div class="plant_identification">
-                    <div class="plant_name">{{ distillation.choosedPlant.name }}</div>
-                    <div class="plant_part">{{ distillation.choosedPlant.part }}</div>
-                </div>
-                <div class="distillation_buttons">
-                    <router-link :to="{ name: 'DistillationDetailsPage', params: { page: page, id: distillation._id } }"
-                        class="distillation_button--details">
-                        <button>Zobacz szczegóły</button>
-                    </router-link>
-                    <button class="distillation_button--delete">Usuń</button>
-                </div>
-            </li>
-        </ul>
-        <!-- Message displayed when no plants are available -->
-        <div v-if="!isLoading && distillationsList.length < 1">
-            brak destylacji w toku...
+  <div>
+    <!-- Title for the distillation list -->
+    <h3 class="distillation_list--title">Destylacje w toku</h3>
+    <!-- Loading spinner while data is being fetched -->
+    <v-progress-circular
+      v-if="isLoading"
+      color="var(--secondary-color-distillation)"
+      :size="60"
+      :width="6"
+      indeterminate
+    ></v-progress-circular>
+    <!-- Distillation list -->
+    <ul
+      v-if="!isLoading && distillationsList.length >= 1"
+      class="distillation_list"
+    >
+      <!-- Iterate through distillationList and display each distillation's data -->
+      <li
+        v-for="distillation in distillationsList"
+        :key="distillation.id"
+        class="distillation"
+      >
+        <div class="distillation_data">
+          <div class="distillation_type">
+            <p class="distillation_type_state">typ destylacji:</p>
+            {{ distillation.distillationType }}
+          </div>
+          <div class="distillation_date">
+            data destylacji: {{ distillation.distillationDate }}
+          </div>
         </div>
-        <!-- Pagination for navigating distillation list -->
-        <v-pagination v-if="!isLoading && distillationsAmount > distillationsPerPage" v-model="page"
-            :length="paginationLength" rounded="circle" :total-visible="4" :active-color="`var(--secondary-color)`"
-            class="distillation_pagination"></v-pagination>
+        <div class="plant_identification">
+          <div class="plant_name">{{ distillation.choosedPlant.name }}</div>
+          <div class="plant_part">{{ distillation.choosedPlant.part }}</div>
+        </div>
+        <div class="distillation_buttons">
+          <router-link
+            :to="{
+              name: 'DistillationDetailsPage',
+              params: { page: page, id: distillation._id },
+            }"
+            class="distillation_button--details"
+          >
+            <button>Zobacz szczegóły</button>
+          </router-link>
+          <button
+            @click="
+              openDeleteModal(
+                distillation._id,
+                distillation.choosedPlant.name,
+                distillation.choosedPlant.part,
+                distillation.distillationDate
+              )
+            "
+            class="distillation_button--delete"
+          >
+            Usuń
+          </button>
+        </div>
+      </li>
+    </ul>
+    <!-- Delete distillation modal -->
+    <delete-item-modal
+      v-if="isModalOpen"
+      :plantName="plantName"
+      :plantPart="plantPart"
+      :distillationDate="distillationDate"
+      @close-modal="closeDeleteModal"
+      @close-delete-modal="closeDeleteModal"
+      @delete-plant="deleteDistillation"
+    ></delete-item-modal>
+    <!-- Message displayed when no plants are available -->
+    <div v-if="!isLoading && distillationsList.length < 1">
+      brak destylacji w toku...
     </div>
+    <!-- Pagination for navigating distillation list -->
+    <v-pagination
+      v-if="!isLoading && distillationsAmount > distillationsPerPage"
+      v-model="page"
+      :length="paginationLength"
+      rounded="circle"
+      :total-visible="4"
+      :active-color="`var(--secondary-color)`"
+      class="distillation_pagination"
+    ></v-pagination>
+  </div>
 </template>
 
 <script>
@@ -49,6 +95,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { scrollToTop } from "@/helpers/displayHelpers";
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
+import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 
 export default {
   name: "InProgressDistillationsPage",
@@ -63,7 +110,13 @@ export default {
 
     // Reactive references for distillation data
     const distillationsList = ref([]);
-    // const selectedDistillationId = ref(null);
+    const selectedDistillationId = ref(null);
+    const plantName = ref(null);
+    const plantPart = ref(null);
+    const distillationDate = ref(null);
+
+    // Reactive reference to track if the delete modal is open
+    const isModalOpen = ref(false);
 
     const distillationsAmount = ref(null);
     const page = ref(Number(route.params.page));
@@ -131,13 +184,80 @@ export default {
       scrollToTop();
     });
 
+    /**
+     * @function openDeleteModal
+     * @description Open the delete modal for a specific plant.
+     * @param {String} id - The ID of the plant to delete.
+     * @param {String} name - The name of the plant.
+     * @param {String} part - The part of the plant.
+     * @param {String} date - Distillation date.
+     */
+    const openDeleteModal = (id, name, part, date) => {
+      selectedDistillationId.value = id;
+      plantName.value = name;
+      plantPart.value = part;
+      distillationDate.value = date;
+      isModalOpen.value = true;
+    };
+
+    /**
+     * @function closeDeleteModal
+     * @description Close the delete modal.
+     */
+    const closeDeleteModal = () => {
+      selectedDistillationId.value = null;
+      plantName.value = null;
+      plantPart.value = null;
+      distillationDate.value = null;
+      isModalOpen.value = false;
+    };
+
+    /**
+     * @function
+     * @description Remove the deleted plant from the plant list.
+     * @param {String} id - The ID of the deleted plant.
+     */
+    const deleteDistillationFromList = (id) => {
+      distillationsList.value = distillationsList.value.filter(
+        (plant) => plant._id !== id
+      );
+    };
+
+    /**
+     * @async
+     * @function deletePlant
+     * @description Delete the selected plant from the list.
+     * @returns {Promise<void>}
+     */
+    const deleteDistillation = async () => {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: DELETE_DISTILLATION,
+          variables: { id: selectedDistillationId.value },
+        });
+        if (data.deleteDistillation) {
+            deleteDistillationFromList(selectedDistillationId.value);
+        }
+        closeDeleteModal();
+      } catch (error) {
+        console.error("Failed to delete plant:", error);
+      }
+    };
+
     return {
       distillationsList,
       isLoading,
+      isModalOpen,
+      plantName,
+      plantPart,
+      distillationDate,
       distillationsAmount,
       page,
       distillationsPerPage,
       paginationLength,
+      openDeleteModal,
+      closeDeleteModal,
+      deleteDistillation,
     };
   },
 };

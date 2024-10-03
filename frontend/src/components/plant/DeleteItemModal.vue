@@ -4,15 +4,17 @@
   <base-modal>
     <base-card class="card">
       <div class="container">
-        <!-- Message asking user to confirm plant deletion -->
-        <div class="text">
+        <!-- Message asking user to confirm item deletion -->
+        <div class="text" v-if="!distillationDate">
           Czy chcesz usunąć {{ nameOfPlant }} {{ plantPart }} z magazynu?
+        </div>
+        <div class="text" v-if="distillationDate">
+          Czy chcesz usunąć destylacje <br> {{ nameOfPlant }} {{ plantPart }} z dnia
+          {{ distillationDate }}?
         </div>
         <div class="buttons">
           <!-- Button to confirm deletion -->
-          <base-button class="button--yes" @click="deleteItem"
-            >Tak</base-button
-          >
+          <base-button class="button--yes" @click="deleteItem">Tak</base-button>
           <!-- Button to cancel deletion -->
           <base-button class="button--no" @click="closeDeleteModal"
             >Nie</base-button
@@ -38,12 +40,11 @@ import BaseButton from "@/ui/BaseButton.vue";
  * @emits delete-plant - Event emitted when the user confirms the plant deletion.
  */
 export default {
-  name: "DeleteModal",
+  name: "DeleteItemModal",
   components: { BaseModal, BaseButton },
-  props: ["plantName", "plantPart"],
+  props: ["plantName", "plantPart", "distillationDate"],
   emits: ["close-delete-modal", "delete-plant"],
   setup(props, context) {
-    
     // Reactive reference for the lowercase version of plant name.
     const nameOfPlant = ref(props.plantName.toLowerCase());
 

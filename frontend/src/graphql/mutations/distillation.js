@@ -29,3 +29,10 @@ export const CREATE_DISTILLATION = gql`
     }
   }
 `;
+
+// GraphQL mutation to delete plant by ID
+export const DELETE_DISTILLATION = gql`
+  mutation DeleteDistillation($id: ID!) {
+    deleteDistillation(id: $id)
+  }
+`;

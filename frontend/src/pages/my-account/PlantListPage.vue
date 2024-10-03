@@ -1,6 +1,7 @@
 // after deleting changing the amount of the plants (test pagination)
 // searching the specific plant (?)
 // filter by list length, when plant was added etc.... (?)
+// refreshing after deleting the distillation
 // no docs
 <template>
   <div>
@@ -52,15 +53,15 @@
         </div>
       </li>
     </ul>
-    <!-- Delete plant modal -->
-    <plant-delete-modal
+    <!-- Delete item modal -->
+    <delete-item-modal
       v-if="isModalOpen"
       :plantName="plantName"
       :plantPart="plantPart"
       @close-modal="closeDeleteModal"
       @close-delete-modal="closeDeleteModal"
       @delete-plant="deletePlant"
-    ></plant-delete-modal>
+    ></delete-item-modal>
     <!-- Message displayed when no plants are available -->
     <div v-if="!isLoading && plantList.length < 1">magazyn jest pusty...</div>
     <!-- Pagination for navigating plant list -->
@@ -81,7 +82,7 @@ import { ref, onMounted, watch, computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 
-import PlantDeleteModal from "@/components/plant/PlantDeleteModal.vue";
+import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
@@ -96,7 +97,7 @@ import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 export default {
   name: "PlantListPage",
-  components: { PlantDeleteModal },
+  components: { DeleteItemModal },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
@@ -181,7 +182,7 @@ export default {
     });
 
     /**
-     * @function
+     * @function openDeleteModal
      * @description Open the delete modal for a specific plant.
      * @param {String} id - The ID of the plant to delete.
      * @param {String} name - The name of the plant.
@@ -195,7 +196,7 @@ export default {
     };
 
     /**
-     * @function
+     * @function closeDeleteModal
      * @description Close the delete modal.
      */
     const closeDeleteModal = () => {
