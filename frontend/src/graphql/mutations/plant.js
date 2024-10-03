@@ -16,6 +16,7 @@ export const CREATE_PLANT = gql`
       harvestStartTime
       harvestEndTime
       plantWeight
+      availableWeight
       plantState
       dryingTime
       plantAge
@@ -38,6 +39,7 @@ export const UPDATE_PLANT = gql`
       harvestStartTime
       harvestEndTime
       plantWeight
+      availableWeight
       plantState
       dryingTime
       plantAge

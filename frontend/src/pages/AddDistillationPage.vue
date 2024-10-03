@@ -1,4 +1,5 @@
 // no arch docs and code comments
+// check form validation
 <template>
   <base-card>
     <!-- Distillation form -->
@@ -143,6 +144,10 @@ export default {
         return;
       }
     };
+
+    // const changeAvailableWeight = () => {
+
+    // };
 
     const saveDistillation = async () => {
       try {

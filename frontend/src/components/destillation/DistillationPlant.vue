@@ -67,12 +67,19 @@ database
       id="weightForDistillation"
       placeholder="kg"
       min="0.1"
+      :max="formData.choosedPlant.availableWeight"
       step="0.1"
     >
       <template v-slot:unit>
         <div v-if="formData.weightForDistillation !== null">kg</div>
       </template>
       <template v-slot:message>
+        <span
+          v-if="
+            formData.weightForDistillation >
+            formData.choosedPlant.availableWeight
+          "
+        >Brak wystarczającej ilości surowca z magazynie</span>
         <span
           v-if="
             isFormValid === false && formData.weightForDistillation === null
@@ -168,7 +175,7 @@ database
 <script>
 import { useStore } from "vuex";
 import { onMounted, computed, watch, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import {
@@ -214,6 +221,7 @@ export default {
     // Name of the vuex store module
     const storeName = "distillation";
 
+    const router = useRouter();
     const route = useRoute();
 
     const searchQuery = ref("");
@@ -261,7 +269,7 @@ export default {
     // Fetch initial data from local storage on component mount
     onMounted(async () => {
       if (comingFromRoute.value) {
-          if (route.params.id) {
+        if (route.params.id) {
           const plantData = await getPlantData();
           store.dispatch("distillation/setChoosedPlant", {
             key: "id",
@@ -277,7 +285,7 @@ export default {
           });
           store.dispatch("distillation/setChoosedPlant", {
             key: "availableWeight",
-            value: plantData.plantWeight,
+            value: plantData.availableWeight,
           });
           store.dispatch("distillation/setChoosedPlant", {
             key: "harvestDate",
@@ -287,11 +295,11 @@ export default {
             key: "buyDate",
             value: plantData.plantBuyDate,
           });
-            plant.value = formData.value.choosedPlant.name;
+          plant.value = formData.value.choosedPlant.name;
           console.log("id", route.params.id);
           console.log("plantData", plantData);
-          } else {
-            return;
+        } else {
+          return;
         }
       } else {
         fetchData("id", true);
@@ -332,13 +340,14 @@ export default {
       setPlantState("id", value._id);
       setPlantState("name", value.plantName);
       setPlantState("part", value.plantPart);
-      setPlantState("availableWeight", value.plantWeight);
+      setPlantState("availableWeight", value.availableWeight);
       setPlantState("harvestDate", value.harvestDate);
       setPlantState("buyDate", value.plantBuyDate);
       searchQuery.value = "";
       plant.value = value.plantName;
       plants.value = [];
       console.log("setPlant", plant, input);
+      router.replace({ name: 'AddDistillationPage', params: { id: value._id } });
     };
 
     /**
@@ -357,7 +366,7 @@ export default {
             fields: [
               "plantName",
               "plantPart",
-              "plantWeight",
+              "availableWeight",
               "harvestDate",
               "plantBuyDate",
               "_id",
@@ -389,6 +398,7 @@ export default {
         setPlantState("harvestDate", "");
         setPlantState("buyDate", "");
       }
+      router.replace({ name: 'AddDistillationPage', params: { id: null } });
       searchQuery.value = value;
       plant.value = searchQuery.value;
       if (timeout.value) {
@@ -472,12 +482,6 @@ export default {
         }
       }
     );
-
-    // onBeforeRouteUpdate((to, from, next) => {
-    //   console.log("It is working!");
-    //   console.log(to, from);
-    //   next();
-    // });
 
     return {
       storeName,

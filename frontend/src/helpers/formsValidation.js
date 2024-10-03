@@ -74,8 +74,16 @@ export const distillationFormValidation = (form) => {
     isFormValid = false;
   }
 
-  // Additional validation for soaked plants
+  if (
+    !form.distillationTime.distillationHours &&
+    !form.distillationTime.distillationMinutes
+  ) {
+    isFormValid = false;
+    console.log("no");
+  }
+
   if (form.isPlantSoaked) {
+    // Additional validation for soaked plants
     if (form.soakingTime === null || form.weightAfterSoaking === null) {
       isFormValid = false;
     }

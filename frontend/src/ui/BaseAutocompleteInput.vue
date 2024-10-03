@@ -1,4 +1,4 @@
-
+// no arch docs and no code docs
 <template>
   <!-- Container for the input field -->
   <div class="input-wrap">
@@ -102,7 +102,7 @@
               zbiór: <span>{{ result.harvestDate }}</span>
             </div>
             <div class="plant_small">
-              na stanie: <span>{{ result.plantWeight }} kg</span>
+              na stanie: <span>{{ result.availableWeight }} kg</span>
             </div>
           </div>
         </li>

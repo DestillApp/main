@@ -19,7 +19,7 @@
       step="1"
     >
       <template v-slot:unit>
-        <div v-if="!formData.waterForDistillation">l</div>
+        <div v-if="formData.waterForDistillation">l</div>
       </template>
       <template v-slot:message>
         <span
@@ -135,12 +135,9 @@ export default {
       setIntegerNumber(store, value, id, storeName);
     };
 
+
     const saveTime = (value, key) => {
-      if (!value || isNaN(value)) {
-        store.dispatch("distillation/setValue", { input: key, value: null });
-       } else {
-        store.dispatch("distillation/setDistillationTime", { key, value });
-      }
+      store.dispatch('distillation/setDistillationTime', { key, value });
     };
 
     return {

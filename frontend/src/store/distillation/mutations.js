@@ -40,9 +40,14 @@ export default {
    * @param {any} payload.value - The new value for the key field.
    */
   changeDistillationTime(state, { key, value }) {
-    const integerNumber = parseInt(value);
-    state.distillationForm.distillationTime[key] = integerNumber;
-    localStorage.setItem(key, JSON.stringify(integerNumber));
+    if (!value || isNaN(value)) {
+      state.distillationForm.distillationTime[key] = null;
+      localStorage.setItem(key, JSON.stringify(null));
+    } else {
+      const integerNumber = parseInt(value);
+      state.distillationForm.distillationTime[key] = integerNumber;
+      localStorage.setItem(key, JSON.stringify(integerNumber));
+    }
   },
 
   /**

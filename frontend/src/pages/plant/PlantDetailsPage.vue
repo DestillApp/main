@@ -1,6 +1,6 @@
 // no docs 
 // redirecting to the previous plant list page (now it is 1)
-// miesiąc, miesiące, miesięcy - prblem with this value
+// miesiąc, miesiące, miesięcy - problem with this value, not displaying
 <template>
   <div>
     <!-- Spinner that shows when data is loading -->
@@ -12,7 +12,7 @@
         <!-- Display available stock -->
         <div class="plant_instock">
           <p class="plant_instock--state">na stanie:</p>
-          <br />{{ plantDetails.plantWeight }} kg
+          <br />{{ plantDetails.availableWeight }} kg
         </div>
         <!-- Display plant identification information -->
         <div class="plant_identification">

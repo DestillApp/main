@@ -11,6 +11,7 @@ export const initialPlantForm = {
   harvestStartTime: "10:00",
   harvestEndTime: "15:00",
   plantWeight: null,
+  availableWeight: null,
   plantState: "",
   dryingTime: null,
   plantAge: null,

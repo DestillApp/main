@@ -21,7 +21,7 @@
         <div class="plant_data">
           <div class="plant_weight">
             <p class="plant_weight_state">na stanie:</p>
-            {{ plant.plantWeight }} kg
+            {{ plant.availableWeight }} kg
           </div>
           <div class="plant_date" v-if="plant.harvestDate !== null">
             zbiór: {{ plant.harvestDate }}
@@ -145,7 +145,7 @@ export default {
             fields: [
               "plantName",
               "plantPart",
-              "plantWeight",
+              "availableWeight",
               "harvestDate",
               "plantBuyDate",
               "_id",

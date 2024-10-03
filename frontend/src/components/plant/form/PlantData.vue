@@ -2,30 +2,59 @@
   <!-- Container for the plant data form -->
   <div class="plant_data">
     <!-- Input field for entering the plant weight -->
-    <base-text-input
-      v-model="formData.plantWeight"
-      type="number"
-      classType="number"
-      :invalidInput="isFormValid === false && formData.plantWeight === null"
-      :storeName="storeName"
-      @change:modelValue="setNumber"
-      @set:keyboard="setKeyboardFormatedNumber"
-      label="Waga surowca"
-      id="plantWeight"
-      placeholder="kg"
-      min="0.1"
-      step="0.1"
-    >
-      <template v-slot:unit>
-        <div v-if="formData.plantWeight !== null">kg</div>
-      </template>
-      <template v-slot:message>
-        <span v-if="isFormValid === false && formData.plantWeight === null"
-          >Wpisz wagę surowca</span
-        >
-        <span v-else>&nbsp;</span>
-      </template>
-    </base-text-input>
+    <div class="plant__weights">
+      <base-text-input
+        v-model="formData.plantWeight"
+        type="number"
+        classType="number"
+        :invalidInput="isFormValid === false && !formData.plantWeight"
+        :storeName="storeName"
+        @change:modelValue="setNumber"
+        @set:keyboard="setKeyboardFormatedNumber"
+        label="Waga surowca"
+        id="plantWeight"
+        placeholder="kg"
+        min="0.1"
+        step="0.1"
+      >
+        <template v-slot:unit>
+          <div v-if="formData.plantWeight">kg</div>
+        </template>
+        <template v-slot:message>
+          <span v-if="isFormValid === false && !formData.plantWeight"
+            >Wpisz wagę surowca</span
+          >
+          <span v-else>&nbsp;</span>
+        </template>
+      </base-text-input>
+      <base-text-input
+        v-if="isEditing"
+        v-model="formData.availableWeight"
+        type="number"
+        classType="number"
+        :invalidInput="
+          isFormValid === false && !formData.availableWeight
+        "
+        :storeName="storeName"
+        @change:modelValue="setNumber"
+        @set:keyboard="setKeyboardFormatedNumber"
+        label="Waga surowca na stanie"
+        id="availableWeight"
+        placeholder="kg"
+        min="0.1"
+        step="0.1"
+      >
+        <template v-slot:unit>
+          <div v-if="formData.availableWeight">kg</div>
+        </template>
+        <template v-slot:message>
+          <span v-if="isFormValid === false && !formData.availableWeight"
+            >Wpisz wagę surowca na stanie</span
+          >
+          <span v-else>&nbsp;</span>
+        </template>
+      </base-text-input>
+    </div>
     <!-- Container for plant state inputs -->
     <div class="plant_state">
       <!-- Radio input for plant state selection -->
@@ -37,7 +66,7 @@
         class="state_radioinput"
       >
         <template v-slot:message>
-          <span v-if="isFormValid === false && formData.plantState === ''"
+          <span v-if="isFormValid === false && !formData.plantState"
             >Wybierz stan surowca</span
           >
           <span v-else>&nbsp;</span>
@@ -49,7 +78,7 @@
         v-model="formData.dryingTime"
         type="number"
         classType="number"
-        :invalidInput="isFormValid === false && formData.dryingTime === null"
+        :invalidInput="isFormValid === false && !formData.dryingTime"
         :storeName="storeName"
         @update:modelValue="setInteger"
         @set:keyboard="setKeyboardIntegerNumber"
@@ -60,10 +89,10 @@
         step="1"
       >
         <template v-slot:unit>
-          <div v-if="formData.dryingTime !== null">h</div>
+          <div v-if="formData.dryingTime">h</div>
         </template>
         <template v-slot:message>
-          <span v-if="isFormValid === false && formData.dryingTime === null"
+          <span v-if="isFormValid === false && !formData.dryingTime"
             >Wpisz czas podsuszania</span
           >
           <span v-else>&nbsp;</span>
@@ -77,7 +106,7 @@
         v-model="formData.plantAge"
         type="number"
         classType="number"
-        :invalidInput="isFormValid === false && formData.plantAge === null"
+        :invalidInput="isFormValid === false && !formData.plantAge"
         :storeName="storeName"
         @update:modelValue="setInteger"
         @set:keyboard="setKeyboardIntegerNumber"
@@ -87,7 +116,7 @@
         step="1"
       >
         <template v-slot:unit>
-          <div v-if="formData.plantAge !== null">
+          <div v-if="formData.plantAge">
             <div v-if="formData.plantAge === 1">miesiąc</div>
             <div v-if="[2, 3, 4].includes(parseInt(formData.plantAge))">
               miesiące
@@ -98,7 +127,7 @@
           </div>
         </template>
         <template v-slot:message>
-          <span v-if="isFormValid === false && formData.plantAge === null"
+          <span v-if="isFormValid === false && !formData.plantAge"
             >Wpisz wiek surowca</span
           >
           <span v-else>&nbsp;</span>
@@ -130,7 +159,7 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 export default {
   name: "PlantData",
   components: { BaseTextInput },
-  props: ["isFormValid", "isResetting"],
+  props: ["isFormValid", "isResetting", "isEditing"],
   setup(props) {
     // Options for plant state
     const states = reactive(["świeży", "podsuszony", "suchy"]);
@@ -149,6 +178,7 @@ export default {
     // Fetch initial data from local storage on component mount
     onMounted(() => {
       store.dispatch("plant/fetchLocalStorageData", "plantWeight");
+      store.dispatch("plant/fetchLocalStorageData", "availableWeight");
       store.dispatch("plant/fetchLocalStorageData", "plantState");
       store.dispatch("plant/fetchLocalStorageData", "dryingTime");
       store.dispatch("plant/fetchLocalStorageData", "plantAge");
@@ -258,6 +288,12 @@ export default {
   gap: 30px;
   justify-content: flex-start;
   text-align: left;
+}
+
+.plant__weights {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
 }
 
 .plant_state {

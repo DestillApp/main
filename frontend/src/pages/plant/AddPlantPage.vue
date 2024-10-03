@@ -1,6 +1,7 @@
 // plant api?????
 // documentation without helpers and ui
-// change docs
+// change code docs
+// check validation
 <template>
   <base-card>
     <!-- Plant form -->
@@ -104,6 +105,9 @@ export default {
             harvestStartTime: DOMPurify.sanitize(form.harvestStartTime),
             harvestEndTime: DOMPurify.sanitize(form.harvestEndTime),
             plantWeight: form.plantWeight
+              ? Number(DOMPurify.sanitize(form.plantWeight))
+              : null,
+            availableWeight: form.plantWeight
               ? Number(DOMPurify.sanitize(form.plantWeight))
               : null,
             plantState: DOMPurify.sanitize(form.plantState),

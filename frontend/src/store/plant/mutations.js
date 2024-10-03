@@ -65,11 +65,17 @@ export default {
    * @param {Object} state - The current state object.
    */
   changeHarvestRange(state) {
-    const startMinutes = getMinutesFromTime(state.plantForm.harvestStartTime);
-    const endMinutes = getMinutesFromTime(state.plantForm.harvestEndTime);
-    const range = [startMinutes, endMinutes];
-    state.plantForm.harvestRange = range;
-    localStorage.setItem("harvestRange", JSON.stringify(range));
+    if (state.plantForm.harvestStartTime || state.plantForm.harvestEndTime) {
+      const startMinutes = getMinutesFromTime(state.plantForm.harvestStartTime);
+      const endMinutes = getMinutesFromTime(state.plantForm.harvestEndTime);
+      const range = [startMinutes, endMinutes];
+      state.plantForm.harvestRange = range;
+      localStorage.setItem("harvestRange", JSON.stringify(range));
+    } else {
+      const range = [600, 900];
+      state.plantForm.harvestRange = range;
+      localStorage.setItem("harvestRange", JSON.stringify(range));
+    }
   },
 
   //Functions used in plant data

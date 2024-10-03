@@ -6,7 +6,7 @@ export const GET_PLANTS = gql`
     getPlants(fields: $fields, name: $name) {
       plantName
       plantPart
-      plantWeight
+      availableWeight
       harvestDate
       plantBuyDate
       _id
@@ -30,6 +30,7 @@ export const GET_PLANT_BY_ID = gql`
       harvestStartTime
       harvestEndTime
       plantWeight
+      availableWeight
       plantState
       dryingTime
       plantAge
@@ -44,7 +45,7 @@ export const GET_BASIC_PLANT_BY_ID = gql`
       _id
       plantName
       plantPart
-      plantWeight
+      availableWeight
       plantBuyDate
       harvestDate
     }

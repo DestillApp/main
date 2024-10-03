@@ -1,4 +1,5 @@
 // change docs
+// problem with displaying countryOfOrigin after mounting the component!
 <template>
   <base-card>
     <!-- Loading spinner while data is being fetched -->
@@ -25,6 +26,7 @@
       <plant-data
         :isFormValid="isFormValid"
         :isResetting="isResetting"
+        :isEditing="isEditing"
       ></plant-data>
       <!-- Button to submit the plant form -->
       <base-button type="submit">Edytuj</base-button>
@@ -107,6 +109,8 @@ export default {
     const isLoading = ref(true);
     //Reactive reference to track when component is resetting
     const isResetting = ref(false);
+    //Reactive reference to pass that this is a edit form
+    const isEditing = ref(true);
 
     // Using GraphQL mutation for creating a new plant
     const { mutate: updatePlant } = useMutation(UPDATE_PLANT);
@@ -166,6 +170,7 @@ export default {
         setValue("harvestStartTime", plantDetails.value.harvestStartTime);
         setValue("harvestEndTime", plantDetails.value.harvestEndTime);
         setValue("plantWeight", plantDetails.value.plantWeight);
+        setValue("availableWeight", plantDetails.value.availableWeight);
         setValue("plantState", plantDetails.value.plantState);
         setValue("dryingTime", plantDetails.value.dryingTime);
         setValue("plantAge", plantDetails.value.plantAge);
@@ -208,6 +213,9 @@ export default {
             harvestEndTime: DOMPurify.sanitize(form.harvestEndTime),
             plantWeight: form.plantWeight
               ? Number(DOMPurify.sanitize(form.plantWeight))
+              : null,
+            availableWeight: form.availableWeight
+              ? Number(DOMPurify.sanitize(form.availableWeight))
               : null,
             plantState: DOMPurify.sanitize(form.plantState),
             dryingTime: form.dryingTime
@@ -266,7 +274,10 @@ export default {
           return;
         } else {
           // If valid, navigate back to the add distillation page
-          router.push({ name: "AddDistillationPage" });
+          router.push({
+            name: "AddDistillationPage",
+            params: { id: plantId.value },
+          });
         }
       } catch (error) {
         return;
@@ -296,6 +307,7 @@ export default {
       isFormValid,
       isLoading,
       isResetting,
+      isEditing,
     };
   },
 };
