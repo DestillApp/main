@@ -64,6 +64,10 @@ const distillationSchema = gql`
     distillationTime: DistillationTimeInput!
   }
 
+  type Query {
+    getDistillations(fields: [String]!, name: String): [Distillation]
+  }
+
   type Mutation {
     createDistillation(distillationInput: DistillationInput!): Distillation!
     # updateDistillation(id: ID!, distillationInput: DistillationInput!): Distillation!

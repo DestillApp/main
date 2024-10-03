@@ -206,6 +206,30 @@ const plantResolver = {
         return false;
       }
     },
+
+    updateAvailableWeight: async (_, { input }) => {
+      try {
+        const { id, availableWeight } = input;
+
+        // Find plant by ID and update availableWeight
+        const updatedPlant = await Plant.findByIdAndUpdate(
+          id,
+          { availableWeight: availableWeight },
+          { new: true } // Returns the updated document
+        );
+
+        if (!updatedPlant) {
+          throw new Error("Plant not found");
+        }
+
+        return updatedPlant;
+      } catch (error) {
+        throw new Error(
+          "Failed to update plant's available weight: ",
+          error.message
+        );
+      }
+    },
   },
 };
 

@@ -9,6 +9,7 @@ const Distillation = require("../../database/distillation");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
+const formatDate = require("../../util/dateformater");
 
 // Utility function to filter data
 function filterDistillationData(data) {
@@ -23,6 +24,45 @@ function filterDistillationData(data) {
 }
 
 const distillationResolvers = {
+  Query: {
+    getDistillations: async (_, { fields, name }) => {
+      try {
+        // Build a projection object based on the fields argument
+        const projection = {};
+        fields.forEach((field) => {
+          projection[field] = 1;
+        });
+
+        // Build a filter object for potential filtering
+        const filter = {};
+
+        // If a name is provided, add it to the filter
+        if (name) {
+          filter["choosedPlant.name"] = { $regex: new RegExp(name, "i") }; // Case-insensitive search
+        }
+
+        // Fetch distillations with the specified fields and filters from the database
+        const distillations = await Distillation.find(filter, projection);
+
+        // Return the formatted result
+        return distillations.map((distillation) => {
+          const formattedDistillation = { ...distillation._doc }; // For Mongoose
+
+          //Formar specific date field
+          if (formattedDistillation.distillationDate) {
+            formattedDistillation.distillationDate = formatDate(
+              formattedDistillation.distillationDate
+            );
+          }
+
+          return formattedDistillation;
+        });
+      } catch (error) {
+        throw new Error("Failed to fetch distillations: " + error.message);
+      }
+    },
+  },
+
   Mutation: {
     /**
      * @async
