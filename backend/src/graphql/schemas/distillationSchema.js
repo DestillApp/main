@@ -71,7 +71,7 @@ const distillationSchema = gql`
   type Mutation {
     createDistillation(distillationInput: DistillationInput!): Distillation!
     # updateDistillation(id: ID!, distillationInput: DistillationInput!): Distillation!
-    # deleteDistillation(id: ID!): Boolean
+    deleteDistillation(id: ID!): Boolean
   }
 `;
 

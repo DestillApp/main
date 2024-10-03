@@ -171,6 +171,16 @@ const distillationResolvers = {
         throw new Error("Failed to create plant");
       }
     },
+
+    deleteDistillation: async (_, { id }) => {
+      try {
+        await Distillation.findByIdAndDelete(id);
+        return true;
+      } catch (error) {
+        console.error("Failed to delete distillation:", error);
+        return false;
+      }
+    },
   },
 };
 
