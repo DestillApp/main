@@ -23,6 +23,8 @@ const PlantListPage = () => import("./pages/my-account/PlantListPage.vue");
 const SavedDistillationsPage = () =>
   import("./pages/my-account/SavedDistillationsPage.vue");
 const PlantDetailsPage = () => import("./pages/plant/PlantDetailsPage.vue");
+const DistillationDetailsPage = () =>
+  import("./pages/distillation/DistillationDetailsPage.vue");
 
 // Create the router
 const router = createRouter({
@@ -79,9 +81,17 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         {
-          path: "distillations-in-progress",
+          path: "distillations-in-progress/:page",
           name: "InProgressDistillationsPage",
           component: InProgressDistillationsPage,
+          props: true,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "distillation-details/:page/:id",
+          name: "DistillationDetailsPage",
+          component: DistillationDetailsPage,
+          props: true,
           meta: { requiresAuth: true },
         },
         {

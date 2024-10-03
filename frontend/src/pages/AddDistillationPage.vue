@@ -31,11 +31,12 @@ import { initialDistillationForm } from "@/helpers/formsInitialState";
 import store from "@/store/index";
 
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
+import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant.js";
 
 import { useStore } from "vuex";
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
-import { onBeforeRouteLeave, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 import DOMPurify from "dompurify";
 
 /**
@@ -71,6 +72,7 @@ export default {
 
     // Router object for navigation
     const router = useRouter();
+    const route = useRoute();
 
     // Lifecycle hook to reset form validity on component mount
     onMounted(() => {
@@ -79,6 +81,10 @@ export default {
 
     // Using GraphQL mutation for creating a new plant
     const { mutate: createDistillation } = useMutation(CREATE_DISTILLATION);
+
+    // Using GraphQL mutation for updating the available weight
+    const { mutate: updateAvailableWeight } = useMutation(UPDATE_AVAILABLE_WEIGHT);
+
 
     /**
      * @async
@@ -145,9 +151,20 @@ export default {
       }
     };
 
-    // const changeAvailableWeight = () => {
-
-    // };
+    const changeAvailableWeight = async () => {
+      try {
+        const newWeight = distillationForm.value.choosedPlant.availableWeight - distillationForm.value.weightForDistillation ;
+        const { data } = await updateAvailableWeight({
+          input: {
+            id: route.params.id,
+            availableWeight: newWeight,
+          }
+        });
+        console.log("Changed available weight:", data.updateAvailableWeight);
+      } catch (error) {
+        console.error("Error changing form available weight", error);
+      }
+}
 
     const saveDistillation = async () => {
       try {
@@ -155,6 +172,7 @@ export default {
         if (!isFormValid.value) {
           return
         } else {
+          await changeAvailableWeight();
           router.push({ name: "InProgressDistillationsPage" });
         }
       } catch (error) {
@@ -169,6 +187,8 @@ export default {
         if (!isFormValid.value) {
           return;
         } else {
+          //change amount of available weight for distilled plant
+          await changeAvailableWeight();
           // If valid, navigate to the add distillation page
           router.push({ name: "AddResultsPage" });
         }

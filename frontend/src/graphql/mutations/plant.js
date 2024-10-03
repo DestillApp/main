@@ -53,3 +53,13 @@ export const DELETE_PLANT = gql`
     deletePlant(id: $id)
   }
 `;
+
+// GraphQL mutation to update available weight of plant after adding distillation to database
+export const UPDATE_AVAILABLE_WEIGHT = gql`
+  mutation UpdateAvailableWeight($input: UpdateAvailableWeightInput!) {
+    updateAvailableWeight(input: $input) {
+      _id
+      availableWeight
+    }
+  }
+`;

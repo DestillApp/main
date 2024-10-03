@@ -10,7 +10,7 @@
         </div>
         <div class="buttons">
           <!-- Button to confirm deletion -->
-          <base-button class="button--yes" @click="deletePlant"
+          <base-button class="button--yes" @click="deleteItem"
             >Tak</base-button
           >
           <!-- Button to cancel deletion -->
@@ -30,7 +30,7 @@ import BaseModal from "@/ui/BaseModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 
 /**
- * @component PlantDeleteModal
+ * @component DeleteModal
  * @description A confirmation modal for deleting a plant from the inventory.
  * @property {String} plantName - The name of the plant to be deleted.
  * @property {String} plantPart - The part of the plant to be deleted.
@@ -38,7 +38,7 @@ import BaseButton from "@/ui/BaseButton.vue";
  * @emits delete-plant - Event emitted when the user confirms the plant deletion.
  */
 export default {
-  name: "PlantDeleteModal",
+  name: "DeleteModal",
   components: { BaseModal, BaseButton },
   props: ["plantName", "plantPart"],
   emits: ["close-delete-modal", "delete-plant"],
@@ -48,10 +48,10 @@ export default {
     const nameOfPlant = ref(props.plantName.toLowerCase());
 
     /**
-     * @function deletePlant
+     * @function deleteItem
      * @description Emits the delete-plant event to confirm plant deletion.
      */
-    const deletePlant = () => {
+    const deleteItem = () => {
       context.emit("delete-plant");
     };
 
@@ -63,7 +63,7 @@ export default {
       context.emit("close-delete-modal");
     };
 
-    return { nameOfPlant, deletePlant, closeDeleteModal };
+    return { nameOfPlant, deleteItem, closeDeleteModal };
   },
 };
 </script>
