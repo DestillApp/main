@@ -1,7 +1,6 @@
 // after deleting changing the amount of the plants (test pagination)
 // searching the specific plant (?)
 // filter by list length, when plant was added etc.... (?)
-// refreshing after deleting the distillation
 // no docs
 <template>
   <div>
@@ -60,7 +59,7 @@
       :plantPart="plantPart"
       @close-modal="closeDeleteModal"
       @close-delete-modal="closeDeleteModal"
-      @delete-plant="deletePlant"
+      @delete-item="deletePlant"
     ></delete-item-modal>
     <!-- Message displayed when no plants are available -->
     <div v-if="!isLoading && plantList.length < 1">magazyn jest pusty...</div>

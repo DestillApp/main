@@ -20,6 +20,7 @@ import BaseTextInput from "./ui/BaseTextInput.vue";
 import BaseRadioInput from "./ui/BaseRadioInput.vue";
 import BaseModal from "./ui/BaseModal.vue";
 import DeleteItemModal from "./components/plant/DeleteItemModal.vue";
+import AskModal from "./components/AskModal.vue";
 
 // Apollo for graphql
 // HTTP connection to the API
@@ -73,6 +74,7 @@ app.component("base-text-input", BaseTextInput);
 app.component("base-radio-input", BaseRadioInput);
 app.component("base-modal", BaseModal);
 app.component("delete-item-modal", DeleteItemModal);
+app.component("ask-modal", AskModal);
 
 // Mount the Vue application to the DOM
 app.mount("#app");

@@ -1,5 +1,4 @@
 //no arch docs no code docs
-// refreshing after deleting the distillation
 <template>
   <div>
     <!-- Title for the distillation list -->
@@ -50,8 +49,10 @@
             @click="
               openDeleteModal(
                 distillation._id,
+                distillation.choosedPlant.id,
                 distillation.choosedPlant.name,
                 distillation.choosedPlant.part,
+                distillation.weightForDistillation,
                 distillation.distillationDate
               )
             "
@@ -70,8 +71,16 @@
       :distillationDate="distillationDate"
       @close-modal="closeDeleteModal"
       @close-delete-modal="closeDeleteModal"
-      @delete-plant="deleteDistillation"
+      @delete-item="deleteDistillation"
     ></delete-item-modal>
+    <ask-modal
+      v-if="isAskModalOpen"
+      :plantName="plantName"
+      :plantPart="plantPart"
+      :distillationWeight="distillationWeight"
+      @handle-yes="handleYes"
+      @close-modal="closeAskModal"
+    ></ask-modal>
     <!-- Message displayed when no plants are available -->
     <div v-if="!isLoading && distillationsList.length < 1">
       brak destylacji w toku...
@@ -96,6 +105,7 @@ import { useRoute, useRouter } from "vue-router";
 import { scrollToTop } from "@/helpers/displayHelpers";
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
+import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
 export default {
   name: "InProgressDistillationsPage",
@@ -111,16 +121,19 @@ export default {
     // Reactive references for distillation data
     const distillationsList = ref([]);
     const selectedDistillationId = ref(null);
+    const selectedPlantId = ref(null);
     const plantName = ref(null);
     const plantPart = ref(null);
+    const distillationWeight = ref(null);
     const distillationDate = ref(null);
 
     // Reactive reference to track if the delete modal is open
     const isModalOpen = ref(false);
+    const isAskModalOpen = ref(false);
 
     const distillationsAmount = ref(null);
     const page = ref(Number(route.params.page));
-    const distillationsPerPage = ref(10);
+    const distillationsPerPage = ref(5);
 
     // Reactive reference for loading state
     const isLoading = ref(true);
@@ -144,8 +157,10 @@ export default {
           fetchPolicy: "network-only",
           variables: {
             fields: [
+              "choosedPlant.id",
               "choosedPlant.name",
               "choosedPlant.part",
+              "weightForDistillation",
               "distillationType",
               "distillationDate",
               "_id",
@@ -192,10 +207,12 @@ export default {
      * @param {String} part - The part of the plant.
      * @param {String} date - Distillation date.
      */
-    const openDeleteModal = (id, name, part, date) => {
+    const openDeleteModal = (id, plantId, name, part, dWeight, date) => {
       selectedDistillationId.value = id;
+      selectedPlantId.value = plantId;
       plantName.value = name;
       plantPart.value = part;
+      distillationWeight.value = dWeight;
       distillationDate.value = date;
       isModalOpen.value = true;
     };
@@ -205,9 +222,6 @@ export default {
      * @description Close the delete modal.
      */
     const closeDeleteModal = () => {
-      selectedDistillationId.value = null;
-      plantName.value = null;
-      plantPart.value = null;
       distillationDate.value = null;
       isModalOpen.value = false;
     };
@@ -223,10 +237,14 @@ export default {
       );
     };
 
+    const openAskModal = () => {
+      isAskModalOpen.value = true;
+    };
+
     /**
      * @async
-     * @function deletePlant
-     * @description Delete the selected plant from the list.
+     * @function deleteDistillation
+     * @description Delete the selected distillation from the list.
      * @returns {Promise<void>}
      */
     const deleteDistillation = async () => {
@@ -236,7 +254,8 @@ export default {
           variables: { id: selectedDistillationId.value },
         });
         if (data.deleteDistillation) {
-            deleteDistillationFromList(selectedDistillationId.value);
+          deleteDistillationFromList(selectedDistillationId.value);
+          openAskModal();
         }
         closeDeleteModal();
       } catch (error) {
@@ -244,20 +263,55 @@ export default {
       }
     };
 
+    const closeAskModal = () => {
+      isAskModalOpen.value = false;
+      selectedDistillationId.value = null;
+      selectedPlantId.value = null;
+        distillationWeight.value = null;
+      plantName.value = null;
+      plantPart.value = null;
+    };
+
+    const addPlantWeight = async () => {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: CHANGE_AVAILABLE_WEIGHT,
+          variables: {
+            input: {
+              id: selectedPlantId.value,
+              availableWeight: distillationWeight.value,
+            },
+          },
+        });
+        console.log("Changed available weight:", data.changeAvailableWeight);
+      } catch (error) {
+        console.error("Failed to update awailable weight:", error);
+      }
+    };
+
+    const handleYes = async () => {
+      await addPlantWeight();
+      closeAskModal();
+    };
+
     return {
       distillationsList,
       isLoading,
       isModalOpen,
+      isAskModalOpen,
       plantName,
       plantPart,
       distillationDate,
       distillationsAmount,
+      distillationWeight,
       page,
       distillationsPerPage,
       paginationLength,
       openDeleteModal,
       closeDeleteModal,
+      closeAskModal,
       deleteDistillation,
+      handleYes,
     };
   },
 };

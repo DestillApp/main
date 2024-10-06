@@ -5,9 +5,11 @@ export const GET_DISTILLATIONS = gql`
   query GetDistillations($fields: [String]!, $name: String) {
     getDistillations(fields: $fields, name: $name) {
       choosedPlant {
+        id
         name
         part
       }
+      weightForDistillation
       distillationType
       distillationDate
       _id

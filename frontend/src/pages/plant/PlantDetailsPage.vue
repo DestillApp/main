@@ -29,7 +29,7 @@
           <!-- Modal for deleting the plant -->
           <delete-item-modal v-if="isModalOpen" :plantName="plantDetails.plantName" :plantPart="plantDetails.plantPart"
             @close-modal="closeDeleteModal" @close-delete-modal="closeDeleteModal"
-            @delete-plant="deletePlant"></delete-item-modal>
+            @delete-item="deletePlant"></delete-item-modal>
         </div>
       </div>
       <!-- Display additional plant data -->

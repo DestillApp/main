@@ -63,3 +63,13 @@ export const UPDATE_AVAILABLE_WEIGHT = gql`
     }
   }
 `;
+
+// GraphQL mutation to update available weight of plant after adding distillation to database
+export const CHANGE_AVAILABLE_WEIGHT = gql`
+  mutation ChangeAvailableWeight($input: ChangeAvailableWeightInput!) {
+    changeAvailableWeight(input: $input) {
+      _id
+      availableWeight
+    }
+  }
+`;

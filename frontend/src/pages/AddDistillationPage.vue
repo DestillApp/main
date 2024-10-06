@@ -153,6 +153,7 @@ export default {
 
     const changeAvailableWeight = async () => {
       try {
+        console.log('ID', route.params.id);
         const newWeight = distillationForm.value.choosedPlant.availableWeight - distillationForm.value.weightForDistillation ;
         const { data } = await updateAvailableWeight({
           input: {
@@ -173,7 +174,7 @@ export default {
           return
         } else {
           await changeAvailableWeight();
-          router.push({ name: "InProgressDistillationsPage" });
+          router.push({ name: "InProgressDistillationsPage", params: {page: 1} });
         }
       } catch (error) {
         return;
