@@ -166,6 +166,8 @@ export default {
               "_id",
             ],
             name: name,
+            page: page.value,
+            limit: distillationsPerPage.value,
           },
         });
         distillationsAmount.value = data.getDistillations.length;
@@ -254,8 +256,17 @@ export default {
           variables: { id: selectedDistillationId.value },
         });
         if (data.deleteDistillation) {
-          deleteDistillationFromList(selectedDistillationId.value);
           openAskModal();
+          deleteDistillationFromList(selectedDistillationId.value);
+          if (page.value > 1 && !distillationsList.value.length) {
+            page.value = page.value - 1;
+            router.push({
+              name: "InProgressDistillationsPage",
+              params: { page: page.value },
+            });
+          } else {
+            await fetchDistillationList();
+          }
         }
         closeDeleteModal();
       } catch (error) {
@@ -267,7 +278,7 @@ export default {
       isAskModalOpen.value = false;
       selectedDistillationId.value = null;
       selectedPlantId.value = null;
-        distillationWeight.value = null;
+      distillationWeight.value = null;
       plantName.value = null;
       plantPart.value = null;
     };

@@ -29,11 +29,28 @@ const httpLink = createHttpLink({
   credentials: "include",
 });
 
-const cache = new InMemoryCache();
-
 const apolloClient = new ApolloClient({
   link: httpLink,
-  cache,
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          getPlants: {
+            keyArgs: false,
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
+          getDistillations: {
+            keyArgs: false,
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
+        },
+      },
+    },
+  }),
 });
 
 // Vuetify framework

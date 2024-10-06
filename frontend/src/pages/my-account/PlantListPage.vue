@@ -36,7 +36,10 @@
         </div>
         <div class="plant_buttons">
           <router-link
-            :to="{ name: 'PlantDetailsPage', params: { page: page, id: plant._id } }"
+            :to="{
+              name: 'PlantDetailsPage',
+              params: { page: page, id: plant._id },
+            }"
             class="plant_button--details"
           >
             <button>Zobacz szczegóły</button>
@@ -119,7 +122,7 @@ export default {
     // Reactive references for pagination
     const plantsAmount = ref(null);
     const page = ref(Number(route.params.page));
-    const plantsPerPage = ref(10);
+    const plantsPerPage = ref(5);
 
     // Reactive reference for loading state
     const isLoading = ref(true);
@@ -151,7 +154,7 @@ export default {
               "_id",
             ],
           },
-          name: name
+          name: name,
         });
         plantsAmount.value = data.getPlants.length;
 
@@ -219,6 +222,17 @@ export default {
         });
         if (data.deletePlant) {
           deletePlantFromList(selectedPlantId.value);
+          if (page.value > 1 && !plantList.value.length) {
+            console.log("pushing");
+            page.value = page.value - 1;
+            router.push({
+              name: "PlantListPage",
+              params: { page: page.value },
+            });
+          } else {
+            await fetchPlantList();
+            console.log("fetching");
+          }
         }
         closeDeleteModal();
       } catch (error) {
