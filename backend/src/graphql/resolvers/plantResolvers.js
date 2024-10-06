@@ -210,7 +210,6 @@ const plantResolver = {
     updateAvailableWeight: async (_, { input }) => {
       try {
         const { id, availableWeight } = input;
-
         // Find plant by ID and update availableWeight
         const updatedPlant = await Plant.findByIdAndUpdate(
           id,
@@ -227,6 +226,32 @@ const plantResolver = {
         throw new Error(
           "Failed to update plant's available weight: ",
           error.message
+        );
+      }
+    },
+
+    changeAvailableWeight: async (_, { input }) => {
+      console.log("HIIIIIII");
+      try {
+        const { id, availableWeight } = input;
+        // Find the plant by its ID
+        const plant = await Plant.findById(id);
+        console.log(id);
+
+        if (!plant) {
+          throw new Error("Plant not found");
+        }
+
+        plant.availableWeight += availableWeight;
+
+        // Save the updated plant document
+        const updatedPlant = await plant.save();
+
+        return updatedPlant;
+      } catch (error) {
+        console.error("Error in changeAvailableWeight resolver:", error);
+        throw new Error(
+          "Failed to add weight to plant's available weight: " + error.message
         );
       }
     },

@@ -49,6 +49,11 @@ const plantSchema = gql`
     availableWeight: Float!
   }
 
+  input ChangeAvailableWeightInput {
+    id: ID!
+    availableWeight: Float!
+  }
+
   type Query {
     getPlants(fields: [String]!, name: String): [Plant]
     getPlantById(id: ID!, formatDates: Boolean!): Plant
@@ -59,6 +64,7 @@ const plantSchema = gql`
     updatePlant(id: ID!, plantInput: PlantInput!): Plant!
     deletePlant(id: ID!): Boolean
     updateAvailableWeight(input: UpdateAvailableWeightInput!): Plant!
+    changeAvailableWeight(input: ChangeAvailableWeightInput!): Plant!
   }
 `;
 
