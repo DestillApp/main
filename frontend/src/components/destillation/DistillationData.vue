@@ -7,6 +7,7 @@
       type="number"
       classType="number"
       placeholder="l"
+      inputColor="distillation"
       :invalidInput="
         isFormValid === false && !formData.waterForDistillation
       "
@@ -35,6 +36,7 @@
         type="number"
         classType="number"
         placeholder="h"
+        inputColor="distillation"
         :invalidInput="
           isFormValid === false &&
           !formData.distillationTime.distillationHours &&
@@ -69,6 +71,7 @@
         classType="number"
         class="distillation__minutes"
         placeholder="min"
+        inputColor="distillation"
         :invalidInput="
               isFormValid === false &&
               !formData.distillationTime.distillationHours &&

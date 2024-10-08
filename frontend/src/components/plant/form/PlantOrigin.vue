@@ -8,6 +8,7 @@
         v-model="formData.plantOrigin"
         :options="origins"
         :title="title"
+        color="var(--secondary-color)"
         name="plantOrigin"
       >
         <template v-slot:message>
@@ -45,6 +46,7 @@
           type="number"
           classType="number"
           placeholder="°C"
+          inputColor="plant"
           :invalidInput="
             isFormValid === false && formData.harvestTemperature === null
           "
@@ -132,6 +134,7 @@
           type="text"
           label="Nazwa producenta"
           id="plantProducer"
+          inputColor="plant"
           :invalidInput="isFormValid === false && formData.plantProducer === ''"
           @update:modelValue="setValue"
         >
@@ -148,6 +151,7 @@
           class="buy_country"
           label="Kraj pochodzenia"
           id="countryOfOrigin"
+          color="plant"
           :results="countryNames"
           @update:modelValue="onInput"
           @choose:item="setCountry"

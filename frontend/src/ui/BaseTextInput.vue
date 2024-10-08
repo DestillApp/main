@@ -11,6 +11,8 @@
         :class="{
           'input_type--number': isNumberInput,
           'input_type--time': isTimeInput,
+          'input_type--plant': isPlantInput,
+          'input_type--distillation': isDistillationInput,
           input_invalid: invalidInput,
         }"
         :id="id"
@@ -60,6 +62,7 @@ export default {
     "disabled",
     "placeholder",
     "classType",
+    "inputColor",
     "invalidInput",
     "storeName"
   ],
@@ -109,12 +112,30 @@ export default {
       }
     });
 
+    const isPlantInput = computed(() => {
+      if(props.inputColor === "plant") {
+        return true;
+      } else {
+        return false
+      }
+    });
+
+        const isDistillationInput = computed(() => {
+      if(props.inputColor === "distillation") {
+        return true;
+      } else {
+        return false
+      }
+    })
+
     return {
       updateValue,
       setKeyboard,
       changeValue,
       isNumberInput,
       isTimeInput,
+      isPlantInput,
+      isDistillationInput
     };
   },
 };
@@ -166,9 +187,17 @@ export default {
   padding-left: 5px;
   text-align: center;
 }
+
+.input_type--plant:focus {
+   border: 2px solid var(--secondary-color);
+}
+
+.input_type--distillation:focus {
+   border: 2px solid var(--secondary-color-distillation);
+}
+
 .input:focus {
   outline: none;
-  border: 2px solid var(--secondary-color);
 }
 
 .input_invalid {

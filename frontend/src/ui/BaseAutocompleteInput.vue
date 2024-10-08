@@ -20,14 +20,14 @@
         <svg-icon
           v-if="choose"
           class="icon"
+          :class="{
+            'icon_color-plant': plantColor,
+            'icon_color-distillation': distillationColor,
+            icon_invalid: invalidInput
+          }"
           type="mdi"
           :path="path"
           size="36"
-          :color="
-            invalidInput === true
-              ? 'var(--error-color)'
-              : 'var(--secondary-color)'
-          "
           @click="openList"
         ></svg-icon>
         <!-- Slot for optional unit display -->
@@ -38,6 +38,8 @@
         <input
           class="input"
           :class="{
+            'input_color-plant': plantColor,
+            'input_color-distillation': distillationColor,
             input_invalid: invalidInput,
           }"
           :id="id"
@@ -116,7 +118,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiArrowDownBoldBox } from "@mdi/js";
 
@@ -146,6 +148,7 @@ export default {
     "disabled",
     "placeholder",
     "classType",
+    "color",
     "invalidInput",
     "results",
     "toChoose",
@@ -206,6 +209,22 @@ export default {
       }
     };
 
+    const distillationColor = computed(() => {
+      if (props.color === "distillation") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    const plantColor = computed(() => {
+      if (props.color === "plant") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
     return {
       updateValue,
       chooseItem,
@@ -214,6 +233,8 @@ export default {
       choose,
       path,
       isOpen,
+      distillationColor,
+      plantColor,
     };
   },
 };
@@ -270,7 +291,14 @@ export default {
 
 .input:focus {
   outline: none;
+}
+
+.input_color-plant:focus {
   border: 2px solid var(--secondary-color);
+}
+
+.input_color-distillation:focus {
+  border: 2px solid var(--secondary-color-distillation);
 }
 
 .input_invalid {
@@ -287,8 +315,25 @@ export default {
   right: 0;
 }
 
-.icon:hover {
+.icon_color-plant {
+  color: var(--secondary-color);
+}
+
+.icon_color-plant:hover {
   color: var(--primary-color);
+}
+
+.icon_color-distillation {
+  color: var(--secondary-color-distillation);
+}
+
+.icon_color-distillation:hover {
+  color: var(--primary-color-distillation);
+}
+
+.icon_invalid,
+.icon_invalid:hover {
+color: var(--error-color);
 }
 
 .message {
@@ -338,3 +383,10 @@ export default {
   font-size: 12px;
 }
 </style>
+
+
+          <!-- :color="
+            invalidInput === true
+              ? 'var(--error-color)'
+              : 'var(--secondary-color)'
+          " -->

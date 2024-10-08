@@ -11,6 +11,7 @@ database
       label="Surowiec z magazynu"
       placeholder="wybierz surowiec"
       id="choosedPlant"
+      color="distillation"
       :results="plants"
       :invalidInput="isFormValid === false && formData.choosedPlant.name === ''"
       @update:modelValue="onInput"
@@ -57,6 +58,7 @@ database
       type="number"
       class="plant_weight"
       classType="number"
+      inputColor="distillation"
       :invalidInput="
         isFormValid === false && formData.weightForDistillation === null
       "
@@ -96,7 +98,7 @@ database
           v-model="formData.isPlantSoaked"
           class="checkbox"
           label="Surowiec namaczany przed destylacją"
-          color="var(--secondary-color)"
+          color="var(--secondary-color-distillation)"
         ></v-checkbox>
         <!-- Additional inputs displayed if the plant was soaked -->
         <div v-if="formData.isPlantSoaked" class="container--isSoaked">
@@ -105,6 +107,7 @@ database
             v-model="formData.soakingTime"
             type="number"
             classType="number"
+            inputColor="distillation"
             :invalidInput="
               isFormValid === false && formData.soakingTime === null
             "
@@ -134,6 +137,7 @@ database
             class="weightAfterSoaking"
             type="number"
             classType="number"
+            inputColor="distillation"
             :invalidInput="
               isFormValid === false && formData.weightAfterSoaking === null
             "
@@ -166,7 +170,7 @@ database
         class="checkbox_isPlantShredded"
         v-model="formData.isPlantShredded"
         label="Surowiec rozdrobniony przed destylacją"
-        color="var(--secondary-color)"
+        color="var(--secondary-color-distillation)"
       ></v-checkbox>
     </div>
   </div>

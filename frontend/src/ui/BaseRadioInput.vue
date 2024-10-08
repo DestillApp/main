@@ -6,7 +6,7 @@
     <!-- Vuetify radio group component -->
     <v-radio-group :id="title" v-model="selectOption" hide-details>
       <!-- Iterating over options to create radio buttons -->
-      <v-radio v-for="option in options" :key="option" :label="option" :value="option" color="var(--secondary-color)"
+      <v-radio v-for="option in options" :key="option" :label="option" :value="option" :color="color"
         class="radio_input" :name="name"></v-radio>
     </v-radio-group>
     <!-- Slot for message display -->
@@ -30,7 +30,7 @@ import { ref, watch } from "vue";
  * @emits selectOption - Emitted when an option is selected.
  */
 export default {
-  props: ["options", "modelValue", "title", "name"],
+  props: ["options", "modelValue", "title", "name", "color"],
   setup(props, context) {
     // Reference to store the selected option
     const selectOption = ref(props.modelValue);

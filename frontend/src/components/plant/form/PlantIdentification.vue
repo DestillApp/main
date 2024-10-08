@@ -2,19 +2,41 @@
   <!-- Container for the plant identification form -->
   <div class="plant_identification">
     <!-- Input field for entering the plant name -->
-    <base-text-input v-model="formData.plantName" type="text" label="Nazwa surowca" id="plantName" class="plant_name"
-      :invalidInput="isFormValid === false && formData.plantName === ''" @update:modelValue="setValue">
+    <base-text-input
+      v-model="formData.plantName"
+      type="text"
+      label="Nazwa surowca"
+      id="plantName"
+      class="plant_name"
+      inputColor="plant"
+      :invalidInput="isFormValid === false && formData.plantName === ''"
+      @update:modelValue="setValue"
+    >
       <template v-slot:message>
-        <span v-if="isFormValid === false && formData.plantName === ''">Nazwa surowca jest wymagana</span>
+        <span v-if="isFormValid === false && formData.plantName === ''"
+          >Nazwa surowca jest wymagana</span
+        >
         <span v-else>&nbsp;</span>
-      </template></base-text-input>
+      </template></base-text-input
+    >
     <!-- Input field for entering the plant part -->
-    <base-text-input v-model="formData.plantPart" type="text" label="Część surowca" id="plantPart" class="plant_part"
-      :invalidInput="isFormValid === false && formData.plantPart === ''" @update:modelValue="setValue">
-      <template v-slot:message><span v-if="isFormValid === false && formData.plantPart === ''">Część surowca jest
-          wymagana</span>
+    <base-text-input
+      v-model="formData.plantPart"
+      type="text"
+      label="Część surowca"
+      id="plantPart"
+      class="plant_part"
+      inputColor="plant"
+      :invalidInput="isFormValid === false && formData.plantPart === ''"
+      @update:modelValue="setValue"
+    >
+      <template v-slot:message
+        ><span v-if="isFormValid === false && formData.plantPart === ''"
+          >Część surowca jest wymagana</span
+        >
         <span v-else>&nbsp;</span>
-      </template></base-text-input>
+      </template></base-text-input
+    >
   </div>
 </template>
 
@@ -29,7 +51,7 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
  * @see setValue
  */
 export default {
-  name: 'PlantIdentification',
+  name: "PlantIdentification",
   components: { BaseTextInput },
   props: ["isFormValid"],
   setup() {
@@ -39,11 +61,11 @@ export default {
     const formData = computed(() => store.getters["plant/plantForm"]);
 
     /**
- * Function to dispatch an action to the Vuex store to set a specific value.
- * @function setValue
- * @param {any} currentValue - The current value to be set.
- * @param {string} input - The input field name.
- */
+     * Function to dispatch an action to the Vuex store to set a specific value.
+     * @function setValue
+     * @param {any} currentValue - The current value to be set.
+     * @param {string} input - The input field name.
+     */
     const setValue = (currentValue, input) => {
       store.dispatch("plant/setValue", { input, value: currentValue });
     };
