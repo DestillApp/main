@@ -16,11 +16,11 @@
         type="mdi"
         :path="path"
         size="32"
-        :color="
-          invalidInput === true
-            ? 'var(--error-color)'
-            : 'var(--secondary-color)'
-        "
+        :class="{
+          'icon_color-plant': plantColor,
+          'icon_color-distillation': distillationColor,
+          icon_invalid: invalidInput,
+        }"
         class="icon"
         @click="changeVisibility"
       ></svg-icon>
@@ -32,6 +32,7 @@
       @close-modal="closeModal"
       @update:value="updateDate"
       :value="date"
+      :color="color"
     ></base-date-picker>
   </div>
 </template>
@@ -45,7 +46,7 @@ import { mdiCalendarRange } from "@mdi/js";
 
 /**
  * @component DatePickerContainer
- * @description This component renders a date picker inside a container with a text input and an SVG icon. 
+ * @description This component renders a date picker inside a container with a text input and an SVG icon.
  * It handles the visibility of the date picker and emits the selected date to the parent component.
  * @props {string} label - The label for the text input.
  * @props {string} title - The title for the date picker.
@@ -60,7 +61,7 @@ import { mdiCalendarRange } from "@mdi/js";
  */
 export default {
   components: { BaseTextInput, BaseDatePicker, SvgIcon },
-  props: ["label", "title", "id", "value", "invalidInput"],
+  props: ["label", "title", "id", "value", "invalidInput", "color"],
   setup(props, context) {
     // Reference to indicate if the input is disabled
     const disabled = ref(true);
@@ -143,6 +144,22 @@ export default {
       context.emit("date:value", date.value, props.id);
     });
 
+        const distillationColor = computed(() => {
+      if (props.color === "distillation") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    const plantColor = computed(() => {
+      if (props.color === "plant") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
     return {
       disabled,
       path,
@@ -152,6 +169,8 @@ export default {
       changeVisibility,
       closeModal,
       updateDate,
+      distillationColor,
+      plantColor
     };
   },
 };
@@ -169,5 +188,21 @@ export default {
 .icon {
   cursor: pointer;
   margin-bottom: 2px;
+}
+
+.icon_color-plant {
+  color: var(--secondary-color);
+}
+
+.icon_color-plant:hover {
+  color: var(--primary-color);
+}
+
+.icon_color-distillation {
+  color: var(--secondary-color-distillation);
+}
+
+.icon_color-distillation:hover {
+  color: var(--primary-color-distillation);
 }
 </style>

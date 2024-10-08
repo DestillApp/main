@@ -30,6 +30,7 @@
           :value="formData.harvestDate"
           @date:value="storeDate"
           :invalidInput="isFormValid === false && formData.harvestDate === ''"
+          color="plant"
         >
         </base-input-date-picker>
         <div class="message">
@@ -118,6 +119,7 @@
           :value="formData.plantBuyDate"
           @date:value="storeDate"
           :invalidInput="isFormValid === false && formData.plantBuyDate === ''"
+          color="plant"
         ></base-input-date-picker>
         <div class="message">
           <span v-if="isFormValid === false && formData.plantBuyDate === ''"

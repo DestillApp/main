@@ -23,7 +23,7 @@
           :class="{
             'icon_color-plant': plantColor,
             'icon_color-distillation': distillationColor,
-            icon_invalid: invalidInput
+            icon_invalid: invalidInput,
           }"
           type="mdi"
           :path="path"
@@ -59,6 +59,10 @@
           (isOpen && id === 'distillationApparatus')
         "
         class="list list--choose"
+        :class="{
+          'list_color-plant': plantColor,
+          'list_color-distillation': distillationColor,
+        }"
       >
         <li
           class="list_item list_item--choose"
@@ -72,6 +76,10 @@
       <ul
         v-if="results.length && modelValue !== '' && id === 'countryOfOrigin'"
         class="list"
+                :class="{
+          'list_color-plant': plantColor,
+          'list_color-distillation': distillationColor,
+        }"
       >
         <li
           class="list_item"
@@ -85,6 +93,10 @@
       <ul
         v-if="results.length && modelValue !== '' && id === 'choosedPlant'"
         class="list"
+                :class="{
+          'list_color-plant': plantColor,
+          'list_color-distillation': distillationColor,
+        }"
       >
         <li
           class="list_item"
@@ -333,7 +345,7 @@ export default {
 
 .icon_invalid,
 .icon_invalid:hover {
-color: var(--error-color);
+  color: var(--error-color);
 }
 
 .message {
@@ -349,13 +361,20 @@ color: var(--error-color);
   top: 31px;
   width: 100%;
   border-radius: var(--input-border-radius);
-  border: 2px var(--secondary-color) solid;
   padding-inline: 20px;
   padding-block: 10px;
 }
 
 .list--choose {
   width: calc(100% - 40px);
+}
+
+.list_color-plant {
+  border: 2px var(--secondary-color) solid;
+}
+
+.list_color-distillation {
+  border: 2px var(--secondary-color-distillation) solid;
 }
 
 .list_item {

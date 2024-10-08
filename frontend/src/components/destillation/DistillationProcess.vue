@@ -41,6 +41,7 @@
           :invalidInput="
             isFormValid === false && formData.distillationDate === ''
           "
+           color="distillation"
         ></base-input-date-picker>
         <div class="message">
           <span v-if="isFormValid === false && formData.distillationDate === ''"

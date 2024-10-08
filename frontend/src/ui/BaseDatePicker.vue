@@ -11,7 +11,7 @@
         header="Wybrana data"
         width="250"
         class="date-picker"
-        color="var(--primary-color)"
+        :color="computedColor"
         @update:modelValue="sendDate"
       ></v-date-picker>
     </base-card>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import BaseModal from "./BaseModal.vue";
 
 /**
@@ -32,8 +32,8 @@ import BaseModal from "./BaseModal.vue";
  */
 export default {
   components: { BaseModal },
-  props: ["title", "value"],
-  setup(_, context) {
+  props: ["title", "value", "color"],
+  setup(props, context) {
     // Reference to the selected date
     const selectedDate = ref(new Date());
 
@@ -45,7 +45,18 @@ export default {
       context.emit("update:value", selectedDate.value);
     };
 
-    return { selectedDate, sendDate };
+    const computedColor = computed(() => {
+      switch (props.color) {
+        case "plant":
+          return "var(--primary-color)";
+        case "distillation":
+          return "var(--primary-color-distillation)";
+        default:
+          return "var(--primary-color)";
+      }
+    });
+
+    return { selectedDate, sendDate, computedColor };
   },
 };
 </script>

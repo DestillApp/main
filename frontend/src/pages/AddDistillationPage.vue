@@ -13,7 +13,7 @@
       <!-- Distillation data component -->
       <distillation-data :isFormValid="isFormValid"></distillation-data>
       <!-- Button to submit the distilation form -->
-      <base-button type="submit">Zapisz</base-button>
+      <base-button class="button" type="submit">Zapisz</base-button>
       <!-- Button to submit and go to the distillation results form -->
       <base-button @click="saveDistillationAddResults"
         >Zapisz i dodaj wyniki destylacji</base-button
@@ -232,5 +232,9 @@ export default {
 .distillation_form {
   display: flex;
   flex-direction: column;
+}
+
+.button {
+  margin-bottom: 20px;
 }
 </style>
