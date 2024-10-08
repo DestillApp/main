@@ -231,12 +231,10 @@ const plantResolver = {
     },
 
     changeAvailableWeight: async (_, { input }) => {
-      console.log("HIIIIIII");
       try {
         const { id, availableWeight } = input;
         // Find the plant by its ID
         const plant = await Plant.findById(id);
-        console.log(id);
 
         if (!plant) {
           throw new Error("Plant not found");
