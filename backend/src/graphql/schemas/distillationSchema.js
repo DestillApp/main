@@ -66,6 +66,7 @@ const distillationSchema = gql`
 
   type Query {
     getDistillations(fields: [String]!, name: String): [Distillation]
+    getDistillationById(id: ID!, formatDates: Boolean!): Distillation
   }
 
   type Mutation {

@@ -61,6 +61,27 @@ const distillationResolvers = {
         throw new Error("Failed to fetch distillations: " + error.message);
       }
     },
+
+    getDistillationById: async (_, { id, formatDates = true }) => {
+      try {
+        const distillation = await Distillation.findById(id);
+        if (!distillation) {
+          throw new Error("Distillation not found");
+        }
+
+        // Format specific date fields
+        if (formatDates) {
+          if (distillation.distillationDate) {
+            distillation.distillationDate = formatDate(
+              distillation.distillationDate
+            );
+          }
+        }
+        return distillation;
+      } catch (error) {
+        throw new Error("Failed to fetch distillation by ID", error);
+      }
+    },
   },
 
   Mutation: {
