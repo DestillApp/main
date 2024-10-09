@@ -92,7 +92,7 @@
       :length="paginationLength"
       rounded="circle"
       :total-visible="4"
-      :active-color="`var(--secondary-color)`"
+      :active-color="`var(--secondary-color-distillation)`"
       class="distillation_pagination"
     ></v-pagination>
   </div>

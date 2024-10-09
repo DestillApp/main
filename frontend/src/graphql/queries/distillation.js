@@ -16,3 +16,30 @@ export const GET_DISTILLATIONS = gql`
     }
   }
 `;
+
+// GraphQL query to get distillation details by ID with formating date boolean
+export const GET_DISTILLATION_BY_ID = gql`
+  query GetDistillationById($id: ID!, $formatDates: Boolean!) {
+    getDistillationById(id: $id, formatDates: $formatDates) {
+      _id
+      choosedPlant {
+        id
+        name
+        part
+      }
+      weightForDistillation
+      isPlantSoaked
+      soakingTime
+      weightAfterSoaking
+      isPlantShredded
+      distillationType
+      distillationDate
+      distillationApparatus
+      waterForDistillation
+      distillationTime {
+        distillationHours
+        distillationMinutes
+      }
+    }
+  }
+`;

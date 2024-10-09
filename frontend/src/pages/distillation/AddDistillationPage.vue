@@ -23,9 +23,9 @@
 </template>
 
 <script>
-import DistillationPlant from "../components/destillation/DistillationPlant.vue";
-import DistillationProcess from "../components/destillation/DistillationProcess.vue";
-import DistillationData from "../components/destillation/DistillationData.vue";
+import DistillationPlant from "../../components/destillation/DistillationPlant.vue";
+import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
+import DistillationData from "../../components/destillation/DistillationData.vue";
 import { distillationFormValidation } from "@/helpers/formsValidation";
 import { initialDistillationForm } from "@/helpers/formsInitialState";
 import store from "@/store/index";

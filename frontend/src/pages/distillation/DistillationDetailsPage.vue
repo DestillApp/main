@@ -1,11 +1,223 @@
+// no code and atch docs
 <template>
-    <div>Opis destylacji</div>
+  <div>
+    <!-- Spinner that shows when data is loading -->
+    <v-progress-circular
+      v-if="isLoading"
+      class="spinner"
+      color="var(--secondary-color-distillation)"
+      :size="60"
+      :width="6"
+      indeterminate
+    ></v-progress-circular>
+    <!-- Display distillation details once data is loaded and no longer loading -->
+    <div v-if="distillationDetails && !isLoading" class="distillation">
+      <div class="distillation_container--one">
+        <!-- Display used weight of plant-->
+        <div class="plant_distillation">
+          <p class="plant_distillation--used">użyta ilość surowca:</p>
+          <span>{{ distillationDetails.weightForDistillation }} kg</span>
+        </div>
+        <!-- Display plant identification information -->
+        <div class="plant_identification">
+          <h3>destylacja {{ distillationDetails.distillationType }}</h3>
+          <div>{{ distillationDetails.choosedPlant.name }}</div>
+          <div>{{ distillationDetails.choosedPlant.part }}</div>
+        </div>
+        <div class="distillation_buttons">
+          <router-link
+            :to="{
+              name: 'EditDistillationPage',
+              params: { page: page, id: distillationId },
+            }"
+            ><button class="distillation_button--edit">
+              Edytuj
+            </button></router-link
+          >
+          <button class="distillation_button--delete" @click="openDeleteModal">
+            Usuń
+          </button>
+          <!-- Modal for deleting the plant -->
+          <delete-item-modal v-if="isModalOpen"></delete-item-modal>
+        </div>
+      </div>
+              <div class="distillation_container--two">
+            <div class="plant_info">
+            <h5 class="plant_title">przygotowanie surowca</h5>
+            <div v-if="distillationDetails.isPlantSoaked">
+            <div class="plant_data">surowiec namaczany</div>
+            <div class="plant_data">czas namaczania: {{ distillationDetails.soakingTime}} h</div>
+            <div class="plant_data">waga surowca po namoczeniu: {{ distillationDetails.weightAfterSoaking}} kg</div>
+            </div>
+            <div class="plant_data" v-if="!distillationDetails.isPlantSoaked">surowiec nienamaczany</div>
+            <div class="plant_data" v-if="!distillationDetails.isPlantShredded">surowiec nierozdrobniony</div>
+            <div class="plant_data" v-if="distillationDetails.isPlantShredded">surowiec rozdrobniony</div>
+            </div>
+            <div class="distillation_info">
+                <h5 class="distillation_title">informacje o destylacji</h5>
+                <div class="distillation_data">data destylacji: {{ distillationDetails.distillationDate}}</div>
+            <div class="distillation_data">{{ distillationDetails.distillationApparatus}}</div>
+            <div class="distillation_data">ilość wody do destylacji: {{ distillationDetails.waterForDistillation}} l</div>
+            </div>
+        </div>
+        <button class="plant_button">więcej o surowcu</button>
+
+    </div>
+  </div>
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useApolloClient } from "@vue/apollo-composable";
+import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
+import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
+
 export default {
-    setup() {
-        
-    },
-}
+  name: "DistillationDetailsPage",
+  components: { DeleteItemModal },
+  setup() {
+    const { resolveClient } = useApolloClient();
+    const apolloClient = resolveClient();
+
+    // Route object to access route params
+    const route = useRoute();
+    // Router object for navigation
+    // const router = useRouter();
+
+    // Reactive reference to store the plant ID and plant page number from the route
+    const distillationId = ref(route.params.id);
+    const page = ref(Number(route.params.page));
+    // Reactive reference to store fetched plant details
+    const distillationDetails = ref(null);
+    // Reactive reference to track if the delete modal is open
+    const isModalOpen = ref(false);
+    // Reactive reference to track loading state
+    const isLoading = ref(true);
+
+    /**
+     * @async
+     * @function fetchDistillationDetails
+     * @description Fetches the plant details by plant ID from GraphQL API.
+     * @returns {Promise<void>}
+     */
+    const fetchDistillationDetails = async () => {
+      try {
+        isLoading.value = true;
+        const { data } = await apolloClient.query({
+          query: GET_DISTILLATION_BY_ID,
+          variables: { id: distillationId.value, formatDates: true },
+        });
+        distillationDetails.value = data.getDistillationById;
+        console.log(distillationDetails.value);
+      } catch (error) {
+        console.error("Failed to get plant details:", error);
+        distillationDetails.value = null;
+      } finally {
+        isLoading.value = false;
+      }
+    };
+
+    onMounted(() => {
+      fetchDistillationDetails();
+    });
+
+    return {
+      distillationId,
+      page,
+      isLoading,
+      distillationDetails,
+      isModalOpen,
+    };
+  },
+};
 </script>
+
+<style scoped>
+.spinner {
+  margin-block: 20px;
+}
+
+.distillation {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.distillation_container--one {
+  display: flex;
+  flex-direction: row;
+}
+
+.plant_distillation {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+}
+
+.plant_distillation--used {
+  font-size: 11px;
+}
+
+.plant_identification {
+  width: 60%;
+  padding-top: 20px;
+}
+
+.distillation_buttons {
+  display: flex;
+  flex-direction: row;
+  width: 20%;
+  font-size: 11px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.distillation_button--edit {
+  color: var(--secondary-color-distillation);
+}
+
+.distillation_button--edit:hover {
+  color: var(--primary-color-distillation);
+}
+
+.distillation_button--delete:hover {
+  color: red;
+}
+
+.distillation_container--two {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.plant_info,
+.distillation_info {
+    width: 50%;
+}
+
+.plant_title {
+  color: var(--secondary-color);
+  padding-bottom: 10px;
+}
+
+.plant_data,
+.distillation_data {
+  display: flex;
+  justify-content: flex-start;
+  font-size: 13px;
+  padding-left: 20%;
+  padding-right: 10%;
+}
+
+.distillation_title {
+  color: var(--secondary-color-distillation);
+  padding-bottom: 10px;
+}
+
+.plant_button {
+    color: var(--primary-color);
+    font-size: 12px;
+}
+</style>
