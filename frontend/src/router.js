@@ -12,7 +12,7 @@ import MainPage from "./pages/MainPage.vue";
 const AddPlantPage = () => import("./pages/plant/AddPlantPage.vue");
 const AddDistillationPage = () =>
   import("./pages/distillation/AddDistillationPage.vue");
-const AddResultsPage = () => import("./pages/AddResultsPage.vue");
+const AddResultsPage = () => import("./pages/results/AddResultsPage.vue");
 const EditPlantPage = () => import("./pages/plant/EditPlantPage.vue");
 const EditDistillationPage = () =>
   import("./pages/distillation/EditDistillationPage.vue");

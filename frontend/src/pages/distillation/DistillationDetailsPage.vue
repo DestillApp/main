@@ -2,14 +2,8 @@
 <template>
   <div>
     <!-- Spinner that shows when data is loading -->
-    <v-progress-circular
-      v-if="isLoading"
-      class="spinner"
-      color="var(--secondary-color-distillation)"
-      :size="60"
-      :width="6"
-      indeterminate
-    ></v-progress-circular>
+    <v-progress-circular v-if="isLoading" class="spinner" color="var(--secondary-color-distillation)" :size="60"
+      :width="6" indeterminate></v-progress-circular>
     <!-- Display distillation details once data is loaded and no longer loading -->
     <div v-if="distillationDetails && !isLoading" class="distillation">
       <div class="distillation_container--one">
@@ -25,15 +19,12 @@
           <div>{{ distillationDetails.choosedPlant.part }}</div>
         </div>
         <div class="distillation_buttons">
-          <router-link
-            :to="{
+          <router-link :to="{
               name: 'EditDistillationPage',
               params: { page: page, id: distillationId },
-            }"
-            ><button class="distillation_button--edit">
+            }"><button class="distillation_button--edit">
               Edytuj
-            </button></router-link
-          >
+            </button></router-link>
           <button class="distillation_button--delete" @click="openDeleteModal">
             Usuń
           </button>
@@ -41,27 +32,57 @@
           <delete-item-modal v-if="isModalOpen"></delete-item-modal>
         </div>
       </div>
-              <div class="distillation_container--two">
-            <div class="plant_info">
-            <h5 class="plant_title">przygotowanie surowca</h5>
-            <div v-if="distillationDetails.isPlantSoaked">
+      <div class="distillation_container--two">
+        <div class="plant_info">
+          <h5 class="plant_title">przygotowanie surowca</h5>
+          <div v-if="distillationDetails.isPlantSoaked">
             <div class="plant_data">surowiec namaczany</div>
-            <div class="plant_data">czas namaczania: {{ distillationDetails.soakingTime}} h</div>
-            <div class="plant_data">waga surowca po namoczeniu: {{ distillationDetails.weightAfterSoaking}} kg</div>
+            <div class="plant_data">
+              czas namaczania: {{ distillationDetails.soakingTime }} h
             </div>
-            <div class="plant_data" v-if="!distillationDetails.isPlantSoaked">surowiec nienamaczany</div>
-            <div class="plant_data" v-if="!distillationDetails.isPlantShredded">surowiec nierozdrobniony</div>
-            <div class="plant_data" v-if="distillationDetails.isPlantShredded">surowiec rozdrobniony</div>
+            <div class="plant_data">
+              waga po namoczeniu:
+              {{ distillationDetails.weightAfterSoaking }} kg
             </div>
-            <div class="distillation_info">
-                <h5 class="distillation_title">informacje o destylacji</h5>
-                <div class="distillation_data">data destylacji: {{ distillationDetails.distillationDate}}</div>
-            <div class="distillation_data">{{ distillationDetails.distillationApparatus}}</div>
-            <div class="distillation_data">ilość wody do destylacji: {{ distillationDetails.waterForDistillation}} l</div>
-            </div>
+          </div>
+          <div class="plant_data" v-if="!distillationDetails.isPlantSoaked">
+            surowiec nienamaczany
+          </div>
+          <div class="plant_data" v-if="!distillationDetails.isPlantShredded">
+            surowiec nierozdrobniony
+          </div>
+          <div class="plant_data" v-if="distillationDetails.isPlantShredded">
+            surowiec rozdrobniony
+          </div>
+          <div class="plant_details">
+            <button v-if="!isPlantOpen" @click="openClosePlant" class="plant_button">
+              więcej o surowcu
+              <svg-icon class="icon" type="mdi" :path="pathArrowDown" size="18"></svg-icon>
+            </button>
+            <button v-if="isPlantOpen" @click="openClosePlant" class="plant_button">
+              mniej o surowcu
+              <svg-icon class="icon" type="mdi" :path="pathArrowUp" size="18"></svg-icon>
+            </button>
+            <plant-details v-if="isPlantOpen" class="plant_details--component"
+              :plantId="distillationDetails.choosedPlant.id"></plant-details>
+          </div>
         </div>
-        <button class="plant_button">więcej o surowcu</button>
-
+        <div class="distillation_info">
+          <h5 class="distillation_title">informacje o destylacji</h5>
+          <div class="distillation_data">
+            data destylacji: {{ distillationDetails.distillationDate }}
+          </div>
+          <div class="distillation_data">
+            {{ distillationDetails.distillationApparatus }}
+          </div>
+          <div class="distillation_data">
+            ilość wody do destylacji:
+            {{ distillationDetails.waterForDistillation }} l
+          </div>
+        </div>
+      </div>
+      <router-link :to="{ name: 'AddResultsPage' }" class="distillation_results"><base-button
+          class="results_button">Dodaj wyniki destylacji</base-button></router-link>
     </div>
   </div>
 </template>
@@ -71,11 +92,16 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
+import BaseButton from "@/ui/BaseButton.vue";
+import SvgIcon from "@jamescoyle/vue-icon";
+import PlantDetails from "@/components/plant/PlantDetails.vue";
+import { mdiChevronDown } from "@mdi/js";
+import { mdiChevronUp } from "@mdi/js";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 
 export default {
   name: "DistillationDetailsPage",
-  components: { DeleteItemModal },
+  components: { DeleteItemModal, BaseButton, SvgIcon, PlantDetails },
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
@@ -94,6 +120,10 @@ export default {
     const isModalOpen = ref(false);
     // Reactive reference to track loading state
     const isLoading = ref(true);
+    const isPlantOpen = ref(false);
+
+    const pathArrowDown = ref(mdiChevronDown);
+    const pathArrowUp = ref(mdiChevronUp);
 
     /**
      * @async
@@ -122,12 +152,24 @@ export default {
       fetchDistillationDetails();
     });
 
+    const openClosePlant = () => {
+      if (isPlantOpen.value) {
+        isPlantOpen.value = false;
+      } else {
+        isPlantOpen.value = true;
+      }
+    };
+
     return {
       distillationId,
       page,
       isLoading,
       distillationDetails,
       isModalOpen,
+      isPlantOpen,
+      pathArrowDown,
+      pathArrowUp,
+      openClosePlant,
     };
   },
 };
@@ -187,14 +229,14 @@ export default {
 }
 
 .distillation_container--two {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
 }
 
 .plant_info,
 .distillation_info {
-    width: 50%;
+  width: 50%;
 }
 
 .plant_title {
@@ -216,8 +258,40 @@ export default {
   padding-bottom: 10px;
 }
 
+.plant_details {
+  display: flex;
+  flex-direction: column;
+}
+
 .plant_button {
-    color: var(--primary-color);
-    font-size: 12px;
+  position: relative;
+  color: var(--secondary-color);
+  font-size: 11px;
+  margin-top: 20px;
+  float: left;
+  margin-left: 20%;
+  text-align: left;
+}
+
+.plant_button:hover {
+  color: var(--primary-color);
+}
+
+.plant_details--component {
+  text-align: left;
+  margin-left: 20%;
+}
+
+.icon {
+  position: absolute;
+}
+
+.distillation_results {
+  padding-block: 10px;
+  margin-inline: 30%;
+}
+
+.results_button:hover {
+  color: var(--secondary-color-distillation);
 }
 </style>
