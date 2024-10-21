@@ -111,6 +111,8 @@ export default {
     const distillationDate = computed(
       () => store.getters["distillation/distillationDate"]
     );
+    //Computed property to get the value from Vuex store
+    const comingFromRoute = computed(() => store.getters.comingFromRoute);
 
     // Flag to indicate if the autocomplete input should have the arrow input
     const toChoose = ref(true);
@@ -143,11 +145,14 @@ export default {
 
     // Fetch initial form data from local storage on component mount
     onMounted(() => {
-      fetchData("distillationDate", false);
-      fetchData("distillationType", false);
-      fetchData("distillationApparatus", false);
-      distillationType.value = formData.value.distillationType;
-      distillationApparatus.value = formData.value.distillationApparatus;
+      console.log("DISTILLATION PROCESS", formData.value);
+      if (!comingFromRoute.value) {
+        fetchData("distillationDate", false);
+        fetchData("distillationType", false);
+        fetchData("distillationApparatus", false);
+        distillationType.value = formData.value.distillationType;
+        distillationApparatus.value = formData.value.distillationApparatus;
+      }     
     });
 
     /**

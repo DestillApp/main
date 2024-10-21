@@ -72,7 +72,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/edit-distillation/:page/:id",
+      path: "/edit-distillation/:page/:distillId/:id?",
       name: "EditDistillationPage",
       component: EditDistillationPage,
       props: true,
@@ -98,7 +98,7 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: "distillation-details/:page/:id",
+          path: "distillation-details/:page/:distillId",
           name: "DistillationDetailsPage",
           component: DistillationDetailsPage,
           props: true,

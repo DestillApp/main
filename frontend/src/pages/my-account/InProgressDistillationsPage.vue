@@ -39,7 +39,7 @@
           <router-link
             :to="{
               name: 'DistillationDetailsPage',
-              params: { page: page, id: distillation._id },
+              params: { page: page, distillId: distillation._id },
             }"
             class="distillation_button--details"
           >
@@ -414,13 +414,3 @@ export default {
   margin-top: 20px;
 }
 </style>
-
-                    <!-- <router-link :to="{ name: 'DistillationDetailsPage', params: { page: page, id: distillation._id } }"
-                        class="plant_button--details">
-                                            <button>Zobacz szczegóły</button>
-                                        </router-link>
-                    <button @click="
-                                openDeleteModal(plant._id, plant.plantName, plant.plantPart)
-                                " class="plant_button--delete">
-                                            Usuń
-                                        </button> -->

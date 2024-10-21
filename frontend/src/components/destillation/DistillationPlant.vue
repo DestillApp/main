@@ -212,9 +212,9 @@ import { GET_BASIC_PLANT_BY_ID } from "@/graphql/queries/plant.js";
 export default {
   name: "DistillationPlant",
   components: { BaseTextInput, BaseAutocompleteInput },
-  props: ["isFormValid"],
+  props: ["isFormValid", "isEditing"],
 
-  setup() {
+  setup(props) {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
@@ -272,6 +272,7 @@ export default {
 
     // Fetch initial data from local storage on component mount
     onMounted(async () => {
+      console.log(route.params.id);
       if (comingFromRoute.value) {
         if (route.params.id) {
           const plantData = await getPlantData();
@@ -300,8 +301,6 @@ export default {
             value: plantData.plantBuyDate,
           });
           plant.value = formData.value.choosedPlant.name;
-          console.log("id", route.params.id);
-          console.log("plantData", plantData);
         } else {
           return;
         }
@@ -351,7 +350,11 @@ export default {
       plant.value = value.plantName;
       plants.value = [];
       console.log("setPlant", plant, input);
-      router.replace({ name: 'AddDistillationPage', params: { id: value._id } });
+      if (props.isEditing) {
+        router.replace({ name: 'EditDistillationPage', params: { id: value._id } });
+      } else {
+        router.replace({ name: 'AddDistillationPage', params: { id: value._id } });
+      }
     };
 
     /**
@@ -402,7 +405,11 @@ export default {
         setPlantState("harvestDate", "");
         setPlantState("buyDate", "");
       }
-      router.replace({ name: 'AddDistillationPage', params: { id: null } });
+      if (props.isEditing) {
+        router.replace({ name: 'EditDistillationPage', params: { id: null } });
+      } else {
+        router.replace({ name: 'AddDistillationPage', params: { id: null } });
+      }
       searchQuery.value = value;
       plant.value = searchQuery.value;
       if (timeout.value) {

@@ -2,8 +2,14 @@
 <template>
   <div>
     <!-- Spinner that shows when data is loading -->
-    <v-progress-circular v-if="isLoading" class="spinner" color="var(--secondary-color-distillation)" :size="60"
-      :width="6" indeterminate></v-progress-circular>
+    <v-progress-circular
+      v-if="isLoading"
+      class="spinner"
+      color="var(--secondary-color-distillation)"
+      :size="60"
+      :width="6"
+      indeterminate
+    ></v-progress-circular>
     <!-- Display distillation details once data is loaded and no longer loading -->
     <div v-if="distillationDetails && !isLoading" class="distillation">
       <div class="distillation_container--one">
@@ -19,12 +25,19 @@
           <div>{{ distillationDetails.choosedPlant.part }}</div>
         </div>
         <div class="distillation_buttons">
-          <router-link :to="{
+          <router-link
+            :to="{
               name: 'EditDistillationPage',
-              params: { page: page, id: distillationId },
-            }"><button class="distillation_button--edit">
+              params: {
+                page: page,
+                distillId: distillationId,
+                id: distillationDetails.choosedPlant.id,
+              },
+            }"
+            ><button class="distillation_button--edit">
               Edytuj
-            </button></router-link>
+            </button></router-link
+          >
           <button class="distillation_button--delete" @click="openDeleteModal">
             Usuń
           </button>
@@ -55,16 +68,37 @@
             surowiec rozdrobniony
           </div>
           <div class="plant_details">
-            <button v-if="!isPlantOpen" @click="openClosePlant" class="plant_button">
+            <button
+              v-if="!isPlantOpen"
+              @click="openClosePlant"
+              class="plant_button"
+            >
               więcej o surowcu
-              <svg-icon class="icon" type="mdi" :path="pathArrowDown" size="18"></svg-icon>
+              <svg-icon
+                class="icon"
+                type="mdi"
+                :path="pathArrowDown"
+                size="18"
+              ></svg-icon>
             </button>
-            <button v-if="isPlantOpen" @click="openClosePlant" class="plant_button">
+            <button
+              v-if="isPlantOpen"
+              @click="openClosePlant"
+              class="plant_button"
+            >
               mniej o surowcu
-              <svg-icon class="icon" type="mdi" :path="pathArrowUp" size="18"></svg-icon>
+              <svg-icon
+                class="icon"
+                type="mdi"
+                :path="pathArrowUp"
+                size="18"
+              ></svg-icon>
             </button>
-            <plant-details v-if="isPlantOpen" class="plant_details--component"
-              :plantId="distillationDetails.choosedPlant.id"></plant-details>
+            <plant-details
+              v-if="isPlantOpen"
+              class="plant_details--component"
+              :plantId="distillationDetails.choosedPlant.id"
+            ></plant-details>
           </div>
         </div>
         <div class="distillation_info">
@@ -81,8 +115,11 @@
           </div>
         </div>
       </div>
-      <router-link :to="{ name: 'AddResultsPage' }" class="distillation_results"><base-button
-          class="results_button">Dodaj wyniki destylacji</base-button></router-link>
+      <router-link :to="{ name: 'AddResultsPage' }" class="distillation_results"
+        ><base-button class="results_button"
+          >Dodaj wyniki destylacji</base-button
+        ></router-link
+      >
     </div>
   </div>
 </template>
@@ -112,7 +149,7 @@ export default {
     // const router = useRouter();
 
     // Reactive reference to store the plant ID and plant page number from the route
-    const distillationId = ref(route.params.id);
+    const distillationId = ref(route.params.distillId);
     const page = ref(Number(route.params.page));
     // Reactive reference to store fetched plant details
     const distillationDetails = ref(null);
