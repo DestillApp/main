@@ -71,15 +71,13 @@ const distillationSchema = gql`
 
   type Mutation {
     createDistillation(distillationInput: DistillationInput!): Distillation!
-    # updateDistillation(id: ID!, distillationInput: DistillationInput!): Distillation!
+    updateDistillation(
+      id: ID!
+      distillationInput: DistillationInput!
+    ): Distillation!
     deleteDistillation(id: ID!): Boolean
   }
 `;
 
 // Exporting the distillation schema
 module.exports = distillationSchema;
-
-//   type Query {
-//     # getDistillations(fields: [String]!): [Distillation]
-//     # getDistillationById(id: ID!): Distillation
-//   }
