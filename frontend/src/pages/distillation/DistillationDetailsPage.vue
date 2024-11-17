@@ -38,11 +38,39 @@
               Edytuj
             </button></router-link
           >
-          <button class="distillation_button--delete" @click="openDeleteModal">
+          <button
+            @click="
+              openDeleteModal(
+                distillationDetails._id,
+                distillationDetails.choosedPlant.id,
+                distillationDetails.choosedPlant.name,
+                distillationDetails.choosedPlant.part,
+                distillationDetails.weightForDistillation,
+                distillationDetails.distillationDate
+              )
+            "
+            class="distillation_button--delete"
+          >
             Usuń
           </button>
           <!-- Modal for deleting the plant -->
-          <delete-item-modal v-if="isModalOpen"></delete-item-modal>
+          <delete-item-modal
+            v-if="isModalOpen"
+            :plantName="plantName"
+            :plantPart="plantPart"
+            :distillationDate="distillationDate"
+            @close-modal="closeDeleteModal"
+            @close-delete-modal="closeDeleteModal"
+            @delete-item="deleteDistillation"
+          ></delete-item-modal>
+          <ask-modal
+            v-if="isAskModalOpen"
+            :plantName="plantName"
+            :plantPart="plantPart"
+            :distillationWeight="distillationWeight"
+            @handle-yes="handleYes"
+            @close-modal="closeAskModal"
+          ></ask-modal>
         </div>
       </div>
       <div class="distillation_container--two">
@@ -126,7 +154,7 @@
 
 <script>
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -135,6 +163,8 @@ import PlantDetails from "@/components/plant/PlantDetails.vue";
 import { mdiChevronDown } from "@mdi/js";
 import { mdiChevronUp } from "@mdi/js";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
+import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
+import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
 export default {
   name: "DistillationDetailsPage",
@@ -146,15 +176,25 @@ export default {
     // Route object to access route params
     const route = useRoute();
     // Router object for navigation
-    // const router = useRouter();
+    const router = useRouter();
+
+    // Reactive references for distillation data
+    const distillationId = ref(route.params.distillId);
+    const distillationDetails = ref(null);
+    const selectedDistillationId = ref(null);
+    const selectedPlantId = ref(null);
+    const plantName = ref(null);
+    const plantPart = ref(null);
+    const distillationWeight = ref(null);
+    const distillationDate = ref(null);
 
     // Reactive reference to store the plant ID and plant page number from the route
-    const distillationId = ref(route.params.distillId);
     const page = ref(Number(route.params.page));
-    // Reactive reference to store fetched plant details
-    const distillationDetails = ref(null);
+
     // Reactive reference to track if the delete modal is open
     const isModalOpen = ref(false);
+    const isAskModalOpen = ref(false);
+
     // Reactive reference to track loading state
     const isLoading = ref(true);
     const isPlantOpen = ref(false);
@@ -197,16 +237,133 @@ export default {
       }
     };
 
+    /**
+     * @function openDeleteModal
+     * @description Open the delete modal for a specific plant.
+     * @param {String} id - The ID of the plant to delete.
+     * @param {String} name - The name of the plant.
+     * @param {String} part - The part of the plant.
+     * @param {String} date - Distillation date.
+     */
+    const openDeleteModal = (id, plantId, name, part, dWeight, date) => {
+      selectedDistillationId.value = id;
+      selectedPlantId.value = plantId;
+      plantName.value = name;
+      plantPart.value = part;
+      distillationWeight.value = dWeight;
+      distillationDate.value = date;
+      isModalOpen.value = true;
+    };
+
+    /**
+     * @function closeDeleteModal
+     * @description Close the delete modal.
+     */
+    const closeDeleteModal = () => {
+      distillationDate.value = null;
+      isModalOpen.value = false;
+    };
+
+    /**
+     * @function openAskModal
+     * @description Open the ask modal.
+     */
+    const openAskModal = () => {
+      isAskModalOpen.value = true;
+    };
+
+    /**
+     * @function closeAskModal
+     * @description Close the ask modal.
+     */
+    const closeAskModal = () => {
+      isAskModalOpen.value = false;
+      selectedDistillationId.value = null;
+      selectedPlantId.value = null;
+      distillationWeight.value = null;
+      plantName.value = null;
+      plantPart.value = null;
+                router.push({
+            name: "InProgressDistillationsPage",
+            params: { page: 1 },
+          });
+    };
+
+    /**
+     * @async
+     * @function deleteDistillation
+     * @description Delete the selected distillation.
+     * @returns {Promise<void>}
+     */
+    const deleteDistillation = async () => {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: DELETE_DISTILLATION,
+          variables: { id: selectedDistillationId.value },
+        });
+        if (data.deleteDistillation) {
+          openAskModal();
+        }
+        closeDeleteModal();
+      } catch (error) {
+        console.error("Failed to delete distillation:", error);
+      }
+    };
+
+    /**
+     * @async
+     * @function addPlantWeight
+     * @description Add the distillation weight back to the plant's available weight.
+     * @returns {Promise<void>}
+     */
+    const addPlantWeight = async () => {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: CHANGE_AVAILABLE_WEIGHT,
+          variables: {
+            input: {
+              id: selectedPlantId.value,
+              availableWeight: distillationWeight.value,
+            },
+          },
+        });
+        console.log("Changed available weight:", data.changeAvailableWeight);
+      } catch (error) {
+        console.error("Failed to update available weight:", error);
+      }
+    };
+
+    /**
+     * @async
+     * @function handleYes
+     * @description Handle the confirmation of adding plant weight.
+     * @returns {Promise<void>}
+     */
+    const handleYes = async () => {
+      await addPlantWeight();
+      closeAskModal();
+    };
+
     return {
       distillationId,
       page,
       isLoading,
       distillationDetails,
       isModalOpen,
+      isAskModalOpen,
       isPlantOpen,
+      plantName,
+      plantPart,
+      distillationDate,
+      distillationWeight,
       pathArrowDown,
       pathArrowUp,
       openClosePlant,
+      openDeleteModal,
+      closeDeleteModal,
+      closeAskModal,
+      deleteDistillation,
+      handleYes,
     };
   },
 };
