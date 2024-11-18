@@ -222,45 +222,15 @@ export default {
     const harvestRange = computed(() => store.getters["plant/harvestRange"]);
     const plantOrigin = computed(() => store.getters["plant/plantOrigin"]);
 
-    // Fetch initial data from local storage on component mount
-    onMounted(() => {
-      store.dispatch("plant/fetchLocalStorageData", "plantOrigin");
-      store.dispatch("plant/fetchLocalStorageData", "plantBuyDate");
-      store.dispatch("plant/fetchLocalStorageData", "plantProducer");
-      store.dispatch("plant/fetchLocalStorageData", "harvestDate");
-      store.dispatch("plant/fetchLocalStorageData", "harvestTemperature");
-      store.dispatch("plant/fetchLocalStorageData", "harvestRange");
-      store.dispatch("plant/fetchLocalStorageData", "countryOfOrigin");
-      countryName.value = formData.value.countryOfOrigin;
-      console.log("origin date", formData.value.harvestDate);
-    });
+     // Watch for changes in the specific formData value (countryOfOrigin)
+    watch(
+      () => formData.value.countryOfOrigin,
+      (newCountryOfOrigin) => {
+        countryName.value = newCountryOfOrigin;
+      }
+    );
 
-    /**
-     * Function to dispatch an action to the Vuex store to set a specific value.
-     * @function setValue
-     * @param {any} currentValue - The current value to be set.
-     * @param {string} input - The input field name.
-     */
-    const setValue = (currentValue, input) => {
-      store.dispatch("plant/setValue", { input, value: currentValue });
-    };
-
-    // Using the format function
-    const setInteger = (value, id, storeName) => {
-      setIntegerNumber(store, value, id, storeName);
-    };
-
-    /**
-     * Function to store a date value in the Vuex store
-     * @function storeDate
-     * @param {Date} date - The date value to be stored.
-     * @param {string} input - The input field name.
-     */
-    const storeDate = (date, input) => {
-      store.dispatch("plant/setValue", { input, value: date });
-    };
-
-    // Watcher to handle changes in harvest range
+        // Watcher to handle changes in harvest range
     watch(harvestRange, (newValue) => {
       if (props.isResetting) {
         return;
@@ -322,6 +292,44 @@ export default {
         }
       }
     );
+
+    // Fetch initial data from local storage on component mount
+    onMounted(() => {
+      store.dispatch("plant/fetchLocalStorageData", "plantOrigin");
+      store.dispatch("plant/fetchLocalStorageData", "plantBuyDate");
+      store.dispatch("plant/fetchLocalStorageData", "plantProducer");
+      store.dispatch("plant/fetchLocalStorageData", "harvestDate");
+      store.dispatch("plant/fetchLocalStorageData", "harvestTemperature");
+      store.dispatch("plant/fetchLocalStorageData", "harvestRange");
+      store.dispatch("plant/fetchLocalStorageData", "countryOfOrigin");
+      countryName.value = formData.value.countryOfOrigin;
+      console.log("origin date", formData.value.harvestDate, countryName.value);
+    });
+
+    /**
+     * Function to dispatch an action to the Vuex store to set a specific value.
+     * @function setValue
+     * @param {any} currentValue - The current value to be set.
+     * @param {string} input - The input field name.
+     */
+    const setValue = (currentValue, input) => {
+      store.dispatch("plant/setValue", { input, value: currentValue });
+    };
+
+    // Using the format function
+    const setInteger = (value, id, storeName) => {
+      setIntegerNumber(store, value, id, storeName);
+    };
+
+    /**
+     * Function to store a date value in the Vuex store
+     * @function storeDate
+     * @param {Date} date - The date value to be stored.
+     * @param {string} input - The input field name.
+     */
+    const storeDate = (date, input) => {
+      store.dispatch("plant/setValue", { input, value: date });
+    };
 
     const setCountry = (currentValue, input) => {
       setValue(currentValue, input);

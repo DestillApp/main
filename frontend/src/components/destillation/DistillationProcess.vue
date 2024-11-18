@@ -41,7 +41,7 @@
           :invalidInput="
             isFormValid === false && formData.distillationDate === ''
           "
-           color="distillation"
+          color="distillation"
         ></base-input-date-picker>
         <div class="message">
           <span v-if="isFormValid === false && formData.distillationDate === ''"
@@ -84,7 +84,7 @@ import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
 
 import { useStore } from "vuex";
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 
 /**
  * @component DistillationProcess
@@ -130,6 +130,21 @@ export default {
       "destylator stal nierdzewna 100l",
     ]);
 
+    // Watch for changes in the specific formData values
+    watch(
+      () => formData.value.distillationType,
+      (newDistillationType) => {
+        distillationType.value = newDistillationType;
+      }
+    );
+
+    watch(
+      () => formData.value.distillationApparatus,
+      (newDistillationApparatus) => {
+        distillationApparatus.value = newDistillationApparatus;
+      }
+    );
+
     /**
      * @function fetchData
      * @description Fetches initial data from local storage via the Vuex store for a specified key.
@@ -152,7 +167,7 @@ export default {
         fetchData("distillationApparatus", false);
         distillationType.value = formData.value.distillationType;
         distillationApparatus.value = formData.value.distillationApparatus;
-      }     
+      }
     });
 
     /**
