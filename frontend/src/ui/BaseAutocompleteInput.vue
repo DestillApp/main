@@ -11,7 +11,7 @@
         <input
           class="input"
           :id="id"
-          :value="modelValue"
+          :value="inputValue"
           :disabled="disabled"
           :placeholder="placeholder"
           @input="updateValue"
@@ -76,7 +76,7 @@
       <ul
         v-if="results.length && modelValue !== '' && id === 'countryOfOrigin'"
         class="list"
-                :class="{
+        :class="{
           'list_color-plant': plantColor,
           'list_color-distillation': distillationColor,
         }"
@@ -93,7 +93,7 @@
       <ul
         v-if="results.length && modelValue !== '' && id === 'choosedPlant'"
         class="list"
-                :class="{
+        :class="{
           'list_color-plant': plantColor,
           'list_color-distillation': distillationColor,
         }"
@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiArrowDownBoldBox } from "@mdi/js";
 
@@ -170,8 +170,15 @@ export default {
     const disableBlur = ref(false);
     const choose = ref(props.toChoose || false);
     const isOpen = ref(false);
-    // Reference for the SVG icon path
+    const inputValue = ref(props.modelValue);
     const path = ref(mdiArrowDownBoldBox);
+
+    watch(
+      () => props.modelValue,
+      (newValue) => {
+        inputValue.value = newValue;
+      }
+    );
 
     /**
      * @function updateValue
@@ -247,6 +254,7 @@ export default {
       isOpen,
       distillationColor,
       plantColor,
+      inputValue,
     };
   },
 };
