@@ -38,7 +38,7 @@
         >Nie masz konta?
         <router-link @click="scrollToTop" class="link_register" to="/register"
           >Zarejestruj się </router-link
-        >w Destill It!</span
+        >w Distill It!</span
       >
     </div>
   </base-card>

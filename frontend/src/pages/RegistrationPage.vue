@@ -40,6 +40,7 @@
 
 <script>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
 import { scrollToTop } from "../helpers/displayHelpers.js";
@@ -54,6 +55,8 @@ export default {
   name: "RegistrationForm",
 
   setup() {
+    const router = useRouter();
+     
     // Object to store registration form data
     const registrationForm = ref({
       username: "",
@@ -97,6 +100,7 @@ export default {
           },
         });
         console.log("Created user:", data.registerUser);
+        router.push({ name: "LoginPage" });
       } catch (error) {
         console.error("Error submitting form", error);
       }
