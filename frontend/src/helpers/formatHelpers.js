@@ -4,13 +4,20 @@
  * @param {number} currentValue - The current value of the input.
  * @param {string} input - The input identifier.
  */
-export const setNumberFormat = (store, currentValue, input, storeName) => {
+export const setNumberFormat = (
+  store,
+  currentValue,
+  input,
+  storeName,
+  decimals
+) => {
   if (!currentValue || isNaN(currentValue)) {
     store.dispatch(`${storeName}/setValue`, { input, value: null });
   } else {
     store.dispatch(`${storeName}/setNumberFormat`, {
       input,
       value: currentValue,
+      decimals,
     });
   }
 };

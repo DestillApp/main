@@ -9,7 +9,7 @@
       inputColor="results"
       :invalidInput="isFormValid === false && !formData.oilAmount"
       :storeName="storeName"
-      @change:modelValue="setNumber"
+      @change:modelValue="setNumberOne"
       label="Ilość olejku eterycznego"
       id="oilAmount"
       min="0.1"
@@ -19,9 +19,60 @@
         <div v-if="formData.oilAmount !== null">ml</div>
       </template>
       <template v-slot:message>
-        <span v-if="isFormValid === false && !formData.oilAmount">Wpisz ilość olejku eterycznego</span>
+        <span v-if="isFormValid === false && !formData.oilAmount"
+          >Wpisz ilość olejku eterycznego</span
+        >
       </template>
     </base-text-input>
+<div class="results_hydrosol">
+    <!-- Input field for entering the hydrosol amount -->
+    <base-text-input
+      v-model="formData.hydrosolAmount"
+      type="number"
+      classType="results"
+      placeholder="l"
+      inputColor="results"
+      :invalidInput="isFormValid === false && !formData.hydrosolAmount"
+      :storeName="storeName"
+      @change:modelValue="setNumberOne"
+      label="Ilość hydrolatu"
+      id="hydrosolAmount"
+      min="0.1"
+      step="0.1"
+    >
+      <template v-slot:unit>
+        <div v-if="formData.hydrosolAmount !== null">l</div>
+      </template>
+      <template v-slot:message>
+        <span v-if="isFormValid === false && !formData.hydrosolAmount"
+          >Wpisz ilość hydrolatu</span
+        >
+      </template>
+    </base-text-input>
+
+    <!-- Input field for entering the hydrosol pH -->
+    <base-text-input
+      v-model="formData.hydrosolpH"
+      type="number"
+      classType="number"
+      placeholder="pH"
+      inputColor="results"
+      :invalidInput="isFormValid === false && !formData.hydrosolpH"
+      :storeName="storeName"
+      @change:modelValue="setNumberTwo"
+      label="pH hydrolatu"
+      id="hydrosolpH"
+      min="0"
+      max="14"
+      step="0.01"
+    >
+      <template v-slot:message>
+        <span v-if="isFormValid === false && !formData.hydrosolpH"
+          >Wpisz pH hydrolatu</span
+        >
+      </template>
+    </base-text-input>
+    </div>
   </div>
 </template>
 
@@ -49,25 +100,27 @@ export default {
     // Computed properties to get form data from Vuex store
     const formData = computed(() => store.getters["results/resultsForm"]);
 
-    // Function to set value in Vuex store
-    const setValue = (value, id) => {
-      store.dispatch("results/setValue", { input: id, value });
+    // Function to format number input and set value in Vuex store
+    const setNumberOne = (value, id, storeName) => {
+      setNumberFormat(store, value, id, storeName, 1);
     };
 
     // Function to format number input and set value in Vuex store
-    const setNumber = (value, id, storeName) => {
-      setNumberFormat(store, value, id, storeName);
+    const setNumberTwo = (value, id, storeName) => {
+      setNumberFormat(store, value, id, storeName, 2);
     };
 
     // Fetch initial data from local storage on component mount
     onMounted(() => {
       store.dispatch("results/fetchLocalStorageData", "oilAmount");
+      store.dispatch("results/fetchLocalStorageData", "hydrosolAmount");
+      store.dispatch("results/fetchLocalStorageData", "hydrosolpH");
     });
 
     return {
       formData,
-      setValue,
-      setNumber,
+      setNumberOne,
+      setNumberTwo,
       storeName,
     };
   },
@@ -78,12 +131,12 @@ export default {
 .results_data {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 30px;
 }
 
-.message {
-  color: var(--error-color);
-  font-size: 12px;
-  text-align: left;
+.results_hydrosol {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
 }
 </style>

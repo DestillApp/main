@@ -36,18 +36,6 @@ export default {
   },
 
   /**
-   * @function setIntegerValue
-   * @description Sets an integer value in the state.
-   * @param {Object} context - The Vuex context.
-   * @param {Object} payload - The payload containing the input and value.
-   * @param {string} payload.input - The input field to set.
-   * @param {number} payload.value - The integer value to set.
-   */
-  setIntegerValue(context, { input, value }) {
-    context.commit("changeIntegerNumber", { input, value });
-  },
-
-  /**
    * @function setNumberFormat
    * @description Sets the number format in the state.
    * @param {Object} context - The Vuex context.
@@ -55,8 +43,8 @@ export default {
    * @param {string} payload.input - The input field to set.
    * @param {number} payload.value - The number value to set.
    */
-  setNumberFormat(context, { input, value }) {
-    context.commit("changeNumberFormat", { input, value });
+  setNumberFormat(context, { input, value, decimals }) {
+    context.commit("changeNumberFormat", { input, value, decimals });
   },
 
   /**
