@@ -13,6 +13,7 @@
           'input_type--time': isTimeInput,
           'input_type--plant': isPlantInput,
           'input_type--distillation': isDistillationInput,
+          'input_type--results': isResultsInput,
           input_invalid: invalidInput,
         }"
         :id="id"
@@ -96,37 +97,34 @@ export default {
 
     // Computed property to determine if input is of type number
     const isNumberInput = computed(() => {
-      if (props.classType === "number") {
-        return true;
-      } else {
-        return false;
-      }
+      return props.classType === "number";
     });
 
     // Computed property to determine if input is of type time
     const isTimeInput = computed(() => {
-      if (props.classType === "time") {
-        return true;
-      } else {
-        return false;
-      }
+      return props.classType === "time";
     });
 
+        // Computed property to determine if input is for oilAmount
+    const isResultsInput = computed(() => {
+      return props.classType === "results";
+    });
+
+    // Computed property to determine if input is for plant
     const isPlantInput = computed(() => {
-      if(props.inputColor === "plant") {
-        return true;
-      } else {
-        return false
-      }
+      return props.inputColor === "plant";
     });
 
-        const isDistillationInput = computed(() => {
-      if(props.inputColor === "distillation") {
-        return true;
-      } else {
-        return false
-      }
-    })
+    // Computed property to determine if input is for distillation
+    const isDistillationInput = computed(() => {
+      return props.inputColor === "distillation";
+    });
+
+    //     // Computed property to determine if input is for distillation
+    // const isResultsInputColor = computed(() => {
+    //   return props.inputColor === "results";
+    // });
+
 
     return {
       updateValue,
@@ -135,7 +133,8 @@ export default {
       isNumberInput,
       isTimeInput,
       isPlantInput,
-      isDistillationInput
+      isDistillationInput,
+      isResultsInput
     };
   },
 };
@@ -181,11 +180,18 @@ export default {
   padding-right: 0px;
   padding-left: 10px;
 }
+
 .input_type--time {
   width: 60px;
   padding-right: 5px;
   padding-left: 5px;
   text-align: center;
+}
+
+.input_type--results {
+  width: 100px;
+  padding-right: 0px;
+  padding-left: 10px;
 }
 
 .input_type--plant:focus {
