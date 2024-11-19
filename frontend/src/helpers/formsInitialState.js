@@ -43,3 +43,11 @@ export const initialDistillationForm = {
     distillationMinutes: null,
   },
 };
+
+export const initialResultsForm = {
+  oilAmount: null,
+  hydrosolAmount: null,
+  hydrosolpH: null,
+  oilDescription: "",
+  hydrosolDescription: "",
+};

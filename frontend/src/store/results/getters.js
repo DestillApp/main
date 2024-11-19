@@ -1,0 +1,15 @@
+/**
+ * Results module getters for getting the results form state.
+ * @module resultsGetters
+ */
+export default {
+  /**
+   * @function resultsForm
+   * @description Gets the results form data from the state.
+   * @param {Object} state - The Vuex state.
+   * @returns {Object} The results form data.
+   */
+  resultsForm(state) {
+    return state.resultsForm;
+  },
+};
