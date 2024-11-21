@@ -14,6 +14,7 @@
           'input_type--plant': isPlantInput,
           'input_type--distillation': isDistillationInput,
           'input_type--results': isResultsInput,
+          'input_type--results-color': isResultsInputColor,
           input_invalid: invalidInput,
         }"
         :id="id"
@@ -65,18 +66,22 @@ export default {
     "classType",
     "inputColor",
     "invalidInput",
-    "storeName"
+    "storeName",
   ],
-  emits: ['update:modelValue', 'change:modelValue', 'set:keyboard'],
+  emits: ["update:modelValue", "change:modelValue", "set:keyboard"],
 
   setup(props, context) {
-
     /**
      * Updates the model value when input changes
      * @function updateValue
      */
     const updateValue = (e) => {
-      context.emit("update:modelValue", e.target.value, props.id, props.storeName);
+      context.emit(
+        "update:modelValue",
+        e.target.value,
+        props.id,
+        props.storeName
+      );
     };
 
     /**
@@ -92,7 +97,12 @@ export default {
      * @function changeValue
      */
     const changeValue = (e) => {
-      context.emit("change:modelValue", e.target.value, props.id, props.storeName);
+      context.emit(
+        "change:modelValue",
+        e.target.value,
+        props.id,
+        props.storeName
+      );
     };
 
     // Computed property to determine if input is of type number
@@ -105,7 +115,7 @@ export default {
       return props.classType === "time";
     });
 
-        // Computed property to determine if input is for oilAmount
+    // Computed property to determine if input is for oilAmount
     const isResultsInput = computed(() => {
       return props.classType === "results";
     });
@@ -120,11 +130,10 @@ export default {
       return props.inputColor === "distillation";
     });
 
-    //     // Computed property to determine if input is for distillation
-    // const isResultsInputColor = computed(() => {
-    //   return props.inputColor === "results";
-    // });
-
+    // Computed property to determine if input is for distillation
+    const isResultsInputColor = computed(() => {
+      return props.inputColor === "results";
+    });
 
     return {
       updateValue,
@@ -134,7 +143,8 @@ export default {
       isTimeInput,
       isPlantInput,
       isDistillationInput,
-      isResultsInput
+      isResultsInput,
+      isResultsInputColor,
     };
   },
 };
@@ -152,22 +162,22 @@ export default {
   font-size: 15px;
   text-align: left;
 }
+
 .container {
   display: flex;
   flex-direction: row;
   gap: 7px;
   align-items: center;
 }
+
 .input {
   font-size: 15px;
   color: var(--text-color);
   font-family: inherit;
   border: 2px solid var(--border-color);
   border-radius: var(--input-border-radius);
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding-right: 10px;
-  padding-left: 10px;
+  padding-block: 2px;
+  padding-inline: 10px;
   width: 100%;
 }
 
@@ -195,11 +205,15 @@ export default {
 }
 
 .input_type--plant:focus {
-   border: 2px solid var(--secondary-color);
+  border: 2px solid var(--secondary-color);
 }
 
 .input_type--distillation:focus {
-   border: 2px solid var(--secondary-color-distillation);
+  border: 2px solid var(--secondary-color-distillation);
+}
+
+.input_type--results-color:focus {
+  border: 2px solid var(--secondary-color-results);
 }
 
 .input:focus {
