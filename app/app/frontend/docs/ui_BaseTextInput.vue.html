@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui/BaseTextInput.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ui/BaseTextInput.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;!-- Container for the input field -->
+  &lt;div class="input-wrap">
+    &lt;!-- Label for the input field -->
+    &lt;label class="label" :for="id">{{ label }}&lt;/label>
+    &lt;!-- Container for the input element and optional unit slot -->
+    &lt;div class="container">
+      &lt;!-- Input field -->
+      &lt;input
+        class="input"
+        :class="{
+          'input_type--number': isNumberInput,
+          'input_type--time': isTimeInput,
+          input_invalid: invalidInput,
+        }"
+        :id="id"
+        :value="modelValue"
+        :disabled="disabled"
+        :placeholder="placeholder"
+        @input="updateValue"
+        @keypress="setKeyboard"
+        @blur="changeValue"
+        v-bind="$attrs"
+      />
+      &lt;!-- Slot for optional unit display -->
+      &lt;slot name="unit">&lt;/slot>
+    &lt;/div>
+    &lt;!-- Slot for optional message display -->
+    &lt;div class="message">
+      &lt;slot name="message">&lt;/slot>
+    &lt;/div>
+  &lt;/div>
+&lt;/template>
+
+&lt;script>
+import { computed } from "vue";
+
+/**
+ * @component BaseTextInput
+ * @description A customizable text input component.
+ * @props {string} label - The label for the input field.
+ * @props {string} modelValue - The model value bound to the input field.
+ * @props {string} id - The id for the input field.
+ * @props {boolean} disabled - Flag to indicate if the input is disabled.
+ * @props {string} placeholder - The placeholder text for the input field.
+ * @props {string} classType - The class type for conditional styling (e.g., "number" or "time").
+ * @props {boolean} invalidInput - Flag to indicate if the input is invalid.
+ * @emits update:modelValue - Emitted when the input value changes.
+ * @emits set:keyboard - Emitted when a keyboard event occurs.
+ * @emits change:modelValue - Emitted when the input value changes and loses focus.
+ * @see updateValue
+ * @see setKeyboard
+ * @see changeValue
+ */
+export default {
+  props: [
+    "label",
+    "modelValue",
+    "id",
+    "disabled",
+    "placeholder",
+    "classType",
+    "invalidInput",
+  ],
+
+  setup(props, context) {
+    /**
+     * Updates the model value when input changes
+     * @function updateValue
+     */
+    const updateValue = (e) => {
+      context.emit("update:modelValue", e.target.value, props.id);
+    };
+
+    /**
+     * Emits keyboard events
+     * @function setKeyboard
+     */
+    const setKeyboard = (e) => {
+      context.emit("set:keyboard", e);
+    };
+
+    /**
+     * Emits value change events when input loses focus
+     * @function changeValue
+     */
+    const changeValue = (e) => {
+      context.emit("change:modelValue", e.target.value, props.id);
+    };
+
+    // Computed property to determine if input is of type number
+    const isNumberInput = computed(() => {
+      if (props.classType === "number") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    // Computed property to determine if input is of type time
+    const isTimeInput = computed(() => {
+      if (props.classType === "time") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    return {
+      updateValue,
+      setKeyboard,
+      changeValue,
+      isNumberInput,
+      isTimeInput,
+    };
+  },
+};
+&lt;/script>
+
+&lt;style scoped>
+.input-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.label {
+  font-size: 15px;
+  text-align: left;
+}
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  align-items: center;
+}
+.input {
+  font-size: 15px;
+  color: var(--text-color);
+  font-family: inherit;
+  border: 2px solid var(--border-color);
+  border-radius: var(--input-border-radius);
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-right: 10px;
+  padding-left: 10px;
+  width: 100%;
+}
+
+.input::placeholder {
+  color: var(--placeholder-color);
+}
+
+.input_type--number {
+  width: 70px;
+  padding-right: 0px;
+  padding-left: 10px;
+}
+.input_type--time {
+  width: 60px;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: center;
+}
+.input:focus {
+  outline: none;
+  border: 2px solid var(--secondary-color);
+}
+
+.input_invalid {
+  border: 2px solid var(--error-color);
+}
+
+.input_invalid:focus {
+  border: 2px solid var(--error-color);
+}
+
+.message {
+  color: var(--error-color);
+  font-size: 12px;
+  text-align: left;
+}
+&lt;/style>
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AddDestillation.html">AddDestillation</a></li><li><a href="module-App.html">App</a></li><li><a href="module-BaseButton.html">BaseButton</a></li><li><a href="module-BaseCard.html">BaseCard</a></li><li><a href="module-BaseDatePicker.html">BaseDatePicker</a></li><li><a href="module-BaseInputDatePicker.html">BaseInputDatePicker</a></li><li><a href="module-BaseModal.html">BaseModal</a></li><li><a href="module-BaseRadioInput.html">BaseRadioInput</a></li><li><a href="module-BaseTextInput.html">BaseTextInput</a></li><li><a href="module-DestillationForm.html">DestillationForm</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-PlantData.html">PlantData</a></li><li><a href="module-PlantForm.html">PlantForm</a></li><li><a href="module-PlantIdentification.html">PlantIdentification</a></li><li><a href="module-PlantOrigin.html">PlantOrigin</a></li><li><a href="module-RegistrationPage.html">RegistrationPage</a></li><li><a href="module-TheFooter.html">TheFooter</a></li><li><a href="module-TheHeader.html">TheHeader</a></li><li><a href="module-main.html">main</a></li><li><a href="module-plantActions.html">plantActions</a></li><li><a href="module-plantGetters.html">plantGetters</a></li><li><a href="module-plantMutations.html">plantMutations</a></li><li><a href="module-plantStore.html">plantStore</a></li><li><a href="module-router.html">router</a></li><li><a href="module-store.html">store</a></li></ul><h3>Global</h3><ul><li><a href="global.html#changeValue">changeValue</a></li><li><a href="global.html#changeVisibility">changeVisibility</a></li><li><a href="global.html#closeModal">closeModal</a></li><li><a href="global.html#formatedDate">formatedDate</a></li><li><a href="global.html#plantFormValidation">plantFormValidation</a></li><li><a href="global.html#sendDate">sendDate</a></li><li><a href="global.html#setIntegerNumber">setIntegerNumber</a></li><li><a href="global.html#setIntegerValue">setIntegerValue</a></li><li><a href="global.html#setKeyboard">setKeyboard</a></li><li><a href="global.html#setKeyboardFormatedNumber">setKeyboardFormatedNumber</a></li><li><a href="global.html#setKeyboardIntegerNumber">setKeyboardIntegerNumber</a></li><li><a href="global.html#setNumberFormat">setNumberFormat</a></li><li><a href="global.html#setValue">setValue</a></li><li><a href="global.html#storeDate">storeDate</a></li><li><a href="global.html#submitPlantForm">submitPlantForm</a></li><li><a href="global.html#submitRegistrationForm">submitRegistrationForm</a></li><li><a href="global.html#updateDate">updateDate</a></li><li><a href="global.html#updateValue">updateValue</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Mon May 27 2024 15:11:48 GMT+0200 (czas środkowoeuropejski letni)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
