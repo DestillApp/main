@@ -1,6 +1,6 @@
-import resultsMutations from './mutations';
-import resultsActions from './actions';
-import resultsGetters from './getters';
+import resultsMutations from "./mutations";
+import resultsActions from "./actions";
+import resultsGetters from "./getters";
 
 /**
  * Results module for managing the state related to distillation results.
@@ -22,6 +22,12 @@ export default {
         hydrosolpH: null,
         oilDescription: "",
         hydrosolDescription: "",
+        distillationDate: "",
+        distillationType: "",
+        waterForDistillation: null,
+        choosedPlantName: "",
+        choosedPlantPart: "",
+        weightForDistillation: null,
       },
     };
   },

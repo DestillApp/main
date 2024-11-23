@@ -19,10 +19,14 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useApolloClient } from "@vue/apollo-composable";
 import ResultsData from "@/components/results/ResultsData.vue";
 import ResultsDescriptions from "@/components/results/ResultsDescriptions.vue";
 import ResultsDistillation from "@/components/results/ResultsDistillation.vue";
+import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
+import { useStore } from "vuex";
 
 export default {
   name: "AddResultsPage",
@@ -32,8 +36,70 @@ export default {
     ResultsDistillation,
   },
   setup() {
+    // Vuex store instance
+    const store = useStore();
+
     // Reactive reference to track form validity
     const isFormValid = ref(null);
+
+    // Apollo client instance
+    const { resolveClient } = useApolloClient();
+    const apolloClient = resolveClient();
+
+    // Route object to access route params
+    const route = useRoute();
+
+    // Reactive references for distillation data
+    const distillationId = ref(route.params.distillId);
+
+    /**
+     * @async
+     * @function fetchDistillationDetails
+     * @description Fetches the distillation details by distillation ID from GraphQL API.
+     * @returns {Promise<void>}
+     */
+    const fetchDistillationDetails = async () => {
+      try {
+        const { data } = await apolloClient.query({
+          query: GET_DISTILLATION_BY_ID,
+          variables: { id: distillationId.value, formatDates: true },
+        });
+        const distillationDetails = data.getDistillationById;
+        console.log(distillationDetails);
+
+        // Save distillation details in Vuex state
+        store.dispatch("results/setValue", {
+          input: "distillationDate",
+          value: distillationDetails.distillationDate,
+        });
+        store.dispatch("results/setValue", {
+          input: "distillationType",
+          value: distillationDetails.distillationType,
+        });
+        store.dispatch("results/setValue", {
+          input: "waterForDistillation",
+          value: distillationDetails.waterForDistillation,
+        });
+        store.dispatch("results/setValue", {
+          input: "choosedPlantName",
+          value: distillationDetails.choosedPlant.name,
+        });
+        store.dispatch("results/setValue", {
+          input: "choosedPlantPart",
+          value: distillationDetails.choosedPlant.part,
+        });
+        store.dispatch("results/setValue", {
+          input: "weightForDistillation",
+          value: distillationDetails.weightForDistillation,
+        });
+      } catch (error) {
+        console.error("Failed to get distillation details:", error);
+      }
+    };
+
+    onMounted(() => {
+      fetchDistillationDetails();
+    });
 
     return { isFormValid };
   },

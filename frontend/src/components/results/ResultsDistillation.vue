@@ -1,37 +1,37 @@
 <template>
   <div class="results_distillation">
     <!-- Display distillation details -->
-    <div v-if="distillationDetails" class="distillation_details">
+    <div class="distillation_details">
       <div class="distillation_details--process">
         <p>
           <strong class="distillation_color">data destylacji:</strong>
-          {{ distillationDetails.distillationDate }}
+          {{ resultsForm.distillationDate }}
         </p>
         <p>
           <strong class="distillation_color">typ destylacji:</strong>
-          {{ distillationDetails.distillationType }}
+          {{ resultsForm.distillationType }}
         </p>
         <p>
           <strong class="distillation_color"
             >ilość wody użyta do destylacji:</strong
           >
-          {{ distillationDetails.waterForDistillation }} l
+          {{ resultsForm.waterForDistillation }} l
         </p>
       </div>
       <div class="distillation_details--plant">
         <p>
           <strong class="plant_color">destylowany surowiec:</strong>
-          {{ distillationDetails.choosedPlant.name }}
+          {{ resultsForm.choosedPlantName }}
         </p>
         <p>
           <strong class="plant_color">część surowca:</strong>
-          {{ distillationDetails.choosedPlant.part }}
+          {{ resultsForm.choosedPlantPart }}
         </p>
         <p>
           <strong class="plant_color"
             >ilość surowca użyta do destylacji:</strong
           >
-          {{ distillationDetails.weightForDistillation }} kg
+          {{ resultsForm.weightForDistillation }} kg
         </p>
       </div>
     </div>
@@ -39,50 +39,19 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { useApolloClient } from "@vue/apollo-composable";
-import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
+import { computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "ResultsDistillation",
   setup() {
-    const { resolveClient } = useApolloClient();
-    const apolloClient = resolveClient();
+    const store = useStore();
 
-    // Route object to access route params
-    const route = useRoute();
-
-    // Reactive references for distillation data
-    const distillationId = ref(route.params.distillId);
-    const distillationDetails = ref(null);
-
-    /**
-     * @async
-     * @function fetchDistillationDetails
-     * @description Fetches the distillation details by distillation ID from GraphQL API.
-     * @returns {Promise<void>}
-     */
-    const fetchDistillationDetails = async () => {
-      try {
-        const { data } = await apolloClient.query({
-          query: GET_DISTILLATION_BY_ID,
-          variables: { id: distillationId.value, formatDates: true },
-        });
-        distillationDetails.value = data.getDistillationById;
-        console.log(distillationDetails.value);
-      } catch (error) {
-        console.error("Failed to get distillation details:", error);
-        distillationDetails.value = null;
-      }
-    };
-
-    onMounted(() => {
-      fetchDistillationDetails();
-    });
+    // Computed property to get the results form data from Vuex store
+    const resultsForm = computed(() => store.getters["results/resultsForm"]);
 
     return {
-      distillationDetails,
+      resultsForm,
     };
   },
 };

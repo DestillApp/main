@@ -50,4 +50,10 @@ export const initialResultsForm = {
   hydrosolpH: null,
   oilDescription: "",
   hydrosolDescription: "",
+  distillationDate: "",
+  distillationType: "",
+  waterForDistillation: null,
+  choosedPlantName: "",
+  choosedPlantPart: "",
+  weightForDistillation: null,
 };
