@@ -79,7 +79,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/add-results",
+      path: "/add-results/:distillId",
       name: "AddResultsPage",
       component: AddResultsPage,
       meta: { requiresAuth: true },

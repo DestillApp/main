@@ -143,7 +143,14 @@
           </div>
         </div>
       </div>
-      <router-link :to="{ name: 'AddResultsPage' }" class="distillation_results"
+      <router-link
+        :to="{
+          name: 'AddResultsPage',
+          params: {
+            distillId: distillationId,
+          },
+        }"
+        class="distillation_results"
         ><base-button class="results_button"
           >Dodaj wyniki destylacji</base-button
         ></router-link
@@ -283,10 +290,10 @@ export default {
       distillationWeight.value = null;
       plantName.value = null;
       plantPart.value = null;
-                router.push({
-            name: "InProgressDistillationsPage",
-            params: { page: 1 },
-          });
+      router.push({
+        name: "InProgressDistillationsPage",
+        params: { page: 1 },
+      });
     };
 
     /**

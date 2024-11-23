@@ -91,3 +91,32 @@ export const distillationFormValidation = (form) => {
 
   return isFormValid;
 };
+
+/**
+ * @function resultsFormValidation
+ * @description Function to validate the results form data
+ * @param {Object} form - The results form data object
+ * @returns {boolean} Returns true if the form is valid, otherwise false
+ */
+export const resultsFormValidation = (form) => {
+  console.log("form", form);
+  let isFormValid = true;
+
+  // Validate required fields
+  if (
+    form.oilAmount === null ||
+    form.hydrosolAmount === null ||
+    form.hydrosolpH === null ||
+    form.oilDescription === "" ||
+    form.hydrosolDescription === ""
+  ) {
+    isFormValid = false;
+  }
+
+  // Additional validation for pH value
+  if (form.hydrosolpH < 0 || form.hydrosolpH > 14) {
+    isFormValid = false;
+  }
+
+  return isFormValid;
+};

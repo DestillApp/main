@@ -56,7 +56,6 @@ export default {
 
   setup() {
     const router = useRouter();
-     
     // Object to store registration form data
     const registrationForm = ref({
       username: "",

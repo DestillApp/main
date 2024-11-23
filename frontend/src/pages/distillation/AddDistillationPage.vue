@@ -83,8 +83,9 @@ export default {
     const { mutate: createDistillation } = useMutation(CREATE_DISTILLATION);
 
     // Using GraphQL mutation for updating the available weight
-    const { mutate: updateAvailableWeight } = useMutation(UPDATE_AVAILABLE_WEIGHT);
-
+    const { mutate: updateAvailableWeight } = useMutation(
+      UPDATE_AVAILABLE_WEIGHT
+    );
 
     /**
      * @async
@@ -131,8 +132,18 @@ export default {
               ? Number(DOMPurify.sanitize(form.waterForDistillation))
               : null,
             distillationTime: {
-              distillationHours: form.distillationTime.distillationHours ? Number(DOMPurify.sanitize(form.distillationTime.distillationHours)) : null,
-              distillationMinutes: form.distillationTime.distillationMinutes ? Number(DOMPurify.sanitize(form.distillationTime.distillationMinutes)) : null,
+              distillationHours: form.distillationTime.distillationHours
+                ? Number(
+                    DOMPurify.sanitize(form.distillationTime.distillationHours)
+                  )
+                : null,
+              distillationMinutes: form.distillationTime.distillationMinutes
+                ? Number(
+                    DOMPurify.sanitize(
+                      form.distillationTime.distillationMinutes
+                    )
+                  )
+                : null,
             },
           };
 
@@ -153,34 +164,51 @@ export default {
 
     const changeAvailableWeight = async () => {
       try {
-        console.log('ID', route.params.id);
-        const newWeight = distillationForm.value.choosedPlant.availableWeight - distillationForm.value.weightForDistillation ;
+        console.log("ID", route.params.id);
+        const newWeight =
+          distillationForm.value.choosedPlant.availableWeight -
+          distillationForm.value.weightForDistillation;
         const { data } = await updateAvailableWeight({
           input: {
             id: route.params.id,
             availableWeight: newWeight,
-          }
+          },
         });
         console.log("Changed available weight:", data.updateAvailableWeight);
       } catch (error) {
         console.error("Error changing form available weight", error);
       }
-}
+    };
 
     const saveDistillation = async () => {
       try {
         await submitDistillationForm();
         if (!isFormValid.value) {
-          return
+          return;
         } else {
           await changeAvailableWeight();
-          router.push({ name: "InProgressDistillationsPage", params: {page: 1} });
+          router.push({
+            name: "InProgressDistillationsPage",
+            params: { page: 1 },
+          });
         }
       } catch (error) {
         return;
       }
     };
-
+    /**
+     * Asynchronously saves the distillation add results.
+     *
+     * This function attempts to submit the distillation form and, if the form is valid,
+     * it updates the available weight for the distilled plant and navigates to the add
+     * distillation results page. If the form is not valid, it simply returns without
+     * performing any further actions.
+     *
+     * @async
+     * @function saveDistillationAddResults
+     * @returns {Promise<void>} - A promise that resolves when the operation is complete.
+     * @throws {Error} - Throws an error if the submission or weight change fails.
+     */
     const saveDistillationAddResults = async () => {
       try {
         // Submit the distillation form

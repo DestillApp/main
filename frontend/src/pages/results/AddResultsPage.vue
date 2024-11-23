@@ -4,6 +4,8 @@
     <form @submit.prevent="saveResults" class="results_form">
       <!-- Title for the results form -->
       <h3 class="form_title">Wyniki destylacji</h3>
+      <!-- Distillation results component -->
+      <results-distillation></results-distillation>
       <!-- Results data component -->
       <results-data :isFormValid="isFormValid"></results-data>
       <!-- Results descriptions component -->
@@ -20,12 +22,14 @@
 import { ref } from "vue";
 import ResultsData from "@/components/results/ResultsData.vue";
 import ResultsDescriptions from "@/components/results/ResultsDescriptions.vue";
+import ResultsDistillation from "@/components/results/ResultsDistillation.vue";
 
 export default {
   name: "AddResultsPage",
   components: {
     ResultsData,
     ResultsDescriptions,
+    ResultsDistillation,
   },
   setup() {
     // Reactive reference to track form validity
