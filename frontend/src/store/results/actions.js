@@ -48,6 +48,18 @@ export default {
   },
 
   /**
+   * @function setDistillationDataValue
+   * @description Sets a value inside distillationData in the state.
+   * @param {Object} context - The Vuex context.
+   * @param {Object} payload - The payload containing the input and value.
+   * @param {string} payload.input - The input field to set inside distillationData.
+   * @param {any} payload.value - The value to set.
+   */
+  setDistillationDataValue(context, { input, value }) {
+    context.commit("changeDistillationDataValue", { input, value });
+  },
+
+  /**
    * @function setResultsForm
    * @description Sets the resultsForm in the state and localStorage.
    * @param {Object} context - The Vuex context.

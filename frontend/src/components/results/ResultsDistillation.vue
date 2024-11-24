@@ -5,17 +5,17 @@
       <div class="distillation_details--process">
         <p>
           <strong class="distillation_color">data destylacji:</strong>
-          {{ resultsForm.distillationDate }}
+          {{ resultsForm.distillationData.distillationDate }}
         </p>
         <p>
           <strong class="distillation_color">typ destylacji:</strong>
-          {{ resultsForm.distillationType }}
+          {{ resultsForm.distillationData.distillationType }}
         </p>
         <p>
           <strong class="distillation_color"
             >ilość wody użyta do destylacji:</strong
           >
-          {{ resultsForm.waterForDistillation }} l
+          {{ resultsForm.distillationData.waterForDistillation }} l
         </p>
       </div>
       <div class="distillation_details--plant">
@@ -31,7 +31,7 @@
           <strong class="plant_color"
             >ilość surowca użyta do destylacji:</strong
           >
-          {{ resultsForm.weightForDistillation }} kg
+          {{ resultsForm.distillationData.weightForDistillation }} kg
         </p>
       </div>
     </div>

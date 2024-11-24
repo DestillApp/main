@@ -33,6 +33,19 @@ export default {
   },
 
   /**
+   * @function changeDistillationDataValue
+   * @description Mutation to change the value of a field inside distillationData in the results form.
+   * @param {Object} state - The current state object.
+   * @param {Object} payload - Payload containing the input field name and its new value.
+   * @param {string} payload.input - The name of the input field to be updated inside distillationData.
+   * @param {any} payload.value - The new value for the input field.
+   */
+  changeDistillationDataValue(state, { input, value }) {
+    state.resultsForm.distillationData[input] = value;
+    localStorage.setItem(input, JSON.stringify(value));
+  },
+
+  /**
    * @function resetResultsForm
    * @description Mutation to reset the resultsForm and remove resultsForm from localStorage.
    * @param {Object} state - The current state object.
