@@ -23,13 +23,13 @@ import ResultsData from "@/components/results/ResultsData.vue";
 import ResultsDescriptions from "@/components/results/ResultsDescriptions.vue";
 import ResultsDistillation from "@/components/results/ResultsDistillation.vue";
 import { resultsFormValidation } from "@/helpers/formsValidation";
-// import { initialResultsForm } from "@/helpers/formsInitialState";
+import { initialResultsForm } from "@/helpers/formsInitialState";
 import { CREATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
 import { useStore } from "vuex";
-import { ref, onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, onMounted, computed, nextTick } from "vue";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useMutation, useApolloClient } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
 
@@ -249,19 +249,29 @@ export default {
     };
 
     // Navigation guard that resets the form data in Vuex state and local storage before navigating away from the route.
-    // onBeforeRouteLeave(async (to, from, next) => {
-    //   if (to.path !== from.path) {
-    //     // Dispatch Vuex action to reset the form in store
-    //     store.dispatch("results/setResultsForm");
-    //     // Wait for the next tick to ensure state updates are complete
-    //     await nextTick();
-    //     // Removing results form value from local storage by its key
-    //     for (const key in initialResultsForm) {
-    //       localStorage.removeItem(key);
-    //     }
-    //   }
-    //   next();
-    // });
+    onBeforeRouteLeave(async (to, from, next) => {
+      if (to.path !== from.path) {
+        // Dispatch Vuex action to reset the form in store
+        store.dispatch("results/setResultsForm");
+        // Wait for the next tick to ensure state updates are complete
+        await nextTick();
+        // Removing results form value from local storage by its key
+        for (const key in initialResultsForm) {
+          localStorage.removeItem(key);
+        }
+        for (const key in initialResultsForm.distillationData) {
+          localStorage.removeItem(key);
+        }
+        for (const key in initialResultsForm.distillationData
+          .distillationTime) {
+          localStorage.removeItem(key);
+        }
+        for (const key in initialResultsForm.distilledPlant) {
+          localStorage.removeItem(key);
+        }
+      }
+      next();
+    });
 
     return { saveResults, isFormValid };
   },
