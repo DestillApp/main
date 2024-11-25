@@ -10,21 +10,6 @@ export const CREATE_DISTILLATION_ARCHIVE = gql`
       hydrosolpH
       oilDescription
       hydrosolDescription
-      distillationData {
-        weightForDistillation
-        isPlantSoaked
-        soakingTime
-        weightAfterSoaking
-        isPlantShredded
-        distillationType
-        distillationDate
-        distillationApparatus
-        waterForDistillation
-        distillationTime {
-          distillationHours
-          distillationMinutes
-        }
-      }
       distilledPlant {
         plantName
         plantPart
@@ -36,8 +21,6 @@ export const CREATE_DISTILLATION_ARCHIVE = gql`
         harvestTemperature
         harvestStartTime
         harvestEndTime
-        plantWeight
-        availableWeight
         plantState
         dryingTime
         plantAge
@@ -45,3 +28,48 @@ export const CREATE_DISTILLATION_ARCHIVE = gql`
     }
   }
 `;
+
+// export const CREATE_DISTILLATION_ARCHIVE = gql`
+//   mutation createDistillationArchive($input: DistillationArchiveInput!) {
+//     createDistillationArchive(distillationArchiveInput: $input) {
+//       _id
+//       oilAmount
+//       hydrosolAmount
+//       hydrosolpH
+//       oilDescription
+//       hydrosolDescription
+//       distillationData {
+//         weightForDistillation
+//         isPlantSoaked
+//         soakingTime
+//         weightAfterSoaking
+//         isPlantShredded
+//         distillationType
+//         distillationDate
+//         distillationApparatus
+//         waterForDistillation
+//         distillationTime {
+//           distillationHours
+//           distillationMinutes
+//         }
+//       }
+//       distilledPlant {
+//         plantName
+//         plantPart
+//         plantOrigin
+//         plantBuyDate
+//         plantProducer
+//         countryOfOrigin
+//         harvestDate
+//         harvestTemperature
+//         harvestStartTime
+//         harvestEndTime
+//         plantWeight
+//         availableWeight
+//         plantState
+//         dryingTime
+//         plantAge
+//       }
+//     }
+//   }
+// `;

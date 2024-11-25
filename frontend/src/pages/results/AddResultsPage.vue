@@ -29,7 +29,7 @@ import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
 import { useStore } from "vuex";
 import { ref, onMounted, computed, nextTick } from "vue";
-import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
+import { useRoute, onBeforeRouteLeave } from "vue-router";
 import { useMutation, useApolloClient } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
 
@@ -56,13 +56,15 @@ export default {
 
     // Route object to access route params
     const route = useRoute();
-    const router = useRouter();
+    // const router = useRouter();
 
     // Reactive references for distillation data
     const distillationId = ref(route.params.distillId);
 
     // Using GraphQL mutation for creating new results
-    const { mutate: createResults } = useMutation(CREATE_DISTILLATION_ARCHIVE);
+    const { mutate: createDistillationArchive } = useMutation(
+      CREATE_DISTILLATION_ARCHIVE
+    );
 
     /**
      * @function setDistillationDetails
@@ -149,7 +151,6 @@ export default {
 
         // Save plant details in Vuex state
         setPlantDetails(plantDetails);
-        console.log("plant", resultsForm.value.distilledPlant);
       } catch (error) {
         console.error("Failed to get plant details:", error);
       }
@@ -210,18 +211,48 @@ export default {
               : null,
             oilDescription: DOMPurify.sanitize(form.oilDescription),
             hydrosolDescription: DOMPurify.sanitize(form.hydrosolDescription),
-            distillationDate: form.distillationDate,
-            distillationType: form.distillationType,
-            waterForDistillation: form.waterForDistillation,
-            choosedPlantName: form.choosedPlantName,
-            choosedPlantPart: form.choosedPlantPart,
-            weightForDistillation: form.weightForDistillation,
+            distilledPlant: {
+              plantName: DOMPurify.sanitize(form.distilledPlant.plantName),
+              plantPart: DOMPurify.sanitize(form.distilledPlant.plantPart),
+              plantOrigin: DOMPurify.sanitize(form.distilledPlant.plantOrigin),
+              plantBuyDate: DOMPurify.sanitize(
+                form.distilledPlant.plantBuyDate
+              ),
+              plantProducer: DOMPurify.sanitize(
+                form.distilledPlant.plantProducer
+              ),
+              countryOfOrigin: DOMPurify.sanitize(
+                form.distilledPlant.countryOfOrigin
+              ),
+              harvestDate: DOMPurify.sanitize(form.distilledPlant.harvestDate),
+              harvestTemperature: form.distilledPlant.harvestTemperature
+                ? Number(
+                    DOMPurify.sanitize(form.distilledPlant.harvestTemperature)
+                  )
+                : null,
+              harvestStartTime: DOMPurify.sanitize(
+                form.distilledPlant.harvestStartTime
+              ),
+              harvestEndTime: DOMPurify.sanitize(
+                form.distilledPlant.harvestEndTime
+              ),
+              plantState: DOMPurify.sanitize(form.distilledPlant.plantState),
+              dryingTime: form.distilledPlant.dryingTime
+                ? Number(DOMPurify.sanitize(form.distilledPlant.dryingTime))
+                : null,
+              plantAge: form.distilledPlant.plantAge
+                ? Number(DOMPurify.sanitize(form.distilledPlant.plantAge))
+                : null,
+            },
           };
 
-          const { data } = await createResults({
+          console.log("data", form);
+          console.log("data sanitazed", resultsFormData);
+
+          const { data } = await createDistillationArchive({
             input: resultsFormData,
           });
-          console.log("Created results:", data.createResults);
+          console.log("Created results:", data.createDistillationArchive);
         } catch (error) {
           console.log("error", isFormValid.value);
           console.error("Error submitting form", error);
@@ -235,14 +266,14 @@ export default {
     const saveResults = async () => {
       try {
         await submitResultsForm();
-        if (!isFormValid.value) {
-          return;
-        } else {
-          router.push({
-            name: "InProgressDistillationsPage",
-            params: { page: 1 },
-          });
-        }
+        // if (!isFormValid.value) {
+        //   return;
+        // } else {
+        //   router.push({
+        //     name: "InProgressDistillationsPage",
+        //     params: { page: 1 },
+        //   });
+        // }
       } catch (error) {
         return;
       }
@@ -278,6 +309,115 @@ export default {
 };
 </script>
 
+<!-- const resultsFormData = {
+            oilAmount: form.oilAmount
+              ? Number(DOMPurify.sanitize(form.oilAmount))
+              : null,
+            hydrosolAmount: form.hydrosolAmount
+              ? Number(DOMPurify.sanitize(form.hydrosolAmount))
+              : null,
+            hydrosolpH: form.hydrosolpH
+              ? Number(DOMPurify.sanitize(form.hydrosolpH))
+              : null,
+            oilDescription: DOMPurify.sanitize(form.oilDescription),
+            hydrosolDescription: DOMPurify.sanitize(form.hydrosolDescription),
+            distillationData: {
+              weightForDistillation: form.distillationData.weightForDistillation
+                ? Number(
+                    DOMPurify.sanitize(
+                      form.distillationData.weightForDistillation
+                    )
+                  )
+                : null,
+              isPlantSoaked: form.distillationData.isPlantSoaked,
+              soakingTime: form.distillationData.soakingTime
+                ? Number(DOMPurify.sanitize(form.distillationData.soakingTime))
+                : null,
+              weightAfterSoaking: form.distillationData.weightAfterSoaking
+                ? Number(
+                    DOMPurify.sanitize(form.distillationData.weightAfterSoaking)
+                  )
+                : null,
+              isPlantShredded: form.distillationData.isPlantShredded,
+              distillationType: DOMPurify.sanitize(
+                form.distillationData.distillationType
+              ),
+              distillationDate: DOMPurify.sanitize(
+                form.distillationData.distillationDate
+              ),
+              distillationApparatus: DOMPurify.sanitize(
+                form.distillationData.distillationApparatus
+              ),
+              waterForDistillation: form.distillationData.waterForDistillation
+                ? Number(
+                    DOMPurify.sanitize(
+                      form.distillationData.waterForDistillation
+                    )
+                  )
+                : null,
+              distillationTime: {
+                distillationHours: form.distillationData.distillationTime
+                  .distillationHours
+                  ? Number(
+                      DOMPurify.sanitize(
+                        form.distillationData.distillationTime.distillationHours
+                      )
+                    )
+                  : null,
+                distillationMinutes: form.distillationData.distillationTime
+                  .distillationMinutes
+                  ? Number(
+                      DOMPurify.sanitize(
+                        form.distillationData.distillationTime
+                          .distillationMinutes
+                      )
+                    )
+                  : null,
+              },
+            },
+            distilledPlant: {
+              plantName: DOMPurify.sanitize(form.distilledPlant.plantName),
+              plantPart: DOMPurify.sanitize(form.distilledPlant.plantPart),
+              plantOrigin: DOMPurify.sanitize(form.distilledPlant.plantOrigin),
+              plantBuyDate: DOMPurify.sanitize(
+                form.distilledPlant.plantBuyDate
+              ),
+              plantProducer: DOMPurify.sanitize(
+                form.distilledPlant.plantProducer
+              ),
+              countryOfOrigin: DOMPurify.sanitize(
+                form.distilledPlant.countryOfOrigin
+              ),
+              harvestDate: DOMPurify.sanitize(form.distilledPlant.harvestDate),
+              harvestTemperature: form.distilledPlant.harvestTemperature
+                ? Number(
+                    DOMPurify.sanitize(form.distilledPlant.harvestTemperature)
+                  )
+                : null,
+              harvestStartTime: DOMPurify.sanitize(
+                form.distilledPlant.harvestStartTime
+              ),
+              harvestEndTime: DOMPurify.sanitize(
+                form.distilledPlant.harvestEndTime
+              ),
+              plantWeight: form.distilledPlant.plantWeight
+                ? Number(DOMPurify.sanitize(form.distilledPlant.plantWeight))
+                : null,
+              availableWeight: form.distilledPlant.availableWeight
+                ? Number(
+                    DOMPurify.sanitize(form.distilledPlant.availableWeight)
+                  )
+                : null,
+              plantState: DOMPurify.sanitize(form.distilledPlant.plantState),
+              dryingTime: form.distilledPlant.dryingTime
+                ? Number(DOMPurify.sanitize(form.distilledPlant.dryingTime))
+                : null,
+              plantAge: form.distilledPlant.plantAge
+                ? Number(DOMPurify.sanitize(form.distilledPlant.plantAge))
+                : null,
+            },
+          };
+ -->
 <style scoped>
 .results_form {
   display: flex;

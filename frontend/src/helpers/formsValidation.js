@@ -99,7 +99,6 @@ export const distillationFormValidation = (form) => {
  * @returns {boolean} Returns true if the form is valid, otherwise false
  */
 export const resultsFormValidation = (form) => {
-  console.log("form", form);
   let isFormValid = true;
 
   // Validate required fields
