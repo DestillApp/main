@@ -11,6 +11,7 @@ const plantResolver = require("./plantResolvers");
 const userResolver = require("./userResolvers");
 const countryResolver = require("./countryResolvers");
 const distillationResolvers = require("./distillationResolvers");
+const distillationArchivesResolvers = require("./distillatonArchivesResolvers");
 
 // Merging the individual resolvers into a single resolvers object
 const resolvers = mergeResolvers([
@@ -18,6 +19,7 @@ const resolvers = mergeResolvers([
   userResolver,
   countryResolver,
   distillationResolvers,
+  distillationArchivesResolvers,
 ]);
 
 // Exporting the merged resolvers object

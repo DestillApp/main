@@ -9,6 +9,7 @@ const plantSchema = require("./plantSchema");
 const userSchema = require("./userSchema");
 const countrySchema = require("./countrySchema");
 const distillationSchema = require("./distillationSchema");
+const distillationArchivesSchema = require("./distillationArchivesSchema");
 
 // Merging all individual schemas into a single schema
 const typeDefs = mergeTypeDefs([
@@ -16,6 +17,7 @@ const typeDefs = mergeTypeDefs([
   userSchema,
   countrySchema,
   distillationSchema,
+  distillationArchivesSchema,
 ]);
 
 // Exporting the merged type definitions
