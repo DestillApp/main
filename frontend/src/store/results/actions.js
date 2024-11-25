@@ -60,6 +60,30 @@ export default {
   },
 
   /**
+   * @function setPlantDataValue
+   * @description Sets a value inside plantData in the state.
+   * @param {Object} context - The Vuex context.
+   * @param {Object} payload - The payload containing the input and value.
+   * @param {string} payload.input - The input field to set inside plantData.
+   * @param {any} payload.value - The value to set.
+   */
+  setPlantDataValue(context, { input, value }) {
+    context.commit("changePlantDataValue", { input, value });
+  },
+
+  /**
+   * @function setDistillationTimeValue
+   * @description Sets a value inside distillationTime in the state.
+   * @param {Object} context - The Vuex context.
+   * @param {Object} payload - The payload containing the input and value.
+   * @param {string} payload.input - The input field to set inside distillationTime.
+   * @param {any} payload.value - The value to set.
+   */
+  setDistillationTimeValue(context, { input, value }) {
+    context.commit("changeDistillationTimeValue", { input, value });
+  },
+
+  /**
    * @function setResultsForm
    * @description Sets the resultsForm in the state and localStorage.
    * @param {Object} context - The Vuex context.

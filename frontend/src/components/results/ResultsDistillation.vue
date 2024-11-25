@@ -21,11 +21,11 @@
       <div class="distillation_details--plant">
         <p>
           <strong class="plant_color">destylowany surowiec:</strong>
-          {{ resultsForm.choosedPlantName }}
+          {{ resultsForm.distilledPlant.plantName }}
         </p>
         <p>
           <strong class="plant_color">część surowca:</strong>
-          {{ resultsForm.choosedPlantPart }}
+          {{ resultsForm.distilledPlant.plantPart }}
         </p>
         <p>
           <strong class="plant_color"

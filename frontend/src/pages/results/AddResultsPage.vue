@@ -23,12 +23,13 @@ import ResultsData from "@/components/results/ResultsData.vue";
 import ResultsDescriptions from "@/components/results/ResultsDescriptions.vue";
 import ResultsDistillation from "@/components/results/ResultsDistillation.vue";
 import { resultsFormValidation } from "@/helpers/formsValidation";
-import { initialResultsForm } from "@/helpers/formsInitialState";
+// import { initialResultsForm } from "@/helpers/formsInitialState";
 import { CREATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
+import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
 import { useStore } from "vuex";
-import { ref, onMounted, computed, nextTick } from "vue";
-import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
+import { ref, onMounted, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useMutation, useApolloClient } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
 
@@ -81,28 +82,77 @@ export default {
         { input: "distillationType", value: details.distillationType },
         { input: "distillationDate", value: details.distillationDate },
         { input: "waterForDistillation", value: details.waterForDistillation },
+      ];
+
+      const distillationTimeFields = [
         {
-          input: "distillationTime.distillationHours",
+          input: "distillationHours",
           value: details.distillationTime.distillationHours,
         },
         {
-          input: "distillationTime.distillationMinutes",
+          input: "distillationMinutes",
           value: details.distillationTime.distillationMinutes,
         },
-      ];
-
-      const valueFields = [
-        { input: "choosedPlantName", value: details.choosedPlant.name },
-        { input: "choosedPlantPart", value: details.choosedPlant.part },
       ];
 
       distillationDataFields.forEach(({ input, value }) => {
         store.dispatch("results/setDistillationDataValue", { input, value });
       });
 
-      valueFields.forEach(({ input, value }) => {
-        store.dispatch("results/setValue", { input, value });
+      distillationTimeFields.forEach(({ input, value }) => {
+        store.dispatch("results/setDistillationTimeValue", { input, value });
       });
+    };
+
+    /**
+     * @function setPlantDetails
+     * @description Helper function to set plant details in Vuex state.
+     * @param {Object} details - The plant details object.
+     */
+    const setPlantDetails = (details) => {
+      const plantDataFields = [
+        { input: "plantName", value: details.plantName },
+        { input: "plantPart", value: details.plantPart },
+        { input: "plantOrigin", value: details.plantOrigin },
+        { input: "plantBuyDate", value: details.plantBuyDate },
+        { input: "plantProducer", value: details.plantProducer },
+        { input: "countryOfOrigin", value: details.countryOfOrigin },
+        { input: "harvestDate", value: details.harvestDate },
+        { input: "harvestTemperature", value: details.harvestTemperature },
+        { input: "harvestStartTime", value: details.harvestStartTime },
+        { input: "harvestEndTime", value: details.harvestEndTime },
+        { input: "plantState", value: details.plantState },
+        { input: "dryingTime", value: details.dryingTime },
+        { input: "plantAge", value: details.plantAge },
+      ];
+
+      plantDataFields.forEach(({ input, value }) => {
+        store.dispatch("results/setPlantDataValue", { input, value });
+      });
+    };
+
+    /**
+     * @async
+     * @function fetchPlantDetails
+     * @description Fetches the plant details by plant ID from GraphQL API.
+     * @param {string} plantId - The ID of the plant to fetch.
+     * @returns {Promise<void>}
+     */
+    const fetchPlantDetails = async (plantId) => {
+      try {
+        const { data } = await apolloClient.query({
+          query: GET_PLANT_BY_ID,
+          variables: { id: plantId, formatDates: true },
+        });
+        const plantDetails = data.getPlantById;
+        console.log(plantDetails);
+
+        // Save plant details in Vuex state
+        setPlantDetails(plantDetails);
+        console.log("plant", resultsForm.value.distilledPlant);
+      } catch (error) {
+        console.error("Failed to get plant details:", error);
+      }
     };
 
     /**
@@ -122,6 +172,9 @@ export default {
 
         // Save distillation details in Vuex state
         setDistillationDetails(distillationDetails);
+
+        // Fetch plant details using the plant ID from distillation details
+        await fetchPlantDetails(distillationDetails.choosedPlant.id);
       } catch (error) {
         console.error("Failed to get distillation details:", error);
       }
@@ -174,7 +227,6 @@ export default {
           console.error("Error submitting form", error);
         }
       } else {
-        console.log(isFormValid.value);
         console.log("invalid form!");
         return;
       }
@@ -197,19 +249,19 @@ export default {
     };
 
     // Navigation guard that resets the form data in Vuex state and local storage before navigating away from the route.
-    onBeforeRouteLeave(async (to, from, next) => {
-      if (to.path !== from.path) {
-        // Dispatch Vuex action to reset the form in store
-        store.dispatch("results/setResultsForm");
-        // Wait for the next tick to ensure state updates are complete
-        await nextTick();
-        // Removing results form value from local storage by its key
-        for (const key in initialResultsForm) {
-          localStorage.removeItem(key);
-        }
-      }
-      next();
-    });
+    // onBeforeRouteLeave(async (to, from, next) => {
+    //   if (to.path !== from.path) {
+    //     // Dispatch Vuex action to reset the form in store
+    //     store.dispatch("results/setResultsForm");
+    //     // Wait for the next tick to ensure state updates are complete
+    //     await nextTick();
+    //     // Removing results form value from local storage by its key
+    //     for (const key in initialResultsForm) {
+    //       localStorage.removeItem(key);
+    //     }
+    //   }
+    //   next();
+    // });
 
     return { saveResults, isFormValid };
   },
