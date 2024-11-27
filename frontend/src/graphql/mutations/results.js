@@ -10,6 +10,12 @@ export const CREATE_DISTILLATION_ARCHIVE = gql`
       hydrosolpH
       oilDescription
       hydrosolDescription
+      distillationData {
+        weightForDistillation
+        isPlantSoaked
+        soakingTime
+        weightAfterSoaking
+      }
       distilledPlant {
         plantName
         plantPart
