@@ -23,6 +23,13 @@ const distillationArchivesSchema = gql`
     plantAge: Int
   }
 
+  type DistillationData {
+    weightForDistillation: Float!
+    isPlantSoaked: Boolean!
+    soakingTime: Int
+    weightAfterSoaking: Float
+  }
+
   type DistillationArchive {
     _id: ID!
     oilAmount: Float!
@@ -30,6 +37,7 @@ const distillationArchivesSchema = gql`
     hydrosolpH: Float!
     oilDescription: String!
     hydrosolDescription: String!
+    distillationData: DistillationData!
     distilledPlant: DistilledPlant!
   }
 
@@ -49,12 +57,25 @@ const distillationArchivesSchema = gql`
     plantAge: Int
   }
 
+  input DistillationTimeInput {
+    distillationHours: Int
+    distillationMinutes: Int
+  }
+
+  input DistillationDataInput {
+    weightForDistillation: Float!
+    isPlantSoaked: Boolean!
+    soakingTime: Int
+    weightAfterSoaking: Float
+  }
+
   input DistillationArchiveInput {
     oilAmount: Float!
     hydrosolAmount: Float!
     hydrosolpH: Float!
     oilDescription: String!
     hydrosolDescription: String!
+    distillationData: DistillationDataInput!
     distilledPlant: DistilledPlantInput!
   }
 

@@ -50,6 +50,37 @@ const distillationArchivesResolvers = {
         hydrosolDescription: DOMPurify.sanitize(
           distillationArchiveInput.hydrosolDescription
         ),
+        distillationData: {
+          weightForDistillation: distillationArchiveInput.distillationData
+            .weightForDistillation
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData
+                    .weightForDistillation
+                )
+              )
+            : null,
+          isPlantSoaked: Boolean(
+            DOMPurify.sanitize(
+              distillationArchiveInput.distillationData.isPlantSoaked
+            )
+          ),
+          soakingTime: distillationArchiveInput.distillationData.soakingTime
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData.soakingTime
+                )
+              )
+            : null,
+          weightAfterSoaking: distillationArchiveInput.distillationData
+            .weightAfterSoaking
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData.weightAfterSoaking
+                )
+              )
+            : null,
+        },
         distilledPlant: {
           plantName: DOMPurify.sanitize(
             distillationArchiveInput.distilledPlant.plantName
@@ -125,162 +156,18 @@ const distillationArchivesResolvers = {
 // Exporting the distillation archives resolvers
 module.exports = distillationArchivesResolvers;
 
-//   const sanitizedData = {
-//     oilAmount: distillationArchiveInput.oilAmount
-//       ? Number(DOMPurify.sanitize(distillationArchiveInput.oilAmount))
+//   isPlantShredded: Boolean(DOMPurify.sanitize(distillationArchiveInput.distillationData.isPlantShredded)),
+//   distillationType: DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationType),
+//   distillationDate: DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationDate),
+//   distillationApparatus: DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationApparatus),
+//   waterForDistillation: distillationArchiveInput.distillationData.waterForDistillation
+//     ? Number(DOMPurify.sanitize(distillationArchiveInput.distillationData.waterForDistillation))
+//     : null,
+//   distillationTime: {
+//     distillationHours: distillationArchiveInput.distillationData.distillationTime.distillationHours
+//       ? Number(DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationTime.distillationHours))
 //       : null,
-//     hydrosolAmount: distillationArchiveInput.hydrosolAmount
-//       ? Number(DOMPurify.sanitize(distillationArchiveInput.hydrosolAmount))
+//     distillationMinutes: distillationArchiveInput.distillationData.distillationTime.distillationMinutes
+//       ? Number(DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationTime.distillationMinutes))
 //       : null,
-//     hydrosolpH: distillationArchiveInput.hydrosolpH
-//       ? Number(DOMPurify.sanitize(distillationArchiveInput.hydrosolpH))
-//       : null,
-//     oilDescription: DOMPurify.sanitize(
-//       distillationArchiveInput.oilDescription
-//     ),
-//     hydrosolDescription: DOMPurify.sanitize(
-//       distillationArchiveInput.hydrosolDescription
-//     ),
-//     distillationData: {
-//       weightForDistillation: distillationArchiveInput.distillationData
-//         .weightForDistillation
-//         ? Number(
-//             DOMPurify.sanitize(
-//               distillationArchiveInput.distillationData
-//                 .weightForDistillation
-//             )
-//           )
-//         : null,
-//       isPlantSoaked: Boolean(
-//         DOMPurify.sanitize(
-//           distillationArchiveInput.distillationData.isPlantSoaked
-//         )
-//       ),
-//       soakingTime: distillationArchiveInput.distillationData.soakingTime
-//         ? Number(
-//             DOMPurify.sanitize(
-//               distillationArchiveInput.distillationData.soakingTime
-//             )
-//           )
-//         : null,
-//       weightAfterSoaking: distillationArchiveInput.distillationData
-//         .weightAfterSoaking
-//         ? Number(
-//             DOMPurify.sanitize(
-//               distillationArchiveInput.distillationData.weightAfterSoaking
-//             )
-//           )
-//         : null,
-//       isPlantShredded: Boolean(
-//         DOMPurify.sanitize(
-//           distillationArchiveInput.distillationData.isPlantShredded
-//         )
-//       ),
-//       distillationType: DOMPurify.sanitize(
-//         distillationArchiveInput.distillationData.distillationType
-//       ),
-//       distillationDate: DOMPurify.sanitize(
-//         distillationArchiveInput.distillationData.distillationDate
-//       ),
-//       distillationApparatus: DOMPurify.sanitize(
-//         distillationArchiveInput.distillationData.distillationApparatus
-//       ),
-//       waterForDistillation: distillationArchiveInput.distillationData
-//         .waterForDistillation
-//         ? Number(
-//             DOMPurify.sanitize(
-//               distillationArchiveInput.distillationData.waterForDistillation
-//             )
-//           )
-//         : null,
-//       distillationTime: {
-//         distillationHours: distillationArchiveInput.distillationData
-//           .distillationTime.distillationHours
-//           ? Number(
-//               DOMPurify.sanitize(
-//                 distillationArchiveInput.distillationData.distillationTime
-//                   .distillationHours
-//               )
-//             )
-//           : null,
-//         distillationMinutes: distillationArchiveInput.distillationData
-//           .distillationTime.distillationMinutes
-//           ? Number(
-//               DOMPurify.sanitize(
-//                 distillationArchiveInput.distillationData.distillationTime
-//                   .distillationMinutes
-//               )
-//             )
-//           : null,
-//       },
-//     },
-//     distilledPlant: {
-//       plantName: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.plantName
-//       ),
-//       plantPart: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.plantPart
-//       ),
-//       plantOrigin: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.plantOrigin
-//       ),
-//       plantBuyDate: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.plantBuyDate
-//       ),
-//       plantProducer: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.plantProducer
-//       ),
-//       countryOfOrigin: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.countryOfOrigin
-//       ),
-//       harvestDate: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.harvestDate
-//       ),
-//       harvestTemperature: distillationArchiveInput.distilledPlant
-//         .harvestTemperature
-//         ? Number(
-//             DOMPurify.sanitize(
-//               distillationArchiveInput.distilledPlant.harvestTemperature
-//             )
-//           )
-//         : null,
-//       harvestStartTime: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.harvestStartTime
-//       ),
-//       harvestEndTime: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.harvestEndTime
-//       ),
-//       plantWeight: distillationArchiveInput.distilledPlant.plantWeight
-//         ? Number(
-//             DOMPurify.sanitize(
-//               distillationArchiveInput.distilledPlant.plantWeight
-//             )
-//           )
-//         : null,
-//       availableWeight: distillationArchiveInput.distilledPlant
-//         .availableWeight
-//         ? Number(
-//             DOMPurify.sanitize(
-//               distillationArchiveInput.distilledPlant.availableWeight
-//             )
-//           )
-//         : null,
-//       plantState: DOMPurify.sanitize(
-//         distillationArchiveInput.distilledPlant.plantState
-//       ),
-//       dryingTime: distillationArchiveInput.distilledPlant.dryingTime
-//         ? Number(
-//             DOMPurify.sanitize(
-//               distillationArchiveInput.distilledPlant.dryingTime
-//             )
-//           )
-//         : null,
-//       plantAge: distillationArchiveInput.distilledPlant.plantAge
-//         ? Number(
-//             DOMPurify.sanitize(
-//               distillationArchiveInput.distilledPlant.plantAge
-//             )
-//           )
-//         : null,
-//     },
-//   };
+//   },
