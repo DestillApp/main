@@ -1,18 +1,71 @@
 /**
  * @module graphql/resolvers/distillationArchivesResolvers
- * @description Distillation Archives resolvers for GraphQL mutations.
- * Handles creating distillation archives.
+ * @description Distillation Archives resolvers for GraphQL queries and mutations.
+ * Handles creating and fetching distillation archives.
  */
 
 // Importing the DistillationArchives model
 const DistillationArchives = require("../../database/distillationArchives");
 
 const { filterData } = require("../../util/dataformating");
+const formatDate = require("../../util/dateformater");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
 
 const distillationArchivesResolvers = {
+  Query: {
+    /**
+     * @async
+     * @function getDistillationArchives
+     * @description Fetches all distillation archives from the database.
+     * @returns {Promise<Array>} Array of distillation archives.
+     */
+    getDistillationArchives: async (_, { fields, name }) => {
+      try {
+        // Build a projection object based on the fields argument
+        const projection = {};
+        fields.forEach((field) => {
+          projection[field] = 1;
+        });
+
+        // Build a filter object for potential filtering
+        const filter = {};
+
+        // If a name is provided, add it to the filter
+        if (name) {
+          filter["distilledPlant.plantName"] = {
+            $regex: new RegExp(name, "i"),
+          }; // Case-insensitive search
+        }
+
+        // Fetch distillation archives with the specified fields and filters from the database
+        const distillationArchives = await DistillationArchives.find(
+          filter,
+          projection
+        );
+
+        // Return the formatted result
+        return distillationArchives.map((archive) => {
+          const formattedArchive = { ...archive._doc }; // For Mongoose
+
+          // Format specific date fields if needed
+          if (formattedArchive.distillationData.distillationDate) {
+            formattedArchive.distillationData.distillationDate = formatDate(
+              formattedArchive.distillationData.distillationDate
+            );
+          }
+
+          return formattedArchive;
+        });
+      } catch (error) {
+        throw new Error(
+          "Failed to fetch distillation archives: " + error.message
+        );
+      }
+    },
+  },
+
   Mutation: {
     /**
      * @async
@@ -187,19 +240,3 @@ const distillationArchivesResolvers = {
 
 // Exporting the distillation archives resolvers
 module.exports = distillationArchivesResolvers;
-
-//   isPlantShredded: Boolean(DOMPurify.sanitize(distillationArchiveInput.distillationData.isPlantShredded)),
-//   distillationType: DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationType),
-//   distillationDate: DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationDate),
-//   distillationApparatus: DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationApparatus),
-//   waterForDistillation: distillationArchiveInput.distillationData.waterForDistillation
-//     ? Number(DOMPurify.sanitize(distillationArchiveInput.distillationData.waterForDistillation))
-//     : null,
-//   distillationTime: {
-//     distillationHours: distillationArchiveInput.distillationData.distillationTime.distillationHours
-//       ? Number(DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationTime.distillationHours))
-//       : null,
-//     distillationMinutes: distillationArchiveInput.distillationData.distillationTime.distillationMinutes
-//       ? Number(DOMPurify.sanitize(distillationArchiveInput.distillationData.distillationTime.distillationMinutes))
-//       : null,
-//   },
