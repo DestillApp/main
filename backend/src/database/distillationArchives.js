@@ -31,6 +31,8 @@ const distillationDataSchema = new Schema({
   isPlantSoaked: { type: Boolean, required: true },
   soakingTime: { type: Number, required: false },
   weightAfterSoaking: { type: Number, required: false },
+  isPlantShredded: { type: Boolean, required: true },
+  distillationType: { type: String, required: true },
 });
 
 // Defining the Distillation Archives schema

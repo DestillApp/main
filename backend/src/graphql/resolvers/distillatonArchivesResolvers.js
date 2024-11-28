@@ -80,6 +80,20 @@ const distillationArchivesResolvers = {
                 )
               )
             : null,
+          isPlantShredded: Boolean(
+            DOMPurify.sanitize(
+              distillationArchiveInput.distillationData.isPlantShredded
+            )
+          ),
+          distillationType: DOMPurify.sanitize(
+            distillationArchiveInput.distillationData.distillationType
+          ),
+          // distillationDate: DOMPurify.sanitize(
+          //   distillationArchiveInput.distillationData.distillationDate
+          // ),
+          // distillationApparatus: DOMPurify.sanitize(
+          //   distillationArchiveInput.distillationData.distillationApparatus
+          // ),
         },
         distilledPlant: {
           plantName: DOMPurify.sanitize(

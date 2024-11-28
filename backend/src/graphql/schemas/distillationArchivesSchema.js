@@ -28,6 +28,8 @@ const distillationArchivesSchema = gql`
     isPlantSoaked: Boolean!
     soakingTime: Int
     weightAfterSoaking: Float
+    isPlantShredded: Boolean!
+    distillationType: String!
   }
 
   type DistillationArchive {
@@ -67,6 +69,8 @@ const distillationArchivesSchema = gql`
     isPlantSoaked: Boolean!
     soakingTime: Int
     weightAfterSoaking: Float
+    isPlantShredded: Boolean!
+    distillationType: String!
   }
 
   input DistillationArchiveInput {
