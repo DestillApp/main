@@ -58,6 +58,7 @@ export const initialResultsForm = {
     isPlantShredded: false,
     distillationType: "",
     distillationDate: "",
+    distillationApparatus: "",
     waterForDistillation: null,
     distillationTime: {
       distillationHours: null,

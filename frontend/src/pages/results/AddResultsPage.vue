@@ -83,6 +83,10 @@ export default {
         { input: "isPlantShredded", value: details.isPlantShredded },
         { input: "distillationType", value: details.distillationType },
         { input: "distillationDate", value: details.distillationDate },
+        {
+          input: "distillationApparatus",
+          value: details.distillationApparatus,
+        },
         { input: "waterForDistillation", value: details.waterForDistillation },
       ];
 
@@ -235,35 +239,35 @@ export default {
               // distillationDate: DOMPurify.sanitize(
               //   form.distillationData.distillationDate
               // ),
-              // distillationApparatus: DOMPurify.sanitize(
-              //   form.distillationData.distillationApparatus
-              // ),
-              // waterForDistillation: form.distillationData.waterForDistillation
-              //   ? Number(
-              //       DOMPurify.sanitize(
-              //         form.distillationData.waterForDistillation
-              //       )
-              //     )
-              //   : null,
-              // distillationTime: {
-              //   distillationHours: form.distillationData.distillationTime
-              //     .distillationHours
-              //     ? Number(
-              //         DOMPurify.sanitize(
-              //           form.distillationData.distillationTime.distillationHours
-              //         )
-              //       )
-              //     : null,
-              //   distillationMinutes: form.distillationData.distillationTime
-              //     .distillationMinutes
-              //     ? Number(
-              //         DOMPurify.sanitize(
-              //           form.distillationData.distillationTime
-              //             .distillationMinutes
-              //         )
-              //       )
-              //     : null,
-              // },
+              distillationApparatus: DOMPurify.sanitize(
+                form.distillationData.distillationApparatus
+              ),
+              waterForDistillation: form.distillationData.waterForDistillation
+                ? Number(
+                    DOMPurify.sanitize(
+                      form.distillationData.waterForDistillation
+                    )
+                  )
+                : null,
+              distillationTime: {
+                distillationHours: form.distillationData.distillationTime
+                  .distillationHours
+                  ? Number(
+                      DOMPurify.sanitize(
+                        form.distillationData.distillationTime.distillationHours
+                      )
+                    )
+                  : null,
+                distillationMinutes: form.distillationData.distillationTime
+                  .distillationMinutes
+                  ? Number(
+                      DOMPurify.sanitize(
+                        form.distillationData.distillationTime
+                          .distillationMinutes
+                      )
+                    )
+                  : null,
+              },
             },
             distilledPlant: {
               plantName: DOMPurify.sanitize(form.distilledPlant.plantName),

@@ -30,6 +30,7 @@ export default {
           isPlantShredded: false,
           distillationType: "",
           distillationDate: "",
+          distillationApparatus: "",
           waterForDistillation: null,
           distillationTime: {
             distillationHours: null,
