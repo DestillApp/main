@@ -38,6 +38,7 @@ const distillationDataSchema = new Schema({
   weightAfterSoaking: { type: Number, required: false },
   isPlantShredded: { type: Boolean, required: true },
   distillationType: { type: String, required: true },
+  distillationDate: { type: String, required: true },
   distillationApparatus: { type: String, required: true },
   waterForDistillation: { type: Number, required: true },
   distillationTime: { type: distillationTimeSchema, required: true },

@@ -88,9 +88,9 @@ const distillationArchivesResolvers = {
           distillationType: DOMPurify.sanitize(
             distillationArchiveInput.distillationData.distillationType
           ),
-          // distillationDate: DOMPurify.sanitize(
-          //   distillationArchiveInput.distillationData.distillationDate
-          // ),
+          distillationDate: DOMPurify.sanitize(
+            distillationArchiveInput.distillationData.distillationDate
+          ),
           distillationApparatus: DOMPurify.sanitize(
             distillationArchiveInput.distillationData.distillationApparatus
           ),
