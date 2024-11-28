@@ -15,6 +15,8 @@ export const CREATE_DISTILLATION_ARCHIVE = gql`
         isPlantSoaked
         soakingTime
         weightAfterSoaking
+        isPlantShredded
+        distillationType
       }
       distilledPlant {
         plantName

@@ -228,10 +228,10 @@ export default {
                     DOMPurify.sanitize(form.distillationData.weightAfterSoaking)
                   )
                 : null,
-              // isPlantShredded: form.distillationData.isPlantShredded,
-              // distillationType: DOMPurify.sanitize(
-              //   form.distillationData.distillationType
-              // ),
+              isPlantShredded: form.distillationData.isPlantShredded,
+              distillationType: DOMPurify.sanitize(
+                form.distillationData.distillationType
+              ),
               // distillationDate: DOMPurify.sanitize(
               //   form.distillationData.distillationDate
               // ),
