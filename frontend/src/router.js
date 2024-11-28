@@ -23,8 +23,8 @@ const MyDataPage = () => import("./pages/my-account/MyDataPage.vue");
 const InProgressDistillationsPage = () =>
   import("./pages/my-account/InProgressDistillationsPage.vue");
 const PlantListPage = () => import("./pages/my-account/PlantListPage.vue");
-const SavedDistillationsPage = () =>
-  import("./pages/my-account/SavedDistillationsPage.vue");
+const DistillationArchivesPage = () =>
+  import("./pages/my-account/DistillationArchivesPage.vue");
 const PlantDetailsPage = () => import("./pages/plant/PlantDetailsPage.vue");
 const DistillationDetailsPage = () =>
   import("./pages/distillation/DistillationDetailsPage.vue");
@@ -119,9 +119,9 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: "saved-distillations",
-          name: "SavedDistillationsPage",
-          component: SavedDistillationsPage,
+          path: "distillation-archives/:page",
+          name: "DistillationArchivesPage",
+          component: DistillationArchivesPage,
           meta: { requiresAuth: true },
         },
         {
