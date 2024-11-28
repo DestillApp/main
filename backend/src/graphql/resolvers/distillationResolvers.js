@@ -10,18 +10,7 @@ const Distillation = require("../../database/distillation");
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
 const formatDate = require("../../util/dateformater");
-
-// Utility function to filter data
-function filterDistillationData(data) {
-  const filteredData = {};
-
-  for (const key in data) {
-    if (data[key] !== null && data[key] !== "") {
-      filteredData[key] = data[key];
-    }
-  }
-  return filteredData;
-}
+const { filterData } = require("../../util/dataformating");
 
 const distillationResolvers = {
   Query: {
@@ -168,7 +157,7 @@ const distillationResolvers = {
         distillationTime: sanitizedDistillationTime,
       };
       // Filtering out null or empty string values
-      const filteredData = filterDistillationData(sanitizedData);
+      const filteredData = filterData(sanitizedData);
 
       try {
         // Creating a new Distillation instance
@@ -256,7 +245,7 @@ const distillationResolvers = {
         distillationTime: sanitizedDistillationTime,
       };
       // Filtering out null or empty string values
-      const filteredData = filterDistillationData(sanitizedData);
+      const filteredData = filterData(sanitizedData);
 
       try {
         const updatedDistillation = await Distillation.findByIdAndUpdate(

@@ -7,20 +7,10 @@
 // Importing the DistillationArchives model
 const DistillationArchives = require("../../database/distillationArchives");
 
+const { filterData } = require("../../util/dataformating");
+
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
-
-// Utility function to filter data
-function filterDistillationArchiveData(data) {
-  const filteredData = {};
-
-  for (const key in data) {
-    if (data[key] !== null && data[key] !== "") {
-      filteredData[key] = data[key];
-    }
-  }
-  return filteredData;
-}
 
 const distillationArchivesResolvers = {
   Mutation: {
@@ -180,7 +170,7 @@ const distillationArchivesResolvers = {
       };
 
       // Filtering out null or empty string values
-      const filteredData = filterDistillationArchiveData(sanitizedData);
+      const filteredData = filterData(sanitizedData);
 
       try {
         // Creating a new DistillationArchives instance
