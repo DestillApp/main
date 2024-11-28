@@ -17,6 +17,7 @@ export const CREATE_DISTILLATION_ARCHIVE = gql`
         weightAfterSoaking
         isPlantShredded
         distillationType
+        distillationDate
         distillationApparatus
         waterForDistillation
         distillationTime {

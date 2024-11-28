@@ -236,9 +236,9 @@ export default {
               distillationType: DOMPurify.sanitize(
                 form.distillationData.distillationType
               ),
-              // distillationDate: DOMPurify.sanitize(
-              //   form.distillationData.distillationDate
-              // ),
+              distillationDate: DOMPurify.sanitize(
+                form.distillationData.distillationDate
+              ),
               distillationApparatus: DOMPurify.sanitize(
                 form.distillationData.distillationApparatus
               ),
