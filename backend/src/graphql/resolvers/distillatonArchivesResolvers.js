@@ -91,9 +91,37 @@ const distillationArchivesResolvers = {
           // distillationDate: DOMPurify.sanitize(
           //   distillationArchiveInput.distillationData.distillationDate
           // ),
-          // distillationApparatus: DOMPurify.sanitize(
-          //   distillationArchiveInput.distillationData.distillationApparatus
-          // ),
+          distillationApparatus: DOMPurify.sanitize(
+            distillationArchiveInput.distillationData.distillationApparatus
+          ),
+          waterForDistillation: distillationArchiveInput.distillationData
+            .waterForDistillation
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData.waterForDistillation
+                )
+              )
+            : null,
+          distillationTime: {
+            distillationHours: distillationArchiveInput.distillationData
+              .distillationTime.distillationHours
+              ? Number(
+                  DOMPurify.sanitize(
+                    distillationArchiveInput.distillationData.distillationTime
+                      .distillationHours
+                  )
+                )
+              : null,
+            distillationMinutes: distillationArchiveInput.distillationData
+              .distillationTime.distillationMinutes
+              ? Number(
+                  DOMPurify.sanitize(
+                    distillationArchiveInput.distillationData.distillationTime
+                      .distillationMinutes
+                  )
+                )
+              : null,
+          },
         },
         distilledPlant: {
           plantName: DOMPurify.sanitize(
