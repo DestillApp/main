@@ -174,6 +174,7 @@ export default {
             limit: archivesPerPage.value,
           },
         });
+        console.log("Fetched data:", data);
         archivesAmount.value = data.getDistillationArchives.length;
 
         const start = (page.value - 1) * archivesPerPage.value;

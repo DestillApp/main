@@ -25,11 +25,12 @@ import ResultsDistillation from "@/components/results/ResultsDistillation.vue";
 import { resultsFormValidation } from "@/helpers/formsValidation";
 import { initialResultsForm } from "@/helpers/formsInitialState";
 import { CREATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
+import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
 import { useStore } from "vuex";
 import { ref, onMounted, computed, nextTick } from "vue";
-import { useRoute, onBeforeRouteLeave } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useMutation, useApolloClient } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
 
@@ -56,7 +57,7 @@ export default {
 
     // Route object to access route params
     const route = useRoute();
-    // const router = useRouter();
+    const router = useRouter();
 
     // Reactive references for distillation data
     const distillationId = ref(route.params.distillId);
@@ -65,6 +66,8 @@ export default {
     const { mutate: createDistillationArchive } = useMutation(
       CREATE_DISTILLATION_ARCHIVE
     );
+
+    // const { mutate: deleteDistillation } = useMutation(DELETE_DISTILLATION);
 
     /**
      * @function setDistillationDetails
@@ -304,9 +307,6 @@ export default {
             },
           };
 
-          console.log("data", form);
-          console.log("data sanitazed", resultsFormData);
-
           const { data } = await createDistillationArchive({
             input: resultsFormData,
           });
@@ -314,6 +314,7 @@ export default {
         } catch (error) {
           console.log("error", isFormValid.value);
           console.error("Error submitting form", error);
+          throw error; // Re-throw the error to be caught by saveResults
         }
       } else {
         console.log("invalid form!");
@@ -321,19 +322,40 @@ export default {
       }
     };
 
+    /**
+     * @async
+     * @function removeDistillation
+     * @description Function to delete the distillation from the database by its ID.
+     * @returns {Promise<void>} Resolves when the distillation is deleted.
+     * @throws {Error} Throws an error if the deletion fails.
+     */
+    const removeDistillation = async () => {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: DELETE_DISTILLATION,
+          variables: { id: distillationId.value },
+        });
+        console.log("Deleted distillation:", data.deleteDistillation);
+      } catch (error) {
+        console.error("Error deleting distillation:", error);
+        throw error; // Re-throw the error to be caught by saveResults
+      }
+    };
+
     const saveResults = async () => {
       try {
         await submitResultsForm();
-        // if (!isFormValid.value) {
-        //   return;
-        // } else {
-        //   router.push({
-        //     name: "InProgressDistillationsPage",
-        //     params: { page: 1 },
-        //   });
-        // }
+        if (!isFormValid.value) {
+          return;
+        } else {
+          await removeDistillation();
+          router.push({
+            name: "DistillationArchivesPage",
+            params: { page: 1 },
+          });
+        }
       } catch (error) {
-        return;
+        console.error("Error in saveResults:", error);
       }
     };
 
@@ -367,115 +389,6 @@ export default {
 };
 </script>
 
-<!-- const resultsFormData = {
-            oilAmount: form.oilAmount
-              ? Number(DOMPurify.sanitize(form.oilAmount))
-              : null,
-            hydrosolAmount: form.hydrosolAmount
-              ? Number(DOMPurify.sanitize(form.hydrosolAmount))
-              : null,
-            hydrosolpH: form.hydrosolpH
-              ? Number(DOMPurify.sanitize(form.hydrosolpH))
-              : null,
-            oilDescription: DOMPurify.sanitize(form.oilDescription),
-            hydrosolDescription: DOMPurify.sanitize(form.hydrosolDescription),
-            distillationData: {
-              weightForDistillation: form.distillationData.weightForDistillation
-                ? Number(
-                    DOMPurify.sanitize(
-                      form.distillationData.weightForDistillation
-                    )
-                  )
-                : null,
-              isPlantSoaked: form.distillationData.isPlantSoaked,
-              soakingTime: form.distillationData.soakingTime
-                ? Number(DOMPurify.sanitize(form.distillationData.soakingTime))
-                : null,
-              weightAfterSoaking: form.distillationData.weightAfterSoaking
-                ? Number(
-                    DOMPurify.sanitize(form.distillationData.weightAfterSoaking)
-                  )
-                : null,
-              isPlantShredded: form.distillationData.isPlantShredded,
-              distillationType: DOMPurify.sanitize(
-                form.distillationData.distillationType
-              ),
-              distillationDate: DOMPurify.sanitize(
-                form.distillationData.distillationDate
-              ),
-              distillationApparatus: DOMPurify.sanitize(
-                form.distillationData.distillationApparatus
-              ),
-              waterForDistillation: form.distillationData.waterForDistillation
-                ? Number(
-                    DOMPurify.sanitize(
-                      form.distillationData.waterForDistillation
-                    )
-                  )
-                : null,
-              distillationTime: {
-                distillationHours: form.distillationData.distillationTime
-                  .distillationHours
-                  ? Number(
-                      DOMPurify.sanitize(
-                        form.distillationData.distillationTime.distillationHours
-                      )
-                    )
-                  : null,
-                distillationMinutes: form.distillationData.distillationTime
-                  .distillationMinutes
-                  ? Number(
-                      DOMPurify.sanitize(
-                        form.distillationData.distillationTime
-                          .distillationMinutes
-                      )
-                    )
-                  : null,
-              },
-            },
-            distilledPlant: {
-              plantName: DOMPurify.sanitize(form.distilledPlant.plantName),
-              plantPart: DOMPurify.sanitize(form.distilledPlant.plantPart),
-              plantOrigin: DOMPurify.sanitize(form.distilledPlant.plantOrigin),
-              plantBuyDate: DOMPurify.sanitize(
-                form.distilledPlant.plantBuyDate
-              ),
-              plantProducer: DOMPurify.sanitize(
-                form.distilledPlant.plantProducer
-              ),
-              countryOfOrigin: DOMPurify.sanitize(
-                form.distilledPlant.countryOfOrigin
-              ),
-              harvestDate: DOMPurify.sanitize(form.distilledPlant.harvestDate),
-              harvestTemperature: form.distilledPlant.harvestTemperature
-                ? Number(
-                    DOMPurify.sanitize(form.distilledPlant.harvestTemperature)
-                  )
-                : null,
-              harvestStartTime: DOMPurify.sanitize(
-                form.distilledPlant.harvestStartTime
-              ),
-              harvestEndTime: DOMPurify.sanitize(
-                form.distilledPlant.harvestEndTime
-              ),
-              plantWeight: form.distilledPlant.plantWeight
-                ? Number(DOMPurify.sanitize(form.distilledPlant.plantWeight))
-                : null,
-              availableWeight: form.distilledPlant.availableWeight
-                ? Number(
-                    DOMPurify.sanitize(form.distilledPlant.availableWeight)
-                  )
-                : null,
-              plantState: DOMPurify.sanitize(form.distilledPlant.plantState),
-              dryingTime: form.distilledPlant.dryingTime
-                ? Number(DOMPurify.sanitize(form.distilledPlant.dryingTime))
-                : null,
-              plantAge: form.distilledPlant.plantAge
-                ? Number(DOMPurify.sanitize(form.distilledPlant.plantAge))
-                : null,
-            },
-          };
- -->
 <style scoped>
 .results_form {
   display: flex;
