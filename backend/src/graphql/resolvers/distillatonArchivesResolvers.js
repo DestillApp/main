@@ -235,6 +235,16 @@ const distillationArchivesResolvers = {
         throw new Error("Failed to create distillation archive");
       }
     },
+
+    deleteDistillationArchive: async (_, { id }) => {
+      try {
+        await DistillationArchives.findByIdAndDelete(id);
+        return true;
+      } catch (error) {
+        console.error("Failed to delete archive distillation:", error);
+        return false;
+      }
+    },
   },
 };
 

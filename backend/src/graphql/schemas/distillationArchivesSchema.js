@@ -107,6 +107,7 @@ const distillationArchivesSchema = gql`
     createDistillationArchive(
       distillationArchiveInput: DistillationArchiveInput!
     ): DistillationArchive!
+    deleteDistillationArchive(id: ID!): Boolean
   }
 `;
 
