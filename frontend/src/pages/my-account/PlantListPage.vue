@@ -1,7 +1,5 @@
-// after deleting changing the amount of the plants (test pagination)
-// searching the specific plant (?)
-// filter by list length, when plant was added etc.... (?)
-// no docs
+// searching the specific plant (?) // filter by list length, when plant was
+added etc.... (?) // no docs
 <template>
   <div>
     <!-- Title for the plant list -->
@@ -18,41 +16,49 @@
     <ul v-if="!isLoading && plantList.length >= 1" class="plant_list">
       <!-- Iterate through plantList and display each plant's data -->
       <li v-for="plant in plantList" :key="plant._id" class="plant">
-        <div class="plant_data">
-          <div class="plant_weight">
-            <p class="plant_weight_state">na stanie:</p>
-            {{ plant.availableWeight }} kg
+        <div class="plant_containter">
+          <div class="plant_data">
+            <div class="plant_weight">
+              <p class="plant_weight_state">na stanie:</p>
+              {{ plant.availableWeight }} kg
+            </div>
+            <div class="plant_date" v-if="plant.harvestDate !== null">
+              zbiór: {{ plant.harvestDate }}
+            </div>
+            <div class="plant_date" v-if="plant.plantBuyDate !== null">
+              kupno: {{ plant.plantBuyDate }}
+            </div>
           </div>
-          <div class="plant_date" v-if="plant.harvestDate !== null">
-            zbiór: {{ plant.harvestDate }}
+          <div class="plant_identification">
+            <div class="plant_name">{{ plant.plantName }}</div>
+            <div class="plant_part">{{ plant.plantPart }}</div>
           </div>
-          <div class="plant_date" v-if="plant.plantBuyDate !== null">
-            kupno: {{ plant.plantBuyDate }}
+          <div class="plant_buttons">
+            <router-link
+              :to="{
+                name: 'PlantDetailsPage',
+                params: { page: page, id: plant._id },
+              }"
+              class="plant_button--details"
+            >
+              <button>Zobacz szczegóły</button>
+            </router-link>
+            <button
+              @click="
+                openDeleteModal(plant._id, plant.plantName, plant.plantPart)
+              "
+              class="plant_button--delete"
+            >
+              Usuń
+            </button>
           </div>
         </div>
-        <div class="plant_identification">
-          <div class="plant_name">{{ plant.plantName }}</div>
-          <div class="plant_part">{{ plant.plantPart }}</div>
-        </div>
-        <div class="plant_buttons">
-          <router-link
-            :to="{
-              name: 'PlantDetailsPage',
-              params: { page: page, id: plant._id },
-            }"
-            class="plant_button--details"
-          >
-            <button>Zobacz szczegóły</button>
-          </router-link>
-          <button
-            @click="
-              openDeleteModal(plant._id, plant.plantName, plant.plantPart)
-            "
-            class="plant_button--delete"
-          >
-            Usuń
-          </button>
-        </div>
+        <router-link
+          :to="{ name: 'AddDistillationPage', params: { id: plant._id } }"
+          class="plant_distill"
+        >
+          <base-button>Destyluj</base-button>
+        </router-link>
       </li>
     </ul>
     <!-- Delete item modal -->
@@ -85,6 +91,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
+import BaseButton from "@/ui/BaseButton.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
@@ -99,7 +106,7 @@ import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 export default {
   name: "PlantListPage",
-  components: { DeleteItemModal },
+  components: { DeleteItemModal, BaseButton },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
@@ -280,17 +287,23 @@ export default {
 
 .plant {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 20px;
   padding: 10px 20px;
   border: 2px solid var(--primary-color);
   border-radius: var(--input-border-radius);
+}
+
+.plant_containter {
+  display: flex;
+  flex-direction: row;
 }
 
 .plant_data {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  flex-grow: 1;
+  width: 25%;
 }
 
 .plant_weight {
@@ -316,7 +329,7 @@ export default {
   flex-direction: column;
   gap: 5px;
   padding-block: 10px;
-  flex-grow: 3;
+  width: 50%;
 }
 
 .plant_name {
@@ -332,7 +345,7 @@ export default {
   flex-direction: row;
   gap: 10px;
   justify-content: flex-end;
-  flex-grow: 1;
+  width: 25%;
   font-size: 11px;
 }
 
