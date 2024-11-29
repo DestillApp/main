@@ -326,7 +326,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  flex-grow: 1;
+  width: 25%;
 }
 
 .distillation_type {
@@ -352,7 +352,7 @@ export default {
   flex-direction: column;
   gap: 5px;
   padding-block: 10px;
-  flex-grow: 3;
+  width: 50%;
 }
 
 .plant_name {
@@ -368,7 +368,7 @@ export default {
   flex-direction: row;
   gap: 10px;
   justify-content: flex-end;
-  flex-grow: 1;
+  width: 25%;
   font-size: 11px;
 }
 
