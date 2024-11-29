@@ -22,45 +22,56 @@
         :key="distillation.id"
         class="distillation"
       >
-        <div class="distillation_data">
-          <div class="distillation_type">
-            <p class="distillation_type_state">typ destylacji:</p>
-            {{ distillation.distillationType }}
+        <div class="distillation_container">
+          <div class="distillation_data">
+            <div class="distillation_type">
+              <p class="distillation_type_state">typ destylacji:</p>
+              {{ distillation.distillationType }}
+            </div>
+            <div class="distillation_date">
+              data destylacji: {{ distillation.distillationDate }}
+            </div>
           </div>
-          <div class="distillation_date">
-            data destylacji: {{ distillation.distillationDate }}
+          <div class="plant_identification">
+            <div class="plant_name">{{ distillation.choosedPlant.name }}</div>
+            <div class="plant_part">{{ distillation.choosedPlant.part }}</div>
+          </div>
+          <div class="distillation_buttons">
+            <router-link
+              :to="{
+                name: 'DistillationDetailsPage',
+                params: { page: page, distillId: distillation._id },
+              }"
+              class="distillation_button--details"
+            >
+              <button>Zobacz szczegóły</button>
+            </router-link>
+            <button
+              @click="
+                openDeleteModal(
+                  distillation._id,
+                  distillation.choosedPlant.id,
+                  distillation.choosedPlant.name,
+                  distillation.choosedPlant.part,
+                  distillation.weightForDistillation,
+                  distillation.distillationDate
+                )
+              "
+              class="distillation_button--delete"
+            >
+              Usuń
+            </button>
           </div>
         </div>
-        <div class="plant_identification">
-          <div class="plant_name">{{ distillation.choosedPlant.name }}</div>
-          <div class="plant_part">{{ distillation.choosedPlant.part }}</div>
-        </div>
-        <div class="distillation_buttons">
-          <router-link
-            :to="{
-              name: 'DistillationDetailsPage',
-              params: { page: page, distillId: distillation._id },
-            }"
-            class="distillation_button--details"
-          >
-            <button>Zobacz szczegóły</button>
-          </router-link>
-          <button
-            @click="
-              openDeleteModal(
-                distillation._id,
-                distillation.choosedPlant.id,
-                distillation.choosedPlant.name,
-                distillation.choosedPlant.part,
-                distillation.weightForDistillation,
-                distillation.distillationDate
-              )
-            "
-            class="distillation_button--delete"
-          >
-            Usuń
-          </button>
-        </div>
+        <router-link
+          :to="{
+            name: 'AddResultsPage',
+            params: { distillId: distillation._id },
+          }"
+          class="distillation_button--results"
+        >
+          <base-button>Dodaj wyniki</base-button>
+        </router-link>
       </li>
     </ul>
     <!-- Delete distillation modal -->
@@ -103,12 +114,15 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { scrollToTop } from "@/helpers/displayHelpers";
+import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
+import BaseButton from "@/ui/BaseButton.vue";
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
 export default {
   name: "InProgressDistillationsPage",
+  components: { DeleteItemModal, BaseButton },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
@@ -341,10 +355,16 @@ export default {
 
 .distillation {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 20px;
   padding: 10px 20px;
   border: 2px solid var(--primary-color-distillation);
   border-radius: var(--input-border-radius);
+}
+
+.distillation_container {
+    display: flex;
+  flex-direction: row;
 }
 
 .distillation_data {
