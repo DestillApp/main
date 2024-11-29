@@ -47,6 +47,12 @@ const apolloClient = new ApolloClient({
               return incoming;
             },
           },
+          getDistillationArchives: {
+            keyArgs: false,
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
         },
       },
     },
