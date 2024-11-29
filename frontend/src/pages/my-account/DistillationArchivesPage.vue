@@ -21,6 +21,7 @@
         :key="archive.id"
         class="distillation_archive"
       >
+      <div class="distillation_archive--one">
         <div class="distillation_data">
           <div class="distillation_type">
             <p class="distillation_type_state">typ destylacji:</p>
@@ -34,6 +35,33 @@
           <div class="plant_name">{{ archive.distilledPlant.plantName }}</div>
           <div class="plant_part">{{ archive.distilledPlant.plantPart }}</div>
         </div>
+        <div class="distillation_buttons">
+          <router-link
+            :to="{
+              name: 'ArchiveDistillationDetailsPage',
+              params: { page: 1, archiveId: archive._id },
+            }"
+            class="archive_button--details"
+          >
+            <button>Zobacz szczegóły</button>
+          </router-link>
+          <button
+            @click="
+              openDeleteModal(
+                archive._id,
+                archive.distilledPlant.id,
+                archive.distilledPlant.plantName,
+                archive.distilledPlant.plantPart,
+                archive.weightForDistillation,
+                archive.distillationData.distillationDate
+              )
+            "
+            class="distillation_button--delete"
+          >
+            Usuń
+          </button>
+        </div>
+    </div>
         <div class="distillation_results">
           <div class="oil_amount">
             ilość olejku eterycznego: {{ archive.oilAmount }} ml
@@ -44,6 +72,16 @@
         </div>
       </li>
     </ul>
+    <!-- Delete distillation modal -->
+    <delete-item-modal
+      v-if="isModalOpen"
+      :plantName="plantName"
+      :plantPart="plantPart"
+      :distillationDate="distillationDate"
+      @close-modal="closeDeleteModal"
+      @close-delete-modal="closeDeleteModal"
+      @delete-item="deleteDistillationArchive"
+    ></delete-item-modal>
     <!-- Message displayed when no archives are available -->
     <div v-if="!isLoading && distillationArchivesList.length < 1">
       brak archiwalnych destylacji...
@@ -54,18 +92,39 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
+// import { useRoute, useRouter } from "vue-router";
 import { GET_DISTILLATION_ARCHIVES } from "@/graphql/queries/results.js";
+import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
+import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 
 export default {
   name: "DistillationArchivesPage",
+  components: {
+    DeleteItemModal,
+  },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
 
+    // Route object to access route params
+    // const route = useRoute();
+    // const router = useRouter();
+
     // Reactive references for distillation archives data
     const distillationArchivesList = ref([]);
     const isLoading = ref(true);
+
+    // Reactive references for selected distillation archive data
+    const selectedArchiveId = ref(null);
+    const selectedPlantId = ref(null);
+    const plantName = ref(null);
+    const plantPart = ref(null);
+    const distillationWeight = ref(null);
+    const distillationDate = ref(null);
+
+    // Reactive reference to track if the delete modal is open
+    const isModalOpen = ref(false);
 
     /**
      * @async
@@ -102,6 +161,58 @@ export default {
       }
     };
 
+    /**
+     * @function openDeleteModal
+     * @description Open the delete modal for a specific distillation archive.
+     * @param {String} id - The ID of the distillation archive to delete.
+     * @param {String} plantId - The ID of the plant.
+     * @param {String} name - The name of the plant.
+     * @param {String} part - The part of the plant.
+     * @param {String} dWeight - The weight of the distillation.
+     * @param {String} date - Distillation date.
+     */
+    const openDeleteModal = (id, plantId, name, part, dWeight, date) => {
+      selectedArchiveId.value = id;
+      selectedPlantId.value = plantId;
+      plantName.value = name;
+      plantPart.value = part;
+      distillationWeight.value = dWeight;
+      distillationDate.value = date;
+      isModalOpen.value = true;
+    };
+
+    /**
+     * @function closeDeleteModal
+     * @description Close the delete modal.
+     */
+    const closeDeleteModal = () => {
+      distillationDate.value = null;
+      isModalOpen.value = false;
+    };
+
+    /**
+     * @async
+     * @function deleteDistillationArchive
+     * @description Delete the selected distillation archive from the list.
+     * @returns {Promise<void>}
+     */
+    const deleteDistillationArchive = async () => {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: DELETE_DISTILLATION_ARCHIVE,
+          variables: { id: selectedArchiveId.value },
+        });
+        if (data.deleteDistillationArchive) {
+          distillationArchivesList.value = distillationArchivesList.value.filter(
+            (archive) => archive._id !== selectedArchiveId.value
+          );
+        }
+        closeDeleteModal();
+      } catch (error) {
+        console.error("Failed to delete distillation archive:", error);
+      }
+    };
+
     // Fetch distillation archives list when the component is mounted
     onMounted(() => {
       fetchDistillationArchivesList();
@@ -110,6 +221,13 @@ export default {
     return {
       distillationArchivesList,
       isLoading,
+      isModalOpen,
+      plantName,
+      plantPart,
+      distillationDate,
+      openDeleteModal,
+      closeDeleteModal,
+      deleteDistillationArchive,
     };
   },
 };
@@ -128,10 +246,16 @@ export default {
 
 .distillation_archive {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 20px;
   padding: 10px 20px;
-  border: 2px solid var(--primary-color-distillation);
+  border: 2px solid var(--primary-color-results);
   border-radius: var(--input-border-radius);
+}
+
+.distillation_archive--one {
+  display: flex;
+  flex-direction: row;
 }
 
 .distillation_data {
@@ -175,17 +299,38 @@ export default {
   font-size: 12px;
 }
 
+.distillation_buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-grow: 1;
+  font-size: 11px;
+}
+
+.archive_button--details {
+  display: flex;
+  color: var(--secondary-color-results);
+}
+
+.archive_button--details:hover {
+  color: var(--primary-color-results);
+}
+
+.distillation_button--delete:hover {
+  color: red;
+}
+
 .distillation_results {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  width: 100%;
   gap: 5px;
   font-size: 11px;
 }
 
 .oil_amount,
-.hydrosol_amount,
-.hydrosol_ph {
-  display: flex;
-  justify-content: flex-start;
+.hydrosol_amount {
+flex-grow: 1;
 }
 </style>

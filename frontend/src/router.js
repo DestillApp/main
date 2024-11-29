@@ -28,6 +28,8 @@ const DistillationArchivesPage = () =>
 const PlantDetailsPage = () => import("./pages/plant/PlantDetailsPage.vue");
 const DistillationDetailsPage = () =>
   import("./pages/distillation/DistillationDetailsPage.vue");
+const ArchiveDistillationDetailsPage = () =>
+  import("./pages/results/ArchiveDistillationDetailsPage.vue");
 
 // Create the router
 const router = createRouter({
@@ -122,6 +124,12 @@ const router = createRouter({
           path: "distillation-archives/:page",
           name: "DistillationArchivesPage",
           component: DistillationArchivesPage,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "archive-distillation/:page/:archiveId",
+          name: "ArchiveDistillationDetailsPage",
+          component: ArchiveDistillationDetailsPage,
           meta: { requiresAuth: true },
         },
         {
