@@ -18,3 +18,47 @@ export const GET_DISTILLATION_ARCHIVES = gql`
     }
   }
 `;
+
+// GraphQL query to fetch archive distillation details by ID
+export const GET_ARCHIVE_DISTILLATION_BY_ID = gql`
+  query GetArchiveDistillationById($id: ID!) {
+    getArchiveDistillationById(id: $id) {
+      _id
+      oilAmount
+      hydrosolAmount
+      hydrosolpH
+      oilDescription
+      hydrosolDescription
+      distillationData {
+        weightForDistillation
+        isPlantSoaked
+        soakingTime
+        weightAfterSoaking
+        isPlantShredded
+        distillationType
+        distillationDate
+        distillationApparatus
+        waterForDistillation
+        distillationTime {
+          distillationHours
+          distillationMinutes
+        }
+      }
+      distilledPlant {
+        plantName
+        plantPart
+        plantOrigin
+        plantBuyDate
+        plantProducer
+        countryOfOrigin
+        harvestDate
+        harvestTemperature
+        harvestStartTime
+        harvestEndTime
+        plantState
+        dryingTime
+        plantAge
+      }
+    }
+  }
+`;

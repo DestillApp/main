@@ -13,6 +13,8 @@ const AddPlantPage = () => import("./pages/plant/AddPlantPage.vue");
 const AddDistillationPage = () =>
   import("./pages/distillation/AddDistillationPage.vue");
 const AddResultsPage = () => import("./pages/results/AddResultsPage.vue");
+const EditArchiveDistillationPage = () =>
+  import("./pages/results/EditArchiveDistillationPage.vue");
 const EditPlantPage = () => import("./pages/plant/EditPlantPage.vue");
 const EditDistillationPage = () =>
   import("./pages/distillation/EditDistillationPage.vue");
@@ -84,6 +86,12 @@ const router = createRouter({
       path: "/add-results/:distillId",
       name: "AddResultsPage",
       component: AddResultsPage,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/edit-archive-distillation/:page/:archiveId",
+      name: "EditArchiveDistillationPage",
+      component: EditArchiveDistillationPage,
       meta: { requiresAuth: true },
     },
     {

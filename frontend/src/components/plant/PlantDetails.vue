@@ -32,7 +32,7 @@ import { GET_PLANT_BY_ID } from "@/graphql/queries/plant.js";
 
 export default {
     name: "PlantDetails",
-    props: ["plantId"],
+    props: ["plantId", "distilledPlant"],
     setup(props) {
         const { resolveClient } = useApolloClient();
         const apolloClient = resolveClient();
@@ -61,7 +61,13 @@ export default {
          };
 
         onMounted(() => {
-         fetchPlantDetails();
+            if (props.plantId) {
+                fetchPlantDetails();
+            } 
+            if (props.distilledPlant) {
+                plantDetails.value = props.distilledPlant;
+                isLoading.value = false;
+            }
     });
 
         return { isLoading, plantDetails };
