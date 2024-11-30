@@ -101,6 +101,7 @@ const distillationArchivesSchema = gql`
       fields: [String]!
       name: String
     ): [DistillationArchive]
+    getArchiveDistillationById(id: ID!): DistillationArchive
   }
 
   type Mutation {

@@ -8,7 +8,7 @@
 const DistillationArchives = require("../../database/distillationArchives");
 
 const { filterData } = require("../../util/dataformating");
-const formatDate = require("../../util/dateformater");
+// const formatDate = require("../../util/dateformater");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
@@ -50,17 +50,38 @@ const distillationArchivesResolvers = {
           const formattedArchive = { ...archive._doc }; // For Mongoose
 
           // Format specific date fields if needed
-          if (formattedArchive.distillationData.distillationDate) {
-            formattedArchive.distillationData.distillationDate = formatDate(
-              formattedArchive.distillationData.distillationDate
-            );
-          }
+          // if (formattedArchive.distillationData.distillationDate) {
+          //   formattedArchive.distillationData.distillationDate = formatDate(
+          //     formattedArchive.distillationData.distillationDate
+          //   );
+          // }
 
           return formattedArchive;
         });
       } catch (error) {
         throw new Error(
           "Failed to fetch distillation archives: " + error.message
+        );
+      }
+    },
+    /**
+     * @async
+     * @function getArchiveDistillationById
+     * @description Fetches a distillation archive by ID from the database.
+     * @param {Object} _ - Unused.
+     * @param {Object} id - ID of the distillation archive to fetch.
+     * @returns {Promise<Object>} The fetched distillation archive.
+     */
+    getArchiveDistillationById: async (_, { id }) => {
+      try {
+        const archive = await DistillationArchives.findById(id);
+        if (!archive) {
+          throw new Error("Distillation archive not found");
+        }
+        return archive;
+      } catch (error) {
+        throw new Error(
+          "Failed to fetch distillation archive by ID: " + error.message
         );
       }
     },

@@ -59,22 +59,3 @@ module.exports = mongoose.model(
   "DistillationArchives",
   distillationArchivesSchema
 );
-
-// const distillationTimeSchema = new Schema({
-//   distillationHours: { type: Number, required: false },
-//   distillationMinutes: { type: Number, required: false },
-// });
-
-// // Defining the DistillationData schema based on the distillation schema but without choosedPlant key
-// const distillationDataSchema = new Schema({
-//   weightForDistillation: { type: Number, required: true },
-//   isPlantSoaked: { type: Boolean, required: true },
-//   soakingTime: { type: Number, required: false },
-//   weightAfterSoaking: { type: Number, required: false },
-//   isPlantShredded: { type: Boolean, required: true },
-//   distillationType: { type: String, required: true },
-//   distillationDate: { type: String, required: true },
-//   distillationApparatus: { type: String, required: true },
-//   waterForDistillation: { type: Number, required: true },
-//   distillationTime: { type: distillationTimeSchema, required: true },
-// });
