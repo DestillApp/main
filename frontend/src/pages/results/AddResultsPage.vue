@@ -1,3 +1,4 @@
+
 <template>
   <base-card>
     <!-- Results form -->
@@ -66,8 +67,6 @@ export default {
     const { mutate: createDistillationArchive } = useMutation(
       CREATE_DISTILLATION_ARCHIVE
     );
-
-    // const { mutate: deleteDistillation } = useMutation(DELETE_DISTILLATION);
 
     /**
      * @function setDistillationDetails

@@ -67,6 +67,8 @@ export default {
       () => store.getters["distillation/distillationForm"]
     );
 
+    const distillId = ref(null);
+
     // Reactive reference to track form validity
     const isFormValid = ref(null);
 
@@ -150,7 +152,9 @@ export default {
           const { data } = await createDistillation({
             input: distillationFormData,
           });
+          distillId.value = data.createDistillation._id;
           console.log("Created distillation:", data.createDistillation);
+          console.log("Created distillation ID:", data.createDistillation._id);
         } catch (error) {
           console.log("error", isFormValid.value);
           console.error("Error submitting form", error);
@@ -164,7 +168,6 @@ export default {
 
     const changeAvailableWeight = async () => {
       try {
-        console.log("ID", route.params.id);
         const newWeight =
           distillationForm.value.choosedPlant.availableWeight -
           distillationForm.value.weightForDistillation;
@@ -219,7 +222,7 @@ export default {
           //change amount of available weight for distilled plant
           await changeAvailableWeight();
           // If valid, navigate to the add distillation page
-          router.push({ name: "AddResultsPage" });
+          router.push({ name: "AddResultsPage",  params: { distillId: distillId.value }  });
         }
       } catch (error) {
         return;

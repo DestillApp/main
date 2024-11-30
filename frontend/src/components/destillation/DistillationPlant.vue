@@ -12,6 +12,7 @@ database
       placeholder="wybierz surowiec"
       id="choosedPlant"
       color="plant"
+      :disabled="isEditing"
       :results="plants"
       :invalidInput="isFormValid === false && formData.choosedPlant.name === ''"
       @update:modelValue="onInput"
