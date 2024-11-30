@@ -15,11 +15,19 @@
         <!-- Display used weight of plant-->
         <div class="plant_distillation">
           <p class="plant_distillation--used">użyta ilość surowca:</p>
-          <span>{{ distillationDetails.distillationData.weightForDistillation }} kg</span>
+          <span
+            >{{
+              distillationDetails.distillationData.weightForDistillation
+            }}
+            kg</span
+          >
         </div>
         <!-- Display plant identification information -->
         <div class="plant_identification">
-          <h3>destylacja {{ distillationDetails.distillationData.distillationType }}</h3>
+          <h3>
+            destylacja
+            {{ distillationDetails.distillationData.distillationType }}
+          </h3>
           <div>{{ distillationDetails.distilledPlant.plantName }}</div>
           <div>{{ distillationDetails.distilledPlant.plantPart }}</div>
         </div>
@@ -67,20 +75,30 @@
           <div v-if="distillationDetails.distillationData.isPlantSoaked">
             <div class="plant_data">surowiec namaczany</div>
             <div class="plant_data">
-              czas namaczania: {{ distillationDetails.distillationData.soakingTime }} h
+              czas namaczania:
+              {{ distillationDetails.distillationData.soakingTime }} h
             </div>
             <div class="plant_data">
               waga po namoczeniu:
               {{ distillationDetails.distillationData.weightAfterSoaking }} kg
             </div>
           </div>
-          <div class="plant_data" v-if="!distillationDetails.distillationData.isPlantSoaked">
+          <div
+            class="plant_data"
+            v-if="!distillationDetails.distillationData.isPlantSoaked"
+          >
             surowiec nienamaczany
           </div>
-          <div class="plant_data" v-if="!distillationDetails.distillationData.isPlantShredded">
+          <div
+            class="plant_data"
+            v-if="!distillationDetails.distillationData.isPlantShredded"
+          >
             surowiec nierozdrobniony
           </div>
-          <div class="plant_data" v-if="distillationDetails.distillationData.isPlantShredded">
+          <div
+            class="plant_data"
+            v-if="distillationDetails.distillationData.isPlantShredded"
+          >
             surowiec rozdrobniony
           </div>
           <div class="plant_details">
@@ -120,7 +138,8 @@
         <div class="distillation_info">
           <h5 class="distillation_title">informacje o destylacji</h5>
           <div class="distillation_data">
-            data destylacji: {{ distillationDetails.distillationData.distillationDate }}
+            data destylacji:
+            {{ distillationDetails.distillationData.distillationDate }}
           </div>
           <div class="distillation_data">
             {{ distillationDetails.distillationData.distillationApparatus }}
@@ -131,13 +150,35 @@
           </div>
         </div>
       </div>
+      <div>
+        <h5 class="results_title">wyniki destylacji</h5>
+        <div class="results">
+          <div>
+            ilość olejku eterycznego: {{ distillationDetails.oilAmount }} ml
+          </div>
+          <div class="results_hydrosol">
+            <div>
+              ilość hydrolatu: {{ distillationDetails.hydrosolAmount }} l
+            </div>
+            <div>pH hydrolatu: {{ distillationDetails.hydrosolpH }}</div>
+          </div>
+          <div class="results_descriptions">
+            <div class="results_description">
+              opis olejku eterycznego: {{ distillationDetails.oilDescription }}
+            </div>
+            <div class="results_description">
+              opis hydrolatu: {{ distillationDetails.hydrosolDescription }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
@@ -145,7 +186,7 @@ import PlantDetails from "@/components/plant/PlantDetails.vue";
 import { mdiChevronDown } from "@mdi/js";
 import { mdiChevronUp } from "@mdi/js";
 import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
-import { DELETE_DISTILLATION } from "@/graphql/mutations/results";
+import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 
 export default {
   name: "ArchiveDistillationDetailsPage",
@@ -157,7 +198,7 @@ export default {
     // Route object to access route params
     const route = useRoute();
     // Router object for navigation
-    // const router = useRouter();
+    const router = useRouter();
 
     // Reactive references for distillation data
     const archiveId = ref(route.params.archiveId);
@@ -236,7 +277,7 @@ export default {
      * @function closeDeleteModal
      * @description Close the delete modal.
      */
-      const closeDeleteModal = () => {
+    const closeDeleteModal = () => {
       selectedDistillationId.value = null;
       plantName.value = null;
       plantPart.value = null;
@@ -253,18 +294,20 @@ export default {
     const deleteDistillation = async () => {
       try {
         const { data } = await apolloClient.mutate({
-          mutation: DELETE_DISTILLATION,
+          mutation: DELETE_DISTILLATION_ARCHIVE,
           variables: { id: selectedDistillationId.value },
         });
 
-          console.log(data.deleteDistillation);
+        console.log(data.deleteDistillationArchive);
         closeDeleteModal();
+        router.push({
+          name: "DistillationArchivesPage",
+          params: { page: page.value },
+        });
       } catch (error) {
         console.error("Failed to delete distillation:", error);
       }
     };
-
-   
 
     return {
       archiveId,
@@ -399,4 +442,33 @@ export default {
   position: absolute;
 }
 
+.results_title {
+  color: var(--secondary-color-results);
+  padding-bottom: 10px;
+}
+
+.results {
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+}
+
+.results_hydrosol {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+}
+
+.results_descriptions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.results_description {
+  text-align: start;
+  padding-inline: 10%;
+}
 </style>
