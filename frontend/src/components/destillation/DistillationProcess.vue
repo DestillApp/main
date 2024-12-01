@@ -1,5 +1,5 @@
-// no arch docs
-// fetching apparatus form the my account saved distillation apparatus
+// no arch docs // fetching apparatus form the my account saved distillation
+apparatus
 <template>
   <div class="distillation__process">
     <!--Title for process part of distillation form-->
@@ -99,14 +99,16 @@ import { computed, ref, onMounted, watch } from "vue";
 export default {
   name: "DistillationProcess",
   components: { BaseAutocompleteInput, BaseInputDatePicker },
-  props: ["isFormValid"],
-  setup() {
+  props: ["isFormValid", "isEditing"],
+  setup(props) {
     // Vuex store
     const store = useStore();
 
     // Computed properties to get form data from Vuex store
-    const formData = computed(
-      () => store.getters["distillation/distillationForm"]
+    const formData = computed(() =>
+      props.isEditing
+        ? store.getters["results/distillationData"]
+        : store.getters["distillation/distillationForm"]
     );
     const distillationDate = computed(
       () => store.getters["distillation/distillationDate"]
@@ -158,15 +160,33 @@ export default {
       });
     };
 
+    /**
+     * @function fetchArchiveData
+     * @description Fetches initial data from local storage via the Vuex store for a specified key.
+     * @param {string} key - The key for the specific data to fetch.
+     * @param {boolean} value - Indicates if the fetched data is related to plant information.
+     */
+    const fetchArchiveData = (key) => {
+      store.dispatch("results/fetchDistillationDataFromLocalStorage", key);
+    };
+
     // Fetch initial form data from local storage on component mount
     onMounted(() => {
       console.log("DISTILLATION PROCESS", formData.value);
       if (!comingFromRoute.value) {
-        fetchData("distillationDate", false);
-        fetchData("distillationType", false);
-        fetchData("distillationApparatus", false);
-        distillationType.value = formData.value.distillationType;
-        distillationApparatus.value = formData.value.distillationApparatus;
+        if (props.isEditing) {
+          fetchArchiveData("distillationDate");
+          fetchArchiveData("distillationType");
+          fetchArchiveData("distillationApparatus");
+          distillationType.value = formData.value.distillationType;
+          distillationApparatus.value = formData.value.distillationApparatus;
+        } else {
+          fetchData("distillationDate", false);
+          fetchData("distillationType", false);
+          fetchData("distillationApparatus", false);
+          distillationType.value = formData.value.distillationType;
+          distillationApparatus.value = formData.value.distillationApparatus;
+        }
       }
     });
 
@@ -177,7 +197,14 @@ export default {
      * @param {string} input - The key for the specific input field.
      */
     const setValue = (value, input) => {
-      store.dispatch("distillation/setValue", { input: input, value: value });
+      if (props.isEditing) {
+        store.dispatch("results/setValue", {
+          input: input,
+          value: value,
+        });
+      } else {
+        store.dispatch("distillation/setValue", { input: input, value: value });
+      }
     };
 
     /**

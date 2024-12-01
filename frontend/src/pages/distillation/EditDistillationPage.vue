@@ -1,4 +1,3 @@
-// distillation types and distillation apparatous doesn't display in the autocomplete input
 <template>
     <base-card>
         <!-- Loading spinner while data is being fetched -->
@@ -7,7 +6,7 @@
         <!-- Distillation form -->
         <form v-if="!isLoading" @submit.prevent="editDistillation" class="distillation_form">
             <!-- Title for the plant information form -->
-            <h3 class="form_title">Informacje o procesie destylacji</h3>
+            <h3 class="form_title">Edytuj informacje o procesie destylacji</h3>
             <!-- Distillation plan component -->
             <distillation-plant :isFormValid="isFormValid" :isEditing="isEditing"></distillation-plant>
             <!-- Distillation process component -->
@@ -139,7 +138,7 @@ export default {
 
     /**
      * @async
-     * @function submitDistillationForm
+     * @function edittDistillationForm
      * @description Function to handle the submission of the distillation form.
      * @returns {Promise<void>} Resolves when the form submission process is complete.
      * @throws {Error} Throws an error if the form submission fails.

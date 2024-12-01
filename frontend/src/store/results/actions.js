@@ -24,6 +24,46 @@ export default {
   },
 
   /**
+   * @function fetchDistillationDataFromLocalStorage
+   * @description Fetches distillationData from local storage and commits it to the state.
+   * @param {Object} context - The Vuex context.
+   * @param {string} key - The key to fetch from local storage.
+   */
+  fetchDistillationDataFromLocalStorage(context, key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key));
+      if (value === null) {
+        return;
+      } else {
+        context.commit("changeDistillationDataValue", { input: key, value });
+      }
+    } catch (error) {
+      console.log("error", error);
+      return;
+    }
+  },
+
+  /**
+   * @function fetchDistilledPlantFromLocalStorage
+   * @description Fetches distilledPlant data from local storage and commits it to the state.
+   * @param {Object} context - The Vuex context.
+   * @param {string} key - The key to fetch from local storage.
+   */
+  fetchDistilledPlantFromLocalStorage(context, key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key));
+      if (value === null) {
+        return;
+      } else {
+        context.commit("changePlantDataValue", { input: key, value });
+      }
+    } catch (error) {
+      console.log("error", error);
+      return;
+    }
+  },
+
+  /**
    * @function setValue
    * @description Sets a value in the state.
    * @param {Object} context - The Vuex context.
@@ -72,7 +112,7 @@ export default {
   },
 
   /**
-   * @function setDistillationTimeValue
+   * @function
    * @description Sets a value inside distillationTime in the state.
    * @param {Object} context - The Vuex context.
    * @param {Object} payload - The payload containing the input and value.

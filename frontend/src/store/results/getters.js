@@ -12,4 +12,14 @@ export default {
   resultsForm(state) {
     return state.resultsForm;
   },
+
+  /**
+   * @function distillationData
+   * @description Gets the distillation data from the results form data.
+   * @param {Object} state - The Vuex state.
+   * @returns {Object} The distillation data.
+   */
+  distillationData(state) {
+    return state.resultsForm.distillationData;
+  },
 };
