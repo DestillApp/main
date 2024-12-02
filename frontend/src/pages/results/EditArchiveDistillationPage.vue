@@ -20,7 +20,7 @@
         Edytuj informacje o procesie destylacji i wynikach
       </h3>
       <!-- Distillation plan component -->
-      <!-- <distillation-plant :isFormValid="isFormValid" :isEditing="isEditing" :isResultsForm="isResultsForm"></distillation-plant> -->
+      <results-plant :isFormValid="isFormValid" :isEditing="isEditing"></results-plant>
       <!-- Distillation process component -->
       <distillation-process
         :isFormValid="isFormValid"
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import ResultsPlant from "../../components/results/ResultsPlant.vue";
 import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
 import DistillationData from "../../components/destillation/DistillationData.vue";
 import ResultsData from "@/components/results/ResultsData.vue";
@@ -64,7 +65,7 @@ import { useRoute } from "vue-router";
  */
 export default {
   name: "EditArchiveDistillationPage",
-  components: { DistillationProcess, DistillationData, ResultsData, ResultsDescriptions },
+  components: { ResultsPlant, DistillationProcess, DistillationData, ResultsData, ResultsDescriptions },
 
   // Navigation guard that handles the logic before navigating to this route
   beforeRouteEnter(to, from, next) {
@@ -121,7 +122,7 @@ export default {
         });
         // Store the fetched distillation details in the distillationDetails reference
         distillationDetails.value = data.getArchiveDistillationById;
-        console.log("edit archive distillation", distillationDetails.value);
+        console.log("DATA!", data.getArchiveDistillationById);
       } catch (error) {
         console.error("Failed to get archive distillation details:", error);
         distillationDetails.value = null;
@@ -207,6 +208,60 @@ export default {
             distillationDetails.value.distillationData.distillationTime
               .distillationMinutes,
         });
+        store.dispatch("results/setPlantDataValue", {
+          input: "countryOfOrigin",
+          value: distillationDetails.value.distilledPlant.countryOfOrigin,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "dryingTime",
+          value: distillationDetails.value.distilledPlant.dryingTime,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "harvestDate",
+          value: distillationDetails.value.distilledPlant.harvestDate,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "harvestEndTime",
+          value: distillationDetails.value.distilledPlant.harvestEndTime,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "harvestStartTime",
+          value: distillationDetails.value.distilledPlant.harvestStartTime,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "harvestTemperature",
+          value: distillationDetails.value.distilledPlant.harvestTemperature,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "plantAge",
+          value: distillationDetails.value.distilledPlant.plantAge,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "plantBuyDate",
+          value: distillationDetails.value.distilledPlant.plantBuyDate,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "plantName",
+          value: distillationDetails.value.distilledPlant.plantName,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "plantOrigin",
+          value: distillationDetails.value.distilledPlant.plantOrigin,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "plantPart",
+          value: distillationDetails.value.distilledPlant.plantPart,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "plantProducer",
+          value: distillationDetails.value.distilledPlant.plantProducer,
+        });
+        store.dispatch("results/setPlantDataValue", {
+          input: "plantState",
+          value: distillationDetails.value.distilledPlant.plantState,
+        });
+
+        console.log("all data!", distillationDetails.value);
       } else {
         // If not coming from another route, set loading to false
         isLoading.value = false;

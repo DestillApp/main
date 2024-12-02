@@ -172,7 +172,6 @@ export default {
 
     // Fetch initial form data from local storage on component mount
     onMounted(() => {
-      console.log("DISTILLATION PROCESS", formData.value);
       if (!comingFromRoute.value) {
         if (props.isEditing) {
           fetchArchiveData("distillationDate");

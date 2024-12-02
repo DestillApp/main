@@ -1,0 +1,242 @@
+<template>
+  <div class="distilled_plant">
+    <!--Title for plant part of distillation form-->
+    <h5 class="plant_title">surowiec</h5>
+    <!-- Autocomplete input for the plants in the magazin-->
+    <base-text-input
+      v-model="plantData.plantName"
+      class="plant_name"
+      label="Surowiec z magazynu"
+      placeholder="wybierz surowiec"
+      id="plantName"
+      color="plant"
+      :disabled="isEditing"
+    >
+      <template v-slot:message>
+        <div v-if="plantData.plantName" class="plant_informations">
+          <div class="plant_information">
+            <span>część rośliny: </span
+            ><span class="information">{{ plantData.plantPart }}</span>
+          </div>
+          <div v-if="plantData.harvestDate" class="plant_information">
+            <span>data zbioru: </span
+            ><span class="information">{{ plantData.harvestDate }}</span>
+          </div>
+          <div v-if="plantData.plantBuyDate" class="plant_information">
+            <span>data kupna: </span
+            ><span class="information">{{ plantData.plantBuyDate }}</span>
+          </div>
+        </div>
+      </template>
+    </base-text-input>
+    <!-- Input field for entering the plant weight that will be use for distillation-->
+    <base-text-input
+      v-model="distillationData.weightForDistillation"
+      type="number"
+      class="plant_weight"
+      classType="number"
+      inputColor="plant"
+      :disabled="isEditing"
+      label="Waga surowca użytego do destylacji"
+      id="weightForDistillation"
+    >
+      <template v-slot:unit>
+        <div>kg</div>
+      </template>
+    </base-text-input>
+    <div class="container">
+      <div>
+        <p class="paragraph" v-if="distillationData.isPlantSoaked">
+          Surowiec namaczany przed destylacją:
+        </p>
+        <p class="paragraph"  v-if="!distillationData.isPlantSoaked">
+          Surowiec nie namaczany przed destylacją
+        </p>
+        <!-- Additional inputs displayed if the plant was soaked -->
+        <div v-if="distillationData.isPlantSoaked" class="container--isSoaked">
+          <!-- Input field for entering the soaking time -->
+          <base-text-input
+            v-model="distillationData.soakingTime"
+            type="number"
+            classType="number"
+            inputColor="plant"
+            :disabled="isEditing"
+            label="Czas namaczania"
+            id="soakingTime"
+          >
+            <template v-slot:unit>
+              <div>h</div>
+            </template>
+          </base-text-input>
+          <!-- Input field for entering the weight after soaking -->
+          <base-text-input
+            v-model="distillationData.weightAfterSoaking"
+            class="weightAfterSoaking"
+            type="number"
+            classType="number"
+            inputColor="plant"
+            :disabled="isEditing"
+            label="Waga surowca po namoczeniu"
+            id="weightAfterSoaking"
+          >
+            <template v-slot:unit>
+              <div>kg</div>
+            </template>
+          </base-text-input>
+        </div>
+      </div>
+      <p class="paragraph"  v-if="distillationData.isPlantShredded">
+        Surowiec rozdrobniony przed destylacją
+      </p>
+      <p class="paragraph"  v-if="!distillationData.isPlantShredded">
+        Surowiec nie rozdrabniany przed destylacją
+      </p>
+    </div>
+  </div>
+</template>
+
+<script>
+import { useStore } from "vuex";
+import { onMounted, computed } from "vue";
+import BaseTextInput from "@/ui/BaseTextInput.vue";
+
+/**
+ * @component DistillationPlant
+ * @description This component manages the selection of plant material for distillation, including details like plant part, weight, and optional soaking or shredding steps.
+ * It also interacts with Vuex for data persistence and handles the fetching of plants from an Apollo GraphQL server.
+ */
+
+export default {
+  name: "DistillationPlant",
+  components: { BaseTextInput },
+  props: ["isFormValid", "isEditing"],
+
+  setup() {
+    // Vuex store
+    const store = useStore();
+
+    // Computed properties to get form data from Vuex store
+    const plantData = computed(() => store.getters["results/distilledPlant"]);
+
+    const distillationData = computed(
+      () => store.getters["results/distillationData"]
+    );
+
+    const comingFromRoute = computed(() => store.getters.comingFromRoute);
+
+    /**
+     * @function fetchData
+     * @description Fetches initial data from local storage via the Vuex store for a specified key.
+     * @param {string} key - The key for the specific data to fetch.
+     */
+    const fetchPlantData = (key) => {
+      store.dispatch("results/fetchDistilledPlantFromLocalStorage", key);
+    };
+
+    /**
+     * @function fetchDistillationData
+     * @description Fetches initial data from local storage via the Vuex store for a specified key.
+     * @param {string} key - The key for the specific data to fetch.
+     */
+    const fetchDistillationData = (key) => {
+      store.dispatch("results/fetchDistillationDataFromLocalStorage", key);
+    };
+
+    // Fetch initial data from local storage on component mount
+    onMounted(async () => {
+      if (!comingFromRoute.value) {
+        fetchPlantData("plantName");
+        fetchPlantData("plantPart");
+        fetchPlantData("harvestDate");
+        fetchPlantData("plantBuyDate");
+        fetchPlantData("plantProducer");
+        fetchPlantData("countryOfOrigin");
+        fetchPlantData("harvestTemperature");
+        fetchPlantData("harvestEndTime");
+        fetchPlantData("harvestStartTime");
+        fetchPlantData("plantOrigin");
+        fetchPlantData("plantState");
+        fetchPlantData("dryingTime");
+        fetchPlantData("plantAge");
+        fetchDistillationData("weightForDistillation");
+        fetchDistillationData("isPlantSoaked");
+        fetchDistillationData("soakingTime");
+        fetchDistillationData("weightAfterSoaking");
+        fetchDistillationData("isPlantShredded");
+      }
+    });
+
+    return {
+      plantData,
+      distillationData,
+    };
+  },
+};
+</script>
+
+<style scoped>
+.distilled_plant {
+  display: flex;
+  flex-direction: column;
+}
+
+.plant_title {
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.plant_name {
+  color: black;
+  margin-bottom: 10px;
+}
+
+.plant_informations,
+.plant_information {
+  display: flex;
+  flex-direction: row;
+}
+
+.plant_informations {
+  gap: 20px;
+}
+
+.plant_information {
+  gap: 10px;
+  font-size: 13px;
+  color: black;
+  justify-content: flex-start;
+}
+
+.information {
+  color: var(--secondary-color);
+}
+
+.plant_weight {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.paragraph {
+text-align: left;
+color: var(--text-color);
+margin-bottom: 30px;
+font-size: 15px;
+}
+
+.container--isSoaked {
+    display: flex;
+  flex-direction: row;
+   gap: 50px;
+}
+
+.weightAfterSoaking {
+  margin-bottom: 20px;
+}
+
+</style>

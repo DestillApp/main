@@ -130,7 +130,6 @@ export default {
 
     // Fetch initial form data from local storage on component mount
     onMounted(() => {
-      console.log("DISTILLATION DATA", formData.value);
       if (props.isEditing) {
         store.dispatch(
           "results/fetchDistillationDataFromLocalStorage",
