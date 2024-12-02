@@ -178,16 +178,21 @@ export default {
 
 <style scoped>
 .input {
+  position: relative;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: flex-end;
   gap: 5px;
+  margin-right: 50px;
 }
 
 .icon {
+  position: absolute;
   cursor: pointer;
   margin-bottom: 2px;
+  left: 210px;
+  top: 27px;
 }
 
 .icon_color-plant {
