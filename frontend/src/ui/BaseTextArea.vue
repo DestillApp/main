@@ -164,5 +164,6 @@ export default {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;
+    min-height: 18px;
 }
 </style>

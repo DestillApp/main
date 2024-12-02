@@ -1,77 +1,80 @@
 <template>
-  <div class="results_data">
-    <!-- Input field for entering the distillation result -->
-    <base-text-input
-      v-model="formData.oilAmount"
-      type="number"
-      classType="results"
-      placeholder="ml"
-      inputColor="results"
-      :invalidInput="isFormValid === false && !formData.oilAmount"
-      :storeName="storeName"
-      @change:modelValue="setNumberOne"
-      label="Ilość olejku eterycznego"
-      id="oilAmount"
-      min="0.1"
-      step="0.1"
-    >
-      <template v-slot:unit>
-        <div v-if="formData.oilAmount !== null">ml</div>
-      </template>
-      <template v-slot:message>
-        <span v-if="isFormValid === false && !formData.oilAmount"
-          >Wpisz ilość olejku eterycznego</span
+  <div class="results">
+    <h5 v-if="isEditing" class="results_title">wyniki</h5>
+    <div class="results_data">
+      <!-- Input field for entering the distillation result -->
+      <base-text-input
+        v-model="formData.oilAmount"
+        type="number"
+        classType="results"
+        placeholder="ml"
+        inputColor="results"
+        :invalidInput="isFormValid === false && !formData.oilAmount"
+        :storeName="storeName"
+        @change:modelValue="setNumberOne"
+        label="Ilość olejku eterycznego"
+        id="oilAmount"
+        min="0.1"
+        step="0.1"
+      >
+        <template v-slot:unit>
+          <div v-if="formData.oilAmount !== null">ml</div>
+        </template>
+        <template v-slot:message>
+          <span v-if="isFormValid === false && !formData.oilAmount"
+            >Wpisz ilość olejku eterycznego</span
+          >
+        </template>
+      </base-text-input>
+      <div class="results_hydrosol">
+        <!-- Input field for entering the hydrosol amount -->
+        <base-text-input
+          v-model="formData.hydrosolAmount"
+          type="number"
+          classType="results"
+          placeholder="l"
+          inputColor="results"
+          :invalidInput="isFormValid === false && !formData.hydrosolAmount"
+          :storeName="storeName"
+          @change:modelValue="setNumberOne"
+          label="Ilość hydrolatu"
+          id="hydrosolAmount"
+          min="0.1"
+          step="0.1"
         >
-      </template>
-    </base-text-input>
-<div class="results_hydrosol">
-    <!-- Input field for entering the hydrosol amount -->
-    <base-text-input
-      v-model="formData.hydrosolAmount"
-      type="number"
-      classType="results"
-      placeholder="l"
-      inputColor="results"
-      :invalidInput="isFormValid === false && !formData.hydrosolAmount"
-      :storeName="storeName"
-      @change:modelValue="setNumberOne"
-      label="Ilość hydrolatu"
-      id="hydrosolAmount"
-      min="0.1"
-      step="0.1"
-    >
-      <template v-slot:unit>
-        <div v-if="formData.hydrosolAmount !== null">l</div>
-      </template>
-      <template v-slot:message>
-        <span v-if="isFormValid === false && !formData.hydrosolAmount"
-          >Wpisz ilość hydrolatu</span
-        >
-      </template>
-    </base-text-input>
+          <template v-slot:unit>
+            <div v-if="formData.hydrosolAmount !== null">l</div>
+          </template>
+          <template v-slot:message>
+            <span v-if="isFormValid === false && !formData.hydrosolAmount"
+              >Wpisz ilość hydrolatu</span
+            >
+          </template>
+        </base-text-input>
 
-    <!-- Input field for entering the hydrosol pH -->
-    <base-text-input
-      v-model="formData.hydrosolpH"
-      type="number"
-      classType="number"
-      placeholder="pH"
-      inputColor="results"
-      :invalidInput="isFormValid === false && !formData.hydrosolpH"
-      :storeName="storeName"
-      @change:modelValue="setNumberTwo"
-      label="pH hydrolatu"
-      id="hydrosolpH"
-      min="0"
-      max="14"
-      step="0.01"
-    >
-      <template v-slot:message>
-        <span v-if="isFormValid === false && !formData.hydrosolpH"
-          >Wpisz pH hydrolatu</span
+        <!-- Input field for entering the hydrosol pH -->
+        <base-text-input
+          v-model="formData.hydrosolpH"
+          type="number"
+          classType="number"
+          placeholder="pH"
+          inputColor="results"
+          :invalidInput="isFormValid === false && !formData.hydrosolpH"
+          :storeName="storeName"
+          @change:modelValue="setNumberTwo"
+          label="pH hydrolatu"
+          id="hydrosolpH"
+          min="0"
+          max="14"
+          step="0.01"
         >
-      </template>
-    </base-text-input>
+          <template v-slot:message>
+            <span v-if="isFormValid === false && !formData.hydrosolpH"
+              >Wpisz pH hydrolatu</span
+            >
+          </template>
+        </base-text-input>
+      </div>
     </div>
   </div>
 </template>
@@ -90,7 +93,7 @@ import { setNumberFormat } from "@/helpers/formatHelpers.js";
 export default {
   name: "ResultsData",
   components: { BaseTextInput },
-  props: ["isFormValid"],
+  props: ["isFormValid", "isEditing"],
   setup() {
     // Vuex store
     const store = useStore();
@@ -128,6 +131,16 @@ export default {
 </script>
 
 <style scoped>
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.results_title {
+  font-size: 16px;
+}
+
 .results_data {
   display: flex;
   flex-direction: column;
@@ -135,8 +148,8 @@ export default {
 }
 
 .results_hydrosol {
-    display: flex;
-    flex-direction: row;
-    gap: 50px;
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
 }
 </style>

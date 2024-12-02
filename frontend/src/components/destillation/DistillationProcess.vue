@@ -253,6 +253,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 30px;
+  
 }
 
 .distillation__title {
