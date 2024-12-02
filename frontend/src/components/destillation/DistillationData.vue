@@ -1,4 +1,3 @@
-// no arch docs and code docs
 <template>
   <div class="distillation__data">
     <!-- Input field for entering the amount of water used in distillation -->
@@ -8,9 +7,7 @@
       classType="number"
       placeholder="l"
       inputColor="distillation"
-      :invalidInput="
-        isFormValid === false && !formData.waterForDistillation
-      "
+      :invalidInput="isFormValid === false && !formData.waterForDistillation"
       :storeName="storeName"
       @update:modelValue="setInteger"
       @set:keyboard="setKeyboardIntegerNumber"
@@ -23,10 +20,9 @@
         <div v-if="formData.waterForDistillation">l</div>
       </template>
       <template v-slot:message>
-        <span
-          v-if="isFormValid === false && !formData.waterForDistillation"
-          >Wpisz ilość wody użytej do destylacji</span
-        >
+        <span v-if="isFormValid === false && !formData.waterForDistillation">
+          Wprowadź ilość wody użytej do destylacji
+        </span>
         <span v-else>&nbsp;</span>
       </template>
     </base-text-input>
@@ -73,9 +69,9 @@
         placeholder="min"
         inputColor="distillation"
         :invalidInput="
-              isFormValid === false &&
-              !formData.distillationTime.distillationHours &&
-              !formData.distillationTime.distillationMinutes
+          isFormValid === false &&
+          !formData.distillationTime.distillationHours &&
+          !formData.distillationTime.distillationMinutes
         "
         :storeName="storeName"
         @set:keyboard="setKeyboardIntegerNumber"
@@ -86,9 +82,7 @@
         step="1"
       >
         <template v-slot:unit>
-          <div v-if="formData.distillationTime.distillationMinutes">
-            min
-          </div>
+          <div v-if="formData.distillationTime.distillationMinutes">min</div>
         </template></base-text-input
       >
     </div>
@@ -96,41 +90,74 @@
 </template>
 
 <script>
-import { onMounted, computed } from "vue";
-import { useStore } from "vuex";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
+import { useStore } from "vuex";
+import { computed, onMounted } from "vue";
 import {
   setIntegerNumber,
   setKeyboardIntegerNumber,
 } from "@/helpers/formatHelpers.js";
 
+/**
+ * @component DistillationData
+ * @description This component handles the distillation data inputs, such as water used and distillation time.
+ * It integrates with Vuex to store form data and manage state updates.
+ * @see fetchData
+ * @see setInteger
+ * @see setKeyboardIntegerNumber
+ * @see saveTime
+ */
+
 export default {
+  name: "DistillationData",
   components: { BaseTextInput },
-  props: ["isFormValid"],
-  setup() {
+  props: ["isFormValid", "isEditing"],
+  setup(props) {
     // Vuex store
     const store = useStore();
-    // Name of the vuex store module
-    const storeName = "distillation";
 
     // Computed properties to get form data from Vuex store
-    const formData = computed(
-      () => store.getters["distillation/distillationForm"]
+    const formData = computed(() =>
+      props.isEditing
+        ? store.getters["results/distillationData"]
+        : store.getters["distillation/distillationForm"]
     );
 
+    // Name of the vuex store module
+    const storeName = computed(() =>
+      props.isEditing ? "results" : "distillation"
+    );
+
+    // Fetch initial form data from local storage on component mount
     onMounted(() => {
-      store.dispatch("distillation/fetchLocalStorageData", {
-        key: "waterForDistillation",
-        isPlant: false,
-      });
-      store.dispatch(
-        "distillation/fetchTimeFromLocalStorageData",
-        "distillationHours"
-      );
-      store.dispatch(
-        "distillation/fetchTimeFromLocalStorageData",
-        "distillationMinutes"
-      );
+      console.log("DISTILLATION DATA", formData.value);
+      if (props.isEditing) {
+        store.dispatch(
+          "results/fetchDistillationDataFromLocalStorage",
+          "waterForDistillation"
+        );
+        store.dispatch(
+          "results/fetchDistillationTimeFromLocalStorage",
+          "distillationHours"
+        );
+        store.dispatch(
+          "results/fetchDistillationTimeFromLocalStorage",
+          "distillationMinutes"
+        );
+      } else {
+        store.dispatch("distillation/fetchLocalStorageData", {
+          key: "waterForDistillation",
+          isPlant: false,
+        });
+        store.dispatch(
+          "distillation/fetchTimeFromLocalStorageData",
+          "distillationHours"
+        );
+        store.dispatch(
+          "distillation/fetchTimeFromLocalStorageData",
+          "distillationMinutes"
+        );
+      }
     });
 
     // Using the format function to handle integer input for water volume
@@ -138,9 +165,15 @@ export default {
       setIntegerNumber(store, value, id, storeName);
     };
 
-
     const saveTime = (value, key) => {
-      store.dispatch('distillation/setDistillationTime', { key, value });
+      if (storeName.value === "distillation") {
+        store.dispatch("distillation/setDistillationTime", { key, value });
+      } else {
+        store.dispatch("results/setDistillationTime", {
+          input: key,
+          value,
+        });
+      }
     };
 
     return {

@@ -108,7 +108,7 @@ export default {
       });
 
       distillationTimeFields.forEach(({ input, value }) => {
-        store.dispatch("results/setDistillationTimeValue", { input, value });
+        store.dispatch("results/setDistillationTime", { input, value });
       });
     };
 

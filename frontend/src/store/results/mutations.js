@@ -19,6 +19,26 @@ export default {
   },
 
   /**
+   * @function changeIntegerNumber
+   * @description Mutation to change a value to an integer value in the distillation form.
+   * @param {Object} state - The current state object.
+   * @param {Object} payload - Payload containing the input field name and its new integer value.
+   * @param {string} payload.input - The name of the input field to be updated.
+   * @param {number} payload.value - The new integer value for the input field.
+   */
+  changeIntegerNumber(state, { input, value, object }) {
+    const integerNumber = parseInt(value);
+    if (object === "isTime") {
+      state.resultsForm.distillationData.distillationTime[input] =
+        integerNumber;
+    }
+    if (object === "isDistillation") {
+      state.resultsForm.distillationData[input] = integerNumber;
+    }
+    localStorage.setItem(input, JSON.stringify(integerNumber));
+  },
+
+  /**
    * @function changeNumberFormat
    * @description Mutation to change the format of a number value in the results form.
    * @param {Object} state - The current state object.
@@ -67,8 +87,9 @@ export default {
    * @param {any} payload.value - The new value for the input field.
    */
   changeDistillationTimeValue(state, { input, value }) {
-    state.resultsForm.distillationData.distillationTime[input] = value;
-    localStorage.setItem(input, JSON.stringify(value));
+    const numberValue = parseFloat(value);
+    state.resultsForm.distillationData.distillationTime[input] = numberValue;
+    localStorage.setItem(input, JSON.stringify(numberValue));
   },
 
   /**

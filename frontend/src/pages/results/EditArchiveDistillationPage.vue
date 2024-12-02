@@ -12,7 +12,7 @@
             <!-- Distillation process component -->
             <distillation-process :isFormValid="isFormValid" :isEditing="isEditing"></distillation-process>
             <!-- Distillation data component -->
-            <!-- <distillation-data :isFormValid="isFormValid"></distillation-data> -->
+            <distillation-data :isFormValid="isFormValid" :isEditing="isEditing"></distillation-data>
             <!-- Button to submit the distilation form -->
             <base-button class="button" type="submit">Edytuj</base-button>
         </form>
@@ -22,9 +22,9 @@
 <script>
 // import DistillationPlant from "../../components/destillation/DistillationPlant.vue";
 import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
-// import DistillationData from "../../components/destillation/DistillationData.vue";
+import DistillationData from "../../components/destillation/DistillationData.vue";
 import { distillationFormValidation } from "@/helpers/formsValidation";
-// import store from "@/store/index";
+import store from "@/store/index";
 
 import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
 import { useStore } from "vuex";
@@ -39,7 +39,18 @@ import { useRoute } from "vue-router";
  */
 export default {
   name: "EditArchiveDistillationPage",
-  components: { DistillationProcess },
+  components: { DistillationProcess , DistillationData},
+
+    // Navigation guard that handles the logic before navigating to this route
+  beforeRouteEnter(to, from, next) {
+    //check if the route comes from another named route, then update the store
+    if (from && from.name) {
+      store.dispatch("setComingFromRoute", true);
+    } else {
+      store.dispatch("setComingFromRoute", false);
+    }
+    next();
+  },
 
   setup() {
     const { resolveClient } = useApolloClient();
@@ -67,6 +78,8 @@ export default {
     const isLoading = ref(true);
     // Reactive reference to pass that this is an edit form
     const isEditing = ref(true);
+    // Computed property to get the value from Vuex store
+    const comingFromRoute = computed(() => store.getters.comingFromRoute);
 
     const fetchDistillationDetails = async () => {
       try {
@@ -79,8 +92,20 @@ export default {
         // Store the fetched distillation details in the distillationDetails reference
         distillationDetails.value = data.getArchiveDistillationById;
         console.log("edit archive distillation", distillationDetails.value);
+      } catch (error) {
+        console.error("Failed to get archive distillation details:", error);
+        distillationDetails.value = null;
+      } finally {
+        // Once the process is complete, set loading to false
+        isLoading.value = false;
+      }
+    };
 
-        // Update the Vuex store with the fetched distillation details
+    // Lifecycle hook to reset form validity on component mount
+    onMounted(async () => {
+      isFormValid.value = null;
+      if (comingFromRoute.value) {
+        await fetchDistillationDetails();
         store.dispatch("results/setValue", { input: "oilAmount", value: distillationDetails.value.oilAmount });
         store.dispatch("results/setValue", { input: "hydrosolAmount", value: distillationDetails.value.hydrosolAmount });
         store.dispatch("results/setValue", { input: "hydrosolpH", value: distillationDetails.value.hydrosolpH });
@@ -95,21 +120,12 @@ export default {
         store.dispatch("results/setDistillationDataValue", { input: "distillationDate", value: distillationDetails.value.distillationData.distillationDate });
         store.dispatch("results/setDistillationDataValue", { input: "distillationApparatus", value: distillationDetails.value.distillationData.distillationApparatus });
         store.dispatch("results/setDistillationDataValue", { input: "waterForDistillation", value: distillationDetails.value.distillationData.waterForDistillation });
-        store.dispatch("results/setDistillationTimeValue", { input: "distillationHours", value: distillationDetails.value.distillationData.distillationTime.distillationHours });
-        store.dispatch("results/setDistillationTimeValue", { input: "distillationMinutes", value: distillationDetails.value.distillationData.distillationTime.distillationMinutes });
-      } catch (error) {
-        console.error("Failed to get archive distillation details:", error);
-        distillationDetails.value = null;
-      } finally {
-        // Once the process is complete, set loading to false
+        store.dispatch("results/setDistillationTime", { input: "distillationHours", value: distillationDetails.value.distillationData.distillationTime.distillationHours });
+        store.dispatch("results/setDistillationTime", { input: "distillationMinutes", value: distillationDetails.value.distillationData.distillationTime.distillationMinutes });
+      } else {
+        // If not coming from another route, set loading to false
         isLoading.value = false;
       }
-    };
-
-    // Lifecycle hook to reset form validity on component mount
-    onMounted(async () => {
-      isFormValid.value = null;
-      await fetchDistillationDetails();
       console.log("vuex form", distillationForm.value)
     });
 
@@ -137,6 +153,7 @@ export default {
       isFormValid,
       isLoading,
       isEditing,
+      comingFromRoute,
     };
   },
 };

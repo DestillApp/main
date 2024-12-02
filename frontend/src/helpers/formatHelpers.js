@@ -28,14 +28,28 @@ export const setNumberFormat = (
  * @param {number} currentValue - The current value of the input.
  * @param {string} input - The input identifier.
  */
-export const setIntegerNumber = (store, currentValue, input, storeName) => {
+export const setIntegerNumber = (
+  store,
+  currentValue,
+  input,
+  storeName,
+  object
+) => {
   if (!currentValue || isNaN(currentValue)) {
     store.dispatch(`${storeName}/setValue`, { input, value: null });
   } else {
-    store.dispatch(`${storeName}/setIntegerValue`, {
-      input,
-      value: currentValue,
-    });
+    if (!object) {
+      store.dispatch(`${storeName}/setIntegerValue`, {
+        input,
+        value: currentValue,
+      });
+    } else {
+      store.dispatch(`${storeName}/setIntegerValue`, {
+        input,
+        value: currentValue,
+        object,
+      });
+    }
   }
 };
 

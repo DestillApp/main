@@ -64,6 +64,26 @@ export default {
   },
 
   /**
+   * @function fetchDistillationTimeFromLocalStorage
+   * @description Fetches distillation time data from local storage and commits it to the state.
+   * @param {Object} context - The Vuex context.
+   * @param {string} key - The key to fetch from local storage.
+   */
+  fetchDistillationTimeFromLocalStorage(context, key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key));
+      if (value === null) {
+        return;
+      } else {
+        context.commit("changeDistillationTimeValue", { input: key, value });
+      }
+    } catch (error) {
+      console.log("error", error);
+      return;
+    }
+  },
+
+  /**
    * @function setValue
    * @description Sets a value in the state.
    * @param {Object} context - The Vuex context.
@@ -73,6 +93,18 @@ export default {
    */
   setValue(context, { input, value }) {
     context.commit("changeValue", { input, value });
+  },
+
+  /**
+   * @function setIntegerValue
+   * @description Sets an integer value in the state.
+   * @param {Object} context - The Vuex context.
+   * @param {Object} payload - The payload containing the input and value.
+   * @param {string} payload.input - The input field to set.
+   * @param {number} payload.value - The integer value to set.
+   */
+  setIntegerValue(context, { input, value, object }) {
+    context.commit("changeIntegerNumber", { input, value, object });
   },
 
   /**
@@ -112,14 +144,14 @@ export default {
   },
 
   /**
-   * @function
+   * @functiona
    * @description Sets a value inside distillationTime in the state.
    * @param {Object} context - The Vuex context.
    * @param {Object} payload - The payload containing the input and value.
    * @param {string} payload.input - The input field to set inside distillationTime.
    * @param {any} payload.value - The value to set.
    */
-  setDistillationTimeValue(context, { input, value }) {
+  setDistillationTime(context, { input, value }) {
     context.commit("changeDistillationTimeValue", { input, value });
   },
 
