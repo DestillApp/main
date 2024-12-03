@@ -51,7 +51,7 @@ const distillationResolvers = {
       }
     },
 
-    getDistillationById: async (_, { id, formatDates = true }) => {
+    getDistillationById: async (_, { id, formatDates }) => {
       try {
         const distillation = await Distillation.findById(id);
         if (!distillation) {

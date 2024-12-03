@@ -72,12 +72,21 @@ const distillationArchivesResolvers = {
      * @param {Object} id - ID of the distillation archive to fetch.
      * @returns {Promise<Object>} The fetched distillation archive.
      */
-    getArchiveDistillationById: async (_, { id }) => {
+    getArchiveDistillationById: async (_, { id, formatDates = false }) => {
       try {
         const archive = await DistillationArchives.findById(id);
         if (!archive) {
           throw new Error("Distillation archive not found");
         }
+
+        console.log(formatDates);
+
+        //Format specific date fields if needed
+        if (formatDates && archive.distillationData.distillationDate) {
+          const date = new Date(archive.distillationData.distillationDate);
+          archive.distillationData.distillationDate = date.toString();
+        }
+
         return archive;
       } catch (error) {
         throw new Error(
