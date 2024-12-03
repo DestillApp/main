@@ -186,6 +186,9 @@ export default {
           distillationType.value = formData.value.distillationType;
           distillationApparatus.value = formData.value.distillationApparatus;
         }
+      } else {
+        distillationType.value = formData.value.distillationType;
+        distillationApparatus.value = formData.value.distillationApparatus;
       }
     });
 
