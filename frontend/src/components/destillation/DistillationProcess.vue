@@ -111,7 +111,7 @@ export default {
         : store.getters["distillation/distillationForm"]
     );
     const distillationDate = computed(
-      () => store.getters["distillation/distillationDate"]
+      () => props.isEditing ? store.getters["results/distillationDate"] : store.getters["distillation/distillationDate"]
     );
     //Computed property to get the value from Vuex store
     const comingFromRoute = computed(() => store.getters.comingFromRoute);
@@ -164,7 +164,6 @@ export default {
      * @function fetchArchiveData
      * @description Fetches initial data from local storage via the Vuex store for a specified key.
      * @param {string} key - The key for the specific data to fetch.
-     * @param {boolean} value - Indicates if the fetched data is related to plant information.
      */
     const fetchArchiveData = (key) => {
       store.dispatch("results/fetchDistillationDataFromLocalStorage", key);

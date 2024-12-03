@@ -32,4 +32,14 @@ export default {
   distilledPlant(state) {
     return state.resultsForm.distilledPlant;
   },
+
+  /**
+   * @function distillationDate
+   * @description Gets the distilled plant from the results form data.
+   * @param {Object} state - The Vuex state.
+   * @returns {Object} The distillation data.
+   */
+  distillationDate(state) {
+    return state.resultsForm.distillationData.distillationDate;
+  },
 };

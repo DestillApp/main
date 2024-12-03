@@ -50,9 +50,10 @@ import DistillationData from "../../components/destillation/DistillationData.vue
 import ResultsData from "@/components/results/ResultsData.vue";
 import ResultsDescriptions from "@/components/results/ResultsDescriptions.vue";
 import { distillationFormValidation } from "@/helpers/formsValidation";
+import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
 import store from "@/store/index";
 
-import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
+import {  } from "@/graphql/queries/results";
 import { useStore } from "vuex";
 import { ref, computed, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -118,7 +119,7 @@ export default {
         // Make a query to fetch distillation details by distillation ID from archive
         const { data } = await apolloClient.query({
           query: GET_ARCHIVE_DISTILLATION_BY_ID,
-          variables: { id: archiveId.value },
+          variables: { id: archiveId.value, formatDates: true },
         });
         // Store the fetched distillation details in the distillationDetails reference
         distillationDetails.value = data.getArchiveDistillationById;

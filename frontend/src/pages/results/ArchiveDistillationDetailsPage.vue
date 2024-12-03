@@ -233,7 +233,7 @@ export default {
         isLoading.value = true;
         const { data } = await apolloClient.query({
           query: GET_ARCHIVE_DISTILLATION_BY_ID,
-          variables: { id: archiveId.value },
+          variables: { id: archiveId.value, formatDates: false },
         });
         distillationDetails.value = data.getArchiveDistillationById;
         console.log(distillationDetails.value);
