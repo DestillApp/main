@@ -135,6 +135,7 @@ export default {
         const { data } = await apolloClient.query({
           query: GET_PLANT_BY_ID,
           variables: { id: plantId.value, formatDates: true },
+          fetchPolicy: "network-only",
         });
         plantDetails.value = data.getPlantById;
         console.log(plantDetails.value, plantDetails.value.plantName);

@@ -128,6 +128,7 @@ export default {
         const { data } = await apolloClient.query({
           query: GET_PLANT_BY_ID,
           variables: { id: plantId.value, formatDates: false },
+          fetchPolicy: "network-only",
         });
         // Store the fetched plant details in the plantDetails reference
         plantDetails.value = data.getPlantById;
