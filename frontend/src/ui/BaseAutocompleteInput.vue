@@ -220,7 +220,6 @@ export default {
     };
 
     const openList = () => {
-      console.log("CLICK");
       if (!isOpen.value) {
         isOpen.value = true;
       } else {

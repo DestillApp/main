@@ -1,5 +1,3 @@
-// no arch docs //no some code docs
-database
 <template>
   <div class="distillation_plant">
     <!--Title for plant part of distillation form-->
@@ -33,15 +31,11 @@ database
             class="plant_information"
           >
             <span>data zbioru: </span
-            ><span class="information">{{
-              formData.choosedPlant.harvestDate
-            }}</span>
+            ><span class="information">{{ formattedHarvestDate }}</span>
           </div>
           <div v-if="formData.choosedPlant.buyDate" class="plant_information">
             <span>data kupna: </span
-            ><span class="information">{{
-              formData.choosedPlant.buyDate
-            }}</span>
+            ><span class="information">{{ formattedPlantBuyDate }}</span>
           </div>
           <div class="plant_information">
             <span>ilość surowca na stanie: </span
@@ -82,7 +76,8 @@ database
             formData.weightForDistillation >
             formData.choosedPlant.availableWeight
           "
-        >Brak wystarczającej ilości surowca z magazynie</span>
+          >Brak wystarczającej ilości surowca z magazynie</span
+        >
         <span
           v-if="
             isFormValid === false && formData.weightForDistillation === null
@@ -179,9 +174,11 @@ database
 
 <script>
 import { useStore } from "vuex";
+// import { useDate } from "vuetify";
 import { onMounted, computed, watch, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
+import { format } from "date-fns";
 import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import {
   setIntegerNumber,
@@ -223,6 +220,8 @@ export default {
     // Vuex store
     const store = useStore();
 
+    // const { format } = useDate();
+
     // Name of the vuex store module
     const storeName = "distillation";
 
@@ -234,6 +233,8 @@ export default {
     const plants = ref([]);
     const timeout = ref(null);
 
+    // const formattedDate = ref("");
+
     // Computed properties to get form data from Vuex store
     const formData = computed(
       () => store.getters["distillation/distillationForm"]
@@ -244,13 +245,30 @@ export default {
     const isPlantShredded = computed(
       () => store.getters["distillation/isPlantShredded"]
     );
+
+    // Format the plantBuyDate
+    const formattedPlantBuyDate = computed(() => {
+      const plantBuyDate = formData.value.choosedPlant.buyDate;
+      return plantBuyDate && !isNaN(new Date(plantBuyDate).getTime())
+        ? format(new Date(plantBuyDate), "dd-MM-yyyy")
+        : null;
+    });
+
+    // Format the harvestDate
+    const formattedHarvestDate = computed(() => {
+      const plantHarvestDate = formData.value.choosedPlant.harvestDate;
+      return plantHarvestDate && !isNaN(new Date(plantHarvestDate).getTime())
+        ? format(new Date(plantHarvestDate), "dd-MM-yyyy")
+        : null;
+    });
+
     const comingFromRoute = computed(() => store.getters.comingFromRoute);
 
     const getPlantData = async () => {
       try {
         const { data } = await apolloClient.query({
           query: GET_BASIC_PLANT_BY_ID,
-          variables: { id: route.params.id, formatDates: true },
+          variables: { id: route.params.id, formatDates: false },
         });
         return data.getPlantById;
       } catch (error) {
@@ -274,6 +292,7 @@ export default {
     // Fetch initial data from local storage on component mount
     onMounted(async () => {
       console.log(route.params.id);
+      console.log("formated!", formattedPlantBuyDate.value);
       if (comingFromRoute.value) {
         if (route.params.id) {
           const plantData = await getPlantData();
@@ -302,6 +321,8 @@ export default {
             value: plantData.plantBuyDate,
           });
           plant.value = formData.value.choosedPlant.name;
+          console.log("PLANT DATA", formData.value);
+          console.log("formated!", formattedPlantBuyDate.value);
         } else {
           return;
         }
@@ -318,6 +339,7 @@ export default {
         fetchData("weightAfterSoaking", false);
         fetchData("isPlantShredded", false);
         plant.value = formData.value.choosedPlant.name;
+        console.log("formated!", formattedPlantBuyDate.value);
       }
     });
 
@@ -341,6 +363,17 @@ export default {
      * @param {string} input - The input identifier triggering the event.
      */
     const setPlant = (value, input) => {
+      // const formatDate = (dateString) => {
+      //   if (!dateString) return null;
+      //   const date = new Date(dateString);
+      //   return date.toString();
+      // };
+
+      // const buy = formatDate(value.plantBuyDate);
+      // const harvest = formatDate(value.harvestDate);
+      // console.log("buy", buy);
+      // console.log("harvest", harvest);
+
       setPlantState("id", value._id);
       setPlantState("name", value.plantName);
       setPlantState("part", value.plantPart);
@@ -352,9 +385,15 @@ export default {
       plants.value = [];
       console.log("setPlant", plant, input);
       if (props.isEditing) {
-        router.replace({ name: 'EditDistillationPage', params: { id: value._id } });
+        router.replace({
+          name: "EditDistillationPage",
+          params: { id: value._id },
+        });
       } else {
-        router.replace({ name: 'AddDistillationPage', params: { id: value._id } });
+        router.replace({
+          name: "AddDistillationPage",
+          params: { id: value._id },
+        });
       }
     };
 
@@ -379,6 +418,7 @@ export default {
               "plantBuyDate",
               "_id",
             ],
+            formatDates: true,
             name: name,
           },
         });
@@ -407,9 +447,9 @@ export default {
         setPlantState("buyDate", "");
       }
       if (props.isEditing) {
-        router.replace({ name: 'EditDistillationPage', params: { id: null } });
+        router.replace({ name: "EditDistillationPage", params: { id: null } });
       } else {
-        router.replace({ name: 'AddDistillationPage', params: { id: null } });
+        router.replace({ name: "AddDistillationPage", params: { id: null } });
       }
       searchQuery.value = value;
       plant.value = searchQuery.value;
@@ -499,6 +539,8 @@ export default {
       storeName,
       formData,
       isPlantSoaked,
+      formattedPlantBuyDate,
+      formattedHarvestDate,
       plant,
       plants,
       setPlant,
