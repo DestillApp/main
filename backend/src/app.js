@@ -8,7 +8,8 @@
 console.log("Hello from Node.js!");
 
 // Importowanie pakietu dotenv
-require("dotenv").config();
+require("dotenv").config({path: './.env'});
+console.log("JWT!", process.env.JWT_SECRET);
 
 // Importing required modules
 const express = require("express");
