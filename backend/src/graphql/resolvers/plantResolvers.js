@@ -37,7 +37,7 @@ const plantResolver = {
      * @description Fetches plants from the database.
      * @returns {Promise<Array>} Array of plants.
      */
-    getPlants: async (_, { fields, name }) => {
+    getPlants: async (_, { fields, formatDates, name }) => {
       try {
         // Build a projection object based on the fields argument
         const projection = {};
@@ -61,13 +61,17 @@ const plantResolver = {
           const formattedPlant = { ...plant._doc }; // or plant._doc for Mongoose
 
           // Format specific date fields
-          if (formattedPlant.harvestDate) {
-            formattedPlant.harvestDate = formatDate(formattedPlant.harvestDate);
-          }
-          if (formattedPlant.plantBuyDate) {
-            formattedPlant.plantBuyDate = formatDate(
-              formattedPlant.plantBuyDate
-            );
+          if (formatDates) {
+            if (formattedPlant.harvestDate) {
+              formattedPlant.harvestDate = formatDate(
+                formattedPlant.harvestDate
+              );
+            }
+            if (formattedPlant.plantBuyDate) {
+              formattedPlant.plantBuyDate = formatDate(
+                formattedPlant.plantBuyDate
+              );
+            }
           }
 
           return formattedPlant;
@@ -77,7 +81,7 @@ const plantResolver = {
       }
     },
 
-    getPlantById: async (_, { id, formatDates = true }) => {
+    getPlantById: async (_, { id, formatDates }) => {
       try {
         const plant = await Plant.findById(id);
         if (!plant) {
