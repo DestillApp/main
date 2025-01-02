@@ -9,9 +9,8 @@ const Distillation = require("../../database/distillation");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
-const formatDate = require("../../util/dateformater");
+const { formatDate, formatDateToString } = require("../../util/dateformater");
 const { filterData } = require("../../util/dataformating");
-const { format } = require("date-fns");
 
 const distillationResolvers = {
   Query: {
@@ -38,7 +37,7 @@ const distillationResolvers = {
         return distillations.map((distillation) => {
           const formattedDistillation = { ...distillation._doc }; // For Mongoose
 
-          //Formar specific date field
+          // Format specific date field
           if (formattedDistillation.distillationDate) {
             formattedDistillation.distillationDate = formatDate(
               formattedDistillation.distillationDate
@@ -106,12 +105,6 @@ const distillationResolvers = {
           }
         : null;
 
-      // Function to format date
-      const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toString();
-      };
-
       // Sanitizing the input data
       const sanitizedData = {
         choosedPlant: {
@@ -128,10 +121,14 @@ const distillationResolvers = {
               )
             : null,
           harvestDate: distillationInput.choosedPlant.harvestDate
-            ? formatDate(distillationInput.choosedPlant.harvestDate)
+            ? formatDateToString(
+                DOMPurify.sanitize(distillationInput.choosedPlant.harvestDate)
+              )
             : "",
           buyDate: distillationInput.choosedPlant.buyDate
-            ? formatDate(distillationInput.choosedPlant.buyDate)
+            ? formatDateToString(
+                DOMPurify.sanitize(distillationInput.choosedPlant.buyDate)
+              )
             : "",
         },
         weightForDistillation: distillationInput.weightForDistillation
@@ -163,6 +160,7 @@ const distillationResolvers = {
           : null,
         distillationTime: sanitizedDistillationTime,
       };
+
       // Filtering out null or empty string values
       const filteredData = filterData(sanitizedData);
 
@@ -177,6 +175,15 @@ const distillationResolvers = {
       }
     },
 
+    /**
+     * @async
+     * @function updateDistillation
+     * @description Updates an existing distillation and saves it to the database.
+     * @param {Object} _ - Unused.
+     * @param {Object} id - ID of the distillation to update.
+     * @param {Object} distillationInput - Input data for the distillation update.
+     * @returns {Promise<Object>} The updated distillation.
+     */
     updateDistillation: async (_, { id, distillationInput }) => {
       // Sanitizing and filtering the nested input object
       const sanitizedDistillationTime = distillationInput.distillationTime
@@ -215,12 +222,16 @@ const distillationResolvers = {
                 )
               )
             : null,
-          harvestDate: DOMPurify.sanitize(
-            distillationInput.choosedPlant.harvestDate || ""
-          ),
-          buyDate: DOMPurify.sanitize(
-            distillationInput.choosedPlant.buyDate || ""
-          ),
+          harvestDate: distillationInput.choosedPlant.harvestDate
+            ? formatDateToString(
+                DOMPurify.sanitize(distillationInput.choosedPlant.harvestDate)
+              )
+            : "",
+          buyDate: distillationInput.choosedPlant.buyDate
+            ? formatDateToString(
+                DOMPurify.sanitize(distillationInput.choosedPlant.buyDate)
+              )
+            : "",
         },
         weightForDistillation: distillationInput.weightForDistillation
           ? Number(DOMPurify.sanitize(distillationInput.weightForDistillation))
@@ -251,6 +262,7 @@ const distillationResolvers = {
           : null,
         distillationTime: sanitizedDistillationTime,
       };
+
       // Filtering out null or empty string values
       const filteredData = filterData(sanitizedData);
 
@@ -264,7 +276,7 @@ const distillationResolvers = {
         );
         return updatedDistillation;
       } catch (error) {
-        throw new Error("Distillation not found");
+        throw new Error("Failed to update distillation");
       }
     },
 
@@ -280,5 +292,4 @@ const distillationResolvers = {
   },
 };
 
-// Exporting the distillation resolvers
 module.exports = distillationResolvers;

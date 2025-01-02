@@ -5,4 +5,9 @@ const formatDate = (dateString) => {
   return format(date, "dd-MM-yyyy");
 };
 
-module.exports = formatDate;
+const formatDateToString = (dateString) => {
+  const date = new Date(dateString);
+  return date.toString();
+};
+
+module.exports = { formatDate, formatDateToString };

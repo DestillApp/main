@@ -10,7 +10,7 @@ const Plant = require("../../database/plant");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
-const formatDate = require("../../util/dateformater");
+const { formatDate }= require("../../util/dateformater");
 
 // Utility function to filter data
 function filterPlantData(data) {
