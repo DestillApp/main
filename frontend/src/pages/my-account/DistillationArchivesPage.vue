@@ -170,6 +170,7 @@ export default {
               "distilledPlant.plantPart",
             ],
             name: name,
+            formatDates: true,
             page: page.value,
             limit: archivesPerPage.value,
           },
