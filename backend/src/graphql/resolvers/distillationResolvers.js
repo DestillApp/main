@@ -11,6 +11,7 @@ const Distillation = require("../../database/distillation");
 const DOMPurify = require("../../util/sanitizer");
 const formatDate = require("../../util/dateformater");
 const { filterData } = require("../../util/dataformating");
+const { format } = require("date-fns");
 
 const distillationResolvers = {
   Query: {
@@ -105,6 +106,12 @@ const distillationResolvers = {
           }
         : null;
 
+      // Function to format date
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toString();
+      };
+
       // Sanitizing the input data
       const sanitizedData = {
         choosedPlant: {
@@ -120,12 +127,12 @@ const distillationResolvers = {
                 )
               )
             : null,
-          harvestDate: DOMPurify.sanitize(
-            distillationInput.choosedPlant.harvestDate || ""
-          ),
-          buyDate: DOMPurify.sanitize(
-            distillationInput.choosedPlant.buyDate || ""
-          ),
+          harvestDate: distillationInput.choosedPlant.harvestDate
+            ? formatDate(distillationInput.choosedPlant.harvestDate)
+            : "",
+          buyDate: distillationInput.choosedPlant.buyDate
+            ? formatDate(distillationInput.choosedPlant.buyDate)
+            : "",
         },
         weightForDistillation: distillationInput.weightForDistillation
           ? Number(DOMPurify.sanitize(distillationInput.weightForDistillation))
@@ -166,7 +173,7 @@ const distillationResolvers = {
         const result = await distillation.save();
         return result;
       } catch (err) {
-        throw new Error("Failed to create plant");
+        throw new Error("Failed to create distillation");
       }
     },
 
