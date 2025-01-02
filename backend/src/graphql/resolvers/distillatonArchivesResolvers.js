@@ -8,7 +8,7 @@
 const DistillationArchives = require("../../database/distillationArchives");
 
 const { filterData } = require("../../util/dataformating");
-// const { formatDate } = require("../../util/dateformater");
+const { formatDate } = require("../../util/dateformater");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
@@ -21,7 +21,7 @@ const distillationArchivesResolvers = {
      * @description Fetches all distillation archives from the database.
      * @returns {Promise<Array>} Array of distillation archives.
      */
-    getDistillationArchives: async (_, { fields, name }) => {
+    getDistillationArchives: async (_, { fields, name, formatDates }) => {
       try {
         // Build a projection object based on the fields argument
         const projection = {};
@@ -50,11 +50,23 @@ const distillationArchivesResolvers = {
           const formattedArchive = { ...archive._doc }; // For Mongoose
 
           // Format specific date fields if needed
-          // if (formattedArchive.distillationData.distillationDate) {
-          //   formattedArchive.distillationData.distillationDate = formatDate(
-          //     formattedArchive.distillationData.distillationDate
-          //   );
-          // }
+          if (formatDates) {
+            if (formattedArchive.distillationData.distillationDate) {
+              formattedArchive.distillationData.distillationDate = formatDate(
+                formattedArchive.distillationData.distillationDate
+              );
+            }
+            if (formattedArchive.distilledPlant.plantBuyDate) {
+              formattedArchive.distilledPlant.plantBuyDate = formatDate(
+                formattedArchive.distilledPlant.plantBuyDate
+              );
+            }
+            if (formattedArchive.distilledPlant.harvestDate) {
+              formattedArchive.distilledPlant.harvestDate = formatDate(
+                formattedArchive.distilledPlant.harvestDate
+              );
+            }
+          }
 
           return formattedArchive;
         });
@@ -161,9 +173,14 @@ const distillationArchivesResolvers = {
           distillationType: DOMPurify.sanitize(
             distillationArchiveInput.distillationData.distillationType
           ),
-          distillationDate: DOMPurify.sanitize(
-            distillationArchiveInput.distillationData.distillationDate
-          ),
+          distillationDate: distillationArchiveInput.distillationData
+            .distillationDate
+            ? formatDateToString(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData.distillationDate
+                )
+              )
+            : "",
           distillationApparatus: DOMPurify.sanitize(
             distillationArchiveInput.distillationData.distillationApparatus
           ),
@@ -206,18 +223,26 @@ const distillationArchivesResolvers = {
           plantOrigin: DOMPurify.sanitize(
             distillationArchiveInput.distilledPlant.plantOrigin
           ),
-          plantBuyDate: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantBuyDate
-          ),
+          plantBuyDate: distillationArchiveInput.distilledPlant.plantBuyDate
+            ? formatDateToString(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distilledPlant.plantBuyDate
+                )
+              )
+            : "",
           plantProducer: DOMPurify.sanitize(
             distillationArchiveInput.distilledPlant.plantProducer
           ),
           countryOfOrigin: DOMPurify.sanitize(
             distillationArchiveInput.distilledPlant.countryOfOrigin
           ),
-          harvestDate: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.harvestDate
-          ),
+          harvestDate: distillationArchiveInput.distilledPlant.harvestDate
+            ? formatDateToString(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distilledPlant.harvestDate
+                )
+              )
+            : "",
           harvestTemperature: distillationArchiveInput.distilledPlant
             .harvestTemperature
             ? Number(
