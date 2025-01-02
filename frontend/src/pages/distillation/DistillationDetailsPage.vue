@@ -220,6 +220,7 @@ export default {
         isLoading.value = true;
         const { data } = await apolloClient.query({
           query: GET_DISTILLATION_BY_ID,
+          fetchPolicy: "network-only",
           variables: { id: distillationId.value, formatDates: true },
         });
         distillationDetails.value = data.getDistillationById;

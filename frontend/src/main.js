@@ -47,6 +47,12 @@ const apolloClient = new ApolloClient({
               return incoming;
             },
           },
+          getDistillationById: {
+            keyArgs: ["id", "formatDates"],
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
           getDistillations: {
             keyArgs: false,
             merge(_, incoming) {
