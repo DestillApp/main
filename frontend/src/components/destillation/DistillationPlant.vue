@@ -174,7 +174,6 @@
 
 <script>
 import { useStore } from "vuex";
-// import { useDate } from "vuetify";
 import { onMounted, computed, watch, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -220,8 +219,6 @@ export default {
     // Vuex store
     const store = useStore();
 
-    // const { format } = useDate();
-
     // Name of the vuex store module
     const storeName = "distillation";
 
@@ -232,8 +229,6 @@ export default {
     const plant = ref("");
     const plants = ref([]);
     const timeout = ref(null);
-
-    // const formattedDate = ref("");
 
     // Computed properties to get form data from Vuex store
     const formData = computed(
@@ -249,17 +244,19 @@ export default {
     // Format the plantBuyDate
     const formattedPlantBuyDate = computed(() => {
       const plantBuyDate = formData.value.choosedPlant.buyDate;
+      console.log("plantBuyDate", plantBuyDate);
       return plantBuyDate && !isNaN(new Date(plantBuyDate).getTime())
         ? format(new Date(plantBuyDate), "dd-MM-yyyy")
-        : null;
+        : plantBuyDate;
     });
 
     // Format the harvestDate
     const formattedHarvestDate = computed(() => {
       const plantHarvestDate = formData.value.choosedPlant.harvestDate;
+      console.log("harvestDate", plantHarvestDate);
       return plantHarvestDate && !isNaN(new Date(plantHarvestDate).getTime())
         ? format(new Date(plantHarvestDate), "dd-MM-yyyy")
-        : null;
+        : plantHarvestDate;
     });
 
     const comingFromRoute = computed(() => store.getters.comingFromRoute);
@@ -292,7 +289,6 @@ export default {
     // Fetch initial data from local storage on component mount
     onMounted(async () => {
       console.log(route.params.id);
-      console.log("formated!", formattedPlantBuyDate.value);
       if (comingFromRoute.value) {
         if (route.params.id) {
           const plantData = await getPlantData();
@@ -314,15 +310,14 @@ export default {
           });
           store.dispatch("distillation/setChoosedPlant", {
             key: "harvestDate",
-            value: plantData.harvestDate,
+            value: plantData.harvestDate ? format(new Date(plantData.harvestDate), "dd-MM-yyyy") : "",
           });
           store.dispatch("distillation/setChoosedPlant", {
             key: "buyDate",
-            value: plantData.plantBuyDate,
+            value: plantData.plantBuyDate ? format(new Date(plantData.plantBuyDate), "dd-MM-yyyy") : "",
           });
           plant.value = formData.value.choosedPlant.name;
           console.log("PLANT DATA", formData.value);
-          console.log("formated!", formattedPlantBuyDate.value);
         } else {
           return;
         }
@@ -339,7 +334,6 @@ export default {
         fetchData("weightAfterSoaking", false);
         fetchData("isPlantShredded", false);
         plant.value = formData.value.choosedPlant.name;
-        console.log("formated!", formattedPlantBuyDate.value);
       }
     });
 
@@ -363,17 +357,6 @@ export default {
      * @param {string} input - The input identifier triggering the event.
      */
     const setPlant = (value, input) => {
-      // const formatDate = (dateString) => {
-      //   if (!dateString) return null;
-      //   const date = new Date(dateString);
-      //   return date.toString();
-      // };
-
-      // const buy = formatDate(value.plantBuyDate);
-      // const harvest = formatDate(value.harvestDate);
-      // console.log("buy", buy);
-      // console.log("harvest", harvest);
-
       setPlantState("id", value._id);
       setPlantState("name", value.plantName);
       setPlantState("part", value.plantPart);
