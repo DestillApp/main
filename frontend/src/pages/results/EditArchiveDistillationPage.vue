@@ -58,7 +58,7 @@ import store from "@/store/index";
 import { useStore } from "vuex";
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useApolloClient, useMutation } from "@vue/apollo-composable";
-import { useRoute, onBeforeRouteLeave } from "vue-router";
+import { useRoute, onBeforeRouteLeave, useRouter } from "vue-router";
 import DOMPurify from "dompurify";
 
 /**
@@ -87,7 +87,7 @@ export default {
     const store = useStore();
 
     // Router object for navigation
-    // const router = useRouter();
+    const router = useRouter();
     const route = useRoute();
 
     // Reactive reference to store the distillation ID and page number from the route
@@ -276,7 +276,7 @@ export default {
       UPDATE_DISTILLATION_ARCHIVE
     );
 
-    const editDistillationArchive = async () => {
+    const editDistillationArchiveForm = async () => {
       // Validate the form
       console.log("distillationForm", distillationForm.value);
       isFormValid.value = editArchiveDistillationFormValidation(distillationForm.value);
@@ -360,6 +360,22 @@ export default {
         console.log(isFormValid.value);
         console.log("invalid form!");
         return;
+      }
+    };
+
+    const editDistillationArchive = async () => {
+      try {
+        await editDistillationArchiveForm();
+        if (!isFormValid.value) {
+          return;
+        } else {
+          router.push({
+            name: "DistillationArchivesPage",
+            params: { page: 1 },
+          });
+        }
+      } catch (error) {
+        console.error("Error editing distillation archive:", error);
       }
     };
 
