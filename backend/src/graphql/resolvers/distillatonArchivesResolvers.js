@@ -305,6 +305,187 @@ const distillationArchivesResolvers = {
       }
     },
 
+    /**
+     * @async
+     * @function updateDistillationArchive
+     * @description Updates an existing distillation archive and saves it to the database.
+     * @param {Object} _ - Unused.
+     * @param {Object} id - ID of the distillation archive to update.
+     * @param {Object} distillationArchiveInput - Input data for the distillation archive update.
+     * @returns {Promise<Object>} The updated distillation archive.
+     */
+    updateDistillationArchive: async (_, { id, distillationArchiveInput }) => {
+      // Sanitizing and filtering the nested input object
+      const sanitizedDistillationTime = distillationArchiveInput.distillationData.distillationTime
+        ? {
+            distillationHours: distillationArchiveInput.distillationData.distillationTime.distillationHours
+              ? Number(
+                  DOMPurify.sanitize(
+                    distillationArchiveInput.distillationData.distillationTime.distillationHours
+                  )
+                )
+              : null,
+            distillationMinutes: distillationArchiveInput.distillationData.distillationTime.distillationMinutes
+              ? Number(
+                  DOMPurify.sanitize(
+                    distillationArchiveInput.distillationData.distillationTime.distillationMinutes
+                  )
+                )
+              : null,
+          }
+        : null;
+
+      // Sanitizing the input data
+      const sanitizedData = {
+        oilAmount: distillationArchiveInput.oilAmount
+          ? Number(DOMPurify.sanitize(distillationArchiveInput.oilAmount))
+          : null,
+        hydrosolAmount: distillationArchiveInput.hydrosolAmount
+          ? Number(DOMPurify.sanitize(distillationArchiveInput.hydrosolAmount))
+          : null,
+        hydrosolpH: distillationArchiveInput.hydrosolpH
+          ? Number(DOMPurify.sanitize(distillationArchiveInput.hydrosolpH))
+          : null,
+        oilDescription: DOMPurify.sanitize(
+          distillationArchiveInput.oilDescription
+        ),
+        hydrosolDescription: DOMPurify.sanitize(
+          distillationArchiveInput.hydrosolDescription
+        ),
+        distillationData: {
+          weightForDistillation: distillationArchiveInput.distillationData.weightForDistillation
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData.weightForDistillation
+                )
+              )
+            : null,
+          isPlantSoaked: Boolean(
+            DOMPurify.sanitize(
+              distillationArchiveInput.distillationData.isPlantSoaked
+            )
+          ),
+          soakingTime: distillationArchiveInput.distillationData.soakingTime
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData.soakingTime
+                )
+              )
+            : null,
+          weightAfterSoaking: distillationArchiveInput.distillationData.weightAfterSoaking
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData.weightAfterSoaking
+                )
+              )
+            : null,
+          isPlantShredded: Boolean(
+            DOMPurify.sanitize(
+              distillationArchiveInput.distillationData.isPlantShredded
+            )
+          ),
+          distillationType: DOMPurify.sanitize(
+            distillationArchiveInput.distillationData.distillationType
+          ),
+          distillationDate: distillationArchiveInput.distillationData.distillationDate
+            ? formatDateToString(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData.distillationDate
+                )
+              )
+            : "",
+          distillationApparatus: DOMPurify.sanitize(
+            distillationArchiveInput.distillationData.distillationApparatus
+          ),
+          waterForDistillation: distillationArchiveInput.distillationData.waterForDistillation
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distillationData.waterForDistillation
+                )
+              )
+            : null,
+          distillationTime: sanitizedDistillationTime,
+        },
+        distilledPlant: {
+          plantName: DOMPurify.sanitize(
+            distillationArchiveInput.distilledPlant.plantName
+          ),
+          plantPart: DOMPurify.sanitize(
+            distillationArchiveInput.distilledPlant.plantPart
+          ),
+          plantOrigin: DOMPurify.sanitize(
+            distillationArchiveInput.distilledPlant.plantOrigin
+          ),
+          plantBuyDate: distillationArchiveInput.distilledPlant.plantBuyDate
+            ? formatDateToString(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distilledPlant.plantBuyDate
+                )
+              )
+            : "",
+          plantProducer: DOMPurify.sanitize(
+            distillationArchiveInput.distilledPlant.plantProducer
+          ),
+          countryOfOrigin: DOMPurify.sanitize(
+            distillationArchiveInput.distilledPlant.countryOfOrigin
+          ),
+          harvestDate: distillationArchiveInput.distilledPlant.harvestDate
+            ? formatDateToString(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distilledPlant.harvestDate
+                )
+              )
+            : "",
+          harvestTemperature: distillationArchiveInput.distilledPlant.harvestTemperature
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distilledPlant.harvestTemperature
+                )
+              )
+            : null,
+          harvestStartTime: DOMPurify.sanitize(
+            distillationArchiveInput.distilledPlant.harvestStartTime
+          ),
+          harvestEndTime: DOMPurify.sanitize(
+            distillationArchiveInput.distilledPlant.harvestEndTime
+          ),
+          plantState: DOMPurify.sanitize(
+            distillationArchiveInput.distilledPlant.plantState
+          ),
+          dryingTime: distillationArchiveInput.distilledPlant.dryingTime
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distilledPlant.dryingTime
+                )
+              )
+            : null,
+          plantAge: distillationArchiveInput.distilledPlant.plantAge
+            ? Number(
+                DOMPurify.sanitize(
+                  distillationArchiveInput.distilledPlant.plantAge
+                )
+              )
+            : null,
+        },
+      };
+
+      // Filtering out null or empty string values
+      const filteredData = filterData(sanitizedData);
+
+      try {
+        const updatedDistillationArchive = await DistillationArchives.findByIdAndUpdate(
+          id,
+          filteredData,
+          {
+            new: true,
+          }
+        );
+        return updatedDistillationArchive;
+      } catch (error) {
+        throw new Error("Failed to update distillation archive");
+      }
+    },
+
     deleteDistillationArchive: async (_, { id }) => {
       try {
         await DistillationArchives.findByIdAndDelete(id);
