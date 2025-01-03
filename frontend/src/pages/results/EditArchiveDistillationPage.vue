@@ -43,7 +43,6 @@
   </base-card>
 </template>
 
-//CHECK THE VALIDATION OF THE FORM
 <script>
 import ResultsPlant from "../../components/results/ResultsPlant.vue";
 import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
@@ -53,14 +52,14 @@ import ResultsDescriptions from "@/components/results/ResultsDescriptions.vue";
 import { editArchiveDistillationFormValidation } from "@/helpers/formsValidation";
 import { initialResultsForm } from "@/helpers/formsInitialState";
 import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
+import { UPDATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import store from "@/store/index";
 
-import {  } from "@/graphql/queries/results";
 import { useStore } from "vuex";
 import { ref, computed, onMounted, nextTick } from "vue";
-import { useApolloClient } from "@vue/apollo-composable";
+import { useApolloClient, useMutation } from "@vue/apollo-composable";
 import { useRoute, onBeforeRouteLeave } from "vue-router";
-// import DOMPurify from "dompurify";
+import DOMPurify from "dompurify";
 
 /**
  * @module EditArchiveDistillationPage
@@ -272,16 +271,87 @@ export default {
       console.log("vuex form", distillationForm.value);
     });
 
+    // Using GraphQL mutation for updating the distillation archive
+    const { mutate: updateDistillationArchive } = useMutation(
+      UPDATE_DISTILLATION_ARCHIVE
+    );
+
     const editDistillationArchive = async () => {
       // Validate the form
       console.log("distillationForm", distillationForm.value);
       isFormValid.value = editArchiveDistillationFormValidation(distillationForm.value);
       if (isFormValid.value) {
         try {
-          // Logic for editing distillation archive will go here
-          console.log(
-            "Form is valid, proceed with editing distillation archive"
-          );
+          const form = distillationForm.value;
+
+          const distillationArchiveFormData = {
+            oilAmount: form.oilAmount
+              ? Number(DOMPurify.sanitize(form.oilAmount))
+              : null,
+            hydrosolAmount: form.hydrosolAmount
+              ? Number(DOMPurify.sanitize(form.hydrosolAmount))
+              : null,
+            hydrosolpH: form.hydrosolpH
+              ? Number(DOMPurify.sanitize(form.hydrosolpH))
+              : null,
+            oilDescription: DOMPurify.sanitize(form.oilDescription),
+            hydrosolDescription: DOMPurify.sanitize(form.hydrosolDescription),
+            distillationData: {
+              weightForDistillation: form.distillationData.weightForDistillation
+                ? Number(DOMPurify.sanitize(form.distillationData.weightForDistillation))
+                : null,
+              isPlantSoaked: Boolean(DOMPurify.sanitize(form.distillationData.isPlantSoaked)),
+              soakingTime: form.distillationData.soakingTime
+                ? Number(DOMPurify.sanitize(form.distillationData.soakingTime))
+                : null,
+              weightAfterSoaking: form.distillationData.weightAfterSoaking
+                ? Number(DOMPurify.sanitize(form.distillationData.weightAfterSoaking))
+                : null,
+              isPlantShredded: Boolean(DOMPurify.sanitize(form.distillationData.isPlantShredded)),
+              distillationType: DOMPurify.sanitize(form.distillationData.distillationType),
+              distillationDate: DOMPurify.sanitize(form.distillationData.distillationDate),
+              distillationApparatus: DOMPurify.sanitize(form.distillationData.distillationApparatus),
+              waterForDistillation: form.distillationData.waterForDistillation
+                ? Number(DOMPurify.sanitize(form.distillationData.waterForDistillation))
+                : null,
+              distillationTime: {
+                distillationHours: form.distillationData.distillationTime.distillationHours
+                  ? Number(DOMPurify.sanitize(form.distillationData.distillationTime.distillationHours))
+                  : null,
+                distillationMinutes: form.distillationData.distillationTime.distillationMinutes
+                  ? Number(DOMPurify.sanitize(form.distillationData.distillationTime.distillationMinutes))
+                  : null,
+              },
+            },
+            distilledPlant: {
+              plantName: DOMPurify.sanitize(form.distilledPlant.plantName),
+              plantPart: DOMPurify.sanitize(form.distilledPlant.plantPart),
+              plantOrigin: DOMPurify.sanitize(form.distilledPlant.plantOrigin),
+              plantBuyDate: DOMPurify.sanitize(form.distilledPlant.plantBuyDate),
+              plantProducer: DOMPurify.sanitize(form.distilledPlant.plantProducer),
+              countryOfOrigin: DOMPurify.sanitize(form.distilledPlant.countryOfOrigin),
+              harvestDate: DOMPurify.sanitize(form.distilledPlant.harvestDate),
+              harvestTemperature: form.distilledPlant.harvestTemperature
+                ? Number(DOMPurify.sanitize(form.distilledPlant.harvestTemperature))
+                : null,
+              harvestStartTime: DOMPurify.sanitize(form.distilledPlant.harvestStartTime),
+              harvestEndTime: DOMPurify.sanitize(form.distilledPlant.harvestEndTime),
+              plantState: DOMPurify.sanitize(form.distilledPlant.plantState),
+              dryingTime: form.distilledPlant.dryingTime
+                ? Number(DOMPurify.sanitize(form.distilledPlant.dryingTime))
+                : null,
+              plantAge: form.distilledPlant.plantAge
+                ? Number(DOMPurify.sanitize(form.distilledPlant.plantAge))
+                : null,
+            },
+          };
+
+          // Send the GraphQL mutation to update the distillation archive
+          const { data } = await updateDistillationArchive({
+            id: archiveId.value,
+            input: distillationArchiveFormData,
+          });
+          console.log("Updated distillation archive:", data.updateDistillationArchive);
         } catch (error) {
           console.log("error", isFormValid.value);
           console.error("Error editing form", error);

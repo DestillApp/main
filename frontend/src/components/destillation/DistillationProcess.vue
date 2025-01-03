@@ -199,7 +199,7 @@ export default {
      */
     const setValue = (value, input) => {
       if (props.isEditing) {
-        store.dispatch("results/setValue", {
+        store.dispatch("results/setDistillationDataValue", {
           input: input,
           value: value,
         });

@@ -97,6 +97,7 @@ import {
   setIntegerNumber,
   setKeyboardIntegerNumber,
 } from "@/helpers/formatHelpers.js";
+import DOMPurify from "dompurify";
 
 /**
  * @component DistillationData
@@ -161,17 +162,34 @@ export default {
 
     // Using the format function to handle integer input for water volume
     const setInteger = (value, id, storeName) => {
-      setIntegerNumber(store, value, id, storeName);
+      const sanitizedValue = Number(DOMPurify.sanitize(value));
+      if (!isNaN(sanitizedValue) && sanitizedValue >= 0) {
+        setIntegerNumber(store, sanitizedValue, id, storeName);
+      } else {
+        setIntegerNumber(store, null, id, storeName);
+      }
     };
 
     const saveTime = (value, key) => {
-      if (storeName.value === "distillation") {
-        store.dispatch("distillation/setDistillationTime", { key, value });
+      const sanitizedValue = Number(DOMPurify.sanitize(value));
+      if (!isNaN(sanitizedValue) && sanitizedValue >= 0) {
+        if (storeName.value === "distillation") {
+          store.dispatch("distillation/setDistillationTime", { key, value: sanitizedValue });
+        } else {
+          store.dispatch("results/setDistillationTime", {
+            input: key,
+            value: sanitizedValue,
+          });
+        }
       } else {
-        store.dispatch("results/setDistillationTime", {
-          input: key,
-          value,
-        });
+        if (storeName.value === "distillation") {
+          store.dispatch("distillation/setDistillationTime", { key, value: null });
+        } else {
+          store.dispatch("results/setDistillationTime", {
+            input: key,
+            value: null,
+          });
+        }
       }
     };
 
