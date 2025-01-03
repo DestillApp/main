@@ -65,6 +65,12 @@ const apolloClient = new ApolloClient({
               return incoming;
             },
           },
+          getArchiveDistillationById: {
+            keyArgs: ["id", "formatDistillDate"],
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
         },
       },
     },

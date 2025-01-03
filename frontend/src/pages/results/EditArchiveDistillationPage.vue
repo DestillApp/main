@@ -43,6 +43,7 @@
   </base-card>
 </template>
 
+//CHECK THE VALIDATION OF THE FORM
 <script>
 import ResultsPlant from "../../components/results/ResultsPlant.vue";
 import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
@@ -50,14 +51,15 @@ import DistillationData from "../../components/destillation/DistillationData.vue
 import ResultsData from "@/components/results/ResultsData.vue";
 import ResultsDescriptions from "@/components/results/ResultsDescriptions.vue";
 import { distillationFormValidation } from "@/helpers/formsValidation";
+import { initialResultsForm } from "@/helpers/formsInitialState";
 import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
 import store from "@/store/index";
 
 import {  } from "@/graphql/queries/results";
 import { useStore } from "vuex";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { useRoute } from "vue-router";
+import { useRoute, onBeforeRouteLeave } from "vue-router";
 // import DOMPurify from "dompurify";
 
 /**
@@ -289,6 +291,30 @@ export default {
         return;
       }
     };
+
+    // Navigation guard that resets the form data in Vuex state and local storage before navigating away from the route.
+    onBeforeRouteLeave(async (to, from, next) => {
+      if (to.path !== from.path) {
+        // Dispatch Vuex action to reset the form in store
+        store.dispatch("results/setResultsForm");
+        // Wait for the next tick to ensure state updates are complete
+        await nextTick();
+        // Removing results form value from local storage by its key
+        for (const key in initialResultsForm) {
+          localStorage.removeItem(key);
+        }
+        for (const key in initialResultsForm.distillationData) {
+          localStorage.removeItem(key);
+        }
+        for (const key in initialResultsForm.distillationData.distillationTime) {
+          localStorage.removeItem(key);
+        }
+        for (const key in initialResultsForm.distilledPlant) {
+          localStorage.removeItem(key);
+        }
+      }
+      next();
+    });
 
     return {
       editDistillationArchive,
