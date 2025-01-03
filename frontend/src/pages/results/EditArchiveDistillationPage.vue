@@ -50,7 +50,7 @@ import DistillationProcess from "../../components/destillation/DistillationProce
 import DistillationData from "../../components/destillation/DistillationData.vue";
 import ResultsData from "@/components/results/ResultsData.vue";
 import ResultsDescriptions from "@/components/results/ResultsDescriptions.vue";
-import { distillationFormValidation } from "@/helpers/formsValidation";
+import { editArchiveDistillationFormValidation } from "@/helpers/formsValidation";
 import { initialResultsForm } from "@/helpers/formsInitialState";
 import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
 import store from "@/store/index";
@@ -274,7 +274,8 @@ export default {
 
     const editDistillationArchive = async () => {
       // Validate the form
-      isFormValid.value = distillationFormValidation(distillationForm.value);
+      console.log("distillationForm", distillationForm.value);
+      isFormValid.value = editArchiveDistillationFormValidation(distillationForm.value);
       if (isFormValid.value) {
         try {
           // Logic for editing distillation archive will go here

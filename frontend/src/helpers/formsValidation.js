@@ -119,3 +119,50 @@ export const resultsFormValidation = (form) => {
 
   return isFormValid;
 };
+
+/**
+ * @function editArchiveDistillationFormValidation
+ * @description Function to validate the edit archive distillation form data
+ * @param {Object} form - The edit archive distillation form data object
+ * @returns {boolean} Returns true if the form is valid, otherwise false
+ */
+export const editArchiveDistillationFormValidation = (form) => {
+  let isFormValid = true;
+
+  // Validate required fields for distillation data
+  if (
+    form.distillationData.weightForDistillation === null ||
+    form.distillationData.distillationType === "" ||
+    form.distillationData.distillationDate === "" ||
+    form.distillationData.distillationApparatus === "" ||
+    form.distillationData.waterForDistillation === null
+  ) {
+    isFormValid = false;
+  }
+
+  // Validate distillation time
+  if (
+    !form.distillationData.distillationTime.distillationHours &&
+    !form.distillationData.distillationTime.distillationMinutes
+  ) {
+    isFormValid = false;
+  }
+
+  // Validate required fields for results data
+  if (
+    form.oilAmount === null ||
+    form.hydrosolAmount === null ||
+    form.hydrosolpH === null ||
+    form.oilDescription === "" ||
+    form.hydrosolDescription === ""
+  ) {
+    isFormValid = false;
+  }
+
+  // Additional validation for pH value
+  if (form.hydrosolpH < 0 || form.hydrosolpH > 14) {
+    isFormValid = false;
+  }
+
+  return isFormValid;
+};
