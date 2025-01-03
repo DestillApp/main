@@ -21,8 +21,8 @@ export const GET_DISTILLATION_ARCHIVES = gql`
 
 // GraphQL query to fetch archive distillation details by ID
 export const GET_ARCHIVE_DISTILLATION_BY_ID = gql`
-  query GetArchiveDistillationById($id: ID!, $formatDates: Boolean!) {
-    getArchiveDistillationById(id: $id, formatDates: $formatDates) {
+  query GetArchiveDistillationById($id: ID!, $formatDistillDate: Boolean!) {
+    getArchiveDistillationById(id: $id, formatDistillDate: $formatDistillDate) {
       _id
       oilAmount
       hydrosolAmount

@@ -119,7 +119,7 @@ export default {
         // Make a query to fetch distillation details by distillation ID from archive
         const { data } = await apolloClient.query({
           query: GET_ARCHIVE_DISTILLATION_BY_ID,
-          variables: { id: archiveId.value, formatDates: true },
+          variables: { id: archiveId.value, formatDistillDate: false },
         });
         // Store the fetched distillation details in the distillationDetails reference
         distillationDetails.value = data.getArchiveDistillationById;
