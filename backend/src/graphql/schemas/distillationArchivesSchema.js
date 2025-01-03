@@ -104,7 +104,7 @@ const distillationArchivesSchema = gql`
     ): [DistillationArchive]
     getArchiveDistillationById(
       id: ID!
-      formatDates: Boolean!
+      formatDistillDate: Boolean!
     ): DistillationArchive
   }
 

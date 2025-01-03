@@ -8,7 +8,7 @@
 const DistillationArchives = require("../../database/distillationArchives");
 
 const { filterData } = require("../../util/dataformating");
-const { formatDate } = require("../../util/dateformater");
+const { formatDate, formatDateToString } = require("../../util/dateformater");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
@@ -76,27 +76,41 @@ const distillationArchivesResolvers = {
         );
       }
     },
+
     /**
      * @async
      * @function getArchiveDistillationById
      * @description Fetches a distillation archive by ID from the database.
      * @param {Object} _ - Unused.
      * @param {Object} id - ID of the distillation archive to fetch.
+     * @param {Boolean} formatDates - Whether to format the date fields.
      * @returns {Promise<Object>} The fetched distillation archive.
      */
-    getArchiveDistillationById: async (_, { id, formatDates = false }) => {
+    getArchiveDistillationById: async (_, { id, formatDistillDate }) => {
       try {
         const archive = await DistillationArchives.findById(id);
         if (!archive) {
           throw new Error("Distillation archive not found");
         }
 
-        console.log(formatDates);
+        if (archive.distilledPlant.plantBuyDate) {
+          archive.distilledPlant.plantBuyDate = formatDate(
+            archive.distilledPlant.plantBuyDate
+          );
+        }
+        if (archive.distilledPlant.harvestDate) {
+          archive.distilledPlant.harvestDate = formatDate(
+            archive.distilledPlant.harvestDate
+          );
+        }
 
-        //Format specific date fields if needed
-        if (formatDates && archive.distillationData.distillationDate) {
-          const date = new Date(archive.distillationData.distillationDate);
-          archive.distillationData.distillationDate = date.toString();
+        // Format specific date fields if needed
+        if (formatDistillDate) {
+          if (archive.distillationData.distillationDate) {
+            archive.distillationData.distillationDate = formatDate(
+              archive.distillationData.distillationDate
+            );
+          }
         }
 
         return archive;
