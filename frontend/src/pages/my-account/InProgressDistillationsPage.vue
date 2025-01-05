@@ -11,6 +11,12 @@
       :width="6"
       indeterminate
     ></v-progress-circular>
+    <!-- Search item component for searching distillations by name -->
+    <base-search-item
+      label="Szukaj destylacji po nazwie rośliny"
+      @search="handleSearch"
+      @clear="handleSearch"
+    ></base-search-item>
     <!-- Distillation list -->
     <ul
       v-if="!isLoading && distillationsList.length >= 1"
@@ -113,20 +119,25 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
 import { scrollToTop } from "@/helpers/displayHelpers";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
+import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
 export default {
   name: "InProgressDistillationsPage",
-  components: { DeleteItemModal, BaseButton },
+  components: { DeleteItemModal, BaseButton, BaseSearchItem },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
+
+    // Vuex store instance
+    const store = useStore();
 
     // Route object to access route params
     const route = useRoute();
@@ -157,13 +168,16 @@ export default {
       return Math.ceil(distillationsAmount.value / distillationsPerPage.value);
     });
 
+    // Computed property to get searchQuery from Vuex store
+    const searchQuery = computed(() => store.getters.searchQuery);
+
     /**
      * @async
-     * @function fetchPlantList
-     * @description Fetch the list of plants from the GraphQL server.
+     * @function fetchDistillationList
+     * @description Fetch the list of distillations from the GraphQL server.
      * @returns {Promise<void>}
      */
-    const fetchDistillationList = async (name = null) => {
+    const fetchDistillationList = async (name) => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -200,9 +214,24 @@ export default {
       }
     };
 
+    /**
+     * @function handleSearch
+     * @description Handle the search query emitted from the BaseSearchItem component.
+     * @param {String} query - The search query.
+     */
+    const handleSearch = () => {
+      console.log("Search query from Vuex:", searchQuery.value);
+      fetchDistillationList(searchQuery.value);
+    };
+
     // Fetch distillation list when the component is mounted
     onMounted(() => {
-      fetchDistillationList();
+      store.dispatch("fetchSearchQueryFromLocalStorage");
+      if (searchQuery.value) {
+        fetchDistillationList(searchQuery.value);
+      } else {
+        fetchDistillationList();
+      }
     });
 
     // Watch for changes in the page number and refetch plant list.
@@ -332,11 +361,13 @@ export default {
       page,
       distillationsPerPage,
       paginationLength,
+      searchQuery,
       openDeleteModal,
       closeDeleteModal,
       closeAskModal,
       deleteDistillation,
       handleYes,
+      handleSearch,
     };
   },
 };
@@ -363,7 +394,7 @@ export default {
 }
 
 .distillation_container {
-    display: flex;
+  display: flex;
   flex-direction: row;
 }
 
