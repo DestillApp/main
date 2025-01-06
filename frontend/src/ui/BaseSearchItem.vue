@@ -16,9 +16,10 @@
         'search_icon',
         {
           'search_icon--disabled': !inputValue,
-          'search_icon--plant': !inputValue && isPlantInput,
+          'search_icon--plant_disabled': !inputValue && isPlantInput,
           'search_icon--distillation_disabled':
             !inputValue && isDistillationInput,
+            'search_icon--results_disabled': !inputValue && isResultsInput,
           'search_icon--results': !inputValue && isResultsInput,
           'search_icon--plant': isPlantInput,
           'search_icon--distillation': isDistillationInput,

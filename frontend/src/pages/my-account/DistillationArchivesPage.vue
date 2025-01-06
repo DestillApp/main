@@ -2,6 +2,13 @@
   <div>
     <!-- Title for the distillation archives list -->
     <h3 class="distillation_archives_list--title">Archiwum destylacji</h3>
+    <!-- Search item component for searching distillation archives by name -->
+    <base-search-item
+      label="Szukaj destylacji po nazwie rośliny"
+      inputColor="results"
+      @search="handleSearch"
+      @clear="handleSearch"
+    ></base-search-item>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
@@ -102,21 +109,27 @@
 <script>
 import { ref, computed, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
+import { useStore } from "vuex";
 import { scrollToTop } from "@/helpers/displayHelpers";
 import { GET_DISTILLATION_ARCHIVES } from "@/graphql/queries/results.js";
 import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
+import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 
 export default {
   name: "DistillationArchivesPage",
   components: {
     DeleteItemModal,
+    BaseSearchItem,
   },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
+
+    // Vuex store instance
+    const store = useStore();
 
     // Route object to access route params
     const route = useRoute();
@@ -147,13 +160,16 @@ export default {
       return Math.ceil(archivesAmount.value / archivesPerPage.value);
     });
 
+    // Computed property to get searchQuery from Vuex store
+    const searchQuery = computed(() => store.getters.searchQuery);
+
     /**
      * @async
      * @function fetchDistillationArchivesList
      * @description Fetch the list of distillation archives from the GraphQL server.
      * @returns {Promise<void>}
      */
-    const fetchDistillationArchivesList = async (name = null) => {
+    const fetchDistillationArchivesList = async (name) => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -195,9 +211,24 @@ export default {
       }
     };
 
+    /**
+     * @function handleSearch
+     * @description Handle the search query emitted from the BaseSearchItem component.
+     * @param {String} query - The search query.
+     */
+    const handleSearch = () => {
+      console.log("Search query from Vuex:", searchQuery.value);
+      fetchDistillationArchivesList(searchQuery.value);
+    };
+
     // Fetch distillation archives list when the component is mounted
     onMounted(() => {
-      fetchDistillationArchivesList();
+      store.dispatch("fetchSearchQueryFromLocalStorage");
+      if (searchQuery.value) {
+        fetchDistillationArchivesList(searchQuery.value);
+      } else {
+        fetchDistillationArchivesList();
+      }
     });
 
     // Watch for changes in the page number and refetch distillation archives list.
@@ -280,6 +311,15 @@ export default {
       }
     };
 
+    // Navigation guard to reset searchQuery in Vuex state and local storage
+    onBeforeRouteLeave((to, from, next) => {
+      if (to.path !== from.path) {
+        store.dispatch("updateSearchQuery", "");
+        localStorage.removeItem("searchQuery");
+      }
+      next();
+    });
+
     return {
       distillationArchivesList,
       isLoading,
@@ -291,9 +331,11 @@ export default {
       page,
       archivesPerPage,
       paginationLength,
+      searchQuery,
       openDeleteModal,
       closeDeleteModal,
       deleteDistillationArchive,
+      handleSearch,
     };
   },
 };

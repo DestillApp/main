@@ -4,6 +4,13 @@ added etc.... (?) // no docs
   <div>
     <!-- Title for the plant list -->
     <h3 class="plant_list--title">Magazyn surowców</h3>
+    <!-- Search item component for searching plants by name -->
+    <base-search-item
+      label="Szukaj surowca po nazwie"
+      inputColor="plant"
+      @search="handleSearch"
+      @clear="handleSearch"
+    ></base-search-item>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
@@ -88,10 +95,12 @@ added etc.... (?) // no docs
 <script>
 import { ref, onMounted, watch, computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
+import { useStore } from "vuex";
 
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
+import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
@@ -106,11 +115,14 @@ import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 export default {
   name: "PlantListPage",
-  components: { DeleteItemModal, BaseButton },
+  components: { DeleteItemModal, BaseButton, BaseSearchItem },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
+
+    // Vuex store instance
+    const store = useStore();
 
     // Route object to access route params
     const route = useRoute();
@@ -139,13 +151,16 @@ export default {
       return Math.ceil(plantsAmount.value / plantsPerPage.value);
     });
 
+    // Computed property to get searchQuery from Vuex store
+    const searchQuery = computed(() => store.getters.searchQuery);
+
     /**
      * @async
      * @function fetchPlantList
      * @description Fetch the list of plants from the GraphQL server.
      * @returns {Promise<void>}
      */
-    const fetchPlantList = async () => {
+    const fetchPlantList = async (name) => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -161,6 +176,7 @@ export default {
               "_id",
             ],
             formatDates: true,
+            name: name,
           },
         });
         plantsAmount.value = data.getPlants.length;
@@ -178,9 +194,24 @@ export default {
       }
     };
 
+    /**
+     * @function handleSearch
+     * @description Handle the search query emitted from the BaseSearchItem component.
+     * @param {String} query - The search query.
+     */
+    const handleSearch = () => {
+      console.log("Search query from Vuex:", searchQuery.value);
+      fetchPlantList(searchQuery.value);
+    };
+
     // Fetch plant list when the component is mounted
     onMounted(() => {
-      fetchPlantList();
+      store.dispatch("fetchSearchQueryFromLocalStorage");
+      if (searchQuery.value) {
+        fetchPlantList(searchQuery.value);
+      } else {
+        fetchPlantList();
+      }
     });
 
     // Watch for changes in the page number and refetch plant list.
@@ -256,6 +287,15 @@ export default {
       plantList.value = plantList.value.filter((plant) => plant._id !== id);
     };
 
+    // Navigation guard to reset searchQuery in Vuex state and local storage
+    onBeforeRouteLeave((to, from, next) => {
+      if (to.path !== from.path) {
+        store.dispatch("updateSearchQuery", "");
+        localStorage.removeItem("searchQuery");
+      }
+      next();
+    });
+
     return {
       plantList,
       isModalOpen,
@@ -266,9 +306,11 @@ export default {
       plantsPerPage,
       isLoading,
       paginationLength,
+      searchQuery,
       openDeleteModal,
       closeDeleteModal,
       deletePlant,
+      handleSearch,
     };
   },
 };
