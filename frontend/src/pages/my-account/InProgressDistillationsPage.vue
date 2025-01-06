@@ -3,6 +3,13 @@
   <div>
     <!-- Title for the distillation list -->
     <h3 class="distillation_list--title">Destylacje w toku</h3>
+    <!-- Search item component for searching distillations by name -->
+    <base-search-item
+      label="Szukaj destylacji po nazwie rośliny"
+      inputColor="distillation"
+      @search="handleSearch"
+      @clear="handleSearch"
+    ></base-search-item>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
@@ -11,12 +18,6 @@
       :width="6"
       indeterminate
     ></v-progress-circular>
-    <!-- Search item component for searching distillations by name -->
-    <base-search-item
-      label="Szukaj destylacji po nazwie rośliny"
-      @search="handleSearch"
-      @clear="handleSearch"
-    ></base-search-item>
     <!-- Distillation list -->
     <ul
       v-if="!isLoading && distillationsList.length >= 1"

@@ -6,13 +6,21 @@
       type="text"
       :label="label"
       @input="changeSearchQuery"
-      @keypress="handleKeyPress"
+      @keydown="handleKeyPress"
     >
     </base-text-input>
     <!-- Clickable icon for searching the items -->
     <svg-icon
-      v-if="!isSearchEmitted"
-      class="search_icon"
+     v-if="!isSearchEmitted"
+      :class="['search_icon', { 
+        'search_icon--disabled': !inputValue,
+        'search_icon--plant': !inputValue && isPlantInput,
+        'search_icon--distillation_disabled': !inputValue && isDistillationInput,
+        'search_icon--results': !inputValue && isResultsInput,
+        'search_icon--plant': isPlantInput,
+        'search_icon--distillation': isDistillationInput,
+        'search_icon--results': isResultsInput,
+       }]"
       type="mdi"
       :path="mdiMagnify"
       size="24"
@@ -20,7 +28,7 @@
     ></svg-icon>
     <!-- Clickable red cross icon for clearing the search -->
     <svg-icon
-      v-else
+      v-if="isSearchEmitted"
       class="clear_icon"
       type="mdi"
       :path="mdiClose"
@@ -40,12 +48,8 @@ import { useStore } from "vuex";
 export default {
   name: "BaseSearchItem",
   components: { BaseTextInput, SvgIcon },
-  props: {
-    label: {
-      type: String,
-      default: "Szukaj",
-    },
-  },
+  props: ["label", 'inputColor'],
+  emits: ["search", "clear"],
   setup(props, { emit }) {
     const store = useStore();
 
@@ -65,9 +69,11 @@ export default {
     };
 
     const emitSearchQuery = () => {
-      store.dispatch("updateSearchQuery", inputValue.value);
-      emit("search");
-      isSearchEmitted.value = true;
+      if (inputValue.value) {
+        store.dispatch("updateSearchQuery", inputValue.value);
+        emit("search");
+        isSearchEmitted.value = true;
+      }
     };
 
     const clearSearchQuery = () => {
@@ -81,12 +87,31 @@ export default {
       if (event.key === "Enter" && !isSearchEmitted.value) {
         emitSearchQuery();
       }
+      if (event.key === "Escape") {
+        console.log("ESCAPE PRESSED");
+        clearSearchQuery();
+      }
     };
 
+        // Computed property to determine if input is for plant
+        const isPlantInput = computed(() => {
+      return props.inputColor === "plant";
+    });
+
+    // Computed property to determine if input is for distillation
+    const isDistillationInput = computed(() => {
+      return props.inputColor === "distillation";
+    });
+
+    // Computed property to determine if input is for distillation
+    const isResultsInput = computed(() => {
+      return props.inputColor === "results";
+    });
+
     onMounted(() => {
-        store.dispatch("fetchSearchQueryFromLocalStorage");
+      store.dispatch("fetchSearchQueryFromLocalStorage");
       inputValue.value = searchQuery.value;
-      console.log('searchQuery.value', searchQuery.value);
+      console.log("searchQuery.value", searchQuery.value);
       console.log("INPUT IS MOUNTED");
     });
 
@@ -97,6 +122,9 @@ export default {
       emitSearchQuery,
       clearSearchQuery,
       handleKeyPress,
+      isPlantInput,
+      isDistillationInput,
+      isResultsInput,
       isSearchEmitted,
       mdiMagnify,
       mdiClose,
@@ -115,11 +143,58 @@ export default {
 
 .search_icon {
   cursor: pointer;
+}
+
+.search_icon--plant {
   color: var(--secondary-color);
 }
 
-.search_icon:hover {
+.search_icon--plant:hover {
   color: var(--primary-color);
+}
+
+.search_icon--distillation {
+  color: var(--secondary-color-distillation);
+}
+
+.search_icon--distillation:hover {
+  color: var(--primary-color-distillation);
+}
+
+.search_icon--results {
+  color: var(--secondary-color-results);
+}
+
+.search_icon--results:hover {
+  color: var(--primary-color-results);
+}
+
+.search_icon--disabled {
+  cursor: default;
+}
+
+.search_icon--plant_disabled {
+  color: var(--secondary-color);
+}
+
+.search_icon--plant_disabled:hover {
+  color: var(--secondary-color);
+}
+
+.search_icon--distillation_disabled {
+  color: var(--secondary-color-distillation);
+}
+
+.search_icon--distillation_disabled:hover {
+  color: var(--secondary-color-distillation);
+}
+
+.search_icon--results_disabled {
+  color: var(--secondary-color-results);
+}
+
+.search_icon--results_disabled:hover {
+  color: var(--secondary-color-results);
 }
 
 .clear_icon {
