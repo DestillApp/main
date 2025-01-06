@@ -1,6 +1,13 @@
 //no arch docs no code docs
 <template>
   <div>
+    <!-- List length settings component -->
+    <list-length-settings
+    class="distillation_list--settings"
+      title="ilość destylacji"
+      listColor="distillation"
+      @select-length="handleSelectLength"
+    ></list-length-settings>
     <!-- Title for the distillation list -->
     <h3 class="distillation_list--title">Destylacje w toku</h3>
     <!-- Search item component for searching distillations by name -->
@@ -125,13 +132,14 @@ import { scrollToTop } from "@/helpers/displayHelpers";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
+import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
 export default {
   name: "InProgressDistillationsPage",
-  components: { DeleteItemModal, BaseButton, BaseSearchItem },
+  components: { DeleteItemModal, BaseButton, BaseSearchItem, ListLengthSettings },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
@@ -222,6 +230,17 @@ export default {
      */
     const handleSearch = () => {
       console.log("Search query from Vuex:", searchQuery.value);
+      fetchDistillationList(searchQuery.value);
+    };
+
+    /**
+     * @function handleSelectLength
+     * @description Handle the selection of list length from the ListLengthSettings component.
+     * @param {Number} length - The selected list length.
+     */
+    const handleSelectLength = (length) => {
+      console.log("Selected length:", length);
+      distillationsPerPage.value = length;
       fetchDistillationList(searchQuery.value);
     };
 
@@ -378,12 +397,17 @@ export default {
       deleteDistillation,
       handleYes,
       handleSearch,
+      handleSelectLength,
     };
   },
 };
 </script>
 
 <style scoped>
+.distillation_list--settings {
+  float: right;
+}
+
 .distillation_list--title {
   margin-bottom: 20px;
 }
