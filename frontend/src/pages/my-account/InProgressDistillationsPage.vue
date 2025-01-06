@@ -119,7 +119,7 @@
 <script>
 import { ref, computed, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
 import { scrollToTop } from "@/helpers/displayHelpers";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
@@ -348,6 +348,15 @@ export default {
       await addPlantWeight();
       closeAskModal();
     };
+
+        // Navigation guard to reset searchQuery in Vuex state and local storage
+        onBeforeRouteLeave((to, from, next) => {
+      if (to.path !== from.path) {
+        store.dispatch("updateSearchQuery", "");
+        localStorage.removeItem("searchQuery");
+      }
+      next();
+    });
 
     return {
       distillationsList,

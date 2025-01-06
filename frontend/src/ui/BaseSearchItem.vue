@@ -11,16 +11,20 @@
     </base-text-input>
     <!-- Clickable icon for searching the items -->
     <svg-icon
-     v-if="!isSearchEmitted"
-      :class="['search_icon', { 
-        'search_icon--disabled': !inputValue,
-        'search_icon--plant': !inputValue && isPlantInput,
-        'search_icon--distillation_disabled': !inputValue && isDistillationInput,
-        'search_icon--results': !inputValue && isResultsInput,
-        'search_icon--plant': isPlantInput,
-        'search_icon--distillation': isDistillationInput,
-        'search_icon--results': isResultsInput,
-       }]"
+      v-if="!isSearchEmitted"
+      :class="[
+        'search_icon',
+        {
+          'search_icon--disabled': !inputValue,
+          'search_icon--plant': !inputValue && isPlantInput,
+          'search_icon--distillation_disabled':
+            !inputValue && isDistillationInput,
+          'search_icon--results': !inputValue && isResultsInput,
+          'search_icon--plant': isPlantInput,
+          'search_icon--distillation': isDistillationInput,
+          'search_icon--results': isResultsInput,
+        },
+      ]"
       type="mdi"
       :path="mdiMagnify"
       size="24"
@@ -48,7 +52,7 @@ import { useStore } from "vuex";
 export default {
   name: "BaseSearchItem",
   components: { BaseTextInput, SvgIcon },
-  props: ["label", 'inputColor'],
+  props: ["label", "inputColor"],
   emits: ["search", "clear"],
   setup(props, { emit }) {
     const store = useStore();
@@ -88,13 +92,12 @@ export default {
         emitSearchQuery();
       }
       if (event.key === "Escape") {
-        console.log("ESCAPE PRESSED");
         clearSearchQuery();
       }
     };
 
-        // Computed property to determine if input is for plant
-        const isPlantInput = computed(() => {
+    // Computed property to determine if input is for plant
+    const isPlantInput = computed(() => {
       return props.inputColor === "plant";
     });
 
@@ -111,8 +114,9 @@ export default {
     onMounted(() => {
       store.dispatch("fetchSearchQueryFromLocalStorage");
       inputValue.value = searchQuery.value;
-      console.log("searchQuery.value", searchQuery.value);
-      console.log("INPUT IS MOUNTED");
+      if (searchQuery.value) {
+        isSearchEmitted.value = true;
+      }
     });
 
     return {
