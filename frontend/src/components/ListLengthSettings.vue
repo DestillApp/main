@@ -5,7 +5,7 @@
       class="settings-icon"
       type="mdi"
       :path="mdiCog"
-      size="24"
+      size="20"
       @click="toggleList"
     ></svg-icon>
     <!-- List with title and items, shown conditionally based on isListVisible -->
@@ -46,6 +46,8 @@ export default {
       isListVisible.value = !isListVisible.value;
       if (isListVisible.value) {
         document.addEventListener("click", handleClickOutside);
+      } else {
+        document.removeEventListener("click", handleClickOutside);
       }
     };
 
