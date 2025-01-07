@@ -15,18 +15,22 @@ const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-const authenticate = require("./util/authenticate.js");
 const cors = require("cors");
+const passport = require("passport");
+const { Strategy: JwtStrategy, ExtractJwt } = require("passport-jwt");
 
 // Importing GraphQL schema and resolvers
 const { typeDefs, resolvers } = require("./graphql/index.js");
+
+// Importing the User model
+const User = require("./database/user");
 
 // Creating an Express application
 const app = express();
 
 app.use(express.json());
 
-//Using cookie parser
+// Using cookie parser
 app.use(cookieParser());
 
 // Enable CORS with specific options
@@ -36,6 +40,30 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// Passport.js configuration
+passport.use(
+  new JwtStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET,
+    },
+    async (jwtPayload, done) => {
+      try {
+        const user = await User.findById(jwtPayload.id);
+        if (user) {
+          return done(null, user);
+        } else {
+          return done(null, false);
+        }
+      } catch (error) {
+        return done(error, false);
+      }
+    }
+  )
+);
+
+app.use(passport.initialize());
 
 // Middleware to set x-public-route header for specific operations
 app.use((req, res, next) => {
@@ -55,7 +83,14 @@ const server = new ApolloServer({
   resolvers: resolvers, // GraphQL schema definitions
   playground: true, // Enables GraphQL Playground for interactive exploration
   context: ({ req, res }) => {
-    return { req, res };
+    return new Promise((resolve, reject) => {
+      passport.authenticate("jwt", { session: false }, (err, user, info) => {
+        if (err) {
+          reject(err);
+        }
+        resolve({ req, res, user });
+      })(req, res);
+    });
   },
 
   formatResponse: (response, requestContext) => {
@@ -70,6 +105,9 @@ const server = new ApolloServer({
     return response;
   },
 });
+
+// Middleware Passport.js for authentication
+const authenticate = passport.authenticate("jwt", { session: false });
 
 //Routes protect middlewares
 app.post("/add-plant", authenticate, (req, res) => {
