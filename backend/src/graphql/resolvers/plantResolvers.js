@@ -114,9 +114,12 @@ const plantResolver = {
      * @description Creates a new plant and saves it to the database.
      * @param {Object} _ - Unused.
      * @param {Object} plantInput - Input data for the new plant.
+     * @param {Object} context - The Apollo Server context containing the request and user objects.
      * @returns {Promise<Object>} The created plant.
      */
-    createPlant: async (_, { plantInput }) => {
+    createPlant: async (_, { plantInput }, { user }) => {
+      if (!user) { throw new Error("Unauthorized"); }
+
       // Sanitizing the input data
       const sanitizedData = {
         plantName: DOMPurify.sanitize(plantInput.plantName),
@@ -144,6 +147,7 @@ const plantResolver = {
         plantAge: plantInput.plantAge
           ? Number(DOMPurify.sanitize(plantInput.plantAge))
           : null,
+        userId: user.id, // Adding user ID to the sanitized data
       };
       // Filtering out null or empty string values
       const filteredData = filterPlantData(sanitizedData);

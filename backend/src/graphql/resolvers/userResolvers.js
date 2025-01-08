@@ -22,6 +22,7 @@ const generateToken = (user) => {
     id: user._id,
     role: user.role,
   };
+
   const options = {
     expiresIn: "1h", // Token expiry time
   };
@@ -122,9 +123,9 @@ const userResolver = {
 
       // Setting cookie JWT
       res.cookie("authToken", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Lax",
         maxAge: 3600000, //1 hour
         path: "/",
       });

@@ -26,6 +26,7 @@ const plantSchema = new Schema({
   plantState: { type: String, required: true },
   dryingTime: { type: Number, required: false },
   plantAge: { type: Number, required: false },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 // Exporting the Plant model based on the plantSchema

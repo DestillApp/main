@@ -86,13 +86,14 @@ const server = new ApolloServer({
     return new Promise((resolve, reject) => {
       passport.authenticate("jwt", { session: false }, (err, user, info) => {
         if (err) {
+          console.log("Error in passport.authenticate:", err);
           reject(err);
         }
         resolve({ req, res, user });
       })(req, res);
     });
   },
-
+  cache: "bounded",
   formatResponse: (response, requestContext) => {
     requestContext.response.http.headers.set(
       "Access-Control-Allow-Origin",

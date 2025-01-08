@@ -24,6 +24,7 @@ const plantSchema = gql`
     plantState: String!
     dryingTime: Int
     plantAge: Int
+    userId: ID!
   }
 
   input PlantInput {
