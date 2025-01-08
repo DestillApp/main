@@ -164,7 +164,9 @@ const plantResolver = {
     },
 
     // Update an existing plant
-    updatePlant: async (_, { id, plantInput }) => {
+    updatePlant: async (_, { id, plantInput }, { user }) => {
+      if (!user) { throw new Error("Unauthorized"); }
+
       // Sanitizing the input data
       const sanitizedData = {
         plantName: DOMPurify.sanitize(plantInput.plantName),
@@ -192,7 +194,9 @@ const plantResolver = {
         plantAge: plantInput.plantAge
           ? Number(DOMPurify.sanitize(plantInput.plantAge))
           : null,
+        userId: user.id,
       };
+
       // Filtering out null or empty string values
       const filteredData = filterPlantData(sanitizedData);
 
