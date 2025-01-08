@@ -37,7 +37,9 @@ const plantResolver = {
      * @description Fetches plants from the database.
      * @returns {Promise<Array>} Array of plants.
      */
-    getPlants: async (_, { fields, formatDates, name }) => {
+    getPlants: async (_, { fields, formatDates, name }, { user }) => {
+      if (!user) { throw new Error("Unauthorized"); }
+
       try {
         // Build a projection object based on the fields argument
         const projection = {};
@@ -46,7 +48,7 @@ const plantResolver = {
         });
 
         // Build a query object for filtering
-        const filter = {};
+        const filter = { userId: user.id }; // Filter by user ID
         console.log("name", name);
         // If a name is provided, add it to the filter
         if (name) {
@@ -81,9 +83,11 @@ const plantResolver = {
       }
     },
 
-    getPlantById: async (_, { id, formatDates }) => {
+    getPlantById: async (_, { id, formatDates }, { user }) => {
+      if (!user) { throw new Error("Unauthorized"); }
+
       try {
-        const plant = await Plant.findById(id);
+        const plant = await Plant.findOne({ _id: id, userId: user.id });
         if (!plant) {
           throw new Error("Plant not found");
         }
@@ -98,8 +102,6 @@ const plantResolver = {
           }
         }
 
-        console.log("buy Date:", plant.plantBuyDate);
-        console.log("harvest Date:", plant.harvestDate);
         return plant;
       } catch (error) {
         throw new Error("Failed to fetch plant by ID", error);
@@ -210,9 +212,11 @@ const plantResolver = {
       }
     },
 
-    deletePlant: async (_, { id }) => {
+    deletePlant: async (_, { id }, { user }) => {
+      if (!user) { throw new Error("Unauthorized"); }
+
       try {
-        await Plant.findByIdAndDelete(id);
+        await Plant.findOneAndDelete({ _id: id, userId: user.id });
         return true;
       } catch (error) {
         console.error("Failed to delete plant:", error);
@@ -220,34 +224,30 @@ const plantResolver = {
       }
     },
 
-    updateAvailableWeight: async (_, { input }) => {
+    updateAvailableWeight: async (_, { input }, { user }) => {
+      if (!user) { throw new Error("Unauthorized"); }
+
       try {
         const { id, availableWeight } = input;
         // Find plant by ID and update availableWeight
-        const updatedPlant = await Plant.findByIdAndUpdate(
-          id,
+        const updatedPlant = await Plant.findOneAndUpdate(
+          { _id: id, userId: user.id },
           { availableWeight: availableWeight },
           { new: true } // Returns the updated document
         );
-
-        if (!updatedPlant) {
-          throw new Error("Plant not found");
-        }
-
         return updatedPlant;
       } catch (error) {
-        throw new Error(
-          "Failed to update plant's available weight: ",
-          error.message
-        );
+        throw new Error("Failed to update plant's available weight: " + error.message);
       }
     },
 
-    changeAvailableWeight: async (_, { input }) => {
+    changeAvailableWeight: async (_, { input }, { user }) => {
+      if (!user) { throw new Error("Unauthorized"); }
+
       try {
         const { id, availableWeight } = input;
         // Find the plant by its ID
-        const plant = await Plant.findById(id);
+        const plant = await Plant.findOne({ _id: id, userId: user.id });
 
         if (!plant) {
           throw new Error("Plant not found");
@@ -261,9 +261,7 @@ const plantResolver = {
         return updatedPlant;
       } catch (error) {
         console.error("Error in changeAvailableWeight resolver:", error);
-        throw new Error(
-          "Failed to add weight to plant's available weight: " + error.message
-        );
+        throw new Error("Failed to add weight to plant's available weight: " + error.message);
       }
     },
   },
