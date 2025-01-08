@@ -12,6 +12,8 @@ import {
   InMemoryCache,
 } from "@apollo/client/core";
 import { DefaultApolloClient } from "@vue/apollo-composable";
+import { setContext } from "@apollo/client/link/context";
+import Cookies from "js-cookie";
 
 import App from "./App.vue";
 import BaseButton from "./ui/BaseButton.vue";
@@ -29,8 +31,22 @@ const httpLink = createHttpLink({
   credentials: "include",
 });
 
+// Middleware to add token to headers
+const authLink = setContext((_, { headers }) => {
+  // Get the authentication token from cookies
+  const token = Cookies.get("authToken");
+
+  // Return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
+
 const apolloClient = new ApolloClient({
-  link: httpLink,
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
