@@ -21,7 +21,8 @@ const distillationArchivesResolvers = {
      * @description Fetches all distillation archives from the database.
      * @returns {Promise<Array>} Array of distillation archives.
      */
-    getDistillationArchives: async (_, { fields, name, formatDates }) => {
+    getDistillationArchives: async (_, { fields, name, formatDates }, {user}) => {
+      if (!user) { throw new Error("Unauthorized"); }
       try {
         // Build a projection object based on the fields argument
         const projection = {};
@@ -29,8 +30,7 @@ const distillationArchivesResolvers = {
           projection[field] = 1;
         });
 
-        // Build a filter object for potential filtering
-        const filter = {};
+        const filter = { userId: user.id };
 
         // If a name is provided, add it to the filter
         if (name) {
@@ -86,9 +86,10 @@ const distillationArchivesResolvers = {
      * @param {Boolean} formatDates - Whether to format the date fields.
      * @returns {Promise<Object>} The fetched distillation archive.
      */
-    getArchiveDistillationById: async (_, { id, formatDistillDate }) => {
+    getArchiveDistillationById: async (_, { id, formatDistillDate }, {user}) => {
+      if (!user) { throw new Error("Unauthorized"); }
       try {
-        const archive = await DistillationArchives.findById(id);
+        const archive = await DistillationArchives.findOne({ _id: id, userId: user.id });
         if (!archive) {
           throw new Error("Distillation archive not found");
         }
@@ -129,9 +130,18 @@ const distillationArchivesResolvers = {
      * @description Creates a new distillation archive and saves it to the database.
      * @param {Object} _ - Unused.
      * @param {Object} distillationArchiveInput - Input data for the new distillation archive.
+     * @param {Object} user - The user creating the distillation archive.
      * @returns {Promise<Object>} The created distillation archive.
      */
-    createDistillationArchive: async (_, { distillationArchiveInput }) => {
+    createDistillationArchive: async (
+      _,
+      { distillationArchiveInput },
+      { user }
+    ) => {
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
+
       // Sanitizing the input data
       const sanitizedData = {
         oilAmount: distillationArchiveInput.oilAmount
@@ -289,6 +299,7 @@ const distillationArchivesResolvers = {
               )
             : null,
         },
+        userId: user.id,
       };
 
       // Filtering out null or empty string values
@@ -314,21 +325,33 @@ const distillationArchivesResolvers = {
      * @param {Object} distillationArchiveInput - Input data for the distillation archive update.
      * @returns {Promise<Object>} The updated distillation archive.
      */
-    updateDistillationArchive: async (_, { id, distillationArchiveInput }) => {
+    updateDistillationArchive: async (
+      _,
+      { id, distillationArchiveInput },
+      { user }
+    ) => {
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
       // Sanitizing and filtering the nested input object
-      const sanitizedDistillationTime = distillationArchiveInput.distillationData.distillationTime
+      const sanitizedDistillationTime = distillationArchiveInput
+        .distillationData.distillationTime
         ? {
-            distillationHours: distillationArchiveInput.distillationData.distillationTime.distillationHours
+            distillationHours: distillationArchiveInput.distillationData
+              .distillationTime.distillationHours
               ? Number(
                   DOMPurify.sanitize(
-                    distillationArchiveInput.distillationData.distillationTime.distillationHours
+                    distillationArchiveInput.distillationData.distillationTime
+                      .distillationHours
                   )
                 )
               : null,
-            distillationMinutes: distillationArchiveInput.distillationData.distillationTime.distillationMinutes
+            distillationMinutes: distillationArchiveInput.distillationData
+              .distillationTime.distillationMinutes
               ? Number(
                   DOMPurify.sanitize(
-                    distillationArchiveInput.distillationData.distillationTime.distillationMinutes
+                    distillationArchiveInput.distillationData.distillationTime
+                      .distillationMinutes
                   )
                 )
               : null,
@@ -353,10 +376,12 @@ const distillationArchivesResolvers = {
           distillationArchiveInput.hydrosolDescription
         ),
         distillationData: {
-          weightForDistillation: distillationArchiveInput.distillationData.weightForDistillation
+          weightForDistillation: distillationArchiveInput.distillationData
+            .weightForDistillation
             ? Number(
                 DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData.weightForDistillation
+                  distillationArchiveInput.distillationData
+                    .weightForDistillation
                 )
               )
             : null,
@@ -372,7 +397,8 @@ const distillationArchivesResolvers = {
                 )
               )
             : null,
-          weightAfterSoaking: distillationArchiveInput.distillationData.weightAfterSoaking
+          weightAfterSoaking: distillationArchiveInput.distillationData
+            .weightAfterSoaking
             ? Number(
                 DOMPurify.sanitize(
                   distillationArchiveInput.distillationData.weightAfterSoaking
@@ -387,7 +413,8 @@ const distillationArchivesResolvers = {
           distillationType: DOMPurify.sanitize(
             distillationArchiveInput.distillationData.distillationType
           ),
-          distillationDate: distillationArchiveInput.distillationData.distillationDate
+          distillationDate: distillationArchiveInput.distillationData
+            .distillationDate
             ? formatDateToString(
                 DOMPurify.sanitize(
                   distillationArchiveInput.distillationData.distillationDate
@@ -397,7 +424,8 @@ const distillationArchivesResolvers = {
           distillationApparatus: DOMPurify.sanitize(
             distillationArchiveInput.distillationData.distillationApparatus
           ),
-          waterForDistillation: distillationArchiveInput.distillationData.waterForDistillation
+          waterForDistillation: distillationArchiveInput.distillationData
+            .waterForDistillation
             ? Number(
                 DOMPurify.sanitize(
                   distillationArchiveInput.distillationData.waterForDistillation
@@ -436,7 +464,8 @@ const distillationArchivesResolvers = {
                 )
               )
             : "",
-          harvestTemperature: distillationArchiveInput.distilledPlant.harvestTemperature
+          harvestTemperature: distillationArchiveInput.distilledPlant
+            .harvestTemperature
             ? Number(
                 DOMPurify.sanitize(
                   distillationArchiveInput.distilledPlant.harvestTemperature
@@ -467,31 +496,33 @@ const distillationArchivesResolvers = {
               )
             : null,
         },
+        userId: user.id,
       };
 
       // Filtering out null or empty string values
       const filteredData = filterData(sanitizedData);
 
       try {
-        const updatedDistillationArchive = await DistillationArchives.findByIdAndUpdate(
-          id,
-          filteredData,
-          {
+        const updatedDistillationArchive =
+          await DistillationArchives.findByIdAndUpdate(id, filteredData, {
             new: true,
-          }
-        );
+          });
         return updatedDistillationArchive;
       } catch (error) {
         throw new Error("Failed to update distillation archive");
       }
     },
 
-    deleteDistillationArchive: async (_, { id }) => {
+    deleteDistillationArchive: async (_, { id }, { user }) => {
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
+
       try {
-        await DistillationArchives.findByIdAndDelete(id);
+        await DistillationArchives.findOneAndDelete({ _id: id, userId: user.id });
         return true;
       } catch (error) {
-        console.error("Failed to delete archive distillation:", error);
+        console.error("Failed to delete distillation archive:", error);
         return false;
       }
     },

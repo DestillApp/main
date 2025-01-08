@@ -35,35 +35,3 @@ const countryResolver = {
 
 // Exporting the country resolvers
 module.exports = countryResolver;
-
-//     getCountryNames: async (_, { name }) => {
-//       try {
-//         const response = await axios.get(
-//           `http://api.geonames.org/searchJSON?name=${name}&featureClass=A&featureCode=PCLI&maxRows=10&lang=pl&username=app
-// `
-//         );
-// const response = await axios.get("http://api.geonames.org/searchJSON", {
-//   params: {
-//     name: name,
-//     featureClass: "A",
-//     featureCode: "PCLI",
-//     maxRows: 10,
-//     lang: "pl",
-//     username: "destillapp",
-//   },
-// });
-
-// const mapedCountriesNames = response.data.geonames.map(
-//   (country) => country.countryName
-// );
-// if (response) {
-//   console.log("countries:", response.data);
-// }
-// return mapedCountriesNames;
-//       } catch (err) {
-//         console.error("Failed to fetch country names:", err);
-//         throw new Error("Failed to fetch country names");
-//       }
-//     },
-//   },
-// };

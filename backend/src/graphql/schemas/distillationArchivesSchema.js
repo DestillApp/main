@@ -50,6 +50,7 @@ const distillationArchivesSchema = gql`
     hydrosolDescription: String!
     distillationData: DistillationData!
     distilledPlant: DistilledPlant!
+    userId: ID!
   }
 
   input DistilledPlantInput {
