@@ -241,6 +241,7 @@ export default {
     const handleSelectLength = (length) => {
       console.log("Selected length:", length);
       distillationsPerPage.value = length;
+      // store.dispatch("settings/setInitialSettings"); Change executing this action!
       fetchDistillationList(searchQuery.value);
     };
 

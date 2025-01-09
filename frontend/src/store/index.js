@@ -9,6 +9,7 @@ import plantModule from "../store/plant/index.js";
 import authModule from "../store/auth/index.js";
 import distillationModule from "./distillation/index.js";
 import resultsModule from "./results/index.js";
+import settingsModule from "./settings/index.js";
 
 /**
  * Creates the Vuex store with modules.
@@ -20,6 +21,7 @@ const store = createStore({
     auth: authModule,
     distillation: distillationModule,
     results: resultsModule,
+    settings: settingsModule,
   },
   state() {
     return {
