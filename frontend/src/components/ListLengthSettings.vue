@@ -20,9 +20,14 @@
     >
       <h3>{{ title }}</h3>
       <ul>
-        <li @click="selectLength(10)">10</li>
-        <li @click="selectLength(20)">20</li>
-        <li @click="selectLength(30)">30</li>
+        <li
+          v-for="length in lengths"
+          :key="length"
+          @click="selectLength(length)"
+          :class="{ 'selected-length': length === chosenLength }"
+        >
+          {{ length }}
+        </li>
       </ul>
     </div>
   </div>
@@ -36,7 +41,7 @@ import { ref, computed } from "vue";
 export default {
   name: "ListLengthSettings",
   components: { SvgIcon },
-  props: ['title', 'listColor'],
+  props: ['title', 'listColor', 'chosenLength'],
   emits: ["select-length"],
   setup(props, { emit }) {
     const isListVisible = ref(false);
@@ -57,7 +62,6 @@ export default {
     };
 
     const handleClickOutside = (event) => {
-        console.log('CLICK');
       if (settingsContainer.value && !settingsContainer.value.contains(event.target)) {
         isListVisible.value = false;
         document.removeEventListener("click", handleClickOutside);
@@ -76,6 +80,8 @@ export default {
       return props.listColor === "results";
     });
 
+    const lengths = [10, 20, 30];
+
     return {
       mdiCog,
       isListVisible,
@@ -85,6 +91,7 @@ export default {
       isDistillationColor,
       isResultsColor,
       settingsContainer,
+      lengths,
     };
   },
 };
@@ -137,8 +144,12 @@ export default {
   color: var(--placeholder-color);
 }
 
+.selected-length {
+  font-weight: bold;
+}
+
 .list_color-plant li:hover {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .list_color-distillation li:hover {

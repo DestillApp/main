@@ -6,6 +6,7 @@
     class="distillation_list--settings"
       title="ilość destylacji"
       listColor="distillation"
+      :chosenLength="distillationsPerPage"
       @select-length="handleSelectLength"
     ></list-length-settings>
     <!-- Title for the distillation list -->
