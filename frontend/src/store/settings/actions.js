@@ -6,15 +6,22 @@ import { CREATE_SETTINGS } from "@/graphql/mutations/settings";
  * @module settingsActions
  */
 export default {
-//   setPlantListLength(context, length) {
-//     context.commit("changePlantListLength", length);
-//   },
-//   setDistillationListLength(context, length) {
-//     context.commit("changeDistillationListLength", length);
-//   },
-//   setDistillationArchivesListLength(context, length) {
-//     context.commit("changeDistillationArchivesListLength", length);
-//   },
+  /**
+   * @function setValue
+   * @description Sets a value in the state.
+   * @param {Object} context - The Vuex context.
+   * @param {Object} payload - The payload containing the input and value.
+   * @param {string} payload.input - The input field to set.
+   * @param {any} payload.value - The value to set.
+   */
+  setValue(context, { input, value }) {
+    context.commit("changeValue", { input, value });
+  },
+  
+  /**
+   * @function setInitialSettings
+   * @description Creates initial settings in the database.
+   */
   async setInitialSettings() {
     try {
       const { data } = await apolloClient.mutate({

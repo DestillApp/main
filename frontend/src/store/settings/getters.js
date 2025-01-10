@@ -1,5 +1,9 @@
 /**
  * Settings module getters for getting the settings form state.
- * @module settingsGetterss
+ * @module settingsGetters
  */
-export default {}
+export default {
+  settingsForm(state) {
+    return state.settingsForm;
+  },
+};

@@ -40,6 +40,7 @@
 
 <script>
 import { ref } from "vue";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
@@ -55,6 +56,9 @@ export default {
   name: "RegistrationForm",
 
   setup() {
+    // Vuex store instance
+    const store = useStore();
+
     const router = useRouter();
     // Object to store registration form data
     const registrationForm = ref({
@@ -99,6 +103,7 @@ export default {
           },
         });
         console.log("Created user:", data.registerUser);
+        store.dispatch("settings/setInitialSettings"); 
         router.push({ name: "LoginPage" });
       } catch (error) {
         console.error("Error submitting form", error);

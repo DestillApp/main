@@ -134,6 +134,7 @@ import BaseButton from "@/ui/BaseButton.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
+import { UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
@@ -167,7 +168,7 @@ export default {
 
     const distillationsAmount = ref(null);
     const page = ref(Number(route.params.page));
-    const distillationsPerPage = ref(5);
+    const distillationsPerPage = computed(() => store.getters["settings/settingsForm"].distillationListLength);
 
     // Reactive reference for loading state
     const isLoading = ref(true);
@@ -223,29 +224,30 @@ export default {
       }
     };
 
-    /**
-     * @function handleSearch
-     * @description Handle the search query emitted from the BaseSearchItem component.
-     * @param {String} query - The search query.
-     */
     const handleSearch = () => {
       console.log("Search query from Vuex:", searchQuery.value);
       fetchDistillationList(searchQuery.value);
     };
 
-    /**
-     * @function handleSelectLength
-     * @description Handle the selection of list length from the ListLengthSettings component.
-     * @param {Number} length - The selected list length.
-     */
-    const handleSelectLength = (length) => {
-      console.log("Selected length:", length);
-      distillationsPerPage.value = length;
-      // store.dispatch("settings/setInitialSettings"); Change executing this action!
-      fetchDistillationList(searchQuery.value);
+    const handleSelectLength = async (length) => {
+      try {
+        await apolloClient.mutate({
+          mutation: UPDATE_LIST_SETTINGS,
+          variables: {
+            input: {
+              settingKey: 'distillationListLength',
+              settingValue: length,
+            },
+          },
+        });
+        console.log("Updated distillation list length");
+        store.dispatch("settings/setValue", { input: "distillationListLength", value: length });
+        fetchDistillationList(searchQuery.value);
+      } catch (error) {
+        console.error("Failed to update distillation list length:", error);
+      }
     };
 
-    // Fetch distillation list when the component is mounted
     onMounted(() => {
       store.dispatch("fetchSearchQueryFromLocalStorage");
       if (searchQuery.value) {

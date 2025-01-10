@@ -13,3 +13,18 @@ export const CREATE_SETTINGS = gql`
     }
   }
 `;
+
+// Define the GraphQL mutation
+export const UPDATE_LIST_SETTINGS = gql`
+  mutation UpdateListSettings($input: UpdateListSettingsInput!) {
+    updateListSettings(input: $input) {
+      userId
+      listSettings {
+        plantListLength
+        distillationListLength
+        distillationArchivesListLength
+      }
+      updatedAt
+    }
+  }
+`;
