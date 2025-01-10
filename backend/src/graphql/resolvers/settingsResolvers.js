@@ -47,6 +47,43 @@ const settingsResolvers = {
         throw new Error("Failed to create user settings");
       }
     },
+
+    /**
+     * @async
+     * @function updateListSettings
+     * @description Updates a specific item in the listSettings object and updates the updatedAt date.
+     * @param {Object} _ - Unused.
+     * @param {Object} input - The input data containing the setting to update.
+     * @param {Object} user - The authenticated user.
+     * @returns {Promise<Object>} The updated user settings.
+     */
+    updateListSettings: async (_, { input }, { user }) => {
+      if (!user) {
+        throw new AuthenticationError("Unauthorized");
+      }
+
+      const { settingKey, settingValue } = input;
+
+      try {
+        // Find the user settings and update the specific setting
+        const updatedSettings = await UserSettings.findOneAndUpdate(
+          { userId: user.id },
+          {
+            $set: { [`listSettings.${settingKey}`]: settingValue },
+            $currentDate: { updatedAt: true },
+          },
+          { new: true }
+        );
+
+        if (!updatedSettings) {
+          throw new Error("User settings not found");
+        }
+
+        return updatedSettings;
+      } catch (err) {
+        throw new Error("Failed to update user settings");
+      }
+    },
   },
 };
 

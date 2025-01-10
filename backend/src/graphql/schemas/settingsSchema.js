@@ -19,12 +19,18 @@ const settingsSchema = gql`
     updatedAt: String!
   }
 
+  input UpdateListSettingsInput {
+    settingKey: String!
+    settingValue: Int!
+  }
+
   type Query {
     getUserSettings: UserSettings
   }
 
   type Mutation {
     createSettings: UserSettings!
+    updateListSettings(input: UpdateListSettingsInput!): UserSettings!
   }
 `;
 
