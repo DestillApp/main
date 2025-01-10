@@ -1,5 +1,13 @@
 <template>
   <div>
+    <!-- List length settings component -->
+    <list-length-settings
+      class="distillation_archives_list--settings"
+      title="ilość surowców"
+      listColor="results"
+      :chosenLength="archivesPerPage"
+      @select-length="handleSelectLength"
+    ></list-length-settings>
     <!-- Title for the distillation archives list -->
     <h3 class="distillation_archives_list--title">Archiwum destylacji</h3>
     <!-- Search item component for searching distillation archives by name -->
@@ -111,9 +119,11 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
+import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 import { GET_DISTILLATION_ARCHIVES } from "@/graphql/queries/results.js";
 import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
+import { UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings.js";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 
@@ -122,6 +132,7 @@ export default {
   components: {
     DeleteItemModal,
     BaseSearchItem,
+    ListLengthSettings,
   },
   setup() {
     // Apollo client instance
@@ -150,7 +161,10 @@ export default {
     // Reactive references for pagination
     const archivesAmount = ref(null);
     const page = ref(Number(route.params.page) || 1);
-    const archivesPerPage = ref(5);
+    const archivesPerPage = computed(
+      () =>
+        store.getters["settings/settingsForm"].distillationArchivesListLength
+    );
 
     // Reactive reference for loading state
     const isLoading = ref(true);
@@ -219,6 +233,33 @@ export default {
     const handleSearch = () => {
       console.log("Search query from Vuex:", searchQuery.value);
       fetchDistillationArchivesList(searchQuery.value);
+    };
+
+    /**
+     * @function handleSelectLength
+     * @description Handle the selection of list length.
+     * @param {Number} length - The selected length.
+     */
+    const handleSelectLength = async (length) => {
+      try {
+        await apolloClient.mutate({
+          mutation: UPDATE_LIST_SETTINGS,
+          variables: {
+            input: {
+              settingKey: "distillationArchivesListLength",
+              settingValue: length,
+            },
+          },
+        });
+        console.log("Updated distillation archives list length");
+        store.dispatch("settings/setValue", {
+          input: "distillationArchivesListLength",
+          value: length,
+        });
+        fetchDistillationArchivesList(searchQuery.value);
+      } catch (error) {
+        console.error("Failed to update plant list length:", error);
+      }
     };
 
     // Fetch distillation archives list when the component is mounted
@@ -332,6 +373,7 @@ export default {
       archivesPerPage,
       paginationLength,
       searchQuery,
+      handleSelectLength,
       openDeleteModal,
       closeDeleteModal,
       deleteDistillationArchive,
@@ -342,6 +384,10 @@ export default {
 </script>
 
 <style scoped>
+.distillation_archives_list--settings {
+  float: right;
+}
+
 .distillation_archives_list--title {
   margin-bottom: 20px;
 }
