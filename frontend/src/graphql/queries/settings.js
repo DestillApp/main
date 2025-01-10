@@ -1,0 +1,13 @@
+import { gql } from "@apollo/client/core";
+
+export const GET_USER_SETTINGS = gql`
+  query GetUserSettings {
+    getUserSettings {
+      listSettings {
+        plantListLength
+        distillationListLength
+        distillationArchivesListLength
+      }
+    }
+  }
+`;

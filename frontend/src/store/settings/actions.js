@@ -1,5 +1,6 @@
 import { apolloClient } from "@/main";
 import { CREATE_SETTINGS } from "@/graphql/mutations/settings";
+import { GET_USER_SETTINGS } from "@/graphql/queries/settings";
 
 /**
  * Settings module actions for handling settings form updates.
@@ -30,6 +31,27 @@ export default {
       console.log("Settings created:", data.createSettings);
     } catch (error) {
       console.error("Error creating settings:", error);
+    }
+  },
+
+  /**
+   * @function fetchSettings
+   * @description Fetches user settings from the database.
+   */
+  async fetchSettings(context) {
+    try {
+      const { data } = await apolloClient.query({
+        query: GET_USER_SETTINGS,
+      });
+      const settings = data.getUserSettings.listSettings;
+      console.log("User settings:", settings);
+
+      // Update the Vuex store with the fetched settings
+      context.dispatch("setValue", { input: "plantListLength", value: settings.plantListLength });
+      context.dispatch("setValue", { input: "distillationListLength", value: settings.distillationListLength });
+      context.dispatch("setValue", { input: "distillationArchivesListLength", value: settings.distillationArchivesListLength });
+    } catch (error) {
+      console.error("Error fetching settings:", error);
     }
   },
 };
