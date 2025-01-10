@@ -11,6 +11,33 @@ const UserSettings = require("../../database/settings");
 const { AuthenticationError } = require("apollo-server-express");
 
 const settingsResolvers = {
+  Query: {
+    /**
+     * @async
+     * @function getUserSettings
+     * @description Fetches the user settings for the authenticated user.
+     * @param {Object} _ - Unused.
+     * @param {Object} __ - Unused.
+     * @param {Object} user - The authenticated user.
+     * @returns {Promise<Object>} The user settings.
+     */
+    getUserSettings: async (_, __, { user }) => {
+      if (!user) {
+        throw new AuthenticationError("Unauthorized");
+      }
+
+      try {
+        const userSettings = await UserSettings.findOne({ userId: user.id });
+        if (!userSettings) {
+          throw new Error("User settings not found");
+        }
+        return userSettings;
+      } catch (err) {
+        throw new Error("Failed to fetch user settings");
+      }
+    },
+  },
+
   Mutation: {
     /**
      * @async
