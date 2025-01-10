@@ -241,7 +241,6 @@ export default {
             },
           },
         });
-        console.log("Updated distillation list length");
         store.dispatch("settings/setValue", { input: "distillationListLength", value: length });
         fetchDistillationList(searchQuery.value);
       } catch (error) {

@@ -1,7 +1,14 @@
-// searching the specific plant (?) // filter by list length, when plant was
-added etc.... (?) // no docs
+// filter, when plant was added etc.... (?) /
 <template>
   <div>
+    <!-- List length settings component -->
+    <list-length-settings
+      class="plant_list--settings"
+      title="ilość surowców"
+      listColor="plant"
+      :chosenLength="plantsPerPage"
+      @select-length="handleSelectLength"
+    ></list-length-settings>
     <!-- Title for the plant list -->
     <h3 class="plant_list--title">Magazyn surowców</h3>
     <!-- Search item component for searching plants by name -->
@@ -101,9 +108,11 @@ import { useStore } from "vuex";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
+import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
+import { UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings.js";
 import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 /**
@@ -115,7 +124,7 @@ import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 export default {
   name: "PlantListPage",
-  components: { DeleteItemModal, BaseButton, BaseSearchItem },
+  components: { DeleteItemModal, BaseButton, BaseSearchItem, ListLengthSettings },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
@@ -141,7 +150,9 @@ export default {
     // Reactive references for pagination
     const plantsAmount = ref(null);
     const page = ref(Number(route.params.page));
-    const plantsPerPage = ref(5);
+    const plantsPerPage = computed(
+      () => store.getters["settings/settingsForm"].plantListLength
+    );
 
     // Reactive reference for loading state
     const isLoading = ref(true);
@@ -202,6 +213,33 @@ export default {
     const handleSearch = () => {
       console.log("Search query from Vuex:", searchQuery.value);
       fetchPlantList(searchQuery.value);
+    };
+
+    /**
+     * @function handleSelectLength
+     * @description Handle the selection of list length.
+     * @param {Number} length - The selected length.
+     */
+    const handleSelectLength = async (length) => {
+      try {
+        await apolloClient.mutate({
+          mutation: UPDATE_LIST_SETTINGS,
+          variables: {
+            input: {
+              settingKey: "plantListLength",
+              settingValue: length,
+            },
+          },
+        });
+        console.log("Updated plant list length");
+        store.dispatch("settings/setValue", {
+          input: "plantListLength",
+          value: length,
+        });
+        fetchPlantList(searchQuery.value);
+      } catch (error) {
+        console.error("Failed to update plant list length:", error);
+      }
     };
 
     // Fetch plant list when the component is mounted
@@ -307,6 +345,7 @@ export default {
       isLoading,
       paginationLength,
       searchQuery,
+      handleSelectLength,
       openDeleteModal,
       closeDeleteModal,
       deletePlant,
@@ -317,6 +356,10 @@ export default {
 </script>
 
 <style scoped>
+.plant_list--settings {
+  float: right;
+}
+
 .plant_list--title {
   margin-bottom: 20px;
 }
