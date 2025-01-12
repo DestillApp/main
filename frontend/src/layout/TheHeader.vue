@@ -19,22 +19,27 @@
         </li>
       </ul>
       <!-- Link to the login page -->
-      <router-link to="/login" v-if="!isAuthenticated">
-        <base-button>Zaloguj się
+      <router-link to="/login" v-if="!isAuthenticated && !isLoadingAuthStatus">
+        <base-button
+          >Zaloguj się
           <!-- SVG icon for the login button -->
           <svg-icon type="mdi" :path="path" size="18" class="icon"></svg-icon>
         </base-button>
       </router-link>
       <!-- Logout button -->
-        <base-button v-if="isAuthenticated" @click="handleLogout">Wyloguj się</base-button>
+      <base-button
+        v-if="isAuthenticated && !isLoadingAuthStatus"
+        @click="handleLogout"
+        >Wyloguj się</base-button
+      >
     </nav>
   </header>
 </template>
 
 <script>
 import { ref } from "vue";
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { computed } from "vue";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
@@ -54,20 +59,25 @@ export default {
     //useRouter hook
     const router = useRouter();
 
-      // Vuex store instance
-      const store = useStore();
+    // Vuex store instance
+    const store = useStore();
 
-      //Checking user authentication state in vuex store
-    const isAuthenticated = computed(() => store.getters["auth/isAuthenticated"]);
+    //Checking user authentication and loading state in vuex store
+    const isAuthenticated = computed(
+      () => store.getters["auth/isAuthenticated"]
+    );
+    const isLoadingAuthStatus = computed(
+      () => store.getters["auth/isLoadingAuthStatus"]
+    );
 
     //Handling user logout
     const handleLogout = async () => {
-      await store.dispatch('auth/logout');
-      console.log('logout');
-      router.push('/login');
-    }
+      await store.dispatch("auth/logout");
+      console.log("logout");
+      router.push("/login");
+    };
 
-    return { path, isAuthenticated, handleLogout };
+    return { path, isAuthenticated, isLoadingAuthStatus, handleLogout };
   },
 };
 </script>

@@ -13,4 +13,14 @@ export default {
   isAuthenticated(state) {
     return state.isAuthenticated;
   },
+
+  /**
+   * @function isLoadingAuthStatus
+   * @description Gets the loading status of the user authentication.
+   * @param {Object} state - The Vuex state.
+   * @returns {boolean} The loading status of the user authentication.
+   */
+  isLoadingAuthStatus(state) {
+    return state.isLoadingAuthStatus;
+  },
 };

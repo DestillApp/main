@@ -17,6 +17,7 @@ export default {
   state() {
     return {
       isAuthenticated: false,
+      isLoadingAuthStatus: true,
     };
   },
 

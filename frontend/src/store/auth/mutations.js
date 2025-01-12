@@ -3,7 +3,11 @@
  * @module authMutations
  */
 export default {
-  setUserAuthenticationStatus(state, value) {
+  changeUserAuthenticationStatus(state, value) {
     state.isAuthenticated = value;
   },
+
+  changeLoadingAuthStatus(state, value) {
+    state.isLoadingAuthStatus = value;
+  }
 };

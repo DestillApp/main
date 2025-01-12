@@ -13,13 +13,13 @@ export default {
         query: VERIFY_AUTH,
       });
       context.commit(
-        "setUserAuthenticationStatus",
+        "changeUserAuthenticationStatus",
         data.verifyAuth.isAuthenticated
       );
       console.log("GraphQL result:", data);
       return data.verifyAuth.isAuthenticated;
     } catch (error) {
-      context.commit("setUserAuthenticationStatus", false);
+      context.commit("changeUserAuthenticationStatus", false);
       console.error("GraphQL error:", error);
       return false;
     }
@@ -36,7 +36,7 @@ export default {
       console.log("Login successful, token:", token);
 
       if (token) {
-        commit("setUserAuthenticationStatus", true);
+        commit("changeUserAuthenticationStatus", true);
         return true;
       }
     } catch (error) {
@@ -48,9 +48,20 @@ export default {
   async logout(context) {
     try {
       await apolloClient.mutate({ mutation: LOGOUT });
-      context.commit("setUserAuthenticationStatus", false);
+      context.commit("changeUserAuthenticationStatus", false);
+
+      // Clear local storage from settings keys
+      localStorage.removeItem("plantListLength");
+      localStorage.removeItem("distillationListLength");
+      localStorage.removeItem("distillationArchivesListLength");
+
+      localStorage.removeItem("searchQuery");
     } catch (error) {
       console.error("Logout failed", error);
     }
   },
+
+  setLoadingAuthStatus(context, value) {
+    context.commit("changeLoadingAuthStatus", value);
+  }
 };

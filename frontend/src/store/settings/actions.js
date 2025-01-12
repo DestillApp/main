@@ -65,7 +65,6 @@ export default {
   fetchLocalStorageData(context, { key }) {
     try {
       const value = JSON.parse(localStorage.getItem(key));
-      console.log("Fetched value from local storage:", value);
       if (value === null) {
         return;
       } else {

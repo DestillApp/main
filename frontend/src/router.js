@@ -158,15 +158,21 @@ router.beforeEach(async (to, from, next) => {
     console.log("Initializing auth status");
     await store.dispatch("auth/fetchUserAuthenticationStatus");
     authInitialized = true;
+    store.dispatch("auth/setLoadingAuthStatus", false);
   }
 
   try {
+    console.log("all paths");
     // const isAuthenticated = await checkAuthStatus();
     const isAuthenticated = store.getters["auth/isAuthenticated"];
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     const isPublicRoute = to.matched.some((record) => record.meta.public);
 
     if (requiresAuth && !isAuthenticated && !isPublicRoute) {
+      localStorage.removeItem("plantListLength");
+      localStorage.removeItem("distillationListLength");
+      localStorage.removeItem("distillationArchivesListLength");
+      localStorage.removeItem("searchQuery");
       next({
         path: "/login",
         query: { redirect: to.fullPath },
