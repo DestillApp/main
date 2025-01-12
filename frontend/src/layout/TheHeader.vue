@@ -8,14 +8,14 @@
       <ul class="list">
         <!-- Link to the add plant page -->
         <li v-if="isAuthenticated">
-          <router-link to="/add-plant">Dodaj surowiec</router-link>
+          <router-link to="/add-plant" class="link">Dodaj surowiec</router-link>
         </li>
         <!-- Link to the add distillation page -->
         <li v-if="isAuthenticated">
-          <router-link to="/add-distillation">Dodaj destylację</router-link>
+          <router-link to="/add-distillation" class="link">Dodaj destylację</router-link>
         </li>
         <li v-if="isAuthenticated">
-          <router-link to="/my-account">Moje konto</router-link>
+          <router-link to="/my-account" class="link">Moje konto</router-link>
         </li>
       </ul>
       <!-- Link to the login page -->
@@ -101,7 +101,35 @@ export default {
 .list {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 35px;
+}
+
+.link {
+  position: relative;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: var(--text-color);
+  bottom: -3px;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease-out;
+}
+
+.link:hover::after {
+  transform: scaleX(1);
+  transform-origin: center;
+}
+
+.router-link-active::after{
+  transform: scaleX(1);
 }
 
 .icon {
