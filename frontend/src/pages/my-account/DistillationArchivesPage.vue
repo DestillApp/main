@@ -256,7 +256,7 @@ export default {
           input: "distillationArchivesListLength",
           value: length,
         });
-        fetchDistillationArchivesList(searchQuery.value);
+        page.value = 1;
       } catch (error) {
         console.error("Failed to update plant list length:", error);
       }
@@ -284,7 +284,7 @@ export default {
         name: "DistillationArchivesPage",
         params: { page: newPage },
       });
-      fetchDistillationArchivesList();
+      fetchDistillationArchivesList(searchQuery.value);
       scrollToTop();
     });
 

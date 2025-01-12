@@ -242,7 +242,7 @@ export default {
           },
         });
         store.dispatch("settings/setValue", { input: "distillationListLength", value: length });
-        fetchDistillationList(searchQuery.value);
+        page.value = 1;
       } catch (error) {
         console.error("Failed to update distillation list length:", error);
       }
@@ -256,6 +256,7 @@ export default {
     });
 
     onMounted(() => {
+      console.log('ONMOUNTED!');
       if (searchQuery.value) {
         fetchDistillationList(searchQuery.value);
       } else {
@@ -269,7 +270,7 @@ export default {
         name: "InProgressDistillationsPage",
         params: { page: newPage },
       });
-      fetchDistillationList();
+      fetchDistillationList(searchQuery.value);
       scrollToTop();
     });
 

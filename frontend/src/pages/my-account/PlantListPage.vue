@@ -241,7 +241,7 @@ export default {
           input: "plantListLength",
           value: length,
         });
-        fetchPlantList(searchQuery.value);
+        page.value = 1;
       } catch (error) {
         console.error("Failed to update plant list length:", error);
       }
@@ -266,7 +266,7 @@ export default {
     // Watch for changes in the page number and refetch plant list.
     watch(page, (newPage) => {
       router.push({ name: "PlantListPage", params: { page: newPage } });
-      fetchPlantList();
+      fetchPlantList(searchQuery.value);
       scrollToTop();
     });
 
