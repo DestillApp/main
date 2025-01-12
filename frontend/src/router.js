@@ -99,6 +99,7 @@ const router = createRouter({
       name: "MyAccountPage",
       component: MyAccountPage,
       meta: { requiresAuth: true },
+      redirect: { name: "InProgressDistillationsPage", params: { page: 1 } },
       children: [
         {
           path: "distillations-in-progress/:page",
@@ -155,15 +156,12 @@ let authInitialized = false;
 
 router.beforeEach(async (to, from, next) => {
   if (!authInitialized) {
-    console.log("Initializing auth status");
     await store.dispatch("auth/fetchUserAuthenticationStatus");
     authInitialized = true;
     store.dispatch("auth/setLoadingAuthStatus", false);
   }
 
   try {
-    console.log("all paths");
-    // const isAuthenticated = await checkAuthStatus();
     const isAuthenticated = store.getters["auth/isAuthenticated"];
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     const isPublicRoute = to.matched.some((record) => record.meta.public);
