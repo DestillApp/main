@@ -111,23 +111,57 @@ const server = new ApolloServer({
 const authenticate = passport.authenticate("jwt", { session: false });
 
 //Routes protect middlewares
+//Post protect middlewares
 app.post("/add-plant", authenticate, (req, res) => {
   res.send("This is a protected route");
 });
 
-app.post("/add-destillation", authenticate, (req, res) => {
+app.post("/edit-plant/:page/:id", authenticate, (req, res) => {
   res.send("This is a protected route");
 });
 
-app.get("/my-account/destillations-in-progress", authenticate, (req, res) => {
+app.post("/add-distillation/:id?", authenticate, (req, res) => {
   res.send("This is a protected route");
 });
 
-app.get("/my-account/plant-list", authenticate, (req, res) => {
+app.post("/edit-distillation/:page/:distillId/:id?", authenticate, (req, res) => {
   res.send("This is a protected route");
 });
 
-app.get("/my-account/saved-destillations", authenticate, (req, res) => {
+app.post("/add-results/:distillId", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.post("/edit-archive-distillation/:page/:archiveId", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+//Get protect middlewares
+app.get("/my-account", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get("/my-account/destillations-in-progress/:page", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get("/my-account/distillation-details/:page/:distillId", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get("/my-account/plant-list/:page", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get("/my-account/plant-details/:page/:id", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get("/my-account/distillation-archives/:page", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get("/my-account/archive-distillation/:page/:archiveId", authenticate, (req, res) => {
   res.send("This is a protected route");
 });
 
