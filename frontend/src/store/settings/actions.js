@@ -54,4 +54,25 @@ export default {
       console.error("Error fetching settings:", error);
     }
   },
+
+  /**
+   * @function fetchLocalStorageData
+   * @description Fetches data from local storage and commits it to the state.
+   * @param {Object} context - The Vuex context.
+   * @param {Object} payload - The payload containing the key.
+   * @param {string} payload.key - The key to fetch from local storage.
+   */
+  fetchLocalStorageData(context, { key }) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key));
+      console.log("Fetched value from local storage:", value);
+      if (value === null) {
+        return;
+      } else {
+        context.commit("changeValue", { input: key, value });
+      }
+    } catch (error) {
+      console.log("Error fetching data from local storage:", error);
+    }
+  },
 };

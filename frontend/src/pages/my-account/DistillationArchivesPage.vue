@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onBeforeMount, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
@@ -262,9 +262,15 @@ export default {
       }
     };
 
+    onBeforeMount(() => {
+      store.dispatch("settings/fetchLocalStorageData", {
+        key: "distillationArchivesListLength",
+      });
+      store.dispatch("fetchSearchQueryFromLocalStorage");
+    });
+
     // Fetch distillation archives list when the component is mounted
     onMounted(() => {
-      store.dispatch("fetchSearchQueryFromLocalStorage");
       if (searchQuery.value) {
         fetchDistillationArchivesList(searchQuery.value);
       } else {

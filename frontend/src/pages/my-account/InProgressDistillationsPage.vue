@@ -125,7 +125,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onBeforeMount, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
@@ -248,8 +248,14 @@ export default {
       }
     };
 
-    onMounted(() => {
+    onBeforeMount(() => {
+      store.dispatch("settings/fetchLocalStorageData", {
+        key: "distillationListLength",
+      });
       store.dispatch("fetchSearchQueryFromLocalStorage");
+    });
+
+    onMounted(() => {
       if (searchQuery.value) {
         fetchDistillationList(searchQuery.value);
       } else {

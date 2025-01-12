@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onBeforeMount, onMounted, watch, computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
@@ -124,7 +124,12 @@ import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 export default {
   name: "PlantListPage",
-  components: { DeleteItemModal, BaseButton, BaseSearchItem, ListLengthSettings },
+  components: {
+    DeleteItemModal,
+    BaseButton,
+    BaseSearchItem,
+    ListLengthSettings,
+  },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
@@ -242,9 +247,15 @@ export default {
       }
     };
 
+    onBeforeMount(() => {
+      store.dispatch("settings/fetchLocalStorageData", {
+        key: "plantListLength",
+      });
+      store.dispatch("fetchSearchQueryFromLocalStorage");
+    });
+
     // Fetch plant list when the component is mounted
     onMounted(() => {
-      store.dispatch("fetchSearchQueryFromLocalStorage");
       if (searchQuery.value) {
         fetchPlantList(searchQuery.value);
       } else {
