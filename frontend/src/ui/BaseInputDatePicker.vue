@@ -210,4 +210,8 @@ export default {
 .icon_color-distillation:hover {
   color: var(--primary-color-distillation);
 }
+
+.icon_invalid {
+  color: var(--error-color);
+}
 </style>
