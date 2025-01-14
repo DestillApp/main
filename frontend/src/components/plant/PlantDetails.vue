@@ -1,5 +1,3 @@
-// no docs, no arch docs
-// miesiąc, miesiące, miesięcy
 <template>
     <div v-if="!isLoading" class="plant_details"> 
         <div v-if="plantDetails.plantOrigin === 'kupno'">
@@ -20,7 +18,7 @@
             czas podsuszania: {{ plantDetails.dryingTime }} h
         </div>
         <div v-if="plantDetails.plantAge">
-            wiek przy zakupie: {{ plantDetails.plantAge }} miesięcy
+            wiek przy zakupie: {{ plantDetails.plantAge }} {{plantAgeWithSuffix(plantDetails.plantAge)}}
         </div>
     </div>
 </template>
@@ -29,6 +27,7 @@
 import { ref, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant.js";
+import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
 
 export default {
     name: "PlantDetails",
@@ -70,7 +69,7 @@ export default {
             }
     });
 
-        return { isLoading, plantDetails };
+        return { isLoading, plantDetails, plantAgeWithSuffix };
 },
 }
 </script>

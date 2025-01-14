@@ -1,11 +1,15 @@
-// no docs 
-// redirecting to the previous plant list page (now it is 1)
-// miesiąc, miesiące, miesięcy - problem with this value, not displaying
+// no docs // redirecting to the previous plant list page (now it is 1) //
 <template>
   <div>
     <!-- Spinner that shows when data is loading -->
-    <v-progress-circular v-if="isLoading" class="spinner" color="var(--secondary-color)" :size="60" :width="6"
-      indeterminate></v-progress-circular>
+    <v-progress-circular
+      v-if="isLoading"
+      class="spinner"
+      color="var(--secondary-color)"
+      :size="60"
+      :width="6"
+      indeterminate
+    ></v-progress-circular>
     <!-- Display plant details once data is loaded and no longer loading -->
     <div v-if="plantDetails && !isLoading" class="plant">
       <div class="plant_container--one">
@@ -21,15 +25,22 @@
         </div>
         <!-- Edit and delete buttons for the plant -->
         <div class="plant_buttons">
-          <router-link :to="{ name: 'EditPlantPage', params: { page: page, id: plantId } }"><button
-              class="plant_button--edit">Edytuj</button></router-link>
+          <router-link
+            :to="{ name: 'EditPlantPage', params: { page: page, id: plantId } }"
+            ><button class="plant_button--edit">Edytuj</button></router-link
+          >
           <button class="plant_button--delete" @click="openDeleteModal">
             Usuń
           </button>
           <!-- Modal for deleting the plant -->
-          <delete-item-modal v-if="isModalOpen" :plantName="plantDetails.plantName" :plantPart="plantDetails.plantPart"
-            @close-modal="closeDeleteModal" @close-delete-modal="closeDeleteModal"
-            @delete-item="deletePlant"></delete-item-modal>
+          <delete-item-modal
+            v-if="isModalOpen"
+            :plantName="plantDetails.plantName"
+            :plantPart="plantDetails.plantPart"
+            @close-modal="closeDeleteModal"
+            @close-delete-modal="closeDeleteModal"
+            @delete-item="deletePlant"
+          ></delete-item-modal>
         </div>
       </div>
       <!-- Display additional plant data -->
@@ -67,17 +78,23 @@
             początkowa ilość: {{ plantDetails.plantWeight }} kg
           </div>
           <div class="plant_data" v-if="plantDetails.plantOrigin === 'kupno'">
-            wiek przy zakupie: {{ plantDetails.plantAge }} miesięcy
+            wiek przy zakupie: {{ plantDetails.plantAge }} {{ plantAgeWithSuffix(plantDetails.plantAge) }}
           </div>
           <div class="plant_data">stan: {{ plantDetails.plantState }}</div>
-          <div v-if="plantDetails.plantState === 'podsuszony'" class="plant_data">
+          <div
+            v-if="plantDetails.plantState === 'podsuszony'"
+            class="plant_data"
+          >
             czas podsuszania: {{ plantDetails.dryingTime }} h
           </div>
         </div>
       </div>
       <!-- Button to navigate to the distillation form -->
-      <router-link :to="{ name: 'AddDistillationPage', params: { id: plantId } }" class="plant_distill"><base-button
-          class="distill_button">Destyluj</base-button></router-link>
+      <router-link
+        :to="{ name: 'AddDistillationPage', params: { id: plantId } }"
+        class="plant_distill"
+        ><base-button class="distill_button">Destyluj</base-button></router-link
+      >
     </div>
   </div>
 </template>
@@ -86,6 +103,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
+import {plantAgeWithSuffix} from "@/helpers/displayHelpers.js";
 
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -197,6 +215,7 @@ export default {
       isLoading,
       plantId,
       page,
+      plantAgeWithSuffix,
       openDeleteModal,
       closeDeleteModal,
       deletePlant,

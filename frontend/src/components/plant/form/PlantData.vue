@@ -122,13 +122,7 @@
       >
         <template v-slot:unit>
           <div v-if="formData.plantAge">
-            <div v-if="formData.plantAge === 1">miesiąc</div>
-            <div v-if="[2, 3, 4].includes(parseInt(formData.plantAge))">
-              miesiące
-            </div>
-            <div v-if="![1, 2, 3, 4].includes(parseInt(formData.plantAge))">
-              miesięcy
-            </div>
+            {{ plantAgeWithSuffix(formData.plantAge) }}
           </div>
         </template>
         <template v-slot:message>
@@ -151,6 +145,7 @@ import {
   setKeyboardIntegerNumber,
   setKeyboardFormatedNumber,
 } from "@/helpers/formatHelpers.js";
+import {plantAgeWithSuffix} from "@/helpers/displayHelpers.js";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 /**
@@ -277,6 +272,7 @@ export default {
       formData,
       states,
       title,
+      plantAgeWithSuffix,
       setNumber,
       setInteger,
       setKeyboardIntegerNumber,
