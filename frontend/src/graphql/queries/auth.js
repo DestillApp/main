@@ -10,6 +10,12 @@ export const VERIFY_AUTH = gql`
   }
 `;
 
+export const CHECK_USERNAME_EXISTENCE = gql`
+  query CheckUsernameExistence($username: String!) {
+    checkUsernameExistence(username: $username)
+  }
+`;
+
 // GraphQL query to login the user
 export const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {

@@ -1,4 +1,4 @@
-//sprawdzenie w bazie danych czy nazwa użytkownika i e-mail juą są
+//sprawdzenie w bazie danych czy nazwa użytkownika juą jest
 
 <template>
   <base-card class="card">
@@ -11,20 +11,30 @@
         v-model="registrationForm.username"
         type="text"
         label="Nazwa użytkownika"
-      ></base-text-input>
+        @blur="checkUsername"
+        @focus="resetUsernameExists"
+      >
+        <template v-slot:message>
+          <span v-if="usernameExists"
+            >Nazwa użytkownika już istnieje w bazie danych. Wpisz inną
+            nazwę.</span
+          >
+          <span v-else>&nbsp;</span>
+        </template>
+      </base-text-input>
       <!-- Input field for entering the email -->
       <base-text-input
         v-model="registrationForm.email"
         type="email"
         label="E-mail"
       >
-      <template v-slot:message>
-        <span v-if="emailExists"
-          >Email już istnieje w bazie danych. Wpisz inny email.</span
-        >
-        <span v-else>&nbsp;</span>
-      </template>
-    </base-text-input>
+        <template v-slot:message>
+          <span v-if="emailExists"
+            >Email już istnieje w bazie danych. Wpisz inny email.</span
+          >
+          <span v-else>&nbsp;</span>
+        </template>
+      </base-text-input>
       <!-- Input field for entering the password -->
       <base-text-input
         v-model="registrationForm.password"
@@ -49,9 +59,11 @@ import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
+import { useApolloClient } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
 import { scrollToTop } from "../helpers/displayHelpers.js";
 import { REGISTER_USER } from "@/graphql/mutations/auth.js";
+import { CHECK_USERNAME_EXISTENCE } from "@/graphql/queries/auth.js";
 
 /**
  * @component RegistrationForm
@@ -62,6 +74,10 @@ export default {
   name: "RegistrationForm",
 
   setup() {
+    // Apollo client instance
+    const { resolveClient } = useApolloClient();
+    const apolloClient = resolveClient();
+
     // Vuex store instance
     const store = useStore();
 
@@ -74,9 +90,45 @@ export default {
     });
 
     const emailExists = ref(false);
+    const usernameExists = ref(false);
 
-const { mutate: registerUser } = useMutation(REGISTER_USER);
+    const { mutate: registerUser } = useMutation(REGISTER_USER);
 
+
+    /**
+     * Function to handle the blur event on the username input.
+     * Checks if the username already exists in the database.
+     * @async
+     * @function checkUsername
+     * @returns {Promise<void>} Resolves when the check is complete.
+     * @throws {Error} Throws an error if the check fails.
+     */
+    const checkUsername = async () => {
+      try {
+        const sanitizedUsername = DOMPurify.sanitize(
+          registrationForm.value.username
+        );
+        const { data } = await apolloClient.query({
+          query: CHECK_USERNAME_EXISTENCE,
+          variables: {
+            username: sanitizedUsername,
+          },
+        });
+
+        if (data.checkUsernameExistence) {
+          usernameExists.value = true;
+        } else {
+          usernameExists.value = false;
+        }
+      } catch (error) {
+        console.error("Error checking username existence", error.message);
+        usernameExists.value = false;
+      }
+    };
+
+    const resetUsernameExists = () => {
+      usernameExists.value = false;
+    };
 
     /**
      * Function to handle the submission of the registration form.
@@ -104,26 +156,34 @@ const { mutate: registerUser } = useMutation(REGISTER_USER);
 
         // Send the GraphQL mutation to register the user
         const { data } = await registerUser({
-            userInput: {
-              username: registrationFormData.username,
-              email: registrationFormData.email,
-              password: registrationFormData.password,
-            },
+          userInput: {
+            username: registrationFormData.username,
+            email: registrationFormData.email,
+            password: registrationFormData.password,
+          },
         });
         console.log("Created user:", data.registerUser);
 
-        store.dispatch("settings/setInitialSettings"); 
-        
+        store.dispatch("settings/setInitialSettings");
+
         router.push({ name: "LoginPage" });
       } catch (error) {
         console.error("Error submitting form", error.message);
         if (error.message == "Email already exists") {
-        emailExists.value = true;
+          emailExists.value = true;
         }
       }
     };
 
-    return { registrationForm, emailExists, scrollToTop, submitRegistrationForm };
+    return {
+      registrationForm,
+      emailExists,
+      usernameExists,
+      scrollToTop,
+      checkUsername,
+      resetUsernameExists,
+      submitRegistrationForm,
+    };
   },
 };
 </script>
@@ -165,5 +225,4 @@ const { mutate: registerUser } = useMutation(REGISTER_USER);
 .link_login {
   color: var(--primary-color);
 }
-
 </style>
