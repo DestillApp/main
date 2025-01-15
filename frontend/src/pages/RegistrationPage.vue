@@ -1,5 +1,4 @@
 //sprawdzenie w bazie danych czy nazwa użytkownika i e-mail juą są
-// redirecting to another page afer registration
 
 <template>
   <base-card class="card">
@@ -18,7 +17,14 @@
         v-model="registrationForm.email"
         type="email"
         label="E-mail"
-      ></base-text-input>
+      >
+      <template v-slot:message>
+        <span v-if="emailExists"
+          >Email już istnieje w bazie danych. Wpisz inny email.</span
+        >
+        <span v-else>&nbsp;</span>
+      </template>
+    </base-text-input>
       <!-- Input field for entering the password -->
       <base-text-input
         v-model="registrationForm.password"
@@ -60,15 +66,17 @@ export default {
     const store = useStore();
 
     const router = useRouter();
-    // Object to store registration form data
+
     const registrationForm = ref({
       username: "",
       email: "",
       password: "",
     });
 
-    // Using GraphQL mutation for user registration
-    const { mutate: registerUser } = useMutation(REGISTER_USER);
+    const emailExists = ref(false);
+
+const { mutate: registerUser } = useMutation(REGISTER_USER);
+
 
     /**
      * Function to handle the submission of the registration form.
@@ -96,21 +104,26 @@ export default {
 
         // Send the GraphQL mutation to register the user
         const { data } = await registerUser({
-          input: {
-            username: registrationFormData.username,
-            email: registrationFormData.email,
-            password: registrationFormData.password,
-          },
+            userInput: {
+              username: registrationFormData.username,
+              email: registrationFormData.email,
+              password: registrationFormData.password,
+            },
         });
         console.log("Created user:", data.registerUser);
+
         store.dispatch("settings/setInitialSettings"); 
+        
         router.push({ name: "LoginPage" });
       } catch (error) {
-        console.error("Error submitting form", error);
+        console.error("Error submitting form", error.message);
+        if (error.message == "Email already exists") {
+        emailExists.value = true;
+        }
       }
     };
 
-    return { registrationForm, submitRegistrationForm, scrollToTop };
+    return { registrationForm, emailExists, scrollToTop, submitRegistrationForm };
   },
 };
 </script>
@@ -152,4 +165,5 @@ export default {
 .link_login {
   color: var(--primary-color);
 }
+
 </style>
