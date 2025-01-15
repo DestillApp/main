@@ -27,7 +27,7 @@ const userSchema = gql`
   type Query {
     getUsers: [User!]!
     verifyAuth: AuthStatus!
-    checkEmailExistence(email: String!): Boolean
+    checkUsernameExistence(username: String!): Boolean!
   }
 
   type Mutation {

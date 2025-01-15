@@ -56,6 +56,25 @@ const userResolver = {
         return { isAuthenticated: false };
       }
     },
+
+        /**
+     * @function checkUsernameExistence
+     * @description Checks if the username exists in the database.
+     * @param {Object} _ - Unused.
+     * @param {String} username - The username to check.
+     * @returns {Promise<Boolean>} True if the username exists, false otherwise.
+     */
+        checkUsernameExistence: async (_, { username }) => {
+          try {
+            const sanitizedUsername = DOMPurify.sanitize(username);
+            const user = await User.findOne({ username: sanitizedUsername });
+            console.log("USER", user)
+            return !!user; // Return true if user exists, false otherwise
+          } catch (error) {
+            console.error("Error checking username existence:", error);
+            throw new Error("Failed to check username existence");
+          }
+        },
   },
   Mutation: {
     /**
