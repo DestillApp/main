@@ -9,7 +9,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../database/user");
 const DOMPurify = require("../../util/sanitizer");
-const { AuthenticationError } = require("apollo-server-express");
+const { AuthenticationError, UserInputError } = require("apollo-server-express");
 
 /**
  * @function generateToken
@@ -74,9 +74,17 @@ const userResolver = {
       const sanitizedEmail = DOMPurify.sanitize(email);
       const sanitizedPassword = DOMPurify.sanitize(password);
 
-      // Hashing the password
-      const hashedPassword = await bcrypt.hash(sanitizedPassword, 10);
       try {
+        // Check if the email or username already exists in the database
+        const existingEmail = await User.findOne({ email: sanitizedEmail });
+        if (existingEmail) {
+          throw new UserInputError("Email already exists", {
+            invalidArgs: { email: sanitizedEmail },
+          });
+        }
+
+        // Hashing the password
+        const hashedPassword = await bcrypt.hash(sanitizedPassword, 10);
         // Creating a new User instance
         const user = new User({
           username: sanitizedUsername,
@@ -87,6 +95,10 @@ const userResolver = {
         const result = await user.save();
         return result;
       } catch (err) {
+        console.error("Error during user registration:", err);
+        if (err instanceof UserInputError) {
+          throw err;
+        }
         throw new Error("Failed to create user");
       }
     },
