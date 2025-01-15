@@ -11,6 +11,9 @@
         v-model="registrationForm.username"
         type="text"
         label="Nazwa użytkownika"
+        :invalidInput="
+          (!isFormValid && !registrationForm.username) || usernameExists
+        "
         @blur="checkUsername"
         @focus="resetUsernameExists"
       >
@@ -18,6 +21,9 @@
           <span v-if="usernameExists"
             >Nazwa użytkownika już istnieje w bazie danych. Wpisz inną
             nazwę.</span
+          >
+          <span v-if="!isFormValid && !registrationForm.username"
+            >Wpisz nazwę użytkownika.</span
           >
           <span v-else>&nbsp;</span>
         </template>
@@ -27,10 +33,14 @@
         v-model="registrationForm.email"
         type="email"
         label="E-mail"
+        :invalidInput="(!isFormValid && !registrationForm.email) || emailExists"
       >
         <template v-slot:message>
           <span v-if="emailExists"
             >Email już istnieje w bazie danych. Wpisz inny email.</span
+          >
+          <span v-if="!isFormValid && !registrationForm.email"
+            >Wpisz email.</span
           >
           <span v-else>&nbsp;</span>
         </template>
@@ -41,6 +51,19 @@
         type="password"
         label="Hasło"
       ></base-text-input>
+      <!-- Input field for confirming the password -->
+      <base-text-input
+        v-model="confirmPassword"
+        type="password"
+        label="Potwierdź hasło"
+        :invalidInput="(!isFormValid && !confirmPassword) || isPasswordMatch === false"
+      >
+        <template v-slot:message>
+          <span v-if="isPasswordMatch === false">Hasła nie są takie same.</span>
+          <span v-if="!isFormValid && !confirmPassword">Wpisz hasło.</span>
+          <span v-else>&nbsp;</span>
+        </template>
+      </base-text-input>
       <!-- Button to submit the registration form -->
       <base-button class="button" type="submit">Zarejestruj się</base-button>
     </form>
@@ -55,7 +78,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
@@ -89,11 +112,27 @@ export default {
       password: "",
     });
 
+    // Reactive reference to track form validity
+    const isFormValid = ref(true);
+
     const emailExists = ref(false);
     const usernameExists = ref(false);
 
+    const confirmPassword = ref("");
+
     const { mutate: registerUser } = useMutation(REGISTER_USER);
 
+    // Computed property to check if passwords match
+    const isPasswordMatch = computed(() => {
+      if (confirmPassword.value === "") {
+        return "";
+      }
+      if (registrationForm.value.password === confirmPassword.value) {
+        return true;
+      } else {
+        return false;
+      }
+    });
 
     /**
      * Function to handle the blur event on the username input.
@@ -177,8 +216,11 @@ export default {
 
     return {
       registrationForm,
+      isFormValid,
       emailExists,
       usernameExists,
+      confirmPassword,
+      isPasswordMatch,
       scrollToTop,
       checkUsername,
       resetUsernameExists,
