@@ -34,6 +34,7 @@
         type="email"
         label="E-mail"
         :invalidInput="(!isFormValid && !registrationForm.email) || emailExists"
+        @focus="resetEmailExists"
       >
         <template v-slot:message>
           <span v-if="emailExists"
@@ -233,6 +234,10 @@ export default {
       }
     };
 
+    const resetEmailExists = () => {
+      emailExists.value = false;
+    };
+
         /**
      * Function to validate the form and call submitRegistrationForm if valid.
      * @async
@@ -270,7 +275,8 @@ export default {
       checkUsername,
       resetUsernameExists,
       checkPassword,
-      saveRegistration
+      saveRegistration,
+      resetEmailExists
     };
   },
 };
