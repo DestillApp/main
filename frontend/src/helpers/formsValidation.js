@@ -166,3 +166,45 @@ export const editArchiveDistillationFormValidation = (form) => {
 
   return isFormValid;
 };
+
+/**
+ * @function registrationFormValidation
+ * @description Function to validate the registration form data
+ * @param {Object} form - The registration form data object
+ * @returns {boolean} Returns true if the form is valid, otherwise false
+ */
+export const registrationFormValidation = (form, username) => {
+  let isFormValid = true;
+  let isPasswordCorrect = true;
+console.log("username", username);
+  // Initial form validation for required fields
+  if (
+    form.username === "" ||
+    form.email === "" ||
+    form.password === "" ||
+    form.confirmPassword === ""
+  ) {
+    console.log("empty false")
+    isFormValid = false;
+  }
+
+  if (username) {
+    console.log("username, false")
+    isFormValid = false;
+  }
+
+  // Password validation: at least 8 characters, one uppercase letter, one lowercase letter, and one number
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+  if (!passwordRegex.test(form.password)) {
+    isFormValid = false;
+    isPasswordCorrect = false;
+  }
+
+  // Check if passwords match
+  if (form.password !== form.confirmPassword) {
+    console.log("passwords false")
+    isFormValid = false;
+  }
+
+  return { isFormValid, isPasswordCorrect };
+};

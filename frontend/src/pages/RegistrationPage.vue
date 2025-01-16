@@ -5,7 +5,7 @@
     <!-- Title for the registration form -->
     <h3>Rejestracja</h3>
     <!-- Registration form -->
-    <form @submit.prevent="submitRegistrationForm" class="form">
+    <form @submit.prevent="saveRegistration" class="form">
       <!-- Input field for entering the username -->
       <base-text-input
         v-model="registrationForm.username"
@@ -48,9 +48,17 @@
       <!-- Input field for entering the password -->
       <base-text-input
         v-model="registrationForm.password"
+        :invalidInput="!isFormValid && !registrationForm.password"
+        @input="checkPassword"
         type="password"
         label="Hasło"
-      ></base-text-input>
+      >
+      <template v-slot:message>
+        <span v-if="!isPasswordCorrect && registrationForm.password">Wpisz poprawne hasło. Hasło musi zawierać conajmniej 8 znaków, jedną wielką literę i jedną liczbę.</span>
+          <span v-if="!isFormValid && !registrationForm.password">Wpisz hasło.</span>
+          <span v-else>&nbsp;</span>
+        </template>
+    </base-text-input>
       <!-- Input field for confirming the password -->
       <base-text-input
         v-model="confirmPassword"
@@ -60,7 +68,7 @@
       >
         <template v-slot:message>
           <span v-if="isPasswordMatch === false">Hasła nie są takie same.</span>
-          <span v-if="!isFormValid && !confirmPassword">Wpisz hasło.</span>
+          <span v-if="!isFormValid && !confirmPassword">Powtórz wpisane hasło.</span>
           <span v-else>&nbsp;</span>
         </template>
       </base-text-input>
@@ -87,6 +95,7 @@ import DOMPurify from "dompurify";
 import { scrollToTop } from "../helpers/displayHelpers.js";
 import { REGISTER_USER } from "@/graphql/mutations/auth.js";
 import { CHECK_USERNAME_EXISTENCE } from "@/graphql/queries/auth.js";
+import { registrationFormValidation } from "@/helpers/formsValidation.js";
 
 /**
  * @component RegistrationForm
@@ -114,6 +123,7 @@ export default {
 
     // Reactive reference to track form validity
     const isFormValid = ref(true);
+    const isPasswordCorrect = ref(true);
 
     const emailExists = ref(false);
     const usernameExists = ref(false);
@@ -169,6 +179,15 @@ export default {
       usernameExists.value = false;
     };
 
+        /**
+     * Function to check if the password is correct on input change.
+     */
+     const checkPassword = () => {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+      isPasswordCorrect.value = passwordRegex.test(registrationForm.value.password);
+    };
+
+
     /**
      * Function to handle the submission of the registration form.
      * Sanitizes user input and sends a GraphQL mutation to register the user.
@@ -214,9 +233,35 @@ export default {
       }
     };
 
+        /**
+     * Function to validate the form and call submitRegistrationForm if valid.
+     * @async
+     * @function saveRegistration
+     * @returns {Promise<void>} Resolves when the form validation and submission process is complete.
+     * @throws {Error} Throws an error if the form validation or submission fails.
+     */
+     const saveRegistration = async () => {
+     const validationResults = registrationFormValidation({
+        ...registrationForm.value,
+        confirmPassword: confirmPassword.value,
+      }, usernameExists.value);
+
+      isFormValid.value = validationResults.isFormValid;
+      isPasswordCorrect.value = validationResults.isPasswordCorrect;
+
+      console.log(validationResults);
+
+      if (isFormValid.value) {
+        await submitRegistrationForm();
+      } else {
+        console.log("Form is invalid");
+      }
+    };
+
     return {
       registrationForm,
       isFormValid,
+      isPasswordCorrect,
       emailExists,
       usernameExists,
       confirmPassword,
@@ -224,7 +269,8 @@ export default {
       scrollToTop,
       checkUsername,
       resetUsernameExists,
-      submitRegistrationForm,
+      checkPassword,
+      saveRegistration
     };
   },
 };
