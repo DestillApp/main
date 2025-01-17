@@ -48,14 +48,11 @@ const settingsResolvers = {
      * @param {Object} user - The authenticated user.
      * @returns {Promise<Object>} The created user settings.
      */
-    createSettings: async (_, __, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+    createSettings: async (_, { userId }) => {
 
       // Initial default settings data
       const defaultSettings = {
-        userId: user.id,
+        userId: userId,
         listSettings: {
           plantListLength: 10,
           distillationListLength: 10,

@@ -29,7 +29,7 @@ const settingsSchema = gql`
   }
 
   type Mutation {
-    createSettings: UserSettings!
+    createSettings(userId: ID!): UserSettings!
     updateListSettings(input: UpdateListSettingsInput!): UserSettings!
   }
 `;
