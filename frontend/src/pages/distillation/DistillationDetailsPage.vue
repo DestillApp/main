@@ -169,6 +169,7 @@ import SvgIcon from "@jamescoyle/vue-icon";
 import PlantDetails from "@/components/plant/PlantDetails.vue";
 import { mdiChevronDown } from "@mdi/js";
 import { mdiChevronUp } from "@mdi/js";
+import DOMPurify from "dompurify";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
@@ -326,12 +327,13 @@ export default {
      */
     const addPlantWeight = async () => {
       try {
+        const sanitizedAvailableWeight = Number(DOMPurify.sanitize(distillationWeight.value));
         const { data } = await apolloClient.mutate({
           mutation: CHANGE_AVAILABLE_WEIGHT,
           variables: {
             input: {
               id: selectedPlantId.value,
-              availableWeight: distillationWeight.value,
+              availableWeight: sanitizedAvailableWeight,
             },
           },
         });
