@@ -23,12 +23,13 @@ export default {
    * @function setInitialSettings
    * @description Creates initial settings in the database.
    */
-  async setInitialSettings() {
+  async setInitialSettings(context, userId) {
     try {
-      const { data } = await apolloClient.mutate({
+      const {data} = await apolloClient.mutate({
         mutation: CREATE_SETTINGS,
+        variables: { userId },
       });
-      console.log("Settings created:", data.createSettings);
+      console.log("Initial settings created:", data.createSettings);
     } catch (error) {
       console.error("Error creating settings:", error);
     }

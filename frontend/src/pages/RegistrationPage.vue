@@ -223,7 +223,8 @@ export default {
         });
         console.log("Created user:", data.registerUser);
 
-        store.dispatch("settings/setInitialSettings");
+        // Dispatch the setInitialSettings action with the userId
+        await store.dispatch("settings/setInitialSettings", data.registerUser._id);
 
         router.push({ name: "LoginPage" });
       } catch (error) {
@@ -253,8 +254,6 @@ export default {
 
       isFormValid.value = validationResults.isFormValid;
       isPasswordCorrect.value = validationResults.isPasswordCorrect;
-
-      console.log(validationResults);
 
       if (isFormValid.value) {
         await submitRegistrationForm();
