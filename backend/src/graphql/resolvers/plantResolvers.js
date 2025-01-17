@@ -228,11 +228,13 @@ const plantResolver = {
       if (!user) { throw new Error("Unauthorized"); }
 
       try {
-        const { id, availableWeight } = input;
+        const sanitizedId = DOMPurify.sanitize(input.id);
+        const sanitizedAvailableWeight = Number(DOMPurify.sanitize(input.availableWeight));
+
         // Find plant by ID and update availableWeight
         const updatedPlant = await Plant.findOneAndUpdate(
-          { _id: id, userId: user.id },
-          { availableWeight: availableWeight },
+          { _id: sanitizedId, userId: user.id },
+          { availableWeight: sanitizedAvailableWeight },
           { new: true } // Returns the updated document
         );
         return updatedPlant;
@@ -245,15 +247,17 @@ const plantResolver = {
       if (!user) { throw new Error("Unauthorized"); }
 
       try {
-        const { id, availableWeight } = input;
+        const sanitizedId = DOMPurify.sanitize(input.id);
+        const sanitizedAvailableWeight = Number(DOMPurify.sanitize(input.availableWeight));
+
         // Find the plant by its ID
-        const plant = await Plant.findOne({ _id: id, userId: user.id });
+        const plant = await Plant.findOne({ _id: sanitizedId, userId: user.id });
 
         if (!plant) {
           throw new Error("Plant not found");
         }
 
-        plant.availableWeight += availableWeight;
+        plant.availableWeight += sanitizedAvailableWeight;
 
         // Save the updated plant document
         const updatedPlant = await plant.save();
@@ -261,7 +265,7 @@ const plantResolver = {
         return updatedPlant;
       } catch (error) {
         console.error("Error in changeAvailableWeight resolver:", error);
-        throw new Error("Failed to add weight to plant's available weight: " + error.message);
+        throw new Error("Failed to change plant's available weight: " + error.message);
       }
     },
   },
