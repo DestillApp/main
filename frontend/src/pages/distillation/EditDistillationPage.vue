@@ -120,6 +120,7 @@ export default {
             store.dispatch("distillation/setValue", { input: "soakingTime", value: distillationDetails.value.soakingTime });
             store.dispatch("distillation/setValue", { input: "weightAfterSoaking", value: distillationDetails.value.weightAfterSoaking });
             store.dispatch("distillation/setValue", { input: "weightForDistillation", value: distillationDetails.value.weightForDistillation });
+            store.dispatch("distillation/setValue", { input: "initialWeightForDistillation", value: distillationDetails.value.weightForDistillation });
             store.dispatch("distillation/setValue", { input: "distillationApparatus", value: distillationDetails.value.distillationApparatus });
             store.dispatch("distillation/setValue", { input: "distillationDate", value: distillationDetails.value.distillationDate });
             store.dispatch("distillation/setValue", { input: "distillationType", value: distillationDetails.value.distillationType });
@@ -222,8 +223,11 @@ export default {
 
         const sanitizedAvailableWeight = Number(DOMPurify.sanitize(distillationForm.value.choosedPlant.availableWeight));
         const sanitizedWeightForDistillation = Number(DOMPurify.sanitize(distillationForm.value.weightForDistillation));
-        const newWeight = sanitizedAvailableWeight - sanitizedWeightForDistillation;
-
+        const initialWeightForDistillation = distillationForm.value.initialWeightForDistillation;
+        console.log("weight", initialWeightForDistillation);
+        let newWeight = sanitizedAvailableWeight + initialWeightForDistillation - sanitizedWeightForDistillation;
+        newWeight = parseFloat(newWeight.toFixed(1)); 
+        
         const { data } = await updateAvailableWeight({
           input: {
             id: route.params.id,

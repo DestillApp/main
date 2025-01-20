@@ -40,7 +40,7 @@
           <div class="plant_information">
             <span>ilość surowca na stanie: </span
             ><span class="information"
-              >{{ formData.choosedPlant.availableWeight }} kg</span
+              >{{ updatedAvailableWeight }} kg</span
             >
           </div>
         </div>
@@ -76,7 +76,7 @@
             formData.weightForDistillation >
             formData.choosedPlant.availableWeight
           "
-          >Brak wystarczającej ilości surowca z magazynie</span
+          >Brak wystarczającej ilości surowca w magazynie</span
         >
         <span
           v-if="
@@ -185,6 +185,7 @@ import {
   setKeyboardIntegerNumber,
   setKeyboardFormatedNumber,
 } from "@/helpers/formatHelpers.js";
+import DOMPurify from "dompurify";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
@@ -240,6 +241,31 @@ export default {
     const isPlantShredded = computed(
       () => store.getters["distillation/isPlantShredded"]
     );
+
+    // Computed property to calculate the new available weight
+    const updatedAvailableWeight = computed(() => {
+      const sanitizedAvailableWeight = Number(
+        DOMPurify.sanitize(formData.value.choosedPlant.availableWeight)
+      );
+      const sanitizedWeightForDistillation = Number(
+        DOMPurify.sanitize(formData.value.weightForDistillation)
+      );
+      const initialWeightForDistillation =
+        formData.value.initialWeightForDistillation;
+      if (props.isEditing) {
+        return parseFloat(
+          (
+            sanitizedAvailableWeight +
+            initialWeightForDistillation -
+            sanitizedWeightForDistillation
+          ).toFixed(1)
+        );
+      } else {
+        return parseFloat(
+          (sanitizedAvailableWeight - sanitizedWeightForDistillation).toFixed(1)
+        );
+      }
+    });
 
     // Format the plantBuyDate
     const formattedPlantBuyDate = computed(() => {
@@ -310,11 +336,15 @@ export default {
           });
           store.dispatch("distillation/setChoosedPlant", {
             key: "harvestDate",
-            value: plantData.harvestDate ? format(new Date(plantData.harvestDate), "dd-MM-yyyy") : "",
+            value: plantData.harvestDate
+              ? format(new Date(plantData.harvestDate), "dd-MM-yyyy")
+              : "",
           });
           store.dispatch("distillation/setChoosedPlant", {
             key: "buyDate",
-            value: plantData.plantBuyDate ? format(new Date(plantData.plantBuyDate), "dd-MM-yyyy") : "",
+            value: plantData.plantBuyDate
+              ? format(new Date(plantData.plantBuyDate), "dd-MM-yyyy")
+              : "",
           });
           plant.value = formData.value.choosedPlant.name;
           console.log("PLANT DATA", formData.value);
@@ -522,6 +552,7 @@ export default {
       storeName,
       formData,
       isPlantSoaked,
+      updatedAvailableWeight,
       formattedPlantBuyDate,
       formattedHarvestDate,
       plant,

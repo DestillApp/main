@@ -170,8 +170,9 @@ export default {
       try {
         const sanitizedAvailableWeight = Number(DOMPurify.sanitize(distillationForm.value.choosedPlant.availableWeight));
         const sanitizedWeightForDistillation = Number(DOMPurify.sanitize(distillationForm.value.weightForDistillation));
-        const newWeight = sanitizedAvailableWeight - sanitizedWeightForDistillation;
-        
+       let newWeight = sanitizedAvailableWeight - sanitizedWeightForDistillation;
+       newWeight = parseFloat(newWeight.toFixed(1));
+
         const { data } = await updateAvailableWeight({
           input: {
             id: route.params.id,

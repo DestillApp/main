@@ -30,6 +30,7 @@ export const initialDistillationForm = {
     buyDate: "",
   },
   weightForDistillation: null,
+  initialWeightForDistillation: null,
   isPlantSoaked: false,
   soakingTime: null,
   weightAfterSoaking: null,
