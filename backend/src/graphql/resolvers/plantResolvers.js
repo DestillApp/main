@@ -257,7 +257,7 @@ const plantResolver = {
           throw new Error("Plant not found");
         }
 
-        plant.availableWeight += sanitizedAvailableWeight;
+        plant.availableWeight = parseFloat((plant.availableWeight + sanitizedAvailableWeight).toFixed(1));
 
         // Save the updated plant document
         const updatedPlant = await plant.save();
