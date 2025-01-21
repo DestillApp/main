@@ -11,13 +11,18 @@
     ></list-length-settings>
     <!-- Title for the plant list -->
     <h3 class="plant_list--title">Magazyn surowców</h3>
+    <div class="plant_list--sort">
     <!-- Search item component for searching plants by name -->
     <base-search-item
+    v-if="plantList.length >= 1"
       label="Szukaj surowca po nazwie"
       inputColor="plant"
       @search="handleSearch"
       @clear="handleSearch"
     ></base-search-item>
+      <!-- List sorting component for sorting plants -->
+  <list-sorting :options="options" @choose:sorting="handleSorting"></list-sorting>
+    </div>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
@@ -109,6 +114,7 @@ import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
+import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
@@ -129,6 +135,7 @@ export default {
     BaseButton,
     BaseSearchItem,
     ListLengthSettings,
+    ListSorting,
   },
   setup() {
     // Apollo client instance
@@ -169,6 +176,8 @@ export default {
 
     // Computed property to get searchQuery from Vuex store
     const searchQuery = computed(() => store.getters.searchQuery);
+
+    const options = ref(["nazwy rośliny", "daty dodania", "daty zbioru / zakupu"]);
 
     /**
      * @async
@@ -246,6 +255,16 @@ export default {
         console.error("Failed to update plant list length:", error);
       }
     };
+
+    /**
+     * @function handleSorting
+     * @description Handle the sorting of the plant list.
+     * @param {String} sorting - The sorting option.
+     */
+    const handleSorting = (sorting) => {
+      console.log("Sorting:", sorting);
+    };
+
 
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
@@ -356,6 +375,8 @@ export default {
       isLoading,
       paginationLength,
       searchQuery,
+      options,
+      handleSorting,
       handleSelectLength,
       openDeleteModal,
       closeDeleteModal,
@@ -373,6 +394,12 @@ export default {
 
 .plant_list--title {
   margin-bottom: 20px;
+}
+
+.plant_list--sort {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .plant_list {

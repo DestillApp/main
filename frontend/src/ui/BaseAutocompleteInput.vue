@@ -409,10 +409,3 @@ export default {
   font-size: 12px;
 }
 </style>
-
-
-          <!-- :color="
-            invalidInput === true
-              ? 'var(--error-color)'
-              : 'var(--secondary-color)'
-          " -->

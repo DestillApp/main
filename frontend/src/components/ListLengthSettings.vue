@@ -64,7 +64,6 @@ export default {
     const handleClickOutside = (event) => {
       if (settingsContainer.value && !settingsContainer.value.contains(event.target)) {
         isListVisible.value = false;
-        document.removeEventListener("click", handleClickOutside);
       }
     };
 
