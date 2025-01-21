@@ -171,10 +171,11 @@ const plantResolver = {
         plantAge: plantInput.plantAge
           ? Number(DOMPurify.sanitize(plantInput.plantAge))
           : null,
-          date: plantInput.plantBuyDate
+        date: plantInput.plantBuyDate
           ? new Date(DOMPurify.sanitize(plantInput.plantBuyDate))
           : new Date(DOMPurify.sanitize(plantInput.harvestDate)),
-        userId: user.id, // Adding user ID to the sanitized data
+        userId: user.id,
+        createdAt: Date.now(),
       };
       // Filtering out null or empty string values
       const filteredData = filterPlantData(sanitizedData);
@@ -223,7 +224,7 @@ const plantResolver = {
         plantAge: plantInput.plantAge
           ? Number(DOMPurify.sanitize(plantInput.plantAge))
           : null,
-          date: plantInput.plantBuyDate
+        date: plantInput.plantBuyDate
           ? new Date(DOMPurify.sanitize(plantInput.plantBuyDate))
           : new Date(DOMPurify.sanitize(plantInput.harvestDate)),
         userId: user.id,
@@ -233,7 +234,9 @@ const plantResolver = {
       const filteredData = filterPlantData(sanitizedData);
 
       try {
-        const updatedPlant = await Plant.findByIdAndUpdate(id, filteredData, {
+        const { createdAt, ...updateData } = filteredData;
+
+        const updatedPlant = await Plant.findByIdAndUpdate(id, updateData, {
           new: true,
         });
         return updatedPlant;

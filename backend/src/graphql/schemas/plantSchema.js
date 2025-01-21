@@ -26,6 +26,7 @@ const plantSchema = gql`
     plantAge: Int
     date: String!
     userId: ID!
+    createdAt: String!
   }
 
   input PlantInput {

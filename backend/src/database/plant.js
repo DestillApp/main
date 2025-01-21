@@ -28,6 +28,7 @@ const plantSchema = new Schema({
   plantAge: { type: Number, required: false },
   date: { type: Date, required: true },
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  createdAt: { type: Date, required: true },
 });
 
 // Exporting the Plant model based on the plantSchema
