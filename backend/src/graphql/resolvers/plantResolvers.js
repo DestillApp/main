@@ -10,7 +10,7 @@ const Plant = require("../../database/plant");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
-const { formatDate }= require("../../util/dateformater");
+const { formatDate } = require("../../util/dateformater");
 
 // Utility function to filter data
 function filterPlantData(data) {
@@ -37,8 +37,10 @@ const plantResolver = {
      * @description Fetches plants from the database.
      * @returns {Promise<Array>} Array of plants.
      */
-    getPlants: async (_, { fields, formatDates, name }, { user }) => {
-      if (!user) { throw new Error("Unauthorized"); }
+    getPlants: async (_, { fields, formatDates, name, sorting }, { user }) => {
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
 
       try {
         // Build a projection object based on the fields argument
@@ -55,8 +57,24 @@ const plantResolver = {
           filter.plantName = { $regex: new RegExp(name, "i") }; // Case-insensitive search
         }
 
+        console.log("sorting", sorting);
+
+        // Build a sort object based on sortingProps
+        const sort = {};
+        if (sorting === "plantName") {
+          sort.plantName = 1;
+        }
+
+        if (sorting === "youngDate") {
+          sort.date = -1;
+        }
+
+        if (sorting === "oldDate") {
+          sort.date = 1;
+        }
+
         // Fetch plants with the specified fields from database
-        const plants = await Plant.find(filter, projection);
+        const plants = await Plant.find(filter, projection).sort(sort);
 
         // Format date fields before returning the result
         return plants.map((plant) => {
@@ -79,12 +97,14 @@ const plantResolver = {
           return formattedPlant;
         });
       } catch (error) {
-        throw new Error("Failed to fetch plants", error);
+        throw new Error("Failed to fetch plants: " + error.message);
       }
     },
 
     getPlantById: async (_, { id, formatDates }, { user }) => {
-      if (!user) { throw new Error("Unauthorized"); }
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
 
       try {
         const plant = await Plant.findOne({ _id: id, userId: user.id });
@@ -120,7 +140,9 @@ const plantResolver = {
      * @returns {Promise<Object>} The created plant.
      */
     createPlant: async (_, { plantInput }, { user }) => {
-      if (!user) { throw new Error("Unauthorized"); }
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
 
       // Sanitizing the input data
       const sanitizedData = {
@@ -149,6 +171,9 @@ const plantResolver = {
         plantAge: plantInput.plantAge
           ? Number(DOMPurify.sanitize(plantInput.plantAge))
           : null,
+          date: plantInput.plantBuyDate
+          ? new Date(DOMPurify.sanitize(plantInput.plantBuyDate))
+          : new Date(DOMPurify.sanitize(plantInput.harvestDate)),
         userId: user.id, // Adding user ID to the sanitized data
       };
       // Filtering out null or empty string values
@@ -167,7 +192,9 @@ const plantResolver = {
 
     // Update an existing plant
     updatePlant: async (_, { id, plantInput }, { user }) => {
-      if (!user) { throw new Error("Unauthorized"); }
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
 
       // Sanitizing the input data
       const sanitizedData = {
@@ -196,6 +223,9 @@ const plantResolver = {
         plantAge: plantInput.plantAge
           ? Number(DOMPurify.sanitize(plantInput.plantAge))
           : null,
+          date: plantInput.plantBuyDate
+          ? new Date(DOMPurify.sanitize(plantInput.plantBuyDate))
+          : new Date(DOMPurify.sanitize(plantInput.harvestDate)),
         userId: user.id,
       };
 
@@ -213,7 +243,9 @@ const plantResolver = {
     },
 
     deletePlant: async (_, { id }, { user }) => {
-      if (!user) { throw new Error("Unauthorized"); }
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
 
       try {
         await Plant.findOneAndDelete({ _id: id, userId: user.id });
@@ -225,11 +257,15 @@ const plantResolver = {
     },
 
     updateAvailableWeight: async (_, { input }, { user }) => {
-      if (!user) { throw new Error("Unauthorized"); }
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
 
       try {
         const sanitizedId = DOMPurify.sanitize(input.id);
-        const sanitizedAvailableWeight = Number(DOMPurify.sanitize(input.availableWeight));
+        const sanitizedAvailableWeight = Number(
+          DOMPurify.sanitize(input.availableWeight)
+        );
 
         // Find plant by ID and update availableWeight
         const updatedPlant = await Plant.findOneAndUpdate(
@@ -239,25 +275,36 @@ const plantResolver = {
         );
         return updatedPlant;
       } catch (error) {
-        throw new Error("Failed to update plant's available weight: " + error.message);
+        throw new Error(
+          "Failed to update plant's available weight: " + error.message
+        );
       }
     },
 
     changeAvailableWeight: async (_, { input }, { user }) => {
-      if (!user) { throw new Error("Unauthorized"); }
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
 
       try {
         const sanitizedId = DOMPurify.sanitize(input.id);
-        const sanitizedAvailableWeight = Number(DOMPurify.sanitize(input.availableWeight));
+        const sanitizedAvailableWeight = Number(
+          DOMPurify.sanitize(input.availableWeight)
+        );
 
         // Find the plant by its ID
-        const plant = await Plant.findOne({ _id: sanitizedId, userId: user.id });
+        const plant = await Plant.findOne({
+          _id: sanitizedId,
+          userId: user.id,
+        });
 
         if (!plant) {
           throw new Error("Plant not found");
         }
 
-        plant.availableWeight = parseFloat((plant.availableWeight + sanitizedAvailableWeight).toFixed(1));
+        plant.availableWeight = parseFloat(
+          (plant.availableWeight + sanitizedAvailableWeight).toFixed(1)
+        );
 
         // Save the updated plant document
         const updatedPlant = await plant.save();
@@ -265,7 +312,9 @@ const plantResolver = {
         return updatedPlant;
       } catch (error) {
         console.error("Error in changeAvailableWeight resolver:", error);
-        throw new Error("Failed to change plant's available weight: " + error.message);
+        throw new Error(
+          "Failed to change plant's available weight: " + error.message
+        );
       }
     },
   },
