@@ -2,8 +2,8 @@ import { gql } from "@apollo/client/core";
 
 // GraphQL query to fetch the all plants or all the plants with the same name.
 export const GET_PLANTS = gql`
-  query GetPlants($fields: [String]!, $formatDates: Boolean!, $name: String) {
-    getPlants(fields: $fields, formatDates: $formatDates, name: $name) {
+  query GetPlants($fields: [String]!, $formatDates: Boolean!, $name: String, $sorting: String) {
+    getPlants(fields: $fields, formatDates: $formatDates, name: $name, sorting: $sorting) {
       plantName
       plantPart
       availableWeight

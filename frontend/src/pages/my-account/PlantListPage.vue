@@ -177,7 +177,7 @@ export default {
     // Computed property to get searchQuery from Vuex store
     const searchQuery = computed(() => store.getters.searchQuery);
 
-    const options = ref(["nazwy rośliny", "daty dodania", "daty zbioru / zakupu"]);
+    const options = ref(["nazwy rośliny alfabetycznie", "daty dodania", "najnowszej daty zbioru i zakupu", "najstarszej daty zbioru i zakupu"]);
 
     /**
      * @async
@@ -185,7 +185,7 @@ export default {
      * @description Fetch the list of plants from the GraphQL server.
      * @returns {Promise<void>}
      */
-    const fetchPlantList = async (name) => {
+    const fetchPlantList = async (name, sorting) => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -202,6 +202,7 @@ export default {
             ],
             formatDates: true,
             name: name,
+            sorting: sorting
           },
         });
         plantsAmount.value = data.getPlants.length;
@@ -261,8 +262,20 @@ export default {
      * @description Handle the sorting of the plant list.
      * @param {String} sorting - The sorting option.
      */
-    const handleSorting = (sorting) => {
-      console.log("Sorting:", sorting);
+    const handleSorting = (option) => {
+      console.log("Sorting:", option);
+      if (option === "nazwy rośliny alfabetycznie") {
+        fetchPlantList(searchQuery.value, "plantName");
+      }
+      if (option === "daty dodania") {
+        fetchPlantList(searchQuery.value, "createdAt");
+      }
+      if (option === "najstarszej daty zbioru i zakupu") {
+        fetchPlantList(searchQuery.value, "oldDate");
+      }
+      if (option === "najnowszej daty zbioru i zakupu") {
+        fetchPlantList(searchQuery.value, "youngDate");
+      }
     };
 
 
