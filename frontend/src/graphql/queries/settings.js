@@ -8,6 +8,11 @@ export const GET_USER_SETTINGS = gql`
         distillationListLength
         distillationArchivesListLength
       }
+      listSorting {
+        plantListSorting
+        distillationListSorting
+        archiveDistillationListSorting
+      }
     }
   }
 `;

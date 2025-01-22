@@ -20,6 +20,9 @@ export default {
       plantListLength: 10,
       distillationListLength: 10,
       distillationArchivesListLength: 10,
+      plantListSorting: "createdAt",
+      distillationListSorting: "createdAt",
+      archiveDistillationListSorting: "createdAt",
       },
     };
   },

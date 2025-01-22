@@ -21,7 +21,7 @@
       @clear="handleSearch"
     ></base-search-item>
       <!-- List sorting component for sorting plants -->
-  <list-sorting :options="options" @choose:sorting="handleSorting"></list-sorting>
+  <list-sorting class="plant_list--sorting" :options="options" @choose:sorting="handleSorting"></list-sorting>
     </div>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
@@ -413,6 +413,10 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.plant_list--sorting {
+width: 300px;
 }
 
 .plant_list {

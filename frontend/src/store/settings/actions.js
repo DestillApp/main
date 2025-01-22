@@ -45,12 +45,17 @@ export default {
         query: GET_USER_SETTINGS,
       });
       const settings = data.getUserSettings.listSettings;
-      console.log("User settings:", settings);
+      const sorting = data.getUserSettings.listSorting;
 
       // Update the Vuex store with the fetched settings
       context.dispatch("setValue", { input: "plantListLength", value: settings.plantListLength });
       context.dispatch("setValue", { input: "distillationListLength", value: settings.distillationListLength });
       context.dispatch("setValue", { input: "distillationArchivesListLength", value: settings.distillationArchivesListLength });
+
+      context.dispatch("setValue", {input: "plantListSorting", value: sorting.plantListSorting});
+      context.dispatch("setValue", {input: "distillationListSorting", value: sorting.distillationListSorting});
+      context.dispatch("setValue", {input: "archiveDistillationListSorting", value: sorting.archiveDistillationListSorting});
+
     } catch (error) {
       console.error("Error fetching settings:", error);
     }

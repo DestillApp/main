@@ -1,17 +1,22 @@
 import { gql } from "@apollo/client/core";
 
 export const CREATE_SETTINGS = gql`
-mutation CreateSettings($userId: ID!) {
-  createSettings(userId: $userId) {
-    userId
-    listSettings {
-      plantListLength
-      distillationListLength
-      distillationArchivesListLength
+  mutation CreateSettings($userId: ID!) {
+    createSettings(userId: $userId) {
+      userId
+      listSettings {
+        plantListLength
+        distillationListLength
+        distillationArchivesListLength
+      }
+      listSorting {
+        plantListSorting
+        distillationListSorting
+        archiveDistillationListSorting
+      }
+      updatedAt
     }
-    updatedAt
   }
-}
 `;
 
 // Define the GraphQL mutation
