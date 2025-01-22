@@ -12,16 +12,21 @@
     <!-- Title for the plant list -->
     <h3 class="plant_list--title">Magazyn surowców</h3>
     <div class="plant_list--sort">
-    <!-- Search item component for searching plants by name -->
-    <base-search-item
-    v-if="plantList.length >= 1"
-      label="Szukaj surowca po nazwie"
-      inputColor="plant"
-      @search="handleSearch"
-      @clear="handleSearch"
-    ></base-search-item>
+      <!-- Search item component for searching plants by name -->
+      <base-search-item
+        v-if="plantList.length >= 1"
+        label="Szukaj surowca po nazwie"
+        inputColor="plant"
+        @search="handleSearch"
+        @clear="handleSearch"
+      ></base-search-item>
       <!-- List sorting component for sorting plants -->
-  <list-sorting class="plant_list--sorting" :options="options" @choose:sorting="handleSorting"></list-sorting>
+      <list-sorting
+        class="plant_list--sorting"
+        :options="options"
+        :sorting="sortingOption"
+        @choose:sorting="handleSorting"
+      ></list-sorting>
     </div>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
@@ -177,9 +182,23 @@ export default {
     // Computed property to get searchQuery from Vuex store
     const searchQuery = computed(() => store.getters.searchQuery);
 
-    const options = ref(["nazwy rośliny alfabetycznie", "daty dodania", "najnowszej daty zbioru i zakupu", "najstarszej daty zbioru i zakupu"]);
+    const options = ref([
+      "nazwy rośliny alfabetycznie",
+      "daty dodania",
+      "najnowszej daty zbioru i zakupu",
+      "najstarszej daty zbioru i zakupu",
+    ]);
 
-    const sorting = computed(() => store.getters["settings/settingsForm"].plantListSorting);
+    const sortingOption = computed(() => {
+      const sortingValue =
+        store.getters["settings/settingsForm"].plantListSorting;
+      if (sortingValue === "plantName") return "nazwy rośliny alfabetycznie";
+      if (sortingValue === "createdAt") return "daty dodania";
+      if (sortingValue === "oldDate") return "najstarszej daty zbioru i zakupu";
+      if (sortingValue === "youngDate")
+        return "najnowszej daty zbioru i zakupu";
+      return "";
+    });
 
     /**
      * @async
@@ -204,7 +223,7 @@ export default {
             ],
             formatDates: true,
             name: name,
-            sorting: sorting
+            sorting: sorting,
           },
         });
         plantsAmount.value = data.getPlants.length;
@@ -232,30 +251,39 @@ export default {
       fetchPlantList(searchQuery.value);
     };
 
+    const updateListSettings = async (key, value) => {
+      try {
+        await apolloClient.mutate({
+          mutation: UPDATE_LIST_SETTINGS,
+          variables: {
+            input: {
+              settingKey: key,
+              settingValue: value,
+            },
+          },
+        });
+        console.log("UPDATED!");
+        return true;
+      } catch (error) {
+        console.error("Failed to update plant list settings:", error);
+        return false;
+      }
+    };
+
     /**
      * @function handleSelectLength
      * @description Handle the selection of list length.
      * @param {Number} length - The selected length.
      */
     const handleSelectLength = async (length) => {
-      try {
-        await apolloClient.mutate({
-          mutation: UPDATE_LIST_SETTINGS,
-          variables: {
-            input: {
-              settingKey: "plantListLength",
-              settingValue: length,
-            },
-          },
-        });
+      const isUpdating = await updateListSettings("plantListLength", length);
+      if (isUpdating) {
         console.log("Updated plant list length");
         store.dispatch("settings/setValue", {
           input: "plantListLength",
           value: length,
         });
         page.value = 1;
-      } catch (error) {
-        console.error("Failed to update plant list length:", error);
       }
     };
 
@@ -264,7 +292,7 @@ export default {
      * @description Handle the sorting of the plant list.
      * @param {String} sorting - The sorting option.
      */
-    const handleSorting = (option) => {
+    const handleSorting = async (option) => {
       console.log("Sorting:", option);
       if (option === "nazwy rośliny alfabetycznie") {
         fetchPlantList(searchQuery.value, "plantName");
@@ -280,7 +308,6 @@ export default {
       }
     };
 
-
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "plantListLength",
@@ -293,7 +320,7 @@ export default {
 
     // Fetch plant list when the component is mounted
     onMounted(() => {
-      console.log("SORTING TYPE", sorting.value);
+      console.log("SORTING TYPE", sortingOption.value);
       if (searchQuery.value) {
         fetchPlantList(searchQuery.value);
       } else {
@@ -395,6 +422,7 @@ export default {
       paginationLength,
       searchQuery,
       options,
+      sortingOption,
       handleSorting,
       handleSelectLength,
       openDeleteModal,
@@ -422,7 +450,7 @@ export default {
 }
 
 .plant_list--sorting {
-width: 300px;
+  width: 300px;
 }
 
 .plant_list {
