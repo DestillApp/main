@@ -57,8 +57,6 @@ const plantResolver = {
           filter.plantName = { $regex: new RegExp(name, "i") }; // Case-insensitive search
         }
 
-        console.log("sorting", sorting);
-
         // Build a sort object based on sortingProps
         const sort = {};
         if (sorting === "plantName") {
@@ -79,8 +77,6 @@ const plantResolver = {
 
         // Fetch plants with the specified fields from database
         const plants = await Plant.find(filter, projection).sort(sort);
-
-        console.log("plants", plants)
 
         // Format date fields before returning the result
         return plants.map((plant) => {

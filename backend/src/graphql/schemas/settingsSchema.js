@@ -31,6 +31,11 @@ const settingsSchema = gql`
     settingValue: Int!
   }
 
+  input UpdateListSortingInput {
+    settingKey: String!
+    settingValue: String!
+  }
+
   type Query {
     getUserSettings: UserSettings
   }
@@ -38,6 +43,7 @@ const settingsSchema = gql`
   type Mutation {
     createSettings(userId: ID!): UserSettings!
     updateListSettings(input: UpdateListSettingsInput!): UserSettings!
+    updateListSorting(input: UpdateListSortingInput!): UserSettings!
   }
 `;
 
