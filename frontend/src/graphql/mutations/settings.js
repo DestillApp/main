@@ -33,3 +33,18 @@ export const UPDATE_LIST_SETTINGS = gql`
     }
   }
 `;
+
+// Define the GraphQL mutation
+export const UPDATE_LIST_SORTING = gql`
+  mutation UpdateListSorting($input: UpdateListSortingInput!) {
+    updateListSorting(input: $input) {
+      userId
+      listSorting {
+        plantListSorting
+        distillationListSorting
+        archiveDistillationListSorting
+      }
+      updatedAt
+    }
+  }
+`;

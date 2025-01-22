@@ -123,7 +123,10 @@ import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
-import { UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings.js";
+import {
+  UPDATE_LIST_SETTINGS,
+  UPDATE_LIST_SORTING,
+} from "@/graphql/mutations/settings.js";
 import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 /**
@@ -199,6 +202,10 @@ export default {
         return "najnowszej daty zbioru i zakupu";
       return "";
     });
+
+    // const sorting = computed(
+    //   () => store.getters["settings/settingsForm"].plantListSorting
+    // );
 
     /**
      * @async
@@ -287,24 +294,62 @@ export default {
       }
     };
 
+    const updateListSorting = async (key, value) => {
+      try {
+        await apolloClient.mutate({
+          mutation: UPDATE_LIST_SORTING,
+          variables: {
+            input: {
+              settingKey: key,
+              settingValue: value,
+            },
+          },
+        });
+        console.log("UPDATED sorting!");
+        return true;
+      } catch (error) {
+        console.error("Failed to update plant list settings:", error);
+        return false;
+      }
+    };
+
     /**
      * @function handleSorting
      * @description Handle the sorting of the plant list.
      * @param {String} sorting - The sorting option.
      */
     const handleSorting = async (option) => {
-      console.log("Sorting:", option);
       if (option === "nazwy rośliny alfabetycznie") {
-        fetchPlantList(searchQuery.value, "plantName");
+        await updateListSorting("plantListSorting", "plantName");
+        store.dispatch("settings/setValue", {
+          input: "plantListSorting",
+          value: "plantName",
+        });
+        await fetchPlantList(searchQuery.value, "plantName");
       }
       if (option === "daty dodania") {
-        fetchPlantList(searchQuery.value, "createdAt");
+        await updateListSorting("plantListSorting", "createdAt");
+        store.dispatch("settings/setValue", {
+          input: "plantListSorting",
+          value: "createdAt",
+        });
+        await fetchPlantList(searchQuery.value, "createdAt");
       }
       if (option === "najstarszej daty zbioru i zakupu") {
-        fetchPlantList(searchQuery.value, "oldDate");
+        await updateListSorting("plantListSorting", "oldDate");
+        store.dispatch("settings/setValue", {
+          input: "plantListSorting",
+          value: "oldDate",
+        });
+        await fetchPlantList(searchQuery.value, "oldDate");
       }
       if (option === "najnowszej daty zbioru i zakupu") {
-        fetchPlantList(searchQuery.value, "youngDate");
+        await updateListSorting("plantListSorting", "youngDate");
+        store.dispatch("settings/setValue", {
+          input: "plantListSorting",
+          value: "youngDate",
+        });
+        await fetchPlantList(searchQuery.value, "youngDate");
       }
     };
 
