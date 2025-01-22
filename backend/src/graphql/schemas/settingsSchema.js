@@ -13,9 +13,16 @@ const settingsSchema = gql`
     distillationArchivesListLength: Int!
   }
 
+  type ListSorting {
+    plantListSorting: String!
+    distillationListSorting: String!
+    archiveDistillationListSorting: String!
+  }
+
   type UserSettings {
     userId: ID!
     listSettings: ListSettings!
+    listSorting: ListSorting!
     updatedAt: String!
   }
 

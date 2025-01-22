@@ -58,6 +58,11 @@ const settingsResolvers = {
           distillationListLength: 10,
           distillationArchivesListLength: 10,
         },
+        listSorting: {
+          plantListSorting: "createdAt",
+          distillationListSorting: "createdAt",
+          archiveDistillationListSorting: "createdAt",
+        },
         updatedAt: Date.now(),
       };
 

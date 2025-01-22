@@ -17,6 +17,11 @@ const userSettingsSchema = new Schema({
     distillationListLength: { type: Number, default: 10 },
     distillationArchivesListLength: { type: Number, default: 10 },
   },
+  listSorting: {
+    plantListSorting: { type: String, default: "createdAt" },
+    distillationListSorting: { type: String, default: "createdAt" },
+    archiveDistillationListSorting: { type: String, default: "createdAt" },
+  },
   updatedAt: { type: Date, default: Date.now },
 });
 

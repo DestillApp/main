@@ -73,8 +73,14 @@ const plantResolver = {
           sort.date = 1;
         }
 
+        if (sorting === "createdAt") {
+          sort.createdAt = 1;
+        }
+
         // Fetch plants with the specified fields from database
         const plants = await Plant.find(filter, projection).sort(sort);
+
+        console.log("plants", plants)
 
         // Format date fields before returning the result
         return plants.map((plant) => {
