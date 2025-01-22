@@ -179,6 +179,8 @@ export default {
 
     const options = ref(["nazwy rośliny alfabetycznie", "daty dodania", "najnowszej daty zbioru i zakupu", "najstarszej daty zbioru i zakupu"]);
 
+    const sorting = computed(() => store.getters["settings/settingsForm"].plantListSorting);
+
     /**
      * @async
      * @function fetchPlantList
@@ -283,11 +285,15 @@ export default {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "plantListLength",
       });
+      store.dispatch("settings/fetchLocalStorageData", {
+        key: "plantListSorting",
+      });
       store.dispatch("fetchSearchQueryFromLocalStorage");
     });
 
     // Fetch plant list when the component is mounted
     onMounted(() => {
+      console.log("SORTING TYPE", sorting.value);
       if (searchQuery.value) {
         fetchPlantList(searchQuery.value);
       } else {

@@ -252,6 +252,9 @@ export default {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "distillationListLength",
       });
+      store.dispatch("settings/fetchLocalStorageData", {
+        key: "distillationListSorting",
+      });
       store.dispatch("fetchSearchQueryFromLocalStorage");
     });
 
