@@ -203,9 +203,9 @@ export default {
       return "";
     });
 
-    // const sorting = computed(
-    //   () => store.getters["settings/settingsForm"].plantListSorting
-    // );
+    const sorting = computed(
+      () => store.getters["settings/settingsForm"].plantListSorting
+    );
 
     /**
      * @async
@@ -253,9 +253,9 @@ export default {
      * @description Handle the search query emitted from the BaseSearchItem component.
      * @param {String} query - The search query.
      */
-    const handleSearch = () => {
+    const handleSearch = async () => {
       console.log("Search query from Vuex:", searchQuery.value);
-      fetchPlantList(searchQuery.value);
+      await fetchPlantList(searchQuery.value, sorting.value);
     };
 
     const updateListSettings = async (key, value) => {
@@ -364,19 +364,14 @@ export default {
     });
 
     // Fetch plant list when the component is mounted
-    onMounted(() => {
-      console.log("SORTING TYPE", sortingOption.value);
-      if (searchQuery.value) {
-        fetchPlantList(searchQuery.value);
-      } else {
-        fetchPlantList();
-      }
+    onMounted(async () => {
+        await fetchPlantList(searchQuery.value, sorting.value);
     });
 
     // Watch for changes in the page number and refetch plant list.
-    watch(page, (newPage) => {
+    watch(page, async (newPage) => {
       router.push({ name: "PlantListPage", params: { page: newPage } });
-      fetchPlantList(searchQuery.value);
+      await fetchPlantList(searchQuery.value, sorting.value);
       scrollToTop();
     });
 
@@ -427,7 +422,7 @@ export default {
               params: { page: page.value },
             });
           } else {
-            await fetchPlantList();
+            await fetchPlantList(searchQuery.value, sorting.value);
             console.log("fetching");
           }
         }
