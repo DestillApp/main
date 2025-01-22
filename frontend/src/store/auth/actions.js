@@ -54,6 +54,10 @@ export default {
       localStorage.removeItem("plantListLength");
       localStorage.removeItem("distillationListLength");
       localStorage.removeItem("distillationArchivesListLength");
+      
+      localStorage.removeItem("plantListSorting");
+      localStorage.removeItem("distillationListSorting");
+      localStorage.removeItem("archiveDistillationListSorting");
 
       localStorage.removeItem("searchQuery");
     } catch (error) {

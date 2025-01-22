@@ -123,10 +123,11 @@ import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
-import {
-  UPDATE_LIST_SETTINGS,
-  UPDATE_LIST_SORTING,
-} from "@/graphql/mutations/settings.js";
+import { updateListSorting, updateListSettings } from "@/graphql/mutations/settingsFunctions.js";
+
+// import {
+//   UPDATE_LIST_SETTINGS,
+// } from "@/graphql/mutations/settings.js";
 import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 /**
@@ -258,24 +259,24 @@ export default {
       await fetchPlantList(searchQuery.value, sorting.value);
     };
 
-    const updateListSettings = async (key, value) => {
-      try {
-        await apolloClient.mutate({
-          mutation: UPDATE_LIST_SETTINGS,
-          variables: {
-            input: {
-              settingKey: key,
-              settingValue: value,
-            },
-          },
-        });
-        console.log("UPDATED!");
-        return true;
-      } catch (error) {
-        console.error("Failed to update plant list settings:", error);
-        return false;
-      }
-    };
+    // const updateListSettings = async (key, value) => {
+    //   try {
+    //     await apolloClient.mutate({
+    //       mutation: UPDATE_LIST_SETTINGS,
+    //       variables: {
+    //         input: {
+    //           settingKey: key,
+    //           settingValue: value,
+    //         },
+    //       },
+    //     });
+    //     console.log("UPDATED!");
+    //     return true;
+    //   } catch (error) {
+    //     console.error("Failed to update plant list settings:", error);
+    //     return false;
+    //   }
+    // };
 
     /**
      * @function handleSelectLength
@@ -283,7 +284,7 @@ export default {
      * @param {Number} length - The selected length.
      */
     const handleSelectLength = async (length) => {
-      const isUpdating = await updateListSettings("plantListLength", length);
+      const isUpdating = await updateListSettings(apolloClient, "plantListLength", length);
       if (isUpdating) {
         console.log("Updated plant list length");
         store.dispatch("settings/setValue", {
@@ -294,25 +295,6 @@ export default {
       }
     };
 
-    const updateListSorting = async (key, value) => {
-      try {
-        await apolloClient.mutate({
-          mutation: UPDATE_LIST_SORTING,
-          variables: {
-            input: {
-              settingKey: key,
-              settingValue: value,
-            },
-          },
-        });
-        console.log("UPDATED sorting!");
-        return true;
-      } catch (error) {
-        console.error("Failed to update plant list settings:", error);
-        return false;
-      }
-    };
-
     /**
      * @function handleSorting
      * @description Handle the sorting of the plant list.
@@ -320,37 +302,34 @@ export default {
      */
     const handleSorting = async (option) => {
       if (option === "nazwy rośliny alfabetycznie") {
-        await updateListSorting("plantListSorting", "plantName");
+        await updateListSorting(apolloClient, "plantListSorting", "plantName");
         store.dispatch("settings/setValue", {
           input: "plantListSorting",
           value: "plantName",
         });
-        await fetchPlantList(searchQuery.value, "plantName");
       }
       if (option === "daty dodania") {
-        await updateListSorting("plantListSorting", "createdAt");
+        await updateListSorting(apolloClient, "plantListSorting", "createdAt");
         store.dispatch("settings/setValue", {
           input: "plantListSorting",
           value: "createdAt",
         });
-        await fetchPlantList(searchQuery.value, "createdAt");
       }
       if (option === "najstarszej daty zbioru i zakupu") {
-        await updateListSorting("plantListSorting", "oldDate");
+        await updateListSorting(apolloClient, "plantListSorting", "oldDate");
         store.dispatch("settings/setValue", {
           input: "plantListSorting",
           value: "oldDate",
         });
-        await fetchPlantList(searchQuery.value, "oldDate");
       }
       if (option === "najnowszej daty zbioru i zakupu") {
-        await updateListSorting("plantListSorting", "youngDate");
+        await updateListSorting(apolloClient, "plantListSorting", "youngDate");
         store.dispatch("settings/setValue", {
           input: "plantListSorting",
           value: "youngDate",
         });
-        await fetchPlantList(searchQuery.value, "youngDate");
       }
+      page.value = 1;
     };
 
     onBeforeMount(() => {

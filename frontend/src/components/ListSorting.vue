@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 
@@ -49,10 +49,6 @@ export default {
     const isOpen = ref(false);
     const selectedOption = ref(props.sorting);
     const sortingContainer = ref(null);
-
-    onMounted(() => {
-       console.log("sorting in listsorting component", props.sorting);
-    })
 
     const toggleList = () => {
       isOpen.value = !isOpen.value;
