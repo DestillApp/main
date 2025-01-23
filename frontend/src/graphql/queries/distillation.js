@@ -2,8 +2,8 @@ import { gql } from "@apollo/client/core";
 
 // GraphQL query to fetch the all distillation or all the distillation with the same name.
 export const GET_DISTILLATIONS = gql`
-  query GetDistillations($fields: [String]!, $name: String) {
-    getDistillations(fields: $fields, name: $name) {
+  query GetDistillations($fields: [String]!, $name: String, $sorting: String) {
+    getDistillations(fields: $fields, name: $name, sorting: $sorting) {
       choosedPlant {
         id
         name

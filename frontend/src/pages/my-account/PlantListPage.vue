@@ -259,25 +259,6 @@ export default {
       await fetchPlantList(searchQuery.value, sorting.value);
     };
 
-    // const updateListSettings = async (key, value) => {
-    //   try {
-    //     await apolloClient.mutate({
-    //       mutation: UPDATE_LIST_SETTINGS,
-    //       variables: {
-    //         input: {
-    //           settingKey: key,
-    //           settingValue: value,
-    //         },
-    //       },
-    //     });
-    //     console.log("UPDATED!");
-    //     return true;
-    //   } catch (error) {
-    //     console.error("Failed to update plant list settings:", error);
-    //     return false;
-    //   }
-    // };
-
     /**
      * @function handleSelectLength
      * @description Handle the selection of list length.

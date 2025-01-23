@@ -3,7 +3,7 @@
   <div>
     <!-- List length settings component -->
     <list-length-settings
-    class="distillation_list--settings"
+      class="distillation_list--settings"
       title="ilość destylacji"
       listColor="distillation"
       :chosenLength="distillationsPerPage"
@@ -11,6 +11,7 @@
     ></list-length-settings>
     <!-- Title for the distillation list -->
     <h3 class="distillation_list--title">Destylacje w toku</h3>
+    <div class="distillation_list--sort">
     <!-- Search item component for searching distillations by name -->
     <base-search-item
       label="Szukaj destylacji po nazwie rośliny"
@@ -18,6 +19,14 @@
       @search="handleSearch"
       @clear="handleSearch"
     ></base-search-item>
+    <!-- List sorting component for sorting distillations -->
+    <list-sorting
+      class="distillation_list--sorting"
+      :options="options"
+      :sorting="sortingOption"
+      @choose:sorting="handleSorting"
+    ></list-sorting>
+    </div>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
@@ -134,14 +143,22 @@ import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
+import ListSorting from "@/components/ListSorting.vue";
+import { updateListSorting, updateListSettings } from "@/graphql/mutations/settingsFunctions.js";
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
-import { UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings";
+// import { UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
 export default {
   name: "InProgressDistillationsPage",
-  components: { DeleteItemModal, BaseButton, BaseSearchItem, ListLengthSettings },
+  components: {
+    DeleteItemModal,
+    BaseButton,
+    BaseSearchItem,
+    ListLengthSettings,
+    ListSorting
+  },
   setup() {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
@@ -169,7 +186,9 @@ export default {
 
     const distillationsAmount = ref(null);
     const page = ref(Number(route.params.page));
-    const distillationsPerPage = computed(() => store.getters["settings/settingsForm"].distillationListLength);
+    const distillationsPerPage = computed(
+      () => store.getters["settings/settingsForm"].distillationListLength
+    );
 
     // Reactive reference for loading state
     const isLoading = ref(true);
@@ -182,13 +201,35 @@ export default {
     // Computed property to get searchQuery from Vuex store
     const searchQuery = computed(() => store.getters.searchQuery);
 
+    const options = ref([
+      "nazwy rośliny alfabetycznie",
+      "daty dodania destylacji",
+      "najnowszej daty destylacji",
+      "najstarszej daty destylacji",
+    ]);
+
+    const sortingOption = computed(() => {
+      const sortingValue =
+        store.getters["settings/settingsForm"].distillationListSorting;
+      if (sortingValue === "plantName") return "nazwy rośliny alfabetycznie";
+      if (sortingValue === "createdAt") return "daty dodania destylacji";
+      if (sortingValue === "oldDate") return "najstarszej daty destylacji";
+      if (sortingValue === "youngDate")
+        return "najnowszej daty destylacji";
+      return "";
+    });
+
+    const sorting = computed(
+      () => store.getters["settings/settingsForm"].distillationListSorting
+    );
+
     /**
      * @async
      * @function fetchDistillationList
      * @description Fetch the list of distillations from the GraphQL server.
      * @returns {Promise<void>}
      */
-    const fetchDistillationList = async (name) => {
+    const fetchDistillationList = async (name, sorting) => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -205,6 +246,7 @@ export default {
               "_id",
             ],
             name: name,
+            sorting: sorting,
             page: page.value,
             limit: distillationsPerPage.value,
           },
@@ -225,27 +267,63 @@ export default {
       }
     };
 
-    const handleSearch = () => {
+    const handleSearch = async () => {
       console.log("Search query from Vuex:", searchQuery.value);
-      fetchDistillationList(searchQuery.value);
+      await fetchDistillationList(searchQuery.value, sorting.value);
     };
 
-    const handleSelectLength = async (length) => {
-      try {
-        await apolloClient.mutate({
-          mutation: UPDATE_LIST_SETTINGS,
-          variables: {
-            input: {
-              settingKey: 'distillationListLength',
-              settingValue: length,
-            },
-          },
+    /**
+     * @function handleSelectLength
+     * @description Handle the selection of list length.
+     * @param {Number} length - The selected length.
+     */
+     const handleSelectLength = async (length) => {
+      const isUpdating = await updateListSettings(apolloClient, "distillationListLength", length);
+      if (isUpdating) {
+        console.log("Updated distillation list length");
+        store.dispatch("settings/setValue", {
+          input: "distillationListLength",
+          value: length,
         });
-        store.dispatch("settings/setValue", { input: "distillationListLength", value: length });
         page.value = 1;
-      } catch (error) {
-        console.error("Failed to update distillation list length:", error);
       }
+    };
+
+        /**
+     * @function handleSorting
+     * @description Handle the sorting of the distillation list.
+     * @param {String} sorting - The sorting option.
+     */
+    const handleSorting = async (option) => {
+      if (option === "nazwy rośliny alfabetycznie") {
+        await updateListSorting(apolloClient, "distillationListSorting", "plantName");
+        store.dispatch("settings/setValue", {
+          input: "distillationListSorting",
+          value: "plantName",
+        });
+      }
+      if (option === "daty dodania destylacji") {
+        await updateListSorting(apolloClient, "distillationListSorting", "createdAt");
+        store.dispatch("settings/setValue", {
+          input: "distillationListSorting",
+          value: "createdAt",
+        });
+      }
+      if (option === "najstarszej daty destylacji") {
+        await updateListSorting(apolloClient, "distillationListSorting", "oldDate");
+        store.dispatch("settings/setValue", {
+          input: "distillationListSorting",
+          value: "oldDate",
+        });
+      }
+      if (option === "najnowszej daty destylacji") {
+        await updateListSorting(apolloClient, "distillationListSorting", "youngDate");
+        store.dispatch("settings/setValue", {
+          input: "distillationListSorting",
+          value: "youngDate",
+        });
+      }
+      page.value = 1;
     };
 
     onBeforeMount(() => {
@@ -258,22 +336,18 @@ export default {
       store.dispatch("fetchSearchQueryFromLocalStorage");
     });
 
-    onMounted(() => {
-      console.log('ONMOUNTED!');
-      if (searchQuery.value) {
-        fetchDistillationList(searchQuery.value);
-      } else {
-        fetchDistillationList();
-      }
+    // Fetch distillation list when the component is mounted
+    onMounted(async () => {
+        await fetchDistillationList(searchQuery.value, sorting.value);
     });
 
     // Watch for changes in the page number and refetch plant list.
-    watch(page, (newPage) => {
+    watch(page, async (newPage) => {
       router.push({
         name: "InProgressDistillationsPage",
         params: { page: newPage },
       });
-      fetchDistillationList(searchQuery.value);
+      await fetchDistillationList(searchQuery.value, sorting.value);
       scrollToTop();
     });
 
@@ -341,7 +415,7 @@ export default {
               params: { page: page.value },
             });
           } else {
-            await fetchDistillationList();
+            await fetchDistillationList(searchQuery.value, sorting.value);
           }
         }
         closeDeleteModal();
@@ -381,8 +455,8 @@ export default {
       closeAskModal();
     };
 
-        // Navigation guard to reset searchQuery in Vuex state and local storage
-        onBeforeRouteLeave((to, from, next) => {
+    // Navigation guard to reset searchQuery in Vuex state and local storage
+    onBeforeRouteLeave((to, from, next) => {
       if (to.path !== from.path) {
         store.dispatch("updateSearchQuery", "");
         localStorage.removeItem("searchQuery");
@@ -404,11 +478,14 @@ export default {
       distillationsPerPage,
       paginationLength,
       searchQuery,
+      options,
+      sortingOption,
       openDeleteModal,
       closeDeleteModal,
       closeAskModal,
       deleteDistillation,
       handleYes,
+      handleSorting,
       handleSearch,
       handleSelectLength,
     };
@@ -423,6 +500,16 @@ export default {
 
 .distillation_list--title {
   margin-bottom: 20px;
+}
+
+.distillation_list--sort {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.distillation_list--sorting {
+  width: 300px;
 }
 
 .distillation_list {
