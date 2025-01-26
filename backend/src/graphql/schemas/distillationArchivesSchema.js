@@ -51,6 +51,7 @@ const distillationArchivesSchema = gql`
     distillationData: DistillationData!
     distilledPlant: DistilledPlant!
     userId: ID!
+   createdAt: String!
   }
 
   input DistilledPlantInput {

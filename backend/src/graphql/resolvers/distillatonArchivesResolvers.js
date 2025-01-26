@@ -300,6 +300,7 @@ const distillationArchivesResolvers = {
             : null,
         },
         userId: user.id,
+        createdAt: Date.now(),
       };
 
       // Filtering out null or empty string values
@@ -312,6 +313,7 @@ const distillationArchivesResolvers = {
         const result = await distillationArchive.save();
         return result;
       } catch (err) {
+        console.error("Error details:", err);
         throw new Error("Failed to create distillation archive");
       }
     },

@@ -34,8 +34,6 @@ const distillationResolvers = {
           filter["choosedPlant.name"] = { $regex: new RegExp(name, "i") }; // Case-insensitive search
         }
 
-        console.log(sorting);
-
         // Build a sort object based on sortingProps
         let sort = null;
         if (sorting === "plantName") {
