@@ -10,6 +10,7 @@
     ></list-length-settings>
     <!-- Title for the distillation archives list -->
     <h3 class="distillation_archives_list--title">Archiwum destylacji</h3>
+    <div class="distillation_archives_list--sort">
     <!-- Search item component for searching distillation archives by name -->
     <base-search-item
       label="Szukaj destylacji po nazwie rośliny"
@@ -17,6 +18,14 @@
       @search="handleSearch"
       @clear="handleSearch"
     ></base-search-item>
+        <!-- List sorting component for sorting distillation archives -->
+        <list-sorting
+      class="distillation_archives_list--sorting"
+      :options="options"
+      :sorting="sortingOption"
+      @choose:sorting="handleSorting"
+    ></list-sorting>
+    </div>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
@@ -120,10 +129,11 @@ import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
+import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 import { GET_DISTILLATION_ARCHIVES } from "@/graphql/queries/results.js";
 import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
-import { UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings.js";
+import { updateListSorting, updateListSettings } from "@/graphql/mutations/settingsFunctions.js";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 
@@ -133,6 +143,7 @@ export default {
     DeleteItemModal,
     BaseSearchItem,
     ListLengthSettings,
+    ListSorting
   },
   setup() {
     // Apollo client instance
@@ -177,13 +188,36 @@ export default {
     // Computed property to get searchQuery from Vuex store
     const searchQuery = computed(() => store.getters.searchQuery);
 
+
+    const options = ref([
+      "nazwy rośliny alfabetycznie",
+      "daty dodania destylacji",
+      "najnowszej daty destylacji",
+      "najstarszej daty destylacji",
+    ]);
+
+    const sortingOption = computed(() => {
+      const sortingValue =
+        store.getters["settings/settingsForm"].archiveDistillationListSorting;
+      if (sortingValue === "plantName") return "nazwy rośliny alfabetycznie";
+      if (sortingValue === "createdAt") return "daty dodania destylacji";
+      if (sortingValue === "oldDate") return "najstarszej daty destylacji";
+      if (sortingValue === "youngDate")
+        return "najnowszej daty destylacji";
+      return "";
+    });
+
+    const sorting = ref(
+      store.getters["settings/settingsForm"].archiveDistillationListSorting
+    );
+
     /**
      * @async
      * @function fetchDistillationArchivesList
      * @description Fetch the list of distillation archives from the GraphQL server.
      * @returns {Promise<void>}
      */
-    const fetchDistillationArchivesList = async (name) => {
+    const fetchDistillationArchivesList = async (name, sorting) => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -200,6 +234,7 @@ export default {
               "distilledPlant.plantPart",
             ],
             name: name,
+            sorting: sorting,
             formatDates: true,
             page: page.value,
             limit: archivesPerPage.value,
@@ -230,36 +265,62 @@ export default {
      * @description Handle the search query emitted from the BaseSearchItem component.
      * @param {String} query - The search query.
      */
-    const handleSearch = () => {
+    const handleSearch = async () => {
       console.log("Search query from Vuex:", searchQuery.value);
-      fetchDistillationArchivesList(searchQuery.value);
+      await fetchDistillationArchivesList(searchQuery.value, sorting.value);
     };
 
-    /**
+   /**
      * @function handleSelectLength
      * @description Handle the selection of list length.
      * @param {Number} length - The selected length.
      */
-    const handleSelectLength = async (length) => {
-      try {
-        await apolloClient.mutate({
-          mutation: UPDATE_LIST_SETTINGS,
-          variables: {
-            input: {
-              settingKey: "distillationArchivesListLength",
-              settingValue: length,
-            },
-          },
-        });
-        console.log("Updated distillation archives list length");
+     const handleSelectLength = async (length) => {
+      const isUpdating = await updateListSettings(apolloClient, "distillationListLength", length);
+      if (isUpdating) {
+        console.log("Updated distillation list length");
         store.dispatch("settings/setValue", {
           input: "distillationArchivesListLength",
           value: length,
         });
         page.value = 1;
-      } catch (error) {
-        console.error("Failed to update plant list length:", error);
       }
+    };
+
+    const handleSorting = async (option) => {
+      if (option === "nazwy rośliny alfabetycznie") {
+        await updateListSorting(apolloClient, "archiveDistillationListSorting", "plantName");
+        store.dispatch("settings/setValue", {
+          input: "archiveDistillationListSorting",
+          value: "plantName",
+        });
+        await fetchDistillationArchivesList(searchQuery.value, "plantName");
+      }
+      if (option === "daty dodania destylacji") {
+        await updateListSorting(apolloClient, "archiveDistillationListSorting", "createdAt");
+        store.dispatch("settings/setValue", {
+          input: "archiveDistillationListSorting",
+          value: "createdAt",
+        });
+        await fetchDistillationArchivesList(searchQuery.value, "createdAt");
+      }
+      if (option === "najstarszej daty destylacji") {
+        await updateListSorting(apolloClient, "archiveDistillationListSorting", "oldDate");
+        store.dispatch("settings/setValue", {
+          input: "archiveDistillationListSorting",
+          value: "oldDate",
+        });
+        await fetchDistillationArchivesList(searchQuery.value, "oldDate");
+      }
+      if (option === "najnowszej daty destylacji") {
+        await updateListSorting(apolloClient, "archiveDistillationListSorting", "youngDate");
+        store.dispatch("settings/setValue", {
+          input: "archiveDistillationListSorting",
+          value: "youngDate",
+        });
+        await fetchDistillationArchivesList(searchQuery.value, "youngDate");
+      }
+      page.value = 1;
     };
 
     onBeforeMount(() => {
@@ -273,21 +334,17 @@ export default {
     });
 
     // Fetch distillation archives list when the component is mounted
-    onMounted(() => {
-      if (searchQuery.value) {
-        fetchDistillationArchivesList(searchQuery.value);
-      } else {
-        fetchDistillationArchivesList();
-      }
+    onMounted(async () => {
+   await fetchDistillationArchivesList(searchQuery.value, sorting.value);
     });
 
     // Watch for changes in the page number and refetch distillation archives list.
-    watch(page, (newPage) => {
+    watch(page, async (newPage) => {
       router.push({
         name: "DistillationArchivesPage",
         params: { page: newPage },
       });
-      fetchDistillationArchivesList(searchQuery.value);
+      await fetchDistillationArchivesList(searchQuery.value, sorting.value);
       scrollToTop();
     });
 
@@ -352,7 +409,7 @@ export default {
               params: { page: page.value },
             });
           } else {
-            await fetchDistillationArchivesList();
+            await fetchDistillationArchivesList(searchQuery.value, sorting.value);
           }
         }
         closeDeleteModal();
@@ -382,7 +439,10 @@ export default {
       archivesPerPage,
       paginationLength,
       searchQuery,
+      options,
+      sortingOption,
       handleSelectLength,
+      handleSorting,
       openDeleteModal,
       closeDeleteModal,
       deleteDistillationArchive,
@@ -399,6 +459,16 @@ export default {
 
 .distillation_archives_list--title {
   margin-bottom: 20px;
+}
+
+.distillation_archives_list--sort{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.distillation_archives_list--sorting {
+  width: 300px;
 }
 
 .distillation_archives_list {
