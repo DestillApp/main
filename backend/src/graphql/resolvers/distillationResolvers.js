@@ -42,15 +42,11 @@ const distillationResolvers = {
           sort = { "choosedPlant.name": 1 };
         } else if (sorting === "createdAt") {
           sort = { createdAt: 1 };
+        } else if (sorting === "youngDate") { 
+          sort = { date: -1 };
+        } else if (sorting === "oldDate") {
+          sort = { date: 1 };
         }
-
-        // if (sorting === "youngDate") {
-        //   sort.date = -1;
-        // }
-
-        // if (sorting === "oldDate") {
-        //   sort.date = 1;
-        // }
 
         // Fetch distillations with the specified fields from database
         const distillations = sort
