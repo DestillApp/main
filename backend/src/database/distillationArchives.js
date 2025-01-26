@@ -53,6 +53,7 @@ const distillationArchivesSchema = new Schema({
   hydrosolDescription: { type: String, required: true },
   distillationData: { type: distillationDataSchema, required: true },
   distilledPlant: { type: distilledPlantSchema, required: true },
+  date: { type: Date, required: true },
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   createdAt: { type: Date, required: true },
 });

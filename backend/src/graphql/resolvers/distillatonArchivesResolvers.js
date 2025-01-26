@@ -142,6 +142,11 @@ const distillationArchivesResolvers = {
         throw new Error("Unauthorized");
       }
 
+      const sanitizedDate = DOMPurify.sanitize(
+        distillationArchiveInput.distillationData.distillationDate
+      );
+      const validDate = new Date(sanitizedDate);
+
       // Sanitizing the input data
       const sanitizedData = {
         oilAmount: distillationArchiveInput.oilAmount
@@ -299,6 +304,7 @@ const distillationArchivesResolvers = {
               )
             : null,
         },
+        date: validDate.toISOString(),
         userId: user.id,
         createdAt: Date.now(),
       };
@@ -335,6 +341,12 @@ const distillationArchivesResolvers = {
       if (!user) {
         throw new Error("Unauthorized");
       }
+
+      const sanitizedDate = DOMPurify.sanitize(
+        distillationArchiveInput.distillationData.distillationDate
+      );
+      const validDate = new Date(sanitizedDate);
+
       // Sanitizing and filtering the nested input object
       const sanitizedDistillationTime = distillationArchiveInput
         .distillationData.distillationTime
@@ -498,6 +510,7 @@ const distillationArchivesResolvers = {
               )
             : null,
         },
+        date: validDate.toISOString(),
         userId: user.id,
      
       };
