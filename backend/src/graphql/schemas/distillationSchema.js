@@ -48,6 +48,7 @@ const distillationSchema = gql`
     distillationApparatus: String!
     waterForDistillation: Int!
     distillationTime: DistillationTime!
+    date: String!
     userId: ID!
     createdAt: String!
   }

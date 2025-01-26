@@ -1,4 +1,3 @@
-//no code docs
 /**
  * @module graphql/resolvers/plantResolvers
  * @description Plant resolvers for GraphQL queries and mutations.

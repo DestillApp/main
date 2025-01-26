@@ -70,7 +70,6 @@ const distillationResolvers = {
             formattedDistillation.distillationDate = formatDate(
               formattedDistillation.distillationDate
             );
-            console.log("formtted distillation:", formattedDistillation);
           }
 
           return formattedDistillation;
@@ -124,6 +123,11 @@ const distillationResolvers = {
         throw new Error("Unauthorized");
       }
 
+      const sanitizedDate = DOMPurify.sanitize(
+        distillationInput.distillationDate
+      );
+      const validDate = new Date(sanitizedDate);
+
       // Sanitizing and filtering the nested input object
       const sanitizedDistillationTime = distillationInput.distillationTime
         ? {
@@ -200,10 +204,12 @@ const distillationResolvers = {
           ? Number(DOMPurify.sanitize(distillationInput.waterForDistillation))
           : null,
         distillationTime: sanitizedDistillationTime,
-        // date: new Date(DOMPurify.sanitize(distillationInput.distillationDate)),
+        date: validDate.toISOString(),
         userId: user.id,
         createdAt: Date.now(),
       };
+
+      console.log("Sanitized Data:", sanitizedData);
 
       // Filtering out null or empty string values
       const filteredData = filterData(sanitizedData);
@@ -215,6 +221,7 @@ const distillationResolvers = {
         const result = await distillation.save();
         return result;
       } catch (err) {
+        console.error("Error details:", err);
         throw new Error("Failed to create distillation");
       }
     },
@@ -234,6 +241,11 @@ const distillationResolvers = {
         throw new Error("Unauthorized");
       }
 
+      const sanitizedDate = DOMPurify.sanitize(
+        distillationInput.distillationDate
+      );
+      const validDate = new Date(sanitizedDate);
+
       // Sanitizing and filtering the nested input object
       const sanitizedDistillationTime = distillationInput.distillationTime
         ? {
@@ -309,8 +321,7 @@ const distillationResolvers = {
         waterForDistillation: distillationInput.waterForDistillation
           ? Number(DOMPurify.sanitize(distillationInput.waterForDistillation))
           : null,
-        distillationTime: sanitizedDistillationTime,
-        // date: new Date(DOMPurify.sanitize(distillationInput.distillationDate)),
+        date: validDate.toISOString(),
         userId: user.id,
         createdAt: Date.now(),
       };

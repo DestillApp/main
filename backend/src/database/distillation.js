@@ -36,7 +36,8 @@ const distillationSchema = new Schema({
   distillationApparatus: { type: String, required: true },
   waterForDistillation: { type: Number, required: true },
   distillationTime: { type: distillationTimeSchema, required: true },
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, 
+  date: { type: Date, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   createdAt: { type: Date, required: true },
 });
 
