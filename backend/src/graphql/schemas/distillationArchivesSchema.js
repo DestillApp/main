@@ -103,6 +103,7 @@ const distillationArchivesSchema = gql`
     getDistillationArchives(
       fields: [String]!
       name: String
+      sorting: String
       formatDates: Boolean!
     ): [DistillationArchive]
     getArchiveDistillationById(

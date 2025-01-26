@@ -21,8 +21,11 @@ const distillationArchivesResolvers = {
      * @description Fetches all distillation archives from the database.
      * @returns {Promise<Array>} Array of distillation archives.
      */
-    getDistillationArchives: async (_, { fields, name, formatDates }, {user}) => {
-      if (!user) { throw new Error("Unauthorized"); }
+    getDistillationArchives: async (_, { fields, name, sorting, formatDates }, { user }) => {
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
+
       try {
         // Build a projection object based on the fields argument
         const projection = {};
@@ -39,11 +42,22 @@ const distillationArchivesResolvers = {
           }; // Case-insensitive search
         }
 
+        // Build a sort object based on sortingProps
+        let sort = null;
+        if (sorting === "plantName") {
+          sort = { "distilledPlant.plantName": 1 };
+        } else if (sorting === "createdAt") {
+          sort = { createdAt: 1 };
+        } else if (sorting === "youngDate") {
+          sort = { date: -1 };
+        } else if (sorting === "oldDate") {
+          sort = { date: 1 };
+        }
+
         // Fetch distillation archives with the specified fields and filters from the database
-        const distillationArchives = await DistillationArchives.find(
-          filter,
-          projection
-        );
+        const distillationArchives = sort
+          ? await DistillationArchives.find(filter, projection).sort(sort)
+          : await DistillationArchives.find(filter, projection);
 
         // Return the formatted result
         return distillationArchives.map((archive) => {
@@ -86,10 +100,19 @@ const distillationArchivesResolvers = {
      * @param {Boolean} formatDates - Whether to format the date fields.
      * @returns {Promise<Object>} The fetched distillation archive.
      */
-    getArchiveDistillationById: async (_, { id, formatDistillDate }, {user}) => {
-      if (!user) { throw new Error("Unauthorized"); }
+    getArchiveDistillationById: async (
+      _,
+      { id, formatDistillDate },
+      { user }
+    ) => {
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
       try {
-        const archive = await DistillationArchives.findOne({ _id: id, userId: user.id });
+        const archive = await DistillationArchives.findOne({
+          _id: id,
+          userId: user.id,
+        });
         if (!archive) {
           throw new Error("Distillation archive not found");
         }
@@ -512,7 +535,6 @@ const distillationArchivesResolvers = {
         },
         date: validDate.toISOString(),
         userId: user.id,
-     
       };
 
       // Filtering out null or empty string values
@@ -537,7 +559,10 @@ const distillationArchivesResolvers = {
       }
 
       try {
-        await DistillationArchives.findOneAndDelete({ _id: id, userId: user.id });
+        await DistillationArchives.findOneAndDelete({
+          _id: id,
+          userId: user.id,
+        });
         return true;
       } catch (error) {
         console.error("Failed to delete distillation archive:", error);
