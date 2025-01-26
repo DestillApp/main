@@ -44,8 +44,7 @@ const settingsResolvers = {
      * @function createSettings
      * @description Creates initial default settings for a user and saves them to the database.
      * @param {Object} _ - Unused.
-     * @param {Object} __ - Unused.
-     * @param {Object} user - The authenticated user.
+     * @param {Object} userId - The authenticated user.
      * @returns {Promise<Object>} The created user settings.
      */
     createSettings: async (_, { userId }) => {

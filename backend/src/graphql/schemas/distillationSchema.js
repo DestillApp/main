@@ -49,6 +49,7 @@ const distillationSchema = gql`
     waterForDistillation: Int!
     distillationTime: DistillationTime!
     userId: ID!
+    createdAt: String!
   }
 
   input DistillationInput {
@@ -66,7 +67,7 @@ const distillationSchema = gql`
   }
 
   type Query {
-    getDistillations(fields: [String]!, name: String): [Distillation]
+    getDistillations(fields: [String]!, name: String, sorting: String): [Distillation]
     getDistillationById(id: ID!, formatDates: Boolean!): Distillation
   }
 

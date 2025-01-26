@@ -34,9 +34,16 @@ const plantResolver = {
     /**
      * @async
      * @function getPlants
-     * @description Fetches plants from the database.
-     * @returns {Promise<Array>} Array of plants.
-     */
+ * @param {Object} _ - Unused parameter.
+ * @param {Object} args - An object containing query arguments.
+ * @param {Array<string>} args.fields - Fields to include in the result.
+ * @param {boolean} args.formatDates - Whether to format date fields.
+ * @param {string} args.name - Name of the plant to filter by.
+ * @param {string} args.sorting - Sorting criteria.
+ * @param {Object} context - Context object containing the request user.
+ * @param {Object} context.user - The authenticated user.
+ * @returns {Promise<Array<Object>>} A promise resolving to a list of plants.
+ */
     getPlants: async (_, { fields, formatDates, name, sorting }, { user }) => {
       if (!user) {
         throw new Error("Unauthorized");
@@ -51,36 +58,30 @@ const plantResolver = {
 
         // Build a query object for filtering
         const filter = { userId: user.id }; // Filter by user ID
-        console.log("name", name);
-        // If a name is provided, add it to the filter
         if (name) {
           filter.plantName = { $regex: new RegExp(name, "i") }; // Case-insensitive search
         }
 
         // Build a sort object based on sortingProps
-        const sort = {};
+        let sort = null;
         if (sorting === "plantName") {
-          sort.plantName = 1;
-        }
-
-        if (sorting === "youngDate") {
-          sort.date = -1;
-        }
-
-        if (sorting === "oldDate") {
-          sort.date = 1;
-        }
-
-        if (sorting === "createdAt") {
-          sort.createdAt = 1;
+          sort = { plantName: 1 };
+        } else if (sorting === "youngDate") {
+          sort = { date: -1 };
+        } else if (sorting === "oldDate") {
+          sort = { date: 1 };
+        } else if (sorting === "createdAt") {
+          sort = { createdAt: 1 };
         }
 
         // Fetch plants with the specified fields from database
-        const plants = await Plant.find(filter, projection).sort(sort);
+        const plants = sort
+        ? await Plant.find(filter, projection).sort(sort)
+        : await Plant.find(filter, projection);
 
         // Format date fields before returning the result
         return plants.map((plant) => {
-          const formattedPlant = { ...plant._doc }; // or plant._doc for Mongoose
+          const formattedPlant = plant.toObject(); // Convert Mongoose document to plain JavaScript object
 
           // Format specific date fields
           if (formatDates) {
@@ -126,7 +127,7 @@ const plantResolver = {
 
         return plant;
       } catch (error) {
-        throw new Error("Failed to fetch plant by ID", error);
+        throw new Error("Failed to fetch plant by ID: " + error.message);
       }
     },
   },

@@ -37,6 +37,7 @@ const distillationSchema = new Schema({
   waterForDistillation: { type: Number, required: true },
   distillationTime: { type: distillationTimeSchema, required: true },
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, 
+  createdAt: { type: Date, required: true },
 });
 
 // Exporting the Distillation model based on the distillationSchema
