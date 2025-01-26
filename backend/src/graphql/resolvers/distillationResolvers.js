@@ -320,11 +320,11 @@ const distillationResolvers = {
 
       try {
         // Exclude the createdAt field from the update data
-        // const { createdAt, ...updateData } = filteredData;
+        const { createdAt, ...updateData } = filteredData;
 
         const updatedDistillation = await Distillation.findByIdAndUpdate(
           id,
-          filteredData,
+          updateData,
           {
             new: true,
           }
