@@ -296,11 +296,13 @@ export default {
      */
     const handleSorting = async (option) => {
       if (option === "nazwy rośliny alfabetycznie") {
+        console.log("Sorting by plant name");
         await updateListSorting(apolloClient, "distillationListSorting", "plantName");
         store.dispatch("settings/setValue", {
           input: "distillationListSorting",
           value: "plantName",
         });
+        await fetchDistillationList(searchQuery.value, "plantName");
       }
       if (option === "daty dodania destylacji") {
         await updateListSorting(apolloClient, "distillationListSorting", "createdAt");
@@ -308,6 +310,7 @@ export default {
           input: "distillationListSorting",
           value: "createdAt",
         });
+        await fetchDistillationList(searchQuery.value, "createdAt");
       }
       if (option === "najstarszej daty destylacji") {
         await updateListSorting(apolloClient, "distillationListSorting", "oldDate");
@@ -315,6 +318,7 @@ export default {
           input: "distillationListSorting",
           value: "oldDate",
         });
+        await fetchDistillationList(searchQuery.value, "oldDate");
       }
       if (option === "najnowszej daty destylacji") {
         await updateListSorting(apolloClient, "distillationListSorting", "youngDate");
@@ -322,6 +326,7 @@ export default {
           input: "distillationListSorting",
           value: "youngDate",
         });
+        await fetchDistillationList(searchQuery.value, "youngDate");
       }
       page.value = 1;
     };
@@ -343,6 +348,7 @@ export default {
 
     // Watch for changes in the page number and refetch plant list.
     watch(page, async (newPage) => {
+      console.log("Changing page!");
       router.push({
         name: "InProgressDistillationsPage",
         params: { page: newPage },

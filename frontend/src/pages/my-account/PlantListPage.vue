@@ -288,6 +288,7 @@ export default {
           input: "plantListSorting",
           value: "plantName",
         });
+        await fetchPlantList(searchQuery.value, "plantName");
       }
       if (option === "daty dodania") {
         await updateListSorting(apolloClient, "plantListSorting", "createdAt");
@@ -295,6 +296,7 @@ export default {
           input: "plantListSorting",
           value: "createdAt",
         });
+        await fetchPlantList(searchQuery.value, "createdAt");
       }
       if (option === "najstarszej daty zbioru i zakupu") {
         await updateListSorting(apolloClient, "plantListSorting", "oldDate");
@@ -302,6 +304,7 @@ export default {
           input: "plantListSorting",
           value: "oldDate",
         });
+        await fetchPlantList(searchQuery.value, "oldDate");
       }
       if (option === "najnowszej daty zbioru i zakupu") {
         await updateListSorting(apolloClient, "plantListSorting", "youngDate");
@@ -309,6 +312,7 @@ export default {
           input: "plantListSorting",
           value: "youngDate",
         });
+        await fetchPlantList(searchQuery.value, "youngDate");
       }
       page.value = 1;
     };
