@@ -317,7 +317,6 @@ const distillationResolvers = {
           : null,
         date: validDate.toISOString(),
         userId: user.id,
-        createdAt: Date.now(),
       };
 
       // Filtering out null or empty string values

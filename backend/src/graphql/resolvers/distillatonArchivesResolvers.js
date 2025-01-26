@@ -499,14 +499,17 @@ const distillationArchivesResolvers = {
             : null,
         },
         userId: user.id,
+     
       };
 
       // Filtering out null or empty string values
       const filteredData = filterData(sanitizedData);
 
       try {
+        const { createdAt, ...updateData } = filteredData;
+
         const updatedDistillationArchive =
-          await DistillationArchives.findByIdAndUpdate(id, filteredData, {
+          await DistillationArchives.findByIdAndUpdate(id, updateData, {
             new: true,
           });
         return updatedDistillationArchive;
