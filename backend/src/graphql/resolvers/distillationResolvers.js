@@ -37,9 +37,11 @@ const distillationResolvers = {
         console.log(sorting);
 
         // Build a sort object based on sortingProps
-        const sort = {};
+        let sort = null;
         if (sorting === "plantName") {
-          sort["choosedPlant.name"] = 1;
+          sort = { "choosedPlant.name": 1 };
+        } else if (sorting === "createdAt") {
+          sort = { createdAt: 1 };
         }
 
         // if (sorting === "youngDate") {
@@ -50,10 +52,10 @@ const distillationResolvers = {
         //   sort.date = 1;
         // }
 
-        // Fetch distillations with the specified fields and filters from the database
-        const distillations = await Distillation.find(filter, projection).sort(
-          sort
-        );
+        // Fetch distillations with the specified fields from database
+        const distillations = sort
+          ? await Distillation.find(filter, projection).sort(sort)
+          : await Distillation.find(filter, projection);
 
         // Return the formatted result
         return distillations.map((distillation) => {
@@ -68,6 +70,7 @@ const distillationResolvers = {
             formattedDistillation.distillationDate = formatDate(
               formattedDistillation.distillationDate
             );
+            console.log("formtted distillation:", formattedDistillation);
           }
 
           return formattedDistillation;
