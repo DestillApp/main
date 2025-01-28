@@ -75,7 +75,33 @@ const userResolver = {
             throw new Error("Failed to check username existence");
           }
         },
+
+            /**
+     * @function getUserDetails
+     * @description Fetches the username and email of the authenticated user.
+     * @param {Object} _ - Unused.
+     * @param {Object} __ - Unused.
+     * @param {Object} context - The GraphQL context containing the authenticated user.
+     * @returns {Promise<Object>} An object containing the username and email.
+     */
+    getUserDetails: async (_, __, { user }) => {
+      if (!user) {
+        throw new AuthenticationError("Unauthorized");
+      }
+
+      try {
+        const userDetails = await User.findById(user.id, "username email");
+        if (!userDetails) {
+          throw new Error("User not found");
+        }
+        return userDetails;
+      } catch (err) {
+        console.error("Error fetching user details:", err);
+        throw new Error("Failed to fetch user details");
+      }
+    },
   },
+
   Mutation: {
     /**
      * @async
