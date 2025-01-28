@@ -107,18 +107,19 @@ export default {
           const sanitizedPassword = DOMPurify.sanitize(form.password);
 
           // Send the GraphQL mutation to login the user
-          const isAuthenticated = await store.dispatch('auth/login', {
+          const isAuthenticated = await store.dispatch("auth/login", {
             email: sanitizedEmail,
             password: sanitizedPassword,
           });
 
-          //Redirecting 
-          if (isAuthenticated) {
+          //Redirecting
+          if (isAuthenticated === true) {
             await store.dispatch("settings/fetchSettings");
-            const redirectPath = router.currentRoute.value.query.redirect || "/my-account";
+            const redirectPath =
+              router.currentRoute.value.query.redirect || "/my-account";
             router.push(redirectPath);
-          } else {
-            console.error('Authentication failed after login');
+          } else if (isAuthenticated === "Invalid credentials") {
+            isLoginFormValid.value = false;
           }
         } catch (error) {
           console.error("Error occured while logging in", error);

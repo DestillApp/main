@@ -41,6 +41,9 @@ export default {
       }
     } catch (error) {
       console.error("Login failed", error);
+      if (error.message === "Invalid credentials") {
+        return "Invalid credentials";
+      }
       throw new Error("Login failed");
     }
   },
@@ -54,7 +57,7 @@ export default {
       localStorage.removeItem("plantListLength");
       localStorage.removeItem("distillationListLength");
       localStorage.removeItem("distillationArchivesListLength");
-      
+
       localStorage.removeItem("plantListSorting");
       localStorage.removeItem("distillationListSorting");
       localStorage.removeItem("archiveDistillationListSorting");
@@ -67,5 +70,5 @@ export default {
 
   setLoadingAuthStatus(context, value) {
     context.commit("changeLoadingAuthStatus", value);
-  }
+  },
 };
