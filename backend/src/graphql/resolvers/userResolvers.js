@@ -137,31 +137,39 @@ const userResolver = {
       const sanitizedEmail = DOMPurify.sanitize(email);
       const sanitizedPassword = DOMPurify.sanitize(password);
 
-      //Find user by email
-      const user = await User.findOne({ email: sanitizedEmail });
-      if (!user) {
-        throw new AuthenticationError("Invalid credentials");
+      try {
+        // Find user by email
+        const user = await User.findOne({ email: sanitizedEmail });
+        if (!user) {
+          throw new AuthenticationError("Invalid credentials");
+        }
+
+        // Check if the password matches
+        const isMatch = await bcrypt.compare(sanitizedPassword, user.password);
+        if (!isMatch) {
+          throw new AuthenticationError("Invalid credentials");
+        }
+
+        // Generate and return a JWT token
+        const token = generateToken(user);
+
+        // Setting cookie JWT
+        res.cookie("authToken", token, {
+          httpOnly: false,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "Lax",
+          maxAge: 3600000, // 1 hour
+          path: "/",
+        });
+
+        return token;
+      } catch (err) {
+        console.error("Error during login:", err);
+        if (err instanceof AuthenticationError) {
+          throw err;
+        }
+        throw new Error("Failed to login");
       }
-
-      //Check if the password matches
-      const isMatch = await bcrypt.compare(sanitizedPassword, user.password);
-      if (!isMatch) {
-        throw new AuthenticationError("Invalid credentials");
-      }
-
-      //Generate and return a JWT token
-      const token = generateToken(user);
-
-      // Setting cookie JWT
-      res.cookie("authToken", token, {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Lax",
-        maxAge: 3600000, //1 hour
-        path: "/",
-      });
-
-      return token;
     },
 
     /**
