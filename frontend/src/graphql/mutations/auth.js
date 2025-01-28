@@ -11,3 +11,17 @@ mutation RegisterUser($userInput: UserInput!) {
   }
 }
 `;
+
+// GraphQL mutation to login the user
+export const LOGIN = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password)
+  }
+`;
+
+// GraphQL mutation to logout the user
+export const LOGOUT = gql`
+  mutation Logout {
+    logout
+  }
+`;

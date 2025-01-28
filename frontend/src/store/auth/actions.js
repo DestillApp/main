@@ -1,5 +1,6 @@
 import { apolloClient } from "@/main";
-import { VERIFY_AUTH, LOGIN, LOGOUT } from "@/graphql/queries/auth.js";
+import { VERIFY_AUTH } from "@/graphql/queries/auth.js";
+import { LOGIN, LOGOUT } from "@/graphql/mutations/auth.js";
 
 /**
  * Auth module actions for handling data fetching.

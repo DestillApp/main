@@ -16,16 +16,11 @@ export const CHECK_USERNAME_EXISTENCE = gql`
   }
 `;
 
-// GraphQL query to login the user
-export const LOGIN = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password)
-  }
-`;
-
-// GraphQL query to logout the user
-export const LOGOUT = gql`
-  mutation Logout {
-    logout
+export const GET_USER_DETAILS = gql`
+  query GetUserDetails {
+    getUserDetails {
+      username
+      email
+    }
   }
 `;
