@@ -62,6 +62,7 @@ const settingsResolvers = {
           distillationListSorting: "createdAt",
           archiveDistillationListSorting: "createdAt",
         },
+        distillerList: [],
         updatedAt: Date.now(),
       };
 
@@ -147,6 +148,41 @@ const settingsResolvers = {
         return updatedSettings;
       } catch (err) {
         throw new Error("Failed to update user settings");
+      }
+    },
+
+    /**
+     * @async
+     * @function addDistiller
+     * @description Adds a new distiller to the distillerList and updates the updatedAt date.
+     * @param {Object} _ - Unused.
+     * @param {Object} userId - The authenticated user.
+     * @param {Object} distiller - The distiller data to add.
+     * @returns {Promise<Object>} The updated user settings.
+     */
+    addDistiller: async (_, { userId, distiller }, { user }) => {
+      if (!user) {
+        throw new AuthenticationError("Unauthorized");
+      }
+
+      try {
+        // Find the user settings and add the new distiller
+        const updatedSettings = await UserSettings.findOneAndUpdate(
+          { userId: user.id },
+          {
+            $push: { distillerList: distiller },
+            $currentDate: { updatedAt: true },
+          },
+          { new: true }
+        );
+
+        if (!updatedSettings) {
+          throw new Error("User settings not found");
+        }
+
+        return updatedSettings;
+      } catch (err) {
+        throw new Error("Failed to add distiller");
       }
     },
   },

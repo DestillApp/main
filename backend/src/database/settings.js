@@ -9,6 +9,13 @@ const mongoose = require("mongoose");
 // Destructuring Schema from mongoose
 const Schema = mongoose.Schema;
 
+// Defining the Distiller schema
+const distillerSchema = new Schema({
+  material: { type: String, required: true },
+  capacity: { type: Number, required: true },
+  heating: { type: String, required: true },
+});
+
 // Defining the UserSettings schema
 const userSettingsSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -22,6 +29,7 @@ const userSettingsSchema = new Schema({
     distillationListSorting: { type: String, default: "createdAt" },
     archiveDistillationListSorting: { type: String, default: "createdAt" },
   },
+  distillerList: { type: [distillerSchema], default: [] }, 
   updatedAt: { type: Date, default: Date.now },
 });
 

@@ -19,10 +19,17 @@ const settingsSchema = gql`
     archiveDistillationListSorting: String!
   }
 
+  type Distiller {
+    material: String!
+    capacity: Float!
+    heating: String!
+  }
+
   type UserSettings {
     userId: ID!
     listSettings: ListSettings!
     listSorting: ListSorting!
+    distillerList: [Distiller!]! 
     updatedAt: String!
   }
 
@@ -36,6 +43,12 @@ const settingsSchema = gql`
     settingValue: String!
   }
 
+  input DistillerInput {
+    material: String!
+    capacity: Float!
+    heating: String!
+  }
+
   type Query {
     getUserSettings: UserSettings
   }
@@ -44,7 +57,9 @@ const settingsSchema = gql`
     createSettings(userId: ID!): UserSettings!
     updateListSettings(input: UpdateListSettingsInput!): UserSettings!
     updateListSorting(input: UpdateListSortingInput!): UserSettings!
+    addDistiller(distiller: DistillerInput!): UserSettings! 
   }
 `;
 
+// Exporting the settings schema
 module.exports = settingsSchema;
