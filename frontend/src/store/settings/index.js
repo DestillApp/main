@@ -23,7 +23,7 @@ export default {
       plantListSorting: "createdAt",
       distillationListSorting: "createdAt",
       archiveDistillationListSorting: "createdAt",
-      
+      distillerList: [],
       },
     };
   },

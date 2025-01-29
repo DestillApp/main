@@ -208,3 +208,25 @@ console.log("username", username);
 
   return { isFormValid, isPasswordCorrect };
 };
+
+/**
+ * @function distillerFormValidation
+ * @description Function to validate the distiller form data
+ * @param {Object} form - The distiller form data object
+ * @returns {boolean} Returns true if the form is valid, otherwise false
+ */
+export const distillerFormValidation = (form) => {
+  let isFormValid = true;
+
+  // Validate required fields
+  if (
+    form.material === "" ||
+    form.capacity === null ||
+    form.capacity <= 0 ||
+    form.heating === ""
+  ) {
+    isFormValid = false;
+  }
+
+  return isFormValid;
+};
