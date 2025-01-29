@@ -1,4 +1,3 @@
-//no docs no arch docs
 <template>
   <!-- Modal container to confirm plant deletion-->
   <base-modal>

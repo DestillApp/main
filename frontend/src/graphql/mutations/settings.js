@@ -48,3 +48,17 @@ export const UPDATE_LIST_SORTING = gql`
     }
   }
 `;
+
+export const ADD_DISTILLER = gql`
+  mutation AddDistiller($distiller: DistillerInput!) {
+    addDistiller(distiller: $distiller) {
+      userId
+      distillerList {
+        material
+        capacity
+        heating
+      }
+      updatedAt
+    }
+  }
+`;
