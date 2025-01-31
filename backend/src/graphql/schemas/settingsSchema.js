@@ -20,6 +20,7 @@ const settingsSchema = gql`
   }
 
   type Distiller {
+   id: ID! 
     material: String!
     capacity: Float!
     heating: String!
