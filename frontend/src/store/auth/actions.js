@@ -63,6 +63,8 @@ export default {
       localStorage.removeItem("distillationListSorting");
       localStorage.removeItem("archiveDistillationListSorting");
 
+      localStorage.removeItem("distillerList");
+
       localStorage.removeItem("searchQuery");
     } catch (error) {
       console.error("Logout failed", error);
