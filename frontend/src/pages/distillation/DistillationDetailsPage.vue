@@ -429,7 +429,7 @@ export default {
 }
 
 .distillation_button--delete:hover {
-  color: red;
+  color: var(--error-color);
 }
 
 .distillation_container--two {

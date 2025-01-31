@@ -7,14 +7,17 @@
     </div>
     <div class="my-distillers">
       <h4 class="my-distillers-title">Moje destylatory:</h4>
-      <ul v-if="distillers.length > 0">
+      <ul v-if="distillers.length > 0" class="distiller-list">
         <li v-for="distiller in distillers" :key="distiller.id" class="distiller-item">
-            <div>
-          <p><strong>Materiał:</strong> {{ distiller.material }}</p>
-          <p><strong>Pojemność:</strong> {{ distiller.capacity }} l</p>
-          <p><strong>Ogrzewanie:</strong> {{ distiller.heating }}</p>
+            <h5 class="distiller-title">Destylator</h5>
+            <div class="distiller-columns">
+            <div class="distiller-info">
+          <p>Materiał: {{ distiller.material }}</p>
+          <p>Pojemność: {{ distiller.capacity }} l</p>
+          <p>Ogrzewanie: {{ distiller.heating }}</p>
             </div>
-          <button @click="deleteDistiller(distiller.id)">Usuń</button>
+          <button @click="deleteDistiller(distiller.id)" class="distiller-delete">Usuń</button>
+        </div>
         </li>
       </ul>
         <p v-else class="distiller-none">Brak zapisanych destylatorów.</p>
@@ -117,11 +120,44 @@ export default {
   text-align: left;
 }
 
+.distiller-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
 .distiller-item {
-  border: 1px solid black;
-  padding: 10px;
+  border: 1px solid var(--secondary-color);
+  padding: 15px;
   margin-bottom: 10px;
   border-radius: 5px;
+  width: 50%;
+}
+
+.distiller-title {
+    margin-bottom: 5px;
+}
+
+.distiller-columns {
+    display: flex;
+    flex-direction: row;
+    font-size: 13px;
+    justify-content: space-around;
+}
+
+.distiller-info {
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+}
+
+.distiller-delete {
+    font-size: 11px;
+}
+
+.distiller-delete:hover {
+color: var(--error-color);
 }
 
 .distiller-none {
@@ -131,5 +167,6 @@ export default {
 .my-distillers-button{
 width: 300px;
 margin: 0 auto;
+margin-top: 20px;
 }
 </style>
