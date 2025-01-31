@@ -30,7 +30,7 @@
 
 
 <script>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeMount } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useStore } from "vuex";
 import { GET_USER_DETAILS } from "@/graphql/queries/auth.js";
@@ -74,9 +74,13 @@ export default {
       // Add delete logic here
     };
 
+    onBeforeMount(() => {
+      store.dispatch("settings/fetchLocalStorageData", { key: "distillerList" });
+    });
+
     onMounted(() => {
       fetchUserDetails();
-      console.log("distillers in MyDataPage", distillers.value)
+      console.log("distillers in MyDataPage", distillers.value);
     });
 
     return {
