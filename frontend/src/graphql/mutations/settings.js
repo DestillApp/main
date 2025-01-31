@@ -14,6 +14,12 @@ export const CREATE_SETTINGS = gql`
         distillationListSorting
         archiveDistillationListSorting
       }
+      distillerList {
+        id
+        material
+        capacity
+        heating
+      }
       updatedAt
     }
   }
