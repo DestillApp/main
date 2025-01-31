@@ -46,6 +46,7 @@ export default {
       });
       const settings = data.getUserSettings.listSettings;
       const sorting = data.getUserSettings.listSorting;
+      const distillers = data.getUserSettings.distillerList;
 
       // Update the Vuex store with the fetched settings
       context.dispatch("setValue", { input: "plantListLength", value: settings.plantListLength });
@@ -55,6 +56,8 @@ export default {
       context.dispatch("setValue", {input: "plantListSorting", value: sorting.plantListSorting});
       context.dispatch("setValue", {input: "distillationListSorting", value: sorting.distillationListSorting});
       context.dispatch("setValue", {input: "archiveDistillationListSorting", value: sorting.archiveDistillationListSorting});
+
+      context.dispatch("setValue", { input: "distillerList", value: distillers });
 
     } catch (error) {
       console.error("Error fetching settings:", error);

@@ -13,6 +13,12 @@ export const GET_USER_SETTINGS = gql`
         distillationListSorting
         archiveDistillationListSorting
       }
+      distillerList {
+        material
+        capacity
+        heating
+        id
+      }
     }
   }
 `;

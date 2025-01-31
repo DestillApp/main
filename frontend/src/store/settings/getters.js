@@ -6,4 +6,8 @@ export default {
   settingsForm(state) {
     return state.settingsForm;
   },
+
+  distillerList(state) {
+    return state.settingsForm.distillerList;
+  },
 };
