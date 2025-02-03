@@ -57,6 +57,7 @@ import { ref, onMounted, computed, onBeforeMount } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useStore } from "vuex";
 import { GET_USER_DETAILS } from "@/graphql/queries/auth.js";
+import { DELETE_DISTILLER } from "@/graphql/mutations/settings.js";
 import BaseButton from "@/ui/BaseButton.vue";
 import DistillerForm from "@/components/DistillerForm.vue";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
@@ -107,10 +108,20 @@ export default {
       selectedDistillerId.value = null;
     };
 
-    const deleteDistiller = () => {
-      console.log("Delete distiller with ID:", selectedDistillerId.value);
-      // Add delete logic here
-      closeDeleteModal();
+    const deleteDistiller = async () => {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: DELETE_DISTILLER,
+          variables: {
+            distillerId: selectedDistillerId.value,
+          },
+        });
+
+        console.log("Distiller deleted:", data.deleteDistiller);
+        closeDeleteModal();
+      } catch (error) {
+        console.error("Failed to delete distiller:", error);
+      }
     };
 
     onBeforeMount(() => {
@@ -169,7 +180,7 @@ export default {
 }
 
 .distiller-item {
-  border: 1px solid var(--secondary-color);
+  border: 2px solid var(--secondary-color);
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 5px;
