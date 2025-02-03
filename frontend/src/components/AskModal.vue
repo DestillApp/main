@@ -34,7 +34,7 @@ import BaseButton from "@/ui/BaseButton.vue";
  * @emits handle-yes - Event emitted when the user confirms the plant deletion.
  */
 export default {
-  name: "DeleteItemModal",
+  name: "ASKModal",
   components: { BaseModal, BaseButton },
   props: ["plantName", "plantPart", "distillationWeight"],
   emits: ["close-modal", "handle-yes"],

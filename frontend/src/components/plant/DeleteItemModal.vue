@@ -2,16 +2,17 @@
 <template>
   <!-- Modal container to confirm plant deletion-->
   <base-modal>
-    <base-card class="card">
+    <base-card :class="{ 'distiller-card': distiller, 'card': !distiller }">
       <div class="container">
         <!-- Message asking user to confirm item deletion -->
-        <div class="text" v-if="!distillationDate">
+        <div class="text" v-if="!distillationDate && !distiller">
           Czy chcesz usunąć {{ nameOfPlant }} {{ plantPart }} z magazynu?
         </div>
-        <div class="text" v-if="distillationDate">
+        <div class="text" v-if="distillationDate && !distiller"> 
           Czy chcesz usunąć destylacje <br> {{ nameOfPlant }} {{ plantPart }} z dnia
           {{ distillationDate }}?
         </div>
+        <div class="text" v-if="distiller">Czy chcesz usunąć zapisany destylator?</div>
         <div class="buttons">
           <!-- Button to confirm deletion -->
           <base-button class="button--yes" @click="deleteItem">Tak</base-button>
@@ -42,11 +43,11 @@ import BaseButton from "@/ui/BaseButton.vue";
 export default {
   name: "DeleteItemModal",
   components: { BaseModal, BaseButton },
-  props: ["plantName", "plantPart", "distillationDate"],
+  props: ["plantName", "plantPart", "distillationDate", "distiller"],
   emits: ["close-delete-modal", "delete-item"],
   setup(props, context) {
     // Reactive reference for the lowercase version of plant name.
-    const nameOfPlant = ref(props.plantName.toLowerCase());
+    const nameOfPlant = ref(props.plantName ? props.plantName.toLowerCase() : "");
 
     /**
      * @function deleteItem
@@ -72,6 +73,10 @@ export default {
 <style scoped>
 .card {
   width: 55%;
+}
+
+.distiller-card {
+  width: 40%;
 }
 
 .container {

@@ -8,29 +8,49 @@
     <div class="my-distillers">
       <h4 class="my-distillers-title">Moje destylatory:</h4>
       <ul v-if="distillers.length > 0" class="distiller-list">
-        <li v-for="distiller in distillers" :key="distiller.id" class="distiller-item">
-            <h5 class="distiller-title">Destylator</h5>
-            <div class="distiller-columns">
+        <li
+          v-for="distiller in distillers"
+          :key="distiller.id"
+          class="distiller-item"
+        >
+          <h5 class="distiller-title">Destylator</h5>
+          <div class="distiller-columns">
             <div class="distiller-info">
-          <p>Materiał: {{ distiller.material }}</p>
-          <p>Pojemność: {{ distiller.capacity }} l</p>
-          <p>Ogrzewanie: {{ distiller.heating }}</p>
+              <p>Materiał: {{ distiller.material }}</p>
+              <p>Pojemność: {{ distiller.capacity }} l</p>
+              <p>Ogrzewanie: {{ distiller.heating }}</p>
             </div>
-          <button @click="deleteDistiller(distiller.id)" class="distiller-delete">Usuń</button>
-        </div>
+            <button
+              @click="openDeleteModal(distiller.id)"
+              class="distiller-delete"
+            >
+              Usuń
+            </button>
+          </div>
         </li>
       </ul>
-        <p v-else class="distiller-none">Brak zapisanych destylatorów.</p>
-      <base-button class="my-distillers-button" @click="openDistillerForm">Dodaj nowy destylator</base-button>
+      <p v-else class="distiller-none">Brak zapisanych destylatorów.</p>
+      <base-button class="my-distillers-button" @click="openDistillerForm"
+        >Dodaj nowy destylator</base-button
+      >
     </div>
     <div>
       <h4>Ustawienia:</h4>
     </div>
     <!-- Distiller form modal -->
-    <distiller-form v-if="isDistillerFormOpen" @close-modal="closeDistillerForm"></distiller-form>
+    <distiller-form
+      v-if="isDistillerFormOpen"
+      @close-modal="closeDistillerForm"
+    ></distiller-form>
+    <!-- Delete item modal -->
+    <delete-item-modal
+      v-if="isDeleteModalOpen"
+      @close-delete-modal="closeDeleteModal"
+      @delete-item="deleteDistiller"
+      :distiller="true"
+    ></delete-item-modal>
   </div>
 </template>
-
 
 <script>
 import { ref, onMounted, computed, onBeforeMount } from "vue";
@@ -39,9 +59,10 @@ import { useStore } from "vuex";
 import { GET_USER_DETAILS } from "@/graphql/queries/auth.js";
 import BaseButton from "@/ui/BaseButton.vue";
 import DistillerForm from "@/components/DistillerForm.vue";
+import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 
 export default {
-  components: { BaseButton, DistillerForm },
+  components: { BaseButton, DistillerForm, DeleteItemModal },
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
@@ -50,6 +71,10 @@ export default {
     const username = ref("");
     const email = ref("");
     const distillers = computed(() => store.getters["settings/distillerList"]);
+
+    const isDeleteModalOpen = ref(false);
+    const selectedDistillerId = ref(null);
+
     const isDistillerFormOpen = ref(false);
 
     const fetchUserDetails = async () => {
@@ -72,13 +97,26 @@ export default {
       isDistillerFormOpen.value = false;
     };
 
-    const deleteDistiller = (id) => {
-      console.log("Delete distiller with ID:", id);
+    const openDeleteModal = (id) => {
+      selectedDistillerId.value = id;
+      isDeleteModalOpen.value = true;
+    };
+
+    const closeDeleteModal = () => {
+      isDeleteModalOpen.value = false;
+      selectedDistillerId.value = null;
+    };
+
+    const deleteDistiller = () => {
+      console.log("Delete distiller with ID:", selectedDistillerId.value);
       // Add delete logic here
+      closeDeleteModal();
     };
 
     onBeforeMount(() => {
-      store.dispatch("settings/fetchLocalStorageData", { key: "distillerList" });
+      store.dispatch("settings/fetchLocalStorageData", {
+        key: "distillerList",
+      });
     });
 
     onMounted(() => {
@@ -91,8 +129,11 @@ export default {
       email,
       distillers,
       isDistillerFormOpen,
+      isDeleteModalOpen,
       openDistillerForm,
       closeDistillerForm,
+      openDeleteModal,
+      closeDeleteModal,
       deleteDistiller,
     };
   },
@@ -101,19 +142,19 @@ export default {
 
 <style scoped>
 .my-data_user-info {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    margin-top: 20px;
-    margin-bottom: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 20px;
+  margin-bottom: 50px;
 }
 
 .my-distillers {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-    margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 50px;
 }
 
 .my-distillers-title {
@@ -121,10 +162,10 @@ export default {
 }
 
 .distiller-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }
 
 .distiller-item {
@@ -136,37 +177,37 @@ export default {
 }
 
 .distiller-title {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .distiller-columns {
-    display: flex;
-    flex-direction: row;
-    font-size: 13px;
-    justify-content: space-around;
+  display: flex;
+  flex-direction: row;
+  font-size: 13px;
+  justify-content: space-around;
 }
 
 .distiller-info {
-display: flex;
-flex-direction: column;
-align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .distiller-delete {
-    font-size: 11px;
+  font-size: 11px;
 }
 
 .distiller-delete:hover {
-color: var(--error-color);
+  color: var(--error-color);
 }
 
 .distiller-none {
-    text-align: left;   
+  text-align: left;
 }
 
-.my-distillers-button{
-width: 300px;
-margin: 0 auto;
-margin-top: 20px;
+.my-distillers-button {
+  width: 300px;
+  margin: 0 auto;
+  margin-top: 20px;
 }
 </style>

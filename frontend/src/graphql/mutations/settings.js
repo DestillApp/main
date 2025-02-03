@@ -68,3 +68,18 @@ export const ADD_DISTILLER = gql`
     }
   }
 `;
+
+export const DELETE_DISTILLER = gql`
+  mutation DeleteDistiller($userId: ID!, $distillerId: ID!) {
+    deleteDistiller(userId: $userId, distillerId: $distillerId) {
+      userId
+      distillerList {
+        id
+        material
+        capacity
+        heating
+      }
+      updatedAt
+    }
+  }
+`;
