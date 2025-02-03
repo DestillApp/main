@@ -1,5 +1,5 @@
 import { apolloClient } from "@/main";
-import { CREATE_SETTINGS } from "@/graphql/mutations/settings";
+import { CREATE_SETTINGS, DELETE_DISTILLER } from "@/graphql/mutations/settings";
 import { GET_USER_SETTINGS } from "@/graphql/queries/settings";
 
 /**
@@ -83,4 +83,23 @@ export default {
       console.log("Error fetching data from local storage:", error);
     }
   },
+
+    /**
+   * @function deleteDistillerById
+   * @description Deletes a distiller from the distillerList by its ID.
+   * @param {Object} context - The Vuex context.
+   * @param {string} id - The ID of the distiller to delete.
+   */
+    async deleteDistillerById(context, id) {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: DELETE_DISTILLER,
+          variables: { distillerId: id },
+        });
+        context.commit("removeDistillerById", id);
+        console.log("Distiller deleted:", data.deleteDistiller);
+      } catch (error) {
+        console.error("Error deleting distiller:", error);
+      }
+    },
 };

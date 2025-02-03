@@ -57,7 +57,6 @@ import { ref, onMounted, computed, onBeforeMount } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useStore } from "vuex";
 import { GET_USER_DETAILS } from "@/graphql/queries/auth.js";
-import { DELETE_DISTILLER } from "@/graphql/mutations/settings.js";
 import BaseButton from "@/ui/BaseButton.vue";
 import DistillerForm from "@/components/DistillerForm.vue";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
@@ -110,14 +109,7 @@ export default {
 
     const deleteDistiller = async () => {
       try {
-        const { data } = await apolloClient.mutate({
-          mutation: DELETE_DISTILLER,
-          variables: {
-            distillerId: selectedDistillerId.value,
-          },
-        });
-
-        console.log("Distiller deleted:", data.deleteDistiller);
+        await store.dispatch("settings/deleteDistillerById", selectedDistillerId.value);
         closeDeleteModal();
       } catch (error) {
         console.error("Failed to delete distiller:", error);

@@ -15,4 +15,18 @@ export default {
     state.settingsForm[input] = value;
     localStorage.setItem(input, JSON.stringify(value));
   },
+
+  
+  /**
+   * @function removeDistillerById
+   * @description Mutation to remove a distiller from the distillerList by its ID.
+   * @param {Object} state - The current state object.
+   * @param {string} id - The ID of the distiller to remove.
+   */
+  removeDistillerById(state, id) {
+    state.settingsForm.distillerList = state.settingsForm.distillerList.filter(
+      (distiller) => distiller.id !== id
+    );
+    localStorage.setItem("distillerList", JSON.stringify(state.settingsForm.distillerList));
+  },
 }
