@@ -59,6 +59,7 @@ const settingsSchema = gql`
     updateListSettings(input: UpdateListSettingsInput!): UserSettings!
     updateListSorting(input: UpdateListSortingInput!): UserSettings!
     addDistiller(distiller: DistillerInput!): UserSettings! 
+    deleteDistiller(distillerId: ID!): UserSettings!
   }
 `;
 

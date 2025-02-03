@@ -185,6 +185,41 @@ const settingsResolvers = {
         throw new Error("Failed to add distiller");
       }
     },
+
+    /**
+     * @async
+     * @function deleteDistiller
+     * @description Deletes a distiller from the distillerList by its ID and updates the updatedAt date.
+     * @param {Object} _ - Unused.
+     * @param {Object} userId - The authenticated user.
+     * @param {ID} distillerId - The ID of the distiller to delete.
+     * @returns {Promise<Object>} The updated user settings.
+     */
+    deleteDistiller: async (_, { userId, distillerId }, { user }) => {
+      if (!user) {
+        throw new AuthenticationError("Unauthorized");
+      }
+
+      try {
+        // Find the user settings and remove the distiller by its ID
+        const updatedSettings = await UserSettings.findOneAndUpdate(
+          { userId: user.id },
+          {
+            $pull: { distillerList: { _id: distillerId } },
+            $currentDate: { updatedAt: true },
+          },
+          { new: true }
+        );
+
+        if (!updatedSettings) {
+          throw new Error("User settings not found");
+        }
+
+        return updatedSettings;
+      } catch (err) {
+        throw new Error("Failed to delete distiller");
+      }
+    },
   },
 };
 
