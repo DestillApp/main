@@ -3,7 +3,7 @@
  * @module settingsMutations
  */
 export default {
-      /**
+  /**
    * @function changeValue
    * @description Mutation to change the value of a field in the settings form.
    * @param {Object} state - The current state object.
@@ -16,7 +16,6 @@ export default {
     localStorage.setItem(input, JSON.stringify(value));
   },
 
-  
   /**
    * @function removeDistillerById
    * @description Mutation to remove a distiller from the distillerList by its ID.
@@ -27,6 +26,9 @@ export default {
     state.settingsForm.distillerList = state.settingsForm.distillerList.filter(
       (distiller) => distiller.id !== id
     );
-    localStorage.setItem("distillerList", JSON.stringify(state.settingsForm.distillerList));
+    localStorage.setItem(
+      "distillerList",
+      JSON.stringify(state.settingsForm.distillerList)
+    );
   },
-}
+};

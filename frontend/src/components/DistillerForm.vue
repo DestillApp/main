@@ -63,14 +63,12 @@
 
 <script>
 import { ref } from "vue";
-// import { useStore } from "vuex";
-import { useApolloClient } from "@vue/apollo-composable";
+import { useStore } from "vuex";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import { setKeyboardIntegerNumber } from "@/helpers/formatHelpers.js";
 import { distillerFormValidation } from "@/helpers/formsValidation.js";
-import { ADD_DISTILLER } from "@/graphql/mutations/settings.js";
 
 export default {
   components: {
@@ -79,8 +77,7 @@ export default {
     BaseButton,
   },
   setup(_, { emit }) {
-    const { resolveClient } = useApolloClient();
-    const apolloClient = resolveClient();
+    const store = useStore(); 
 
     const material = ref("");
     const capacity = ref(null);
@@ -108,14 +105,8 @@ export default {
       isFormValid.value = distillerFormValidation(distiller);
       if (isFormValid.value) {
         try {
-          const { data } = await apolloClient.mutate({
-            mutation: ADD_DISTILLER,
-            variables: {
-              distiller,
-            },
-          });
-
-          console.log("Distiller added:", data.addDistiller);
+          await store.dispatch("settings/addDistiller", distiller);
+          await store.dispatch("settings/fetchSettings"); 
           closeModal();
         } catch (error) {
           console.error("Failed to add distiller:", error);

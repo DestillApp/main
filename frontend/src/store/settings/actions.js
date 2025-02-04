@@ -1,5 +1,9 @@
 import { apolloClient } from "@/main";
-import { CREATE_SETTINGS, DELETE_DISTILLER } from "@/graphql/mutations/settings";
+import {
+  CREATE_SETTINGS,
+  DELETE_DISTILLER,
+  ADD_DISTILLER,
+} from "@/graphql/mutations/settings";
 import { GET_USER_SETTINGS } from "@/graphql/queries/settings";
 
 /**
@@ -18,14 +22,14 @@ export default {
   setValue(context, { input, value }) {
     context.commit("changeValue", { input, value });
   },
-  
+
   /**
    * @function setInitialSettings
    * @description Creates initial settings in the database.
    */
   async setInitialSettings(context, userId) {
     try {
-      const {data} = await apolloClient.mutate({
+      const { data } = await apolloClient.mutate({
         mutation: CREATE_SETTINGS,
         variables: { userId },
       });
@@ -49,16 +53,36 @@ export default {
       const distillers = data.getUserSettings.distillerList;
 
       // Update the Vuex store with the fetched settings
-      context.dispatch("setValue", { input: "plantListLength", value: settings.plantListLength });
-      context.dispatch("setValue", { input: "distillationListLength", value: settings.distillationListLength });
-      context.dispatch("setValue", { input: "distillationArchivesListLength", value: settings.distillationArchivesListLength });
+      context.dispatch("setValue", {
+        input: "plantListLength",
+        value: settings.plantListLength,
+      });
+      context.dispatch("setValue", {
+        input: "distillationListLength",
+        value: settings.distillationListLength,
+      });
+      context.dispatch("setValue", {
+        input: "distillationArchivesListLength",
+        value: settings.distillationArchivesListLength,
+      });
 
-      context.dispatch("setValue", {input: "plantListSorting", value: sorting.plantListSorting});
-      context.dispatch("setValue", {input: "distillationListSorting", value: sorting.distillationListSorting});
-      context.dispatch("setValue", {input: "archiveDistillationListSorting", value: sorting.archiveDistillationListSorting});
+      context.dispatch("setValue", {
+        input: "plantListSorting",
+        value: sorting.plantListSorting,
+      });
+      context.dispatch("setValue", {
+        input: "distillationListSorting",
+        value: sorting.distillationListSorting,
+      });
+      context.dispatch("setValue", {
+        input: "archiveDistillationListSorting",
+        value: sorting.archiveDistillationListSorting,
+      });
 
-      context.dispatch("setValue", { input: "distillerList", value: distillers });
-
+      context.dispatch("setValue", {
+        input: "distillerList",
+        value: distillers,
+      });
     } catch (error) {
       console.error("Error fetching settings:", error);
     }
@@ -84,22 +108,40 @@ export default {
     }
   },
 
-    /**
+  /**
+   * @function addDistiller
+   * @description Adds a distiller to the distillerList.
+   * @param {Object} context - The Vuex context.
+   * @param {Object} distiller - The distiller object to add.
+   */
+  async addDistiller(context, distiller) {
+    try {
+      const { data } = await apolloClient.mutate({
+        mutation: ADD_DISTILLER,
+        variables: { distiller },
+      });
+      console.log("Distiller added:", data.addDistiller);
+    } catch (error) {
+      console.error("Error adding distiller:", error);
+    }
+  },
+
+  /**
    * @function deleteDistillerById
    * @description Deletes a distiller from the distillerList by its ID.
    * @param {Object} context - The Vuex context.
    * @param {string} id - The ID of the distiller to delete.
    */
-    async deleteDistillerById(context, id) {
-      try {
-        const { data } = await apolloClient.mutate({
-          mutation: DELETE_DISTILLER,
-          variables: { distillerId: id },
-        });
-        context.commit("removeDistillerById", id);
-        console.log("Distiller deleted:", data.deleteDistiller);
-      } catch (error) {
-        console.error("Error deleting distiller:", error);
-      }
-    },
+  async deleteDistillerById(context, id) {
+    try {
+      const { data } = await apolloClient.mutate({
+        mutation: DELETE_DISTILLER,
+        variables: { distillerId: id },
+      });
+      context.commit("removeDistillerById", id);
+      console.log("Distiller deleted:", data.deleteDistiller);
+    } catch (error) {
+      console.error("Error deleting distiller:", error);
+    }
+  },
 };
