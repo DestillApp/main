@@ -35,7 +35,8 @@
       >
     </div>
     <div>
-      <h4>Ustawienia:</h4>
+      <h4 class="settings-title">Ustawienia:</h4>
+      <base-button @click="openPasswordChangeForm">Zmień hasło</base-button>
     </div>
     <!-- Distiller form modal -->
     <distiller-form
@@ -49,6 +50,11 @@
       @delete-item="deleteDistiller"
       :distiller="true"
     ></delete-item-modal>
+    <!-- Password change form modal -->
+    <password-change-form
+      v-if="isPasswordChangeFormOpen"
+      @close-modal="closePasswordChangeForm"
+    ></password-change-form>
   </div>
 </template>
 
@@ -60,9 +66,15 @@ import { GET_USER_DETAILS } from "@/graphql/queries/auth.js";
 import BaseButton from "@/ui/BaseButton.vue";
 import DistillerForm from "@/components/DistillerForm.vue";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
+import PasswordChangeForm from "@/components/PasswordChangeForm.vue";
 
 export default {
-  components: { BaseButton, DistillerForm, DeleteItemModal },
+  components: {
+    BaseButton,
+    DistillerForm,
+    DeleteItemModal,
+    PasswordChangeForm,
+  },
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
@@ -76,6 +88,7 @@ export default {
     const selectedDistillerId = ref(null);
 
     const isDistillerFormOpen = ref(false);
+    const isPasswordChangeFormOpen = ref(false);
 
     const fetchUserDetails = async () => {
       try {
@@ -109,11 +122,22 @@ export default {
 
     const deleteDistiller = async () => {
       try {
-        await store.dispatch("settings/deleteDistillerById", selectedDistillerId.value);
+        await store.dispatch(
+          "settings/deleteDistillerById",
+          selectedDistillerId.value
+        );
         closeDeleteModal();
       } catch (error) {
         console.error("Failed to delete distiller:", error);
       }
+    };
+
+    const openPasswordChangeForm = () => {
+      isPasswordChangeFormOpen.value = true;
+    };
+
+    const closePasswordChangeForm = () => {
+      isPasswordChangeFormOpen.value = false;
     };
 
     onBeforeMount(() => {
@@ -133,11 +157,14 @@ export default {
       distillers,
       isDistillerFormOpen,
       isDeleteModalOpen,
+      isPasswordChangeFormOpen,
       openDistillerForm,
       closeDistillerForm,
       openDeleteModal,
       closeDeleteModal,
       deleteDistiller,
+      openPasswordChangeForm,
+      closePasswordChangeForm,
     };
   },
 };
@@ -161,6 +188,7 @@ export default {
 }
 
 .my-distillers-title {
+    margin-left: 5%;
   text-align: left;
 }
 
@@ -212,5 +240,10 @@ export default {
   width: 300px;
   margin: 0 auto;
   margin-top: 20px;
+}
+
+.settings-title {
+    margin-left: 5%;
+  text-align: left;
 }
 </style>
