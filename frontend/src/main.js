@@ -87,6 +87,11 @@ const apolloClient = new ApolloClient({
               return incoming;
             },
           },
+          getUserDetails: {
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
         },
       },
     },

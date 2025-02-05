@@ -94,6 +94,7 @@ export default {
       try {
         const { data } = await apolloClient.query({
           query: GET_USER_DETAILS,
+          fetchPolicy: "network-only",
         });
         username.value = data.getUserDetails.username;
         email.value = data.getUserDetails.email;
