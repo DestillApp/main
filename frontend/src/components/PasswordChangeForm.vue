@@ -14,7 +14,12 @@
             :invalidInput="!isFormValid && !oldPassword"
           >
             <template v-slot:message>
-              <span v-if="!isFormValid && !oldPassword">Wpisz stare hasło.</span>
+              <span v-if="!isFormValid && !oldPassword"
+                >Wpisz stare hasło.</span
+              >
+              <span v-if="isFormValid && !isOldPasswordCorrect"
+                >Niepoprawne stare hasło.</span
+              >
               <span v-else>&nbsp;</span>
             </template>
           </base-text-input>
@@ -29,7 +34,10 @@
             :invalidInput="!isFormValid && !newPassword"
           >
             <template v-slot:message>
-              <span v-if="!isPasswordCorrect && newPassword">Wpisz poprawne hasło. Hasło musi zawierać conajmniej 8 znaków, jedną wielką literę i jedną liczbę.</span>
+              <span v-if="!isPasswordCorrect && newPassword"
+                >Wpisz poprawne hasło. Hasło musi zawierać conajmniej 8 znaków,
+                jedną wielką literę i jedną liczbę.</span
+              >
               <span v-if="!isFormValid && !newPassword">Wpisz nowe hasło.</span>
               <span v-else>&nbsp;</span>
             </template>
@@ -44,8 +52,13 @@
             :invalidInput="!isFormValid && !confirmNewPassword"
           >
             <template v-slot:message>
-              <span v-if="confirmNewPassword !== newPassword && confirmNewPassword">Hasła nie są takie same.</span>
-              <span v-if="!isFormValid && !confirmNewPassword">Powtórz nowe hasło.</span>
+              <span
+                v-if="confirmNewPassword !== newPassword && confirmNewPassword"
+                >Hasła nie są takie same.</span
+              >
+              <span v-if="!isFormValid && !confirmNewPassword"
+                >Powtórz nowe hasło.</span
+              >
               <span v-else>&nbsp;</span>
             </template>
           </base-text-input>
@@ -81,6 +94,7 @@ export default {
     // Reactive reference to track form validity
     const isFormValid = ref(true);
     const isPasswordCorrect = ref(true);
+    const isOldPasswordCorrect = ref(true);
 
     const checkPassword = () => {
       const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
@@ -100,12 +114,18 @@ export default {
 
       if (isFormValid.value) {
         try {
-          await store.dispatch("auth/changePassword", {
+          const isAuthenticated = await store.dispatch("auth/changePassword", {
             oldPassword: oldPassword.value,
             newPassword: newPassword.value,
           });
-          console.log("Password changed successfully");
-          closeModal();
+          if (isAuthenticated === true) {
+            console.log("Password changed successfully");
+            isOldPasswordCorrect.value = true;
+            closeModal();
+          } else if (isAuthenticated === "Invalid old password") {
+            console.error("Wrong old password");
+            isOldPasswordCorrect.value = false;
+          }
         } catch (error) {
           console.error("Failed to change password:", error);
         }
@@ -127,6 +147,7 @@ export default {
       closeModal,
       isFormValid,
       isPasswordCorrect,
+      isOldPasswordCorrect,
     };
   },
 };

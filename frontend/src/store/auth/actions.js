@@ -85,7 +85,10 @@ export default {
       console.log("Password changed successfully:", response.data.changePassword);
       return true;
     } catch (error) {
-      console.error("Failed to change password:", error);
+      console.error("Failed to change password:", error.message);
+      if (error.message === "Invalid old password") {
+        return "Invalid old password";
+      }
       throw new Error("Failed to change password");
     }
   },
