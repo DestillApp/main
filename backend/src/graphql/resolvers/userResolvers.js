@@ -211,6 +211,53 @@ const userResolver = {
       res.clearCookie("authToken");
       return true;
     },
+
+    /**
+     * @async
+     * @function changePassword
+     * @description Changes the user's password if the old password is correct.
+     * @param {Object} _ - Unused.
+     * @param {Object} input - The input data containing the old and new passwords.
+     * @param {Object} user - The authenticated user.
+     * @returns {Promise<Boolean>} True if the password was changed successfully, false otherwise.
+     */
+    changePassword: async (_, { input }, { user }) => {
+      if (!user) {
+        throw new AuthenticationError("Unauthorized");
+      }
+
+      const { oldPassword, newPassword } = input;
+
+      // Sanitize input data
+      const sanitizedOldPassword = DOMPurify.sanitize(oldPassword);
+      const sanitizedNewPassword = DOMPurify.sanitize(newPassword);
+
+      try {
+        // Find user by ID
+        const foundUser = await User.findById(user.id);
+        if (!foundUser) {
+          throw new Error("User not found");
+        }
+
+        // Check if the old password matches
+        const isMatch = await bcrypt.compare(sanitizedOldPassword, foundUser.password);
+        if (!isMatch) {
+          throw new AuthenticationError("Invalid old password");
+        }
+
+        // Hash the new password
+        const hashedNewPassword = await bcrypt.hash(sanitizedNewPassword, 10);
+
+        // Update the user's password
+        foundUser.password = hashedNewPassword;
+        await foundUser.save();
+
+        return true;
+      } catch (err) {
+        console.error("Error during password change:", err);
+        throw new Error("Failed to change password");
+      }
+    },
   },
 };
 

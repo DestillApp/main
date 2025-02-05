@@ -20,6 +20,11 @@ const userSchema = gql`
     password: String!
   }
 
+  input ChangePasswordInput {
+  oldPassword: String!
+  newPassword: String!
+}
+
   type AuthStatus {
     isAuthenticated: Boolean
   }
@@ -32,8 +37,9 @@ const userSchema = gql`
 
   type Mutation {
     registerUser(userInput: UserInput!): User!
-    login(email: String!, password: String!): String! # Assuming login returns a JWT token
+    login(email: String!, password: String!): String!
     logout: Boolean!
+    changePassword(input: ChangePasswordInput!): Boolean!
   }
 `;
 
