@@ -255,6 +255,9 @@ const userResolver = {
         return true;
       } catch (err) {
         console.error("Error during password change:", err);
+        if (err instanceof AuthenticationError) {
+          throw err;
+        }
         throw new Error("Failed to change password");
       }
     },
