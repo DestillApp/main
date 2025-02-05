@@ -47,6 +47,7 @@ export default {
     try {
       const { data } = await apolloClient.query({
         query: GET_USER_SETTINGS,
+        fetchPolicy: "network-only",
       });
       const settings = data.getUserSettings.listSettings;
       const sorting = data.getUserSettings.listSorting;

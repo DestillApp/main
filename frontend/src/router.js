@@ -170,6 +170,10 @@ router.beforeEach(async (to, from, next) => {
       localStorage.removeItem("plantListLength");
       localStorage.removeItem("distillationListLength");
       localStorage.removeItem("distillationArchivesListLength");
+      localStorage.removeItem("plantListSorting");
+      localStorage.removeItem("distillationListSorting");
+      localStorage.removeItem("archiveDistillationListSorting");
+      localStorage.removeItem("distillerList");
       localStorage.removeItem("searchQuery");
       next({
         path: "/login",
