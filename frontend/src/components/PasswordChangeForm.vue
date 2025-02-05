@@ -25,6 +25,7 @@
             id="newPassword"
             type="password"
             placeholder="Wprowadź nowe hasło"
+            @input="checkPassword"
             :invalidInput="!isFormValid && !newPassword"
           >
             <template v-slot:message>
@@ -81,6 +82,11 @@ export default {
     const isFormValid = ref(true);
     const isPasswordCorrect = ref(true);
 
+    const checkPassword = () => {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+      isPasswordCorrect.value = passwordRegex.test(newPassword.value);
+    };
+
     const changePassword = async () => {
       const form = {
         oldPassword: oldPassword.value,
@@ -116,6 +122,7 @@ export default {
       oldPassword,
       newPassword,
       confirmNewPassword,
+      checkPassword,
       changePassword,
       closeModal,
       isFormValid,
