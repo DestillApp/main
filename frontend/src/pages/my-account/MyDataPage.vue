@@ -233,6 +233,7 @@ export default {
 }
 
 .distiller-none {
+  margin-left: 5%;
   text-align: left;
 }
 

@@ -11,20 +11,22 @@
     <!-- Title for the distillation archives list -->
     <h3 class="distillation_archives_list--title">Archiwum destylacji</h3>
     <div class="distillation_archives_list--sort">
-    <!-- Search item component for searching distillation archives by name -->
-    <base-search-item
-      label="Szukaj destylacji po nazwie rośliny"
-      inputColor="results"
-      @search="handleSearch"
-      @clear="handleSearch"
-    ></base-search-item>
-        <!-- List sorting component for sorting distillation archives -->
-        <list-sorting
-      class="distillation_archives_list--sorting"
-      :options="options"
-      :sorting="sortingOption"
-      @choose:sorting="handleSorting"
-    ></list-sorting>
+      <!-- Search item component for searching distillation archives by name -->
+      <base-search-item
+        v-if="distillationArchivesList.length >= 1"
+        label="Szukaj destylacji po nazwie rośliny"
+        inputColor="results"
+        @search="handleSearch"
+        @clear="handleSearch"
+      ></base-search-item>
+      <!-- List sorting component for sorting distillation archives -->
+      <list-sorting
+        v-if="distillationArchivesList.length >= 1"
+        class="distillation_archives_list--sorting"
+        :options="options"
+        :sorting="sortingOption"
+        @choose:sorting="handleSorting"
+      ></list-sorting>
     </div>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
@@ -133,7 +135,10 @@ import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 import { GET_DISTILLATION_ARCHIVES } from "@/graphql/queries/results.js";
 import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
-import { updateListSorting, updateListSettings } from "@/graphql/mutations/settingsFunctions.js";
+import {
+  updateListSorting,
+  updateListSettings,
+} from "@/graphql/mutations/settingsFunctions.js";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 
@@ -143,7 +148,7 @@ export default {
     DeleteItemModal,
     BaseSearchItem,
     ListLengthSettings,
-    ListSorting
+    ListSorting,
   },
   setup() {
     // Apollo client instance
@@ -188,7 +193,6 @@ export default {
     // Computed property to get searchQuery from Vuex store
     const searchQuery = computed(() => store.getters.searchQuery);
 
-
     const options = ref([
       "nazwy rośliny alfabetycznie",
       "daty dodania destylacji",
@@ -202,8 +206,7 @@ export default {
       if (sortingValue === "plantName") return "nazwy rośliny alfabetycznie";
       if (sortingValue === "createdAt") return "daty dodania destylacji";
       if (sortingValue === "oldDate") return "najstarszej daty destylacji";
-      if (sortingValue === "youngDate")
-        return "najnowszej daty destylacji";
+      if (sortingValue === "youngDate") return "najnowszej daty destylacji";
       return "";
     });
 
@@ -270,13 +273,17 @@ export default {
       await fetchDistillationArchivesList(searchQuery.value, sorting.value);
     };
 
-   /**
+    /**
      * @function handleSelectLength
      * @description Handle the selection of list length.
      * @param {Number} length - The selected length.
      */
-     const handleSelectLength = async (length) => {
-      const isUpdating = await updateListSettings(apolloClient, "distillationListLength", length);
+    const handleSelectLength = async (length) => {
+      const isUpdating = await updateListSettings(
+        apolloClient,
+        "distillationListLength",
+        length
+      );
       if (isUpdating) {
         console.log("Updated distillation list length");
         store.dispatch("settings/setValue", {
@@ -289,7 +296,11 @@ export default {
 
     const handleSorting = async (option) => {
       if (option === "nazwy rośliny alfabetycznie") {
-        await updateListSorting(apolloClient, "archiveDistillationListSorting", "plantName");
+        await updateListSorting(
+          apolloClient,
+          "archiveDistillationListSorting",
+          "plantName"
+        );
         store.dispatch("settings/setValue", {
           input: "archiveDistillationListSorting",
           value: "plantName",
@@ -297,7 +308,11 @@ export default {
         await fetchDistillationArchivesList(searchQuery.value, "plantName");
       }
       if (option === "daty dodania destylacji") {
-        await updateListSorting(apolloClient, "archiveDistillationListSorting", "createdAt");
+        await updateListSorting(
+          apolloClient,
+          "archiveDistillationListSorting",
+          "createdAt"
+        );
         store.dispatch("settings/setValue", {
           input: "archiveDistillationListSorting",
           value: "createdAt",
@@ -305,7 +320,11 @@ export default {
         await fetchDistillationArchivesList(searchQuery.value, "createdAt");
       }
       if (option === "najstarszej daty destylacji") {
-        await updateListSorting(apolloClient, "archiveDistillationListSorting", "oldDate");
+        await updateListSorting(
+          apolloClient,
+          "archiveDistillationListSorting",
+          "oldDate"
+        );
         store.dispatch("settings/setValue", {
           input: "archiveDistillationListSorting",
           value: "oldDate",
@@ -313,7 +332,11 @@ export default {
         await fetchDistillationArchivesList(searchQuery.value, "oldDate");
       }
       if (option === "najnowszej daty destylacji") {
-        await updateListSorting(apolloClient, "archiveDistillationListSorting", "youngDate");
+        await updateListSorting(
+          apolloClient,
+          "archiveDistillationListSorting",
+          "youngDate"
+        );
         store.dispatch("settings/setValue", {
           input: "archiveDistillationListSorting",
           value: "youngDate",
@@ -335,7 +358,7 @@ export default {
 
     // Fetch distillation archives list when the component is mounted
     onMounted(async () => {
-   await fetchDistillationArchivesList(searchQuery.value, sorting.value);
+      await fetchDistillationArchivesList(searchQuery.value, sorting.value);
     });
 
     // Watch for changes in the page number and refetch distillation archives list.
@@ -409,7 +432,10 @@ export default {
               params: { page: page.value },
             });
           } else {
-            await fetchDistillationArchivesList(searchQuery.value, sorting.value);
+            await fetchDistillationArchivesList(
+              searchQuery.value,
+              sorting.value
+            );
           }
         }
         closeDeleteModal();
@@ -461,7 +487,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.distillation_archives_list--sort{
+.distillation_archives_list--sort {
   display: flex;
   flex-direction: row;
   justify-content: space-between;

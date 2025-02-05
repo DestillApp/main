@@ -22,6 +22,7 @@
       ></base-search-item>
       <!-- List sorting component for sorting plants -->
       <list-sorting
+       v-if="plantList.length >= 1"
         class="plant_list--sorting"
         :options="options"
         :sorting="sortingOption"

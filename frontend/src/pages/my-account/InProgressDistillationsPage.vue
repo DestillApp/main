@@ -12,20 +12,22 @@
     <!-- Title for the distillation list -->
     <h3 class="distillation_list--title">Destylacje w toku</h3>
     <div class="distillation_list--sort">
-    <!-- Search item component for searching distillations by name -->
-    <base-search-item
-      label="Szukaj destylacji po nazwie rośliny"
-      inputColor="distillation"
-      @search="handleSearch"
-      @clear="handleSearch"
-    ></base-search-item>
-    <!-- List sorting component for sorting distillations -->
-    <list-sorting
-      class="distillation_list--sorting"
-      :options="options"
-      :sorting="sortingOption"
-      @choose:sorting="handleSorting"
-    ></list-sorting>
+      <!-- Search item component for searching distillations by name -->
+      <base-search-item
+        v-if="distillationsList.length >= 1"
+        label="Szukaj destylacji po nazwie rośliny"
+        inputColor="distillation"
+        @search="handleSearch"
+        @clear="handleSearch"
+      ></base-search-item>
+      <!-- List sorting component for sorting distillations -->
+      <list-sorting
+        v-if="distillationsList.length >= 1"
+        class="distillation_list--sorting"
+        :options="options"
+        :sorting="sortingOption"
+        @choose:sorting="handleSorting"
+      ></list-sorting>
     </div>
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
@@ -144,7 +146,10 @@ import BaseButton from "@/ui/BaseButton.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import ListSorting from "@/components/ListSorting.vue";
-import { updateListSorting, updateListSettings } from "@/graphql/mutations/settingsFunctions.js";
+import {
+  updateListSorting,
+  updateListSettings,
+} from "@/graphql/mutations/settingsFunctions.js";
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
 // import { UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
@@ -157,7 +162,7 @@ export default {
     BaseButton,
     BaseSearchItem,
     ListLengthSettings,
-    ListSorting
+    ListSorting,
   },
   setup() {
     // Apollo client instance
@@ -214,8 +219,7 @@ export default {
       if (sortingValue === "plantName") return "nazwy rośliny alfabetycznie";
       if (sortingValue === "createdAt") return "daty dodania destylacji";
       if (sortingValue === "oldDate") return "najstarszej daty destylacji";
-      if (sortingValue === "youngDate")
-        return "najnowszej daty destylacji";
+      if (sortingValue === "youngDate") return "najnowszej daty destylacji";
       return "";
     });
 
@@ -277,8 +281,12 @@ export default {
      * @description Handle the selection of list length.
      * @param {Number} length - The selected length.
      */
-     const handleSelectLength = async (length) => {
-      const isUpdating = await updateListSettings(apolloClient, "distillationListLength", length);
+    const handleSelectLength = async (length) => {
+      const isUpdating = await updateListSettings(
+        apolloClient,
+        "distillationListLength",
+        length
+      );
       if (isUpdating) {
         console.log("Updated distillation list length");
         store.dispatch("settings/setValue", {
@@ -289,7 +297,7 @@ export default {
       }
     };
 
-        /**
+    /**
      * @function handleSorting
      * @description Handle the sorting of the distillation list.
      * @param {String} sorting - The sorting option.
@@ -297,7 +305,11 @@ export default {
     const handleSorting = async (option) => {
       if (option === "nazwy rośliny alfabetycznie") {
         console.log("Sorting by plant name");
-        await updateListSorting(apolloClient, "distillationListSorting", "plantName");
+        await updateListSorting(
+          apolloClient,
+          "distillationListSorting",
+          "plantName"
+        );
         store.dispatch("settings/setValue", {
           input: "distillationListSorting",
           value: "plantName",
@@ -305,7 +317,11 @@ export default {
         await fetchDistillationList(searchQuery.value, "plantName");
       }
       if (option === "daty dodania destylacji") {
-        await updateListSorting(apolloClient, "distillationListSorting", "createdAt");
+        await updateListSorting(
+          apolloClient,
+          "distillationListSorting",
+          "createdAt"
+        );
         store.dispatch("settings/setValue", {
           input: "distillationListSorting",
           value: "createdAt",
@@ -313,7 +329,11 @@ export default {
         await fetchDistillationList(searchQuery.value, "createdAt");
       }
       if (option === "najstarszej daty destylacji") {
-        await updateListSorting(apolloClient, "distillationListSorting", "oldDate");
+        await updateListSorting(
+          apolloClient,
+          "distillationListSorting",
+          "oldDate"
+        );
         store.dispatch("settings/setValue", {
           input: "distillationListSorting",
           value: "oldDate",
@@ -321,7 +341,11 @@ export default {
         await fetchDistillationList(searchQuery.value, "oldDate");
       }
       if (option === "najnowszej daty destylacji") {
-        await updateListSorting(apolloClient, "distillationListSorting", "youngDate");
+        await updateListSorting(
+          apolloClient,
+          "distillationListSorting",
+          "youngDate"
+        );
         store.dispatch("settings/setValue", {
           input: "distillationListSorting",
           value: "youngDate",
@@ -343,7 +367,7 @@ export default {
 
     // Fetch distillation list when the component is mounted
     onMounted(async () => {
-        await fetchDistillationList(searchQuery.value, sorting.value);
+      await fetchDistillationList(searchQuery.value, sorting.value);
     });
 
     // Watch for changes in the page number and refetch plant list.
