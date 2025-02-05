@@ -230,3 +230,37 @@ export const distillerFormValidation = (form) => {
 
   return isFormValid;
 };
+
+/**
+ * @function changePasswordFormValidation
+ * @description Function to validate the change password form data
+ * @param {Object} form - The change password form data object
+ * @returns {Object} Returns an object with isFormValid and isPasswordCorrect properties
+ */
+export const changePasswordFormValidation = (form) => {
+  let isFormValid = true;
+  let isPasswordCorrect = true;
+
+  // Check if all values are not empty
+  if (
+    form.oldPassword === "" ||
+    form.newPassword === "" ||
+    form.confirmNewPassword === ""
+  ) {
+    isFormValid = false;
+  }
+
+  // Password validation: at least 8 characters, one uppercase letter, one lowercase letter, and one number
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+  if (!passwordRegex.test(form.newPassword)) {
+    isFormValid = false;
+    isPasswordCorrect = false;
+  }
+
+  // Check if newPassword and confirmNewPassword are the same
+  if (form.newPassword !== form.confirmNewPassword) {
+    isFormValid = false;
+  }
+
+  return { isFormValid, isPasswordCorrect };
+};

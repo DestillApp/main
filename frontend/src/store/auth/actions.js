@@ -1,6 +1,6 @@
 import { apolloClient } from "@/main";
 import { VERIFY_AUTH } from "@/graphql/queries/auth.js";
-import { LOGIN, LOGOUT } from "@/graphql/mutations/auth.js";
+import { LOGIN, LOGOUT, CHANGE_PASSWORD } from "@/graphql/mutations/auth.js";
 
 /**
  * Auth module actions for handling data fetching.
@@ -73,5 +73,20 @@ export default {
 
   setLoadingAuthStatus(context, value) {
     context.commit("changeLoadingAuthStatus", value);
+  },
+
+  async changePassword(context, { oldPassword, newPassword }) {
+    try {
+      const response = await apolloClient.mutate({
+        mutation: CHANGE_PASSWORD,
+        variables: { input: { oldPassword, newPassword } },
+      });
+
+      console.log("Password changed successfully:", response.data.changePassword);
+      return true;
+    } catch (error) {
+      console.error("Failed to change password:", error);
+      throw new Error("Failed to change password");
+    }
   },
 };

@@ -11,7 +11,13 @@
             id="oldPassword"
             type="password"
             placeholder="Wprowadź stare hasło"
-          ></base-text-input>
+            :invalidInput="!isFormValid && !oldPassword"
+          >
+            <template v-slot:message>
+              <span v-if="!isFormValid && !oldPassword">Wpisz stare hasło.</span>
+              <span v-else>&nbsp;</span>
+            </template>
+          </base-text-input>
           <!-- Input for new password -->
           <base-text-input
             v-model="newPassword"
@@ -19,7 +25,14 @@
             id="newPassword"
             type="password"
             placeholder="Wprowadź nowe hasło"
-          ></base-text-input>
+            :invalidInput="!isFormValid && !newPassword"
+          >
+            <template v-slot:message>
+              <span v-if="!isPasswordCorrect && newPassword">Wpisz poprawne hasło. Hasło musi zawierać conajmniej 8 znaków, jedną wielką literę i jedną liczbę.</span>
+              <span v-if="!isFormValid && !newPassword">Wpisz nowe hasło.</span>
+              <span v-else>&nbsp;</span>
+            </template>
+          </base-text-input>
           <!-- Input for confirm new password -->
           <base-text-input
             v-model="confirmNewPassword"
@@ -27,7 +40,14 @@
             id="confirmNewPassword"
             type="password"
             placeholder="Powtórz nowe hasło"
-          ></base-text-input>
+            :invalidInput="!isFormValid && !confirmNewPassword"
+          >
+            <template v-slot:message>
+              <span v-if="confirmNewPassword !== newPassword && confirmNewPassword">Hasła nie są takie same.</span>
+              <span v-if="!isFormValid && !confirmNewPassword">Powtórz nowe hasło.</span>
+              <span v-else>&nbsp;</span>
+            </template>
+          </base-text-input>
           <!-- Submit button -->
           <base-button type="submit" class="button">Zmień hasło</base-button>
         </form>
@@ -38,9 +58,11 @@
 
 <script>
 import { ref } from "vue";
+import { useStore } from "vuex";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseButton from "@/ui/BaseButton.vue";
+import { changePasswordFormValidation } from "@/helpers/formsValidation.js";
 
 export default {
   components: {
@@ -49,14 +71,41 @@ export default {
     BaseButton,
   },
   setup(_, { emit }) {
+    const store = useStore();
+
     const oldPassword = ref("");
     const newPassword = ref("");
     const confirmNewPassword = ref("");
 
-    const changePassword = () => {
-      console.log("Old Password:", oldPassword.value);
-      console.log("New Password:", newPassword.value);
-      console.log("Confirm New Password:", confirmNewPassword.value);
+    // Reactive reference to track form validity
+    const isFormValid = ref(true);
+    const isPasswordCorrect = ref(true);
+
+    const changePassword = async () => {
+      const form = {
+        oldPassword: oldPassword.value,
+        newPassword: newPassword.value,
+        confirmNewPassword: confirmNewPassword.value,
+      };
+
+      const validationResults = changePasswordFormValidation(form);
+      isFormValid.value = validationResults.isFormValid;
+      isPasswordCorrect.value = validationResults.isPasswordCorrect;
+
+      if (isFormValid.value) {
+        try {
+          await store.dispatch("auth/changePassword", {
+            oldPassword: oldPassword.value,
+            newPassword: newPassword.value,
+          });
+          console.log("Password changed successfully");
+          closeModal();
+        } catch (error) {
+          console.error("Failed to change password:", error);
+        }
+      } else {
+        console.error("Form is invalid");
+      }
     };
 
     const closeModal = () => {
@@ -69,6 +118,8 @@ export default {
       confirmNewPassword,
       changePassword,
       closeModal,
+      isFormValid,
+      isPasswordCorrect,
     };
   },
 };
