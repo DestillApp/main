@@ -19,6 +19,7 @@ export const GET_USER_SETTINGS = gql`
         heating
         id
       }
+      isDarkTheme
     }
   }
 `;

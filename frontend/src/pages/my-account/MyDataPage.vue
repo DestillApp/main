@@ -34,9 +34,14 @@
         >Dodaj nowy destylator</base-button
       >
     </div>
-    <div>
+    <div class="settings">
       <h4 class="settings-title">Ustawienia:</h4>
-      <base-button @click="openPasswordChangeForm">Zmień hasło</base-button>
+      <div class="settings-theme">
+      <p v-if="isDarkMode">Motyw ciemny aplikacji włączony</p>
+      <p v-if="!isDarkMode">Motyw ciemny aplikacji wyłączony</p>
+      <v-switch v-model="isDarkMode" hide-details color="var(--secondary-color)"></v-switch>
+      </div>
+      <base-button class="settings-button" @click="openPasswordChangeForm">Zmień hasło</base-button>
     </div>
     <!-- Distiller form modal -->
     <distiller-form
@@ -59,22 +64,18 @@
 </template>
 
 <script>
-import { ref, onMounted, computed, onBeforeMount } from "vue";
+import { ref, onMounted, computed, onBeforeMount, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useStore } from "vuex";
 import { GET_USER_DETAILS } from "@/graphql/queries/auth.js";
+import { UPDATE_DARK_THEME } from "@/graphql/mutations/settings.js";
 import BaseButton from "@/ui/BaseButton.vue";
 import DistillerForm from "@/components/DistillerForm.vue";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import PasswordChangeForm from "@/components/PasswordChangeForm.vue";
 
 export default {
-  components: {
-    BaseButton,
-    DistillerForm,
-    DeleteItemModal,
-    PasswordChangeForm,
-  },
+  components: { BaseButton, DistillerForm, DeleteItemModal, PasswordChangeForm },
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
@@ -89,6 +90,7 @@ export default {
 
     const isDistillerFormOpen = ref(false);
     const isPasswordChangeFormOpen = ref(false);
+    const isDarkMode = ref(false);
 
     const fetchUserDetails = async () => {
       try {
@@ -141,6 +143,17 @@ export default {
       isPasswordChangeFormOpen.value = false;
     };
 
+    watch(isDarkMode, async (newValue) => {
+      try {
+        await apolloClient.mutate({
+          mutation: UPDATE_DARK_THEME,
+          variables: { isDarkTheme: newValue },
+        });
+      } catch (error) {
+        console.error("Failed to update theme:", error);
+      }
+    });
+
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "distillerList",
@@ -159,6 +172,7 @@ export default {
       isDistillerFormOpen,
       isDeleteModalOpen,
       isPasswordChangeFormOpen,
+      isDarkMode,
       openDistillerForm,
       closeDistillerForm,
       openDeleteModal,
@@ -244,8 +258,25 @@ export default {
   margin-top: 20px;
 }
 
+.settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  margin-left: 5%;
+}
+
 .settings-title {
-    margin-left: 5%;
   text-align: left;
+}
+
+.settings-theme {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  align-items: center;
+}
+
+.settings-button {
+  width: 150px;
 }
 </style>

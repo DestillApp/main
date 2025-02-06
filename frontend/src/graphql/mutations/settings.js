@@ -83,3 +83,13 @@ export const DELETE_DISTILLER = gql`
     }
   }
 `;
+
+export const UPDATE_DARK_THEME = gql`
+  mutation UpdateDarkTheme($isDarkTheme: Boolean!) {
+    updateDarkTheme(isDarkTheme: $isDarkTheme) {
+      userId
+      isDarkTheme
+      updatedAt
+    }
+  }
+`;

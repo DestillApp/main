@@ -52,6 +52,9 @@ export default {
       const settings = data.getUserSettings.listSettings;
       const sorting = data.getUserSettings.listSorting;
       const distillers = data.getUserSettings.distillerList;
+      const isDarkTheme = data.getUserSettings.isDarkTheme;
+
+      console.log("fetchSettings, isDarkTheme", isDarkTheme);
 
       // Update the Vuex store with the fetched settings
       context.dispatch("setValue", {
