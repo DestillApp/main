@@ -221,6 +221,41 @@ const settingsResolvers = {
         throw new Error("Failed to delete distiller");
       }
     },
+
+    /**
+     * @async
+     * @function updateDarkTheme
+     * @description Updates the isDarkTheme setting and updates the updatedAt date.
+     * @param {Object} _ - Unused.
+     * @param {Boolean} isDarkTheme - The new value for the isDarkTheme setting.
+     * @param {Object} user - The authenticated user.
+     * @returns {Promise<Object>} The updated user settings.
+     */
+    updateDarkTheme: async (_, { isDarkTheme }, { user }) => {
+      if (!user) {
+        throw new AuthenticationError("Unauthorized");
+      }
+
+      try {
+        // Find the user settings and update the isDarkTheme setting
+        const updatedSettings = await UserSettings.findOneAndUpdate(
+          { userId: user.id },
+          {
+            $set: { isDarkTheme: isDarkTheme },
+            $currentDate: { updatedAt: true },
+          },
+          { new: true }
+        );
+
+        if (!updatedSettings) {
+          throw new Error("User settings not found");
+        }
+
+        return updatedSettings;
+      } catch (err) {
+        throw new Error("Failed to update dark theme setting");
+      }
+    },
   },
 };
 

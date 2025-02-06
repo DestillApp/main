@@ -61,6 +61,7 @@ const settingsSchema = gql`
     updateListSorting(input: UpdateListSortingInput!): UserSettings!
     addDistiller(distiller: DistillerInput!): UserSettings! 
     deleteDistiller(distillerId: ID!): UserSettings!
+    updateDarkTheme(isDarkTheme: Boolean!): UserSettings!
   }
 `;
 
