@@ -10,4 +10,8 @@ export default {
   distillerList(state) {
     return state.settingsForm.distillerList;
   },
+
+  isDarkTheme(state) {
+    return state.settingsForm.isDarkTheme;
+  }
 };

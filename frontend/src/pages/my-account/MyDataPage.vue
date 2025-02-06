@@ -37,9 +37,9 @@
     <div class="settings">
       <h4 class="settings-title">Ustawienia:</h4>
       <div class="settings-theme">
-      <p v-if="isDarkMode">Motyw ciemny aplikacji włączony</p>
-      <p v-if="!isDarkMode">Motyw ciemny aplikacji wyłączony</p>
-      <v-switch v-model="isDarkMode" hide-details color="var(--secondary-color)"></v-switch>
+      <p v-if="isDarkTheme">Motyw ciemny aplikacji włączony</p>
+      <p v-if="!isDarkTheme">Motyw ciemny aplikacji wyłączony</p>
+      <v-switch v-model="isDarkTheme" hide-details color="var(--secondary-color)"></v-switch>
       </div>
       <base-button class="settings-button" @click="openPasswordChangeForm">Zmień hasło</base-button>
     </div>
@@ -90,7 +90,8 @@ export default {
 
     const isDistillerFormOpen = ref(false);
     const isPasswordChangeFormOpen = ref(false);
-    const isDarkMode = ref(false);
+    const isDarkTheme = ref(false);
+const isDarkThemeStored = computed(() => store.getters["settings/isDarkTheme"]);
 
     const fetchUserDetails = async () => {
       try {
@@ -143,12 +144,18 @@ export default {
       isPasswordChangeFormOpen.value = false;
     };
 
-    watch(isDarkMode, async (newValue) => {
+    watch(isDarkTheme, async (newValue) => {
       try {
         await apolloClient.mutate({
           mutation: UPDATE_DARK_THEME,
           variables: { isDarkTheme: newValue },
         });
+
+        store.dispatch("settings/setValue", {
+        input: "isDarkTheme",
+        value: isDarkTheme.value,
+      });
+
       } catch (error) {
         console.error("Failed to update theme:", error);
       }
@@ -162,6 +169,7 @@ export default {
 
     onMounted(() => {
       fetchUserDetails();
+        isDarkTheme.value = isDarkThemeStored.value;
       console.log("distillers in MyDataPage", distillers.value);
     });
 
@@ -172,7 +180,7 @@ export default {
       isDistillerFormOpen,
       isDeleteModalOpen,
       isPasswordChangeFormOpen,
-      isDarkMode,
+      isDarkTheme,
       openDistillerForm,
       closeDistillerForm,
       openDeleteModal,

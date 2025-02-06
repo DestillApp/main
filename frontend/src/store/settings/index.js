@@ -24,6 +24,7 @@ export default {
       distillationListSorting: "createdAt",
       archiveDistillationListSorting: "createdAt",
       distillerList: [],
+      isDarkTheme: false,
       },
     };
   },

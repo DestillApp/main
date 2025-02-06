@@ -87,6 +87,11 @@ export default {
         input: "distillerList",
         value: distillers,
       });
+
+      context.dispatch("setValue", {
+        input: "isDarkTheme",
+        value: isDarkTheme,
+      });
     } catch (error) {
       console.error("Error fetching settings:", error);
     }

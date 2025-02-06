@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import { onMounted } from "vue";
+import { useStore } from "vuex";
 import TheHeader from './layout/TheHeader.vue';
 import TheFooter from './layout/TheFooter.vue';
 
@@ -19,6 +21,13 @@ export default {
   components: {
     TheHeader, TheFooter
   },
+  setup() {
+    const store = useStore();
+
+    onMounted(() => {
+      store.dispatch("settings/fetchLocalStorageData", { key: "isDarkTheme" });
+    });
+  }
 }
 </script>
 
