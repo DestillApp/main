@@ -31,6 +31,7 @@ const settingsSchema = gql`
     listSettings: ListSettings!
     listSorting: ListSorting!
     distillerList: [Distiller!]! 
+    isDarkTheme: Boolean! 
     updatedAt: String!
   }
 

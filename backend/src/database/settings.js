@@ -30,6 +30,7 @@ const userSettingsSchema = new Schema({
     archiveDistillationListSorting: { type: String, default: "createdAt" },
   },
   distillerList: { type: [distillerSchema], default: [] }, 
+  isDarkTheme: { type: Boolean, default: false },
   updatedAt: { type: Date, default: Date.now },
 });
 

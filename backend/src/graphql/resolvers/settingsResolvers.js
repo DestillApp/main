@@ -63,6 +63,7 @@ const settingsResolvers = {
           archiveDistillationListSorting: "createdAt",
         },
         distillerList: [],
+        isDarkTheme: false,
         updatedAt: Date.now(),
       };
 
