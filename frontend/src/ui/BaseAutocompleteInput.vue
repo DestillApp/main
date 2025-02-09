@@ -10,6 +10,9 @@
         <!-- Input field -->
         <input
           class="input"
+          :class="{
+            'dark-input': isDarkTheme,
+          }"
           :id="id"
           :value="inputValue"
           :disabled="disabled"
@@ -41,6 +44,7 @@
             'input_color-plant': plantColor,
             'input_color-distillation': distillationColor,
             input_invalid: invalidInput,
+            'dark-input': isDarkTheme,
           }"
           :id="id"
           :value="modelValue"
@@ -131,6 +135,7 @@
 
 <script>
 import { ref, computed, watch } from "vue";
+import { useStore } from "vuex";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiArrowDownBoldBox } from "@mdi/js";
 
@@ -167,6 +172,9 @@ export default {
   ],
   emits: ["update:modelValue", "choose:item", "update:onBlur", "open:list"],
   setup(props, context) {
+    const store = useStore();
+
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
     const disableBlur = ref(false);
     const choose = ref(props.toChoose || false);
     const isOpen = ref(false);
@@ -244,6 +252,7 @@ export default {
     });
 
     return {
+      isDarkTheme,
       updateValue,
       chooseItem,
       handleBlur,
@@ -302,6 +311,11 @@ export default {
   padding-right: 10px;
   padding-left: 10px;
   width: 100%;
+}
+
+.dark-input {
+  color: var(--text-color-dark);
+  border: 2px solid var(--border-color-dark);
 }
 
 .input::placeholder {

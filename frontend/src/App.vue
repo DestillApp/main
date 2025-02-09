@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
+import { onBeforeMount, computed, watch } from "vue";
 import { useStore } from "vuex";
 import TheHeader from './layout/TheHeader.vue';
 import TheFooter from './layout/TheFooter.vue';
@@ -24,9 +24,20 @@ export default {
   setup() {
     const store = useStore();
 
-    onMounted(() => {
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+
+    onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", { key: "isDarkTheme" });
     });
+
+    watch(isDarkTheme, (newValue) => {
+      document.documentElement.style.setProperty('--text-color', newValue ? 'var(--text-color-dark)' : 'var(--text-color)');
+      document.documentElement.style.setProperty('--background-color', newValue ? 'var(--background-dark)' : 'var(--background-bright)');
+    });
+
+    return {
+      isDarkTheme,
+    };
   }
 }
 </script>
@@ -38,6 +49,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 ul {

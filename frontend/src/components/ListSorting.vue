@@ -8,7 +8,7 @@
         <!-- Input field displaying the selected sorting option -->
         <input
           type="text"
-          class="sorting-input"
+          :class="['sorting-input', { 'dark-sorting-input': isDarkTheme }]"
           :value="selectedOption"
           readonly
         />
@@ -22,7 +22,7 @@
       </div>
     </div>
     <!-- List of sorting options, displayed conditionally based on isOpen -->
-    <ul v-if="isOpen" class="sorting-options">
+    <ul :class="['sorting-options', { 'dark-sorting-options': isDarkTheme }]" v-if="isOpen">
       <li
         v-for="option in options"
         :key="option"
@@ -36,7 +36,8 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 
@@ -46,6 +47,9 @@ export default {
   props: ["options", "sorting"],
   emits: ["choose:sorting"],
   setup(props, { emit }) {
+    const store = useStore();
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+
     const isOpen = ref(false);
     const selectedOption = ref(props.sorting);
     const sortingContainer = ref(null);
@@ -82,6 +86,7 @@ export default {
       toggleList,
       sortingContainer,
       selectOption,
+      isDarkTheme,
     };
   },
 };
@@ -122,6 +127,11 @@ export default {
   cursor: pointer;
 }
 
+.dark-sorting-input {
+  color: var(--text-color-dark);
+  border: 2px solid var(--border-color-dark);
+}
+
 .arrow-icon {
   position: absolute;
   right: 10px;
@@ -134,10 +144,15 @@ export default {
   top: 59px;
   border: 2px solid var(--border-color);
   border-radius: var(--input-border-radius);
-  background-color: white;
+  background-color: var(--background-bright);;
   position: absolute;
   width: 100%;
   z-index: 10;
+}
+
+.dark-sorting-options {
+  border: 2px solid var(--border-color-dark);
+  background-color: var(--background-dark);
 }
 
 .sorting-option {

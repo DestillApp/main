@@ -16,6 +16,7 @@
           'input_type--results': isResultsInput,
           'input_type--results-color': isResultsInputColor,
           input_invalid: invalidInput,
+          'dark-input': isDarkTheme,
         }"
         :id="id"
         :value="modelValue"
@@ -38,7 +39,7 @@
 
 <script>
 import { computed } from "vue";
-
+import { useStore } from "vuex";
 /**
  * @component BaseTextInput
  * @description A customizable text input component.
@@ -69,8 +70,10 @@ export default {
     "storeName",
   ],
   emits: ["update:modelValue", "change:modelValue", "set:keyboard"],
-
   setup(props, context) {
+    const store = useStore();
+
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
     /**
      * Updates the model value when input changes
      * @function updateValue
@@ -135,7 +138,9 @@ export default {
       return props.inputColor === "results";
     });
 
+
     return {
+      isDarkTheme,
       updateValue,
       setKeyboard,
       changeValue,
@@ -179,6 +184,11 @@ export default {
   padding-block: 2px;
   padding-inline: 10px;
   width: 100%;
+}
+
+.dark-input {
+  color: var(--text-color-dark);
+  border: 2px solid var(--border-color-dark);
 }
 
 .input::placeholder {

@@ -3,6 +3,7 @@
     <!-- Clickable settings icon -->
     <svg-icon
       class="settings-icon"
+      :class="{ 'dark-settings-icon': isDarkTheme }"
       type="mdi"
       :path="mdiCog"
       size="20"
@@ -16,6 +17,7 @@
         'list_color-plant': isPlantColor,
         'list_color-distillation': isDistillationColor,
         'list_color-results': isResultsColor,
+        'dark-settings-list': isDarkTheme,
       }"
     >
       <h3>{{ title }}</h3>
@@ -37,6 +39,7 @@
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiCog } from "@mdi/js";
 import { ref, computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "ListLengthSettings",
@@ -44,6 +47,9 @@ export default {
   props: ['title', 'listColor', 'chosenLength'],
   emits: ["select-length"],
   setup(props, { emit }) {
+    const store = useStore();
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+
     const isListVisible = ref(false);
     const settingsContainer = ref(null);
 
@@ -91,6 +97,7 @@ export default {
       isResultsColor,
       settingsContainer,
       lengths,
+      isDarkTheme,
     };
   },
 };
@@ -107,6 +114,10 @@ export default {
   color: var(--text-color);
 }
 
+.dark-settings-icon {
+  color: var(--text-color-dark);
+}
+
 .settings-icon:hover {
   color: var(--placeholder-color);
 }
@@ -115,12 +126,18 @@ export default {
   position: absolute;
   top: 30px;
   left: 0;
-  background-color: white;
+  background-color: var(--background-bright);
   border: 1px solid var(--border-color);
   border-radius: var(--input-border-radius);
   box-shadow: var(--box-shadow);
   padding: 10px;
   z-index: 10;
+}
+
+.dark-settings-list {
+  background-color: var(--background-dark);
+  border: 1px solid var(--border-color-dark);
+  box-shadow: var(--box-shadow-dark);
 }
 
 .settings-list h3 {

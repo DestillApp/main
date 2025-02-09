@@ -4,17 +4,21 @@
         Arial,
         sans-serif;
     --text-color: #463927;
+    --text-color-dark: #ffffff;
+    --background-dark: #342f2f;
+    --background-bright: #f9f9f9;
     --primary-color: #C5E5A5;
     --secondary-color: #98B66E;
     --primary-color-distillation: #A5CEE6;
     --secondary-color-distillation: #64B5E5;
     --primary-color-results: #f4e17e;
     --secondary-color-results: #F5C115;
-    --third-color: #f9edc8;
+    --border-color-dark: #edeae0;
     --border-color: #0000009d;
     --error-color:#ff0202;
     --placeholder-color: rgba(148, 147, 147, 0.53);
     --box-shadow: 0px 0px 19px 0px rgba(66, 68, 90, 0.29);
+    --box-shadow-dark: 0px 0px 19px 0px rgba(191, 192, 208, 0.29);
     --box-shadow-bottom: 0 19px 19px rgba(66, 68, 90, 0.29),
     --box-shadow-top: 0 -19px 19px rgba(66, 68, 90, 0.29),
     --box-shadow-right: 19px 0 19px rgba(66, 68, 90, 0.29),
