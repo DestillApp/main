@@ -100,7 +100,7 @@ export default {
 }
 
 .title {
-  color: var(--text-color) !important;
+  color: var(--header-text-color);
 }
 
 .list {
@@ -113,7 +113,7 @@ export default {
   position: relative;
   text-decoration: none;
   font-size: 18px;
-  color: var(--text-color);
+  color: var(--header-text-color);
 }
 
 .link::after {
@@ -121,7 +121,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 1px;
-  background-color: var(--text-color);
+  background-color: var(--header-text-color);
   bottom: -3px;
   left: 0;
   transform: scaleX(0);
@@ -143,6 +143,6 @@ export default {
 }
 
 .base-button {
-  color: var(--text-color);
+  color: var(--header-text-color);
 }
 </style>

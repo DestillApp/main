@@ -1,5 +1,5 @@
 <template>
-    <h1 class="title">Welcome!</h1>
+    <h1 class="title">Witaj!</h1>
 </template>
 
 <style scoped>

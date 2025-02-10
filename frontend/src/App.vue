@@ -2,14 +2,12 @@
   <!-- Main application layout -->
   <the-header></the-header>
   <router-view></router-view>
-  <the-footer></the-footer>
 </template>
 
 <script>
 import { onBeforeMount, computed, watch } from "vue";
 import { useStore } from "vuex";
 import TheHeader from './layout/TheHeader.vue';
-import TheFooter from './layout/TheFooter.vue';
 
 /**
  * Main application component.
@@ -19,7 +17,7 @@ import TheFooter from './layout/TheFooter.vue';
 export default {
   name: 'App',
   components: {
-    TheHeader, TheFooter
+    TheHeader
   },
   setup() {
     const store = useStore();
