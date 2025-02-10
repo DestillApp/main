@@ -66,6 +66,8 @@ export default {
       localStorage.removeItem("distillerList");
 
       localStorage.removeItem("searchQuery");
+
+      localStorage.removeItem("isDarkTheme");
     } catch (error) {
       console.error("Logout failed", error);
     }

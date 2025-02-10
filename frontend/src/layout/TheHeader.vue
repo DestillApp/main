@@ -20,7 +20,7 @@
       </ul>
       <!-- Link to the login page -->
       <router-link to="/login" v-if="!isAuthenticated && !isLoadingAuthStatus">
-        <base-button
+        <base-button class="base-button"
           >Zaloguj się
           <!-- SVG icon for the login button -->
           <svg-icon type="mdi" :path="path" size="18" class="icon"></svg-icon>

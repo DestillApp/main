@@ -175,6 +175,7 @@ router.beforeEach(async (to, from, next) => {
       localStorage.removeItem("archiveDistillationListSorting");
       localStorage.removeItem("distillerList");
       localStorage.removeItem("searchQuery");
+      localStorage.removeItem("isDarkTheme");
       next({
         path: "/login",
         query: { redirect: to.fullPath },
