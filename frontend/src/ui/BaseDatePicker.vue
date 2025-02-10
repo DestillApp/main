@@ -11,6 +11,7 @@
         header="Wybrana data"
         width="250"
         class="date-picker"
+        :class="{ 'dark-theme': isDarkTheme }"
         :color="computedColor"
         @update:modelValue="sendDate"
       ></v-date-picker>
@@ -20,6 +21,7 @@
 
 <script>
 import { ref, computed } from "vue";
+import { useStore } from "vuex";
 import BaseModal from "./BaseModal.vue";
 
 /**
@@ -34,6 +36,9 @@ export default {
   components: { BaseModal },
   props: ["title", "value", "color"],
   setup(props, context) {
+    const store = useStore();
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+
     // Reference to the selected date
     const selectedDate = ref(new Date());
 
@@ -56,7 +61,7 @@ export default {
       }
     });
 
-    return { selectedDate, sendDate, computedColor };
+    return { selectedDate, sendDate, computedColor, isDarkTheme };
   },
 };
 </script>
@@ -142,5 +147,11 @@ export default {
 
 .date-picker :deep(.v-btn__content) {
   font-size: 12px;
+}
+
+/* DO NOT WORK! */
+.date-picker.dark-theme :deep(.v-date-picker) {
+  background-color: var(--background-dark) !important;
+  color: var(--text-color-dark) !important;
 }
 </style>

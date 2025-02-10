@@ -6,8 +6,15 @@
     <!-- Vuetify radio group component -->
     <v-radio-group :id="title" v-model="selectOption" hide-details>
       <!-- Iterating over options to create radio buttons -->
-      <v-radio v-for="option in options" :key="option" :label="option" :value="option" :color="color"
-        class="radio_input" :name="name"></v-radio>
+      <v-radio
+        v-for="option in options"
+        :key="option"
+        :label="option"
+        :value="option"
+        :color="color"
+        :class="['radio_input', { 'dark-radio_input': isDarkTheme }]"
+        :name="name"
+      ></v-radio>
     </v-radio-group>
     <!-- Slot for message display -->
     <div class="message">
@@ -17,7 +24,8 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
+import { useStore } from "vuex";
 
 /**
  * @component BaseRadioGroup
@@ -26,18 +34,22 @@ import { ref, watch } from "vue";
  * @props {string} modelValue - The selected value of the radio group.
  * @props {string} title - The title for the radio group.
  * @props {string} name - The name attribute for the radio buttons.
+ * @props {string} color - The color for the radio buttons.
  * @emits update:modelValue - Emitted when the selected option changes.
  * @emits selectOption - Emitted when an option is selected.
  */
 export default {
   props: ["options", "modelValue", "title", "name", "color"],
   setup(props, context) {
+    const store = useStore();
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+
     // Reference to store the selected option
     const selectOption = ref(props.modelValue);
 
     // Watcher to update selectOption when modelValue changes
     watch(() => props.modelValue, (newValue) => {
-    selectOption.value = newValue;
+      selectOption.value = newValue;
     });
 
     // Watcher to emit events when selectOption changes
@@ -46,7 +58,7 @@ export default {
       context.emit("selectOption", newOption);
     });
 
-    return { selectOption };
+    return { selectOption, isDarkTheme };
   },
 };
 </script>
@@ -59,7 +71,11 @@ export default {
 .radio_input {
   font-family: inherit;
   font-size: 15px;
-  color: black;
+  color: var(--text-color);
+}
+
+.dark-radio_input {
+  color: var(--text-color-dark);
 }
 
 .message {
@@ -68,4 +84,3 @@ export default {
   text-align: left;
 }
 </style>
-

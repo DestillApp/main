@@ -66,6 +66,7 @@
         :class="{
           'list_color-plant': plantColor,
           'list_color-distillation': distillationColor,
+          'dark-list': isDarkTheme,
         }"
       >
         <li
@@ -83,6 +84,7 @@
         :class="{
           'list_color-plant': plantColor,
           'list_color-distillation': distillationColor,
+          'dark-list': isDarkTheme,
         }"
       >
         <li
@@ -100,6 +102,7 @@
         :class="{
           'list_color-plant': plantColor,
           'list_color-distillation': distillationColor,
+          'dark-list': isDarkTheme,
         }"
       >
         <li
@@ -377,13 +380,17 @@ export default {
 
 .list {
   position: absolute;
-  background-color: white;
+  background-color: var(--background-bright);
   z-index: 10;
   top: 31px;
   width: 100%;
   border-radius: var(--input-border-radius);
   padding-inline: 20px;
   padding-block: 10px;
+}
+
+.dark-list {
+  background-color: var(--background-dark);
 }
 
 .list--choose {

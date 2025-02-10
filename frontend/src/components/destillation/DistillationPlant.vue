@@ -21,7 +21,7 @@
         <span v-if="isFormValid === false && formData.choosedPlant.name === ''"
           >Wybierz surowiec z magazynu</span
         >
-        <div v-if="formData.choosedPlant.name" class="plant_informations">
+        <div v-if="formData.choosedPlant.name" :class="['plant_informations', { 'dark-plant_information': isDarkTheme }]">
           <div class="plant_information">
             <span>część rośliny: </span
             ><span class="information">{{ formData.choosedPlant.part }}</span>
@@ -92,7 +92,7 @@
       <div class="checkbox_container--isSoaked">
         <v-checkbox
           v-model="formData.isPlantSoaked"
-          class="checkbox"
+          class="['checkbox', { 'dark-checkbox': isDarkTheme }]"
           label="Surowiec namaczany przed destylacją"
           color="var(--secondary-color)"
         ></v-checkbox>
@@ -163,7 +163,7 @@
       </div>
       <!-- Checkbox for indicating if the plant was shredded -->
       <v-checkbox
-        class="checkbox_isPlantShredded"
+        class="['checkbox_isPlantShredded', { 'dark-checkbox': isDarkTheme }]"
         v-model="formData.isPlantShredded"
         label="Surowiec rozdrobniony przed destylacją"
         color="var(--secondary-color)"
@@ -241,6 +241,7 @@ export default {
     const isPlantShredded = computed(
       () => store.getters["distillation/isPlantShredded"]
     );
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
 
     // Computed property to calculate the new available weight
     const updatedAvailableWeight = computed(() => {
@@ -564,6 +565,7 @@ export default {
       setInteger,
       setKeyboardIntegerNumber,
       setKeyboardFormatedNumber,
+      isDarkTheme,
     };
   },
 };
@@ -595,10 +597,13 @@ export default {
 .plant_information {
   gap: 10px;
   font-size: 13px;
-  color: black;
+  color: var(--text-color);
   justify-content: flex-start;
 }
 
+.dark-plant_information {
+  color: var(--text-color-dark);
+}
 .information {
   color: var(--secondary-color);
 }
@@ -614,7 +619,7 @@ export default {
 }
 
 .checkbox {
-  color: black;
+  color:var(--text-color);
   margin-bottom: 10px;
 }
 
@@ -636,6 +641,10 @@ export default {
 
 .checkbox_isPlantShredded {
   flex-grow: 1;
-  color: black;
+  color: var(--text-color);
+}
+
+.dark-checkbox {
+  color: var(--text-color-dark);
 }
 </style>
