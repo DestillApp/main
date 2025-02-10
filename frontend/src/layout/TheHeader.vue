@@ -3,7 +3,7 @@
   <header class="header">
     <nav class="nav">
       <!-- Title of the application -->
-      <h1>Distill It</h1>
+      <h1 class="title">Distill It</h1>
       <!-- Navigation list -->
       <ul class="list">
         <!-- Link to the add plant page -->
@@ -28,6 +28,7 @@
       </router-link>
       <!-- Logout button -->
       <base-button
+      class="base-button"
         v-if="isAuthenticated && !isLoadingAuthStatus"
         @click="handleLogout"
         >Wyloguj się</base-button
@@ -98,6 +99,10 @@ export default {
   gap: 20px;
 }
 
+.title {
+  color: var(--text-color) !important;
+}
+
 .list {
   display: flex;
   flex-direction: row;
@@ -108,6 +113,7 @@ export default {
   position: relative;
   text-decoration: none;
   font-size: 18px;
+  color: var(--text-color);
 }
 
 .link::after {
@@ -134,5 +140,9 @@ export default {
 
 .icon {
   margin-left: 5px;
+}
+
+.base-button {
+  color: var(--text-color);
 }
 </style>

@@ -137,7 +137,7 @@ export default {
 }
 .date-picker :deep(.v-date-picker-month__day) {
   height: 20px;
-  width: 20px;
+  width: 25px;
 }
 
 .date-picker :deep(.v-date-picker-months),
@@ -149,9 +149,21 @@ export default {
   font-size: 12px;
 }
 
-/* DO NOT WORK! */
-.date-picker.dark-theme :deep(.v-date-picker) {
-  background-color: var(--background-dark) !important;
-  color: var(--text-color-dark) !important;
+.date-picker :deep(.v-date-picker-month__days) {
+  row-gap: 6px;
 }
+
+.date-picker.dark-theme :deep(.v-picker__body) {
+  background-color: var(--background-dark);
+  color: var(--text-color-dark);
+}
+
+.date-picker.dark-theme :deep(.v-btn--size-default) {
+  background-color: var(--background-dark);
+}
+
+.date-picker.dark-theme :deep(.v-btn__content) {
+  color: var(--text-color-dark);
+}
+
 </style>

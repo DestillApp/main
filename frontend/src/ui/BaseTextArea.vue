@@ -9,6 +9,7 @@
       :class="{
         'textarea_type--results': isResultsTextArea,
         textarea_invalid: invalidInput,
+        'dark-textarea': isDarkTheme,
       }"
       :id="id"
       :value="modelValue"
@@ -27,6 +28,7 @@
 
 <script>
 import { computed } from "vue";
+import { useStore } from "vuex";
 
 /**
  * @component BaseTextArea
@@ -57,6 +59,9 @@ export default {
   emits: ["update:modelValue", "change:modelValue", "set:keyboard"],
 
   setup(props, context) {
+    const store = useStore();
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+
     /**
      * Updates the model value when text area changes
      * @function updateValue
@@ -101,6 +106,7 @@ export default {
       setKeyboard,
       changeValue,
       isResultsTextArea,
+      isDarkTheme,
     };
   },
 };
@@ -132,6 +138,11 @@ export default {
   width: 100%;
   resize: vertical;
   min-height: 50px;
+}
+
+.dark-textarea {
+  color: var(--text-color-dark);
+  border: 2px solid var(--border-color-dark);
 }
 
 .textarea::placeholder {
