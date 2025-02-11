@@ -315,9 +315,12 @@ export default {
           });
           console.log("Created results:", data.createDistillationArchive);
         } catch (error) {
-          console.log("error", isFormValid.value);
+          if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
           console.error("Error submitting form", error);
-          throw error; // Re-throw the error to be caught by saveResults
+          throw error;
         }
       } else {
         console.log("invalid form!");

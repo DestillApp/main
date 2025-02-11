@@ -179,6 +179,7 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
 import { useApolloClient } from "@vue/apollo-composable";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
@@ -194,6 +195,9 @@ export default {
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
+
+    // Vuex store instance
+    const store = useStore();
 
     // Route object to access route params
     const route = useRoute();
@@ -238,6 +242,10 @@ export default {
         distillationDetails.value = data.getArchiveDistillationById;
         console.log(distillationDetails.value);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get archive distillation details:", error);
         distillationDetails.value = null;
       } finally {
@@ -305,6 +313,10 @@ export default {
           params: { page: page.value },
         });
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to delete distillation:", error);
       }
     };

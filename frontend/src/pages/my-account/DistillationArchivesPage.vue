@@ -3,7 +3,7 @@
     <!-- List length settings component -->
     <list-length-settings
       class="distillation_archives_list--settings"
-      title="ilość surowców"
+      title="ilość destylacji"
       listColor="results"
       :chosenLength="archivesPerPage"
       @select-length="handleSelectLength"
@@ -255,6 +255,10 @@ export default {
         );
         console.log(distillationArchivesList.value);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get distillation archives list:", error);
         archivesAmount.value = null;
         distillationArchivesList.value = [];
@@ -440,6 +444,10 @@ export default {
         }
         closeDeleteModal();
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to delete distillation archive:", error);
       }
     };

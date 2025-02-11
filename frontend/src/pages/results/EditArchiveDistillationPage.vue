@@ -20,7 +20,10 @@
         Edytuj informacje o procesie destylacji i wynikach
       </h3>
       <!-- Distillation plan component -->
-      <results-plant :isFormValid="isFormValid" :isEditing="isEditing"></results-plant>
+      <results-plant
+        :isFormValid="isFormValid"
+        :isEditing="isEditing"
+      ></results-plant>
       <!-- Distillation process component -->
       <distillation-process
         :isFormValid="isFormValid"
@@ -32,10 +35,13 @@
         :isEditing="isEditing"
       ></distillation-data>
       <div class="results_components">
-      <!-- Results data component -->
-      <results-data :isFormValid="isFormValid" :isEditing="isEditing"></results-data>
-            <!-- Results descriptions component -->
-      <results-descriptions :isFormValid="isFormValid"></results-descriptions>
+        <!-- Results data component -->
+        <results-data
+          :isFormValid="isFormValid"
+          :isEditing="isEditing"
+        ></results-data>
+        <!-- Results descriptions component -->
+        <results-descriptions :isFormValid="isFormValid"></results-descriptions>
       </div>
       <!-- Button to submit the distilation form -->
       <base-button class="button" type="submit">Edytuj</base-button>
@@ -67,7 +73,13 @@ import DOMPurify from "dompurify";
  */
 export default {
   name: "EditArchiveDistillationPage",
-  components: { ResultsPlant, DistillationProcess, DistillationData, ResultsData, ResultsDescriptions },
+  components: {
+    ResultsPlant,
+    DistillationProcess,
+    DistillationData,
+    ResultsData,
+    ResultsDescriptions,
+  },
 
   // Navigation guard that handles the logic before navigating to this route
   beforeRouteEnter(to, from, next) {
@@ -126,6 +138,10 @@ export default {
         distillationDetails.value = data.getArchiveDistillationById;
         console.log("DATA!", data.getArchiveDistillationById);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get archive distillation details:", error);
         distillationDetails.value = null;
       } finally {
@@ -279,7 +295,9 @@ export default {
     const editDistillationArchiveForm = async () => {
       // Validate the form
       console.log("distillationForm", distillationForm.value);
-      isFormValid.value = editArchiveDistillationFormValidation(distillationForm.value);
+      isFormValid.value = editArchiveDistillationFormValidation(
+        distillationForm.value
+      );
       if (isFormValid.value) {
         try {
           const form = distillationForm.value;
@@ -298,28 +316,59 @@ export default {
             hydrosolDescription: DOMPurify.sanitize(form.hydrosolDescription),
             distillationData: {
               weightForDistillation: form.distillationData.weightForDistillation
-                ? Number(DOMPurify.sanitize(form.distillationData.weightForDistillation))
+                ? Number(
+                    DOMPurify.sanitize(
+                      form.distillationData.weightForDistillation
+                    )
+                  )
                 : null,
-              isPlantSoaked: Boolean(DOMPurify.sanitize(form.distillationData.isPlantSoaked)),
+              isPlantSoaked: Boolean(
+                DOMPurify.sanitize(form.distillationData.isPlantSoaked)
+              ),
               soakingTime: form.distillationData.soakingTime
                 ? Number(DOMPurify.sanitize(form.distillationData.soakingTime))
                 : null,
               weightAfterSoaking: form.distillationData.weightAfterSoaking
-                ? Number(DOMPurify.sanitize(form.distillationData.weightAfterSoaking))
+                ? Number(
+                    DOMPurify.sanitize(form.distillationData.weightAfterSoaking)
+                  )
                 : null,
-              isPlantShredded: Boolean(DOMPurify.sanitize(form.distillationData.isPlantShredded)),
-              distillationType: DOMPurify.sanitize(form.distillationData.distillationType),
-              distillationDate: DOMPurify.sanitize(form.distillationData.distillationDate),
-              distillationApparatus: DOMPurify.sanitize(form.distillationData.distillationApparatus),
+              isPlantShredded: Boolean(
+                DOMPurify.sanitize(form.distillationData.isPlantShredded)
+              ),
+              distillationType: DOMPurify.sanitize(
+                form.distillationData.distillationType
+              ),
+              distillationDate: DOMPurify.sanitize(
+                form.distillationData.distillationDate
+              ),
+              distillationApparatus: DOMPurify.sanitize(
+                form.distillationData.distillationApparatus
+              ),
               waterForDistillation: form.distillationData.waterForDistillation
-                ? Number(DOMPurify.sanitize(form.distillationData.waterForDistillation))
+                ? Number(
+                    DOMPurify.sanitize(
+                      form.distillationData.waterForDistillation
+                    )
+                  )
                 : null,
               distillationTime: {
-                distillationHours: form.distillationData.distillationTime.distillationHours
-                  ? Number(DOMPurify.sanitize(form.distillationData.distillationTime.distillationHours))
+                distillationHours: form.distillationData.distillationTime
+                  .distillationHours
+                  ? Number(
+                      DOMPurify.sanitize(
+                        form.distillationData.distillationTime.distillationHours
+                      )
+                    )
                   : null,
-                distillationMinutes: form.distillationData.distillationTime.distillationMinutes
-                  ? Number(DOMPurify.sanitize(form.distillationData.distillationTime.distillationMinutes))
+                distillationMinutes: form.distillationData.distillationTime
+                  .distillationMinutes
+                  ? Number(
+                      DOMPurify.sanitize(
+                        form.distillationData.distillationTime
+                          .distillationMinutes
+                      )
+                    )
                   : null,
               },
             },
@@ -327,15 +376,27 @@ export default {
               plantName: DOMPurify.sanitize(form.distilledPlant.plantName),
               plantPart: DOMPurify.sanitize(form.distilledPlant.plantPart),
               plantOrigin: DOMPurify.sanitize(form.distilledPlant.plantOrigin),
-              plantBuyDate: DOMPurify.sanitize(form.distilledPlant.plantBuyDate),
-              plantProducer: DOMPurify.sanitize(form.distilledPlant.plantProducer),
-              countryOfOrigin: DOMPurify.sanitize(form.distilledPlant.countryOfOrigin),
+              plantBuyDate: DOMPurify.sanitize(
+                form.distilledPlant.plantBuyDate
+              ),
+              plantProducer: DOMPurify.sanitize(
+                form.distilledPlant.plantProducer
+              ),
+              countryOfOrigin: DOMPurify.sanitize(
+                form.distilledPlant.countryOfOrigin
+              ),
               harvestDate: DOMPurify.sanitize(form.distilledPlant.harvestDate),
               harvestTemperature: form.distilledPlant.harvestTemperature
-                ? Number(DOMPurify.sanitize(form.distilledPlant.harvestTemperature))
+                ? Number(
+                    DOMPurify.sanitize(form.distilledPlant.harvestTemperature)
+                  )
                 : null,
-              harvestStartTime: DOMPurify.sanitize(form.distilledPlant.harvestStartTime),
-              harvestEndTime: DOMPurify.sanitize(form.distilledPlant.harvestEndTime),
+              harvestStartTime: DOMPurify.sanitize(
+                form.distilledPlant.harvestStartTime
+              ),
+              harvestEndTime: DOMPurify.sanitize(
+                form.distilledPlant.harvestEndTime
+              ),
               plantState: DOMPurify.sanitize(form.distilledPlant.plantState),
               dryingTime: form.distilledPlant.dryingTime
                 ? Number(DOMPurify.sanitize(form.distilledPlant.dryingTime))
@@ -347,12 +408,16 @@ export default {
           };
 
           // Send the GraphQL mutation to update the distillation archive
-          const { data } = await updateDistillationArchive({
+          await updateDistillationArchive({
             id: archiveId.value,
             input: distillationArchiveFormData,
           });
-          console.log("Updated distillation archive:", data.updateDistillationArchive);
+          
         } catch (error) {
+          if (error.message === "Unauthorized") {
+            await store.dispatch("auth/logout");
+            router.push("/login");
+          }
           console.log("error", isFormValid.value);
           console.error("Error editing form", error);
         }
@@ -393,7 +458,8 @@ export default {
         for (const key in initialResultsForm.distillationData) {
           localStorage.removeItem(key);
         }
-        for (const key in initialResultsForm.distillationData.distillationTime) {
+        for (const key in initialResultsForm.distillationData
+          .distillationTime) {
           localStorage.removeItem(key);
         }
         for (const key in initialResultsForm.distilledPlant) {
