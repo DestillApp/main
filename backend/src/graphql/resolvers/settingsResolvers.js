@@ -32,7 +32,10 @@ const settingsResolvers = {
           throw new Error("User settings not found");
         }
         return userSettings;
-      } catch (err) {
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to fetch user settings");
       }
     },
@@ -110,7 +113,10 @@ const settingsResolvers = {
         }
 
         return updatedSettings;
-      } catch (err) {
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to update user settings");
       }
     },
@@ -147,7 +153,10 @@ const settingsResolvers = {
         }
 
         return updatedSettings;
-      } catch (err) {
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to update user settings");
       }
     },
@@ -182,7 +191,10 @@ const settingsResolvers = {
         }
 
         return updatedSettings;
-      } catch (err) {
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to add distiller");
       }
     },
@@ -217,7 +229,10 @@ const settingsResolvers = {
         }
 
         return updatedSettings;
-      } catch (err) {
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to delete distiller");
       }
     },
@@ -252,7 +267,10 @@ const settingsResolvers = {
         }
 
         return updatedSettings;
-      } catch (err) {
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to update dark theme setting");
       }
     },
