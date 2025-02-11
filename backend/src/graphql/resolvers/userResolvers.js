@@ -95,8 +95,11 @@ const userResolver = {
           throw new Error("User not found");
         }
         return userDetails;
-      } catch (err) {
-        console.error("Error fetching user details:", err);
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
+        console.error("Error fetching user details:", error);
         throw new Error("Failed to fetch user details");
       }
     },
