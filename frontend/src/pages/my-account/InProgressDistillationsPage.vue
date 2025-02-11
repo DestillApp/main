@@ -472,7 +472,7 @@ export default {
 
     const addPlantWeight = async () => {
       try {
-        const { data } = await apolloClient.mutate({
+        await apolloClient.mutate({
           mutation: CHANGE_AVAILABLE_WEIGHT,
           variables: {
             input: {
@@ -481,8 +481,11 @@ export default {
             },
           },
         });
-        console.log("Changed available weight:", data.changeAvailableWeight);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to update awailable weight:", error);
       }
     };

@@ -134,6 +134,10 @@ export default {
         plantDetails.value = data.getPlantById;
         console.log("edit plant", plantDetails.value);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get plant details:", error);
         plantDetails.value = null;
       } finally {
@@ -233,7 +237,10 @@ export default {
           });
           console.log("Updated plant:", data.updatePlant);
         } catch (error) {
-          console.log("error", isFormValid.value);
+          if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
           console.error("Error submitting form", error);
         }
       } else {

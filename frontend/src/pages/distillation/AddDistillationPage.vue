@@ -1,5 +1,4 @@
-// no arch docs and code comments
-// check form validation
+// no arch docs and code comments // check form validation
 <template>
   <base-card>
     <!-- Distillation form -->
@@ -157,9 +156,9 @@ export default {
           console.log("Created distillation ID:", data.createDistillation._id);
         } catch (error) {
           if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
+            await store.dispatch("auth/logout");
+            router.push("/login");
+          }
           console.error("Error submitting form", error);
         }
       } else {
@@ -171,19 +170,29 @@ export default {
 
     const changeAvailableWeight = async () => {
       try {
-        const sanitizedAvailableWeight = Number(DOMPurify.sanitize(distillationForm.value.choosedPlant.availableWeight));
-        const sanitizedWeightForDistillation = Number(DOMPurify.sanitize(distillationForm.value.weightForDistillation));
-       let newWeight = sanitizedAvailableWeight - sanitizedWeightForDistillation;
-       newWeight = parseFloat(newWeight.toFixed(1));
+        const sanitizedAvailableWeight = Number(
+          DOMPurify.sanitize(
+            distillationForm.value.choosedPlant.availableWeight
+          )
+        );
+        const sanitizedWeightForDistillation = Number(
+          DOMPurify.sanitize(distillationForm.value.weightForDistillation)
+        );
+        let newWeight =
+          sanitizedAvailableWeight - sanitizedWeightForDistillation;
+        newWeight = parseFloat(newWeight.toFixed(1));
 
-        const { data } = await updateAvailableWeight({
+        await updateAvailableWeight({
           input: {
             id: route.params.id,
             availableWeight: newWeight,
           },
         });
-        console.log("Changed available weight:", data.updateAvailableWeight);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Error changing form available weight", error);
       }
     };
@@ -227,7 +236,10 @@ export default {
           //change amount of available weight for distilled plant
           await changeAvailableWeight();
           // If valid, navigate to the add distillation page
-          router.push({ name: "AddResultsPage",  params: { distillId: distillId.value }  });
+          router.push({
+            name: "AddResultsPage",
+            params: { distillId: distillId.value },
+          });
         }
       } catch (error) {
         return;

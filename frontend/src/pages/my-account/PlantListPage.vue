@@ -1,4 +1,3 @@
-// filter, when plant was added etc.... (?) /
 <template>
   <div>
     <!-- List length settings component -->
@@ -125,10 +124,6 @@ import { scrollToTop } from "@/helpers/displayHelpers";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
 import { updateListSorting, updateListSettings } from "@/graphql/mutations/settingsFunctions.js";
-
-// import {
-//   UPDATE_LIST_SETTINGS,
-// } from "@/graphql/mutations/settings.js";
 import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 /**
@@ -242,6 +237,10 @@ export default {
 
         plantList.value = data.getPlants.slice(start, end);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get plant list:", error);
         plantsAmount.value = null;
         plantList.value = [];
@@ -393,6 +392,10 @@ export default {
         }
         closeDeleteModal();
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to delete plant:", error);
       }
     };

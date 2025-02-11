@@ -78,7 +78,8 @@
             początkowa ilość: {{ plantDetails.plantWeight }} kg
           </div>
           <div class="plant_data" v-if="plantDetails.plantOrigin === 'kupno'">
-            wiek przy zakupie: {{ plantDetails.plantAge }} {{ plantAgeWithSuffix(plantDetails.plantAge) }}
+            wiek przy zakupie: {{ plantDetails.plantAge }}
+            {{ plantAgeWithSuffix(plantDetails.plantAge) }}
           </div>
           <div class="plant_data">stan: {{ plantDetails.plantState }}</div>
           <div
@@ -101,9 +102,10 @@
 
 <script>
 import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
-import {plantAgeWithSuffix} from "@/helpers/displayHelpers.js";
+import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
 
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -125,6 +127,8 @@ export default {
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
+    // Vuex store instance
+    const store = useStore();
 
     // Route object to access route params
     const route = useRoute();
@@ -158,6 +162,10 @@ export default {
         plantDetails.value = data.getPlantById;
         console.log(plantDetails.value, plantDetails.value.plantName);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get plant details:", error);
         plantDetails.value = null;
       } finally {
@@ -205,6 +213,10 @@ export default {
         }
         closeDeleteModal();
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to delete plant:", error);
       }
     };

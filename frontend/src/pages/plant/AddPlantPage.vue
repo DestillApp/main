@@ -126,7 +126,10 @@ export default {
           console.log("Created plant:", data.createPlant);
           return data.createPlant;
         } catch (error) {
-          console.log("error", isFormValid.value);
+          if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
           console.error("Error submitting form", error);
         }
       } else {

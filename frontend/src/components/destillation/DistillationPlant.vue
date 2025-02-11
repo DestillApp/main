@@ -440,6 +440,10 @@ export default {
         plants.value = data.getPlants;
         console.log("plants", plants.value);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get plant list:", error);
         plants.value = [];
       }

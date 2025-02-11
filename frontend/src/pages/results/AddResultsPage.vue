@@ -158,6 +158,10 @@ export default {
         // Save plant details in Vuex state
         setPlantDetails(plantDetails);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get plant details:", error);
       }
     };

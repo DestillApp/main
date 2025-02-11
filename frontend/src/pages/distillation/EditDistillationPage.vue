@@ -1,24 +1,39 @@
 <template>
-    <base-card>
-        <!-- Loading spinner while data is being fetched -->
-        <v-progress-circular v-if="isLoading" class="spinner" color="var(--secondary-color-distillation)" :size="60"
-            :width="6" indeterminate></v-progress-circular>
-        <!-- Distillation form -->
-        <form v-if="!isLoading" @submit.prevent="editDistillation" class="distillation_form">
-            <!-- Title for the plant information form -->
-            <h3 class="form_title">Edytuj informacje o procesie destylacji</h3>
-            <!-- Distillation plan component -->
-            <distillation-plant :isFormValid="isFormValid" :isEditing="isEditing"></distillation-plant>
-            <!-- Distillation process component -->
-            <distillation-process :isFormValid="isFormValid"></distillation-process>
-            <!-- Distillation data component -->
-            <distillation-data :isFormValid="isFormValid"></distillation-data>
-            <!-- Button to submit the distilation form -->
-            <base-button class="button" type="submit">Edytuj</base-button>
-            <!-- Button to submit and go to the distillation results form -->
-            <base-button @click="editDistillationAddResults">Edytuj i dodaj wyniki destylacji</base-button>
-        </form>
-    </base-card>
+  <base-card>
+    <!-- Loading spinner while data is being fetched -->
+    <v-progress-circular
+      v-if="isLoading"
+      class="spinner"
+      color="var(--secondary-color-distillation)"
+      :size="60"
+      :width="6"
+      indeterminate
+    ></v-progress-circular>
+    <!-- Distillation form -->
+    <form
+      v-if="!isLoading"
+      @submit.prevent="editDistillation"
+      class="distillation_form"
+    >
+      <!-- Title for the plant information form -->
+      <h3 class="form_title">Edytuj informacje o procesie destylacji</h3>
+      <!-- Distillation plan component -->
+      <distillation-plant
+        :isFormValid="isFormValid"
+        :isEditing="isEditing"
+      ></distillation-plant>
+      <!-- Distillation process component -->
+      <distillation-process :isFormValid="isFormValid"></distillation-process>
+      <!-- Distillation data component -->
+      <distillation-data :isFormValid="isFormValid"></distillation-data>
+      <!-- Button to submit the distilation form -->
+      <base-button class="button" type="submit">Edytuj</base-button>
+      <!-- Button to submit and go to the distillation results form -->
+      <base-button @click="editDistillationAddResults"
+        >Edytuj i dodaj wyniki destylacji</base-button
+      >
+    </form>
+  </base-card>
 </template>
 
 <script>
@@ -112,30 +127,67 @@ export default {
         // Once the process is complete, set loading to false
         isLoading.value = false;
       }
-      };
+    };
 
     // Lifecycle hook to reset form validity on component mount
     onMounted(async () => {
       isFormValid.value = null;
-        if (comingFromRoute.value) {
-            await fetchDistillationDetails();
-            store.dispatch("distillation/setValue", { input: "isPlantShredded", value: distillationDetails.value.isPlantShredded });
-            store.dispatch("distillation/setValue", { input: "isPlantSoaked", value: distillationDetails.value.isPlantSoaked });
-            store.dispatch("distillation/setValue", { input: "soakingTime", value: distillationDetails.value.soakingTime });
-            store.dispatch("distillation/setValue", { input: "weightAfterSoaking", value: distillationDetails.value.weightAfterSoaking });
-            store.dispatch("distillation/setValue", { input: "weightForDistillation", value: distillationDetails.value.weightForDistillation });
-            store.dispatch("distillation/setValue", { input: "initialWeightForDistillation", value: distillationDetails.value.weightForDistillation });
-            store.dispatch("distillation/setValue", { input: "distillationApparatus", value: distillationDetails.value.distillationApparatus });
-            store.dispatch("distillation/setValue", { input: "distillationDate", value: distillationDetails.value.distillationDate });
-            store.dispatch("distillation/setValue", { input: "distillationType", value: distillationDetails.value.distillationType });
-            store.dispatch("distillation/setValue", { input: "waterForDistillation", value: distillationDetails.value.waterForDistillation });
-            store.dispatch("distillation/setDistillationTime", { key: "distillationHours", value: distillationDetails.value.distillationTime.distillationHours });
-            store.dispatch("distillation/setDistillationTime", { key: "distillationMinutes", value: distillationDetails.value.distillationTime.distillationMinutess });
-            console.log("form", distillationForm.value);
-        } else {
-          // If not coming from another route, set loading to false
-          isLoading.value = false;
-        }
+      if (comingFromRoute.value) {
+        await fetchDistillationDetails();
+        store.dispatch("distillation/setValue", {
+          input: "isPlantShredded",
+          value: distillationDetails.value.isPlantShredded,
+        });
+        store.dispatch("distillation/setValue", {
+          input: "isPlantSoaked",
+          value: distillationDetails.value.isPlantSoaked,
+        });
+        store.dispatch("distillation/setValue", {
+          input: "soakingTime",
+          value: distillationDetails.value.soakingTime,
+        });
+        store.dispatch("distillation/setValue", {
+          input: "weightAfterSoaking",
+          value: distillationDetails.value.weightAfterSoaking,
+        });
+        store.dispatch("distillation/setValue", {
+          input: "weightForDistillation",
+          value: distillationDetails.value.weightForDistillation,
+        });
+        store.dispatch("distillation/setValue", {
+          input: "initialWeightForDistillation",
+          value: distillationDetails.value.weightForDistillation,
+        });
+        store.dispatch("distillation/setValue", {
+          input: "distillationApparatus",
+          value: distillationDetails.value.distillationApparatus,
+        });
+        store.dispatch("distillation/setValue", {
+          input: "distillationDate",
+          value: distillationDetails.value.distillationDate,
+        });
+        store.dispatch("distillation/setValue", {
+          input: "distillationType",
+          value: distillationDetails.value.distillationType,
+        });
+        store.dispatch("distillation/setValue", {
+          input: "waterForDistillation",
+          value: distillationDetails.value.waterForDistillation,
+        });
+        store.dispatch("distillation/setDistillationTime", {
+          key: "distillationHours",
+          value: distillationDetails.value.distillationTime.distillationHours,
+        });
+        store.dispatch("distillation/setDistillationTime", {
+          key: "distillationMinutes",
+          value:
+            distillationDetails.value.distillationTime.distillationMinutess,
+        });
+        console.log("form", distillationForm.value);
+      } else {
+        // If not coming from another route, set loading to false
+        isLoading.value = false;
+      }
     });
 
     // Using GraphQL mutation for creating a new plant
@@ -208,9 +260,9 @@ export default {
           console.log("Edited distillation:", data.updateDistillation);
         } catch (error) {
           if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
+            await store.dispatch("auth/logout");
+            router.push("/login");
+          }
           console.error("Error editing form", error);
         }
       } else {
@@ -227,22 +279,34 @@ export default {
 
     const changeAvailableWeight = async () => {
       try {
+        const sanitizedAvailableWeight = Number(
+          DOMPurify.sanitize(
+            distillationForm.value.choosedPlant.availableWeight
+          )
+        );
+        const sanitizedWeightForDistillation = Number(
+          DOMPurify.sanitize(distillationForm.value.weightForDistillation)
+        );
+        const initialWeightForDistillation =
+          distillationForm.value.initialWeightForDistillation;
 
-        const sanitizedAvailableWeight = Number(DOMPurify.sanitize(distillationForm.value.choosedPlant.availableWeight));
-        const sanitizedWeightForDistillation = Number(DOMPurify.sanitize(distillationForm.value.weightForDistillation));
-        const initialWeightForDistillation = distillationForm.value.initialWeightForDistillation;
-        console.log("weight", initialWeightForDistillation);
-        let newWeight = sanitizedAvailableWeight + initialWeightForDistillation - sanitizedWeightForDistillation;
-        newWeight = parseFloat(newWeight.toFixed(1)); 
-        
-        const { data } = await updateAvailableWeight({
+        let newWeight =
+          sanitizedAvailableWeight +
+          initialWeightForDistillation -
+          sanitizedWeightForDistillation;
+        newWeight = parseFloat(newWeight.toFixed(1));
+
+        await updateAvailableWeight({
           input: {
             id: route.params.id,
             availableWeight: newWeight,
           },
         });
-        console.log("Changed available weight:", data.updateAvailableWeight);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Error changing form available weight", error);
       }
     };
@@ -304,7 +368,7 @@ export default {
 
     return {
       editDistillation,
-        editDistillationAddResults,
+      editDistillationAddResults,
       distillationDetails,
       isFormValid,
       isLoading,
