@@ -12,6 +12,7 @@ const { formatDate, formatDateToString } = require("../../util/dateformater");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
+const { AuthenticationError } = require("apollo-server-express");
 
 const distillationArchivesResolvers = {
   Query: {
@@ -23,7 +24,7 @@ const distillationArchivesResolvers = {
      */
     getDistillationArchives: async (_, { fields, name, sorting, formatDates }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
@@ -85,6 +86,9 @@ const distillationArchivesResolvers = {
           return formattedArchive;
         });
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error(
           "Failed to fetch distillation archives: " + error.message
         );
@@ -106,7 +110,7 @@ const distillationArchivesResolvers = {
       { user }
     ) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
       try {
         const archive = await DistillationArchives.findOne({
@@ -139,6 +143,9 @@ const distillationArchivesResolvers = {
 
         return archive;
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error(
           "Failed to fetch distillation archive by ID: " + error.message
         );
@@ -162,7 +169,7 @@ const distillationArchivesResolvers = {
       { user }
     ) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       const sanitizedDate = DOMPurify.sanitize(
@@ -341,7 +348,10 @@ const distillationArchivesResolvers = {
         // Saving the distillation archive to the database
         const result = await distillationArchive.save();
         return result;
-      } catch (err) {
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         console.error("Error details:", err);
         throw new Error("Failed to create distillation archive");
       }
@@ -362,7 +372,7 @@ const distillationArchivesResolvers = {
       { user }
     ) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       const sanitizedDate = DOMPurify.sanitize(
@@ -549,13 +559,16 @@ const distillationArchivesResolvers = {
           });
         return updatedDistillationArchive;
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to update distillation archive");
       }
     },
 
     deleteDistillationArchive: async (_, { id }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
@@ -565,6 +578,9 @@ const distillationArchivesResolvers = {
         });
         return true;
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         console.error("Failed to delete distillation archive:", error);
         return false;
       }
