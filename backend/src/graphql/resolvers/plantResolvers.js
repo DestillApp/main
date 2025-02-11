@@ -10,6 +10,7 @@ const Plant = require("../../database/plant");
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
 const { formatDate } = require("../../util/dateformater");
+const { AuthenticationError } = require("apollo-server-express");
 
 // Utility function to filter data
 function filterPlantData(data) {
@@ -45,7 +46,7 @@ const plantResolver = {
  */
     getPlants: async (_, { fields, formatDates, name, sorting }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
@@ -99,13 +100,16 @@ const plantResolver = {
           return formattedPlant;
         });
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to fetch plants: " + error.message);
       }
     },
 
     getPlantById: async (_, { id, formatDates }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
@@ -126,6 +130,9 @@ const plantResolver = {
 
         return plant;
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to fetch plant by ID: " + error.message);
       }
     },
@@ -143,7 +150,7 @@ const plantResolver = {
      */
     createPlant: async (_, { plantInput }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       // Sanitizing the input data
@@ -188,15 +195,18 @@ const plantResolver = {
         // Saving the plant to the database
         const result = await plant.save();
         return result;
-      } catch (err) {
-        throw new Error("Failed to create plant");
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
+        throw new Error("Failed to create plant: " + error.message);
       }
     },
 
     // Update an existing plant
     updatePlant: async (_, { id, plantInput }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       // Sanitizing the input data
@@ -243,19 +253,25 @@ const plantResolver = {
         });
         return updatedPlant;
       } catch (error) {
-        throw new Error("Plant not found");
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
+        throw new Error("Failed to update plant: " + error.message);
       }
     },
 
     deletePlant: async (_, { id }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
         await Plant.findOneAndDelete({ _id: id, userId: user.id });
         return true;
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         console.error("Failed to delete plant:", error);
         return false;
       }
@@ -263,7 +279,7 @@ const plantResolver = {
 
     updateAvailableWeight: async (_, { input }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
@@ -280,6 +296,9 @@ const plantResolver = {
         );
         return updatedPlant;
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error(
           "Failed to update plant's available weight: " + error.message
         );
@@ -288,7 +307,7 @@ const plantResolver = {
 
     changeAvailableWeight: async (_, { input }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
@@ -316,6 +335,9 @@ const plantResolver = {
 
         return updatedPlant;
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         console.error("Error in changeAvailableWeight resolver:", error);
         throw new Error(
           "Failed to change plant's available weight: " + error.message
