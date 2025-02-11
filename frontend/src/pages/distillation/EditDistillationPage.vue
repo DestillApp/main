@@ -102,6 +102,10 @@ export default {
         distillationDetails.value = data.getDistillationById;
         console.log("edit distillation", distillationDetails.value);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get distillation details:", error);
         distillationDetails.value = null;
       } finally {
@@ -203,7 +207,10 @@ export default {
           });
           console.log("Edited distillation:", data.updateDistillation);
         } catch (error) {
-          console.log("error", isFormValid.value);
+          if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
           console.error("Error editing form", error);
         }
       } else {

@@ -161,6 +161,7 @@
 
 <script>
 import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
@@ -180,6 +181,9 @@ export default {
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
+
+    // Vuex store instance
+    const store = useStore();
 
     // Route object to access route params
     const route = useRoute();
@@ -227,6 +231,10 @@ export default {
         distillationDetails.value = data.getDistillationById;
         console.log(distillationDetails.value);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get plant details:", error);
         distillationDetails.value = null;
       } finally {
@@ -327,7 +335,9 @@ export default {
      */
     const addPlantWeight = async () => {
       try {
-        const sanitizedAvailableWeight = Number(DOMPurify.sanitize(distillationWeight.value));
+        const sanitizedAvailableWeight = Number(
+          DOMPurify.sanitize(distillationWeight.value)
+        );
         const { data } = await apolloClient.mutate({
           mutation: CHANGE_AVAILABLE_WEIGHT,
           variables: {

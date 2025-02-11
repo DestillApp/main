@@ -184,6 +184,10 @@ export default {
         await fetchPlantDetails(distillationDetails.choosedPlant.id);
       } catch (error) {
         console.error("Failed to get distillation details:", error);
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
       }
     };
 
@@ -336,8 +340,12 @@ export default {
         });
         console.log("Deleted distillation:", data.deleteDistillation);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Error deleting distillation:", error);
-        throw error; // Re-throw the error to be caught by saveResults
+        throw error;
       }
     };
 

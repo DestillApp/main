@@ -151,7 +151,6 @@ import {
   updateListSettings,
 } from "@/graphql/mutations/settingsFunctions.js";
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
-// import { UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
@@ -263,6 +262,10 @@ export default {
         distillationsList.value = data.getDistillations.slice(start, end);
         console.log(distillationsList.value);
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to get plant list:", error);
         distillationsAmount.value = null;
         distillationsList.value = [];
@@ -450,6 +453,10 @@ export default {
         }
         closeDeleteModal();
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to delete plant:", error);
       }
     };

@@ -156,7 +156,10 @@ export default {
           console.log("Created distillation:", data.createDistillation);
           console.log("Created distillation ID:", data.createDistillation._id);
         } catch (error) {
-          console.log("error", isFormValid.value);
+          if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
           console.error("Error submitting form", error);
         }
       } else {
