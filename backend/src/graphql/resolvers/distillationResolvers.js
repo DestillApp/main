@@ -11,12 +11,13 @@ const Distillation = require("../../database/distillation");
 const DOMPurify = require("../../util/sanitizer");
 const { formatDate, formatDateToString } = require("../../util/dateformater");
 const { filterData } = require("../../util/dataformating");
+const { AuthenticationError } = require("apollo-server-express");
 
 const distillationResolvers = {
   Query: {
     getDistillations: async (_, { fields, name, sorting }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
@@ -69,13 +70,16 @@ const distillationResolvers = {
           return formattedDistillation;
         });
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to fetch distillations: " + error.message);
       }
     },
 
     getDistillationById: async (_, { id, formatDates }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
@@ -97,6 +101,9 @@ const distillationResolvers = {
         }
         return distillation;
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         throw new Error("Failed to fetch distillation by ID: " + error.message);
       }
     },
@@ -114,7 +121,7 @@ const distillationResolvers = {
      */
     createDistillation: async (_, { distillationInput }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       const sanitizedDate = DOMPurify.sanitize(
@@ -214,9 +221,11 @@ const distillationResolvers = {
         // Saving the distillation to the database
         const result = await distillation.save();
         return result;
-      } catch (err) {
-        console.error("Error details:", err);
-        throw new Error("Failed to create distillation");
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
+        throw new Error("Failed to create distillation: " + error.message);
       }
     },
 
@@ -232,7 +241,7 @@ const distillationResolvers = {
      */
     updateDistillation: async (_, { id, distillationInput }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       const sanitizedDate = DOMPurify.sanitize(
@@ -340,20 +349,25 @@ const distillationResolvers = {
 
         return updatedDistillation;
       } catch (error) {
-        console.error("Failed to update distillation:", error);
-        throw new Error("Failed to update distillation");
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
+        throw new Error("Failed to update distillation: " + error.message);
       }
     },
 
     deleteDistillation: async (_, { id }, { user }) => {
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new AuthenticationError("Unauthorized");
       }
 
       try {
         await Distillation.findOneAndDelete({ _id: id, userId: user.id });
         return true;
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         console.error("Failed to delete distillation:", error);
         return false;
       }
@@ -362,24 +376,3 @@ const distillationResolvers = {
 };
 
 module.exports = distillationResolvers;
-
-// console.log(sorting);
-
-// Build a sort object based on sortingProps
-// const sort = {};
-// if (sorting === "plantName") {
-//   sort["choosedPlant.name"] = 1;
-// }
-
-// if (sorting === "youngDate") {
-//   sort.date = -1;
-// }
-
-// if (sorting === "oldDate") {
-//   sort.date = 1;
-// }
-
-// Fetch distillations with the specified fields and filters from the database
-// const distillations = await Distillation.find(filter, projection).sort(
-//   sort
-// );
