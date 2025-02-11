@@ -14,6 +14,9 @@ export const updateListSorting = async (apolloClient, key, value) => {
     console.log("UPDATED sorting!");
     return true;
   } catch (error) {
+    if (error.message === "Unauthorized") {
+      return "Unauthorized";
+    }
     console.error("Failed to update plant list settings:", error);
     return false;
   }
@@ -34,6 +37,9 @@ export const updateListSettings = async (apolloClient, key, value) => {
     console.log("UPDATED!");
     return true;
   } catch (error) {
+    if (error.message === "Unauthorized") {
+      return "Unauthorized";
+    }
     console.error("Failed to update plant list settings:", error);
     return false;
   }

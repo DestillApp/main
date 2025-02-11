@@ -64,6 +64,7 @@
 <script>
 import { ref } from "vue";
 import { useStore } from "vuex";
+import {useRouter} from "vue-router"
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -78,6 +79,8 @@ export default {
   },
   setup(_, { emit }) {
     const store = useStore(); 
+
+    const router = useRouter();
 
     const material = ref("");
     const capacity = ref(null);
@@ -105,8 +108,19 @@ export default {
       isFormValid.value = distillerFormValidation(distiller);
       if (isFormValid.value) {
         try {
-          await store.dispatch("settings/addDistiller", distiller);
-          await store.dispatch("settings/fetchSettings"); 
+          const addDistillerResult = await store.dispatch("settings/addDistiller", distiller);
+          if (addDistillerResult === "Unauthorized") {
+            await store.dispatch("auth/logout");
+            router.push("/login");
+            return;
+          }
+
+          const fetchSettingsResult = await store.dispatch("settings/fetchSettings");
+          if (fetchSettingsResult === "Unauthorized") {
+            await store.dispatch("auth/logout");
+            router.push("/login");
+            return;
+          }
           closeModal();
         } catch (error) {
           console.error("Failed to add distiller:", error);

@@ -54,8 +54,6 @@ export default {
       const distillers = data.getUserSettings.distillerList;
       const isDarkTheme = data.getUserSettings.isDarkTheme;
 
-      console.log("fetchSettings, isDarkTheme", isDarkTheme);
-
       // Update the Vuex store with the fetched settings
       context.dispatch("setValue", {
         input: "plantListLength",
@@ -92,9 +90,12 @@ export default {
         input: "isDarkTheme",
         value: isDarkTheme,
       });
-    } catch (error) {
-      console.error("Error fetching settings:", error);
-    }
+        } catch (error) {
+          if (error.message === "Unauthorized") {
+            return "Unauthorized";
+          }
+          console.error("Error fetching settings:", error);
+      }
   },
 
   /**
@@ -131,6 +132,9 @@ export default {
       });
       console.log("Distiller added:", data.addDistiller);
     } catch (error) {
+      if (error.message === "Unauthorized") {
+        return "Unauthorized";
+      }
       console.error("Error adding distiller:", error);
     }
   },
@@ -150,6 +154,9 @@ export default {
       context.commit("removeDistillerById", id);
       console.log("Distiller deleted:", data.deleteDistiller);
     } catch (error) {
+      if (error.message === "Unauthorized") {
+        return "Unauthorized";
+      }
       console.error("Error deleting distiller:", error);
     }
   },

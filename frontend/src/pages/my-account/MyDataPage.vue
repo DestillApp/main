@@ -147,11 +147,17 @@ export default {
 
     const deleteDistiller = async () => {
       try {
-        await store.dispatch(
+        const deleteDistiller = await store.dispatch(
           "settings/deleteDistillerById",
           selectedDistillerId.value
         );
-        closeDeleteModal();
+        if (deleteDistiller === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+          return;
+        } else {
+          closeDeleteModal();
+        }
       } catch (error) {
         console.error("Failed to delete distiller:", error);
       }
@@ -177,6 +183,10 @@ export default {
           value: isDarkTheme.value,
         });
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to update theme:", error);
       }
     });

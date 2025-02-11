@@ -288,7 +288,12 @@ export default {
         "distillationListLength",
         length
       );
-      if (isUpdating) {
+      if (isUpdating === "Unauthorized") {
+        await store.dispatch("auth/logout");
+        router.push("/login");
+        return;
+      }
+      if (isUpdating === true) {
         console.log("Updated distillation list length");
         store.dispatch("settings/setValue", {
           input: "distillationArchivesListLength",
@@ -300,52 +305,76 @@ export default {
 
     const handleSorting = async (option) => {
       if (option === "nazwy rośliny alfabetycznie") {
-        await updateListSorting(
+        const update = await updateListSorting(
           apolloClient,
           "archiveDistillationListSorting",
           "plantName"
         );
-        store.dispatch("settings/setValue", {
-          input: "archiveDistillationListSorting",
-          value: "plantName",
-        });
-        await fetchDistillationArchivesList(searchQuery.value, "plantName");
+        if (update === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+          return;
+        } else {
+          store.dispatch("settings/setValue", {
+            input: "archiveDistillationListSorting",
+            value: "plantName",
+          });
+          await fetchDistillationArchivesList(searchQuery.value, "plantName");
+        }
       }
       if (option === "daty dodania destylacji") {
-        await updateListSorting(
+        const update = await updateListSorting(
           apolloClient,
           "archiveDistillationListSorting",
           "createdAt"
         );
+        if (update === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+          return;
+        } else {
         store.dispatch("settings/setValue", {
           input: "archiveDistillationListSorting",
           value: "createdAt",
         });
         await fetchDistillationArchivesList(searchQuery.value, "createdAt");
       }
+      }
       if (option === "najstarszej daty destylacji") {
-        await updateListSorting(
+        const update = await updateListSorting(
           apolloClient,
           "archiveDistillationListSorting",
           "oldDate"
         );
+        if (update === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+          return;
+        } else {
         store.dispatch("settings/setValue", {
           input: "archiveDistillationListSorting",
           value: "oldDate",
         });
         await fetchDistillationArchivesList(searchQuery.value, "oldDate");
       }
+      }
       if (option === "najnowszej daty destylacji") {
-        await updateListSorting(
+        const update = await updateListSorting(
           apolloClient,
           "archiveDistillationListSorting",
           "youngDate"
         );
+        if (update === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+          return;
+        } else {
         store.dispatch("settings/setValue", {
           input: "archiveDistillationListSorting",
           value: "youngDate",
         });
         await fetchDistillationArchivesList(searchQuery.value, "youngDate");
+      }
       }
       page.value = 1;
     };

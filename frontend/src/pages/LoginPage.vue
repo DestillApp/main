@@ -114,10 +114,18 @@ export default {
 
           //Redirecting
           if (isAuthenticated === true) {
-            await store.dispatch("settings/fetchSettings");
-            const redirectPath =
-              router.currentRoute.value.query.redirect || "/my-account";
-            router.push(redirectPath);
+            const fetchSettingsResult = await store.dispatch(
+              "settings/fetchSettings"
+            );
+
+            if (fetchSettingsResult === "Unauthorized") {
+              await store.dispatch("auth/logout");
+              router.push("/login");
+            } else {
+              const redirectPath =
+                router.currentRoute.value.query.redirect || "/my-account";
+              router.push(redirectPath);
+            }
           } else if (isAuthenticated === "Invalid credentials") {
             isLoginFormValid.value = false;
           }
