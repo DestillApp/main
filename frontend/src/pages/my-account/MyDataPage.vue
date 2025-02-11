@@ -37,11 +37,17 @@
     <div class="settings">
       <h4 class="settings-title">Ustawienia:</h4>
       <div class="settings-theme">
-      <p v-if="isDarkTheme">Motyw ciemny aplikacji włączony</p>
-      <p v-if="!isDarkTheme">Motyw ciemny aplikacji wyłączony</p>
-      <v-switch v-model="isDarkTheme" hide-details color="var(--secondary-color)"></v-switch>
+        <p v-if="isDarkTheme">Motyw ciemny aplikacji włączony</p>
+        <p v-if="!isDarkTheme">Motyw ciemny aplikacji wyłączony</p>
+        <v-switch
+          v-model="isDarkTheme"
+          hide-details
+          color="var(--secondary-color)"
+        ></v-switch>
       </div>
-      <base-button class="settings-button" @click="openPasswordChangeForm">Zmień hasło</base-button>
+      <base-button class="settings-button" @click="openPasswordChangeForm"
+        >Zmień hasło</base-button
+      >
     </div>
     <!-- Distiller form modal -->
     <distiller-form
@@ -66,6 +72,7 @@
 <script>
 import { ref, onMounted, computed, onBeforeMount, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { GET_USER_DETAILS } from "@/graphql/queries/auth.js";
 import { UPDATE_DARK_THEME } from "@/graphql/mutations/settings.js";
@@ -75,11 +82,19 @@ import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import PasswordChangeForm from "@/components/PasswordChangeForm.vue";
 
 export default {
-  components: { BaseButton, DistillerForm, DeleteItemModal, PasswordChangeForm },
+  components: {
+    BaseButton,
+    DistillerForm,
+    DeleteItemModal,
+    PasswordChangeForm,
+  },
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
     const store = useStore();
+
+    // Router object for navigation
+    const router = useRouter();
 
     const username = ref("");
     const email = ref("");
@@ -91,7 +106,9 @@ export default {
     const isDistillerFormOpen = ref(false);
     const isPasswordChangeFormOpen = ref(false);
     const isDarkTheme = ref(false);
-const isDarkThemeStored = computed(() => store.getters["settings/isDarkTheme"]);
+    const isDarkThemeStored = computed(
+      () => store.getters["settings/isDarkTheme"]
+    );
 
     const fetchUserDetails = async () => {
       try {
@@ -102,6 +119,10 @@ const isDarkThemeStored = computed(() => store.getters["settings/isDarkTheme"]);
         username.value = data.getUserDetails.username;
         email.value = data.getUserDetails.email;
       } catch (error) {
+        if (error.message === "Unauthorized") {
+          await store.dispatch("auth/logout");
+          router.push("/login");
+        }
         console.error("Failed to fetch user details:", error);
       }
     };
@@ -152,10 +173,9 @@ const isDarkThemeStored = computed(() => store.getters["settings/isDarkTheme"]);
         });
 
         store.dispatch("settings/setValue", {
-        input: "isDarkTheme",
-        value: isDarkTheme.value,
-      });
-
+          input: "isDarkTheme",
+          value: isDarkTheme.value,
+        });
       } catch (error) {
         console.error("Failed to update theme:", error);
       }
@@ -169,7 +189,7 @@ const isDarkThemeStored = computed(() => store.getters["settings/isDarkTheme"]);
 
     onMounted(() => {
       fetchUserDetails();
-        isDarkTheme.value = isDarkThemeStored.value;
+      isDarkTheme.value = isDarkThemeStored.value;
       console.log("distillers in MyDataPage", distillers.value);
     });
 
@@ -211,7 +231,7 @@ const isDarkThemeStored = computed(() => store.getters["settings/isDarkTheme"]);
 }
 
 .my-distillers-title {
-    margin-left: 5%;
+  margin-left: 5%;
   text-align: left;
 }
 
