@@ -3,7 +3,7 @@
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
-      class="spinner"
+      class="distillation__spinner"
       color="var(--secondary-color-distillation)"
       :size="60"
       :width="6"
@@ -13,10 +13,10 @@
     <form
       v-if="!isLoading"
       @submit.prevent="editDistillation"
-      class="distillation_form"
+      class="distillation__form"
     >
       <!-- Title for the plant information form -->
-      <h3 class="form_title">Edytuj informacje o procesie destylacji</h3>
+      <h3 class="distillation__form-title">Edytuj informacje o procesie destylacji</h3>
       <!-- Distillation plan component -->
       <distillation-plant
         :isFormValid="isFormValid"
@@ -27,7 +27,7 @@
       <!-- Distillation data component -->
       <distillation-data :isFormValid="isFormValid"></distillation-data>
       <!-- Button to submit the distilation form -->
-      <base-button class="button" type="submit">Edytuj</base-button>
+      <base-button class="distillation__button" type="submit">Edytuj</base-button>
       <!-- Button to submit and go to the distillation results form -->
       <base-button @click="editDistillationAddResults"
         >Edytuj i dodaj wyniki destylacji</base-button
@@ -379,16 +379,16 @@ export default {
 </script>
 
 <style scoped>
-.form_title {
+.distillation__form-title {
   margin-bottom: 30px;
 }
 
-.distillation_form {
+.distillation__form {
   display: flex;
   flex-direction: column;
 }
 
-.button {
+.distillation__button {
   margin-bottom: 20px;
 }
 </style>

@@ -1,10 +1,9 @@
-// no arch docs and code comments // check form validation
-<template>
+/<template>
   <base-card>
     <!-- Distillation form -->
-    <form @submit.prevent="saveDistillation" class="distillation_form">
+    <form @submit.prevent="saveDistillation" class="add-distillation__form">
       <!-- Title for the plant information form -->
-      <h3 class="form_title">Informacje o procesie destylacji</h3>
+      <h3 class="add-distillation__form-title">Informacje o procesie destylacji</h3>
       <!-- Distillation plan component -->
       <distillation-plant :isFormValid="isFormValid"></distillation-plant>
       <!-- Distillation process component -->
@@ -12,7 +11,7 @@
       <!-- Distillation data component -->
       <distillation-data :isFormValid="isFormValid"></distillation-data>
       <!-- Button to submit the distilation form -->
-      <base-button class="button" type="submit">Zapisz</base-button>
+      <base-button class="add-distillation__form-button" type="submit">Zapisz</base-button>
       <!-- Button to submit and go to the distillation results form -->
       <base-button @click="saveDistillationAddResults"
         >Zapisz i dodaj wyniki destylacji</base-button
@@ -273,16 +272,16 @@ export default {
 </script>
 
 <style scoped>
-.form_title {
-  margin-bottom: 30px;
-}
-
-.distillation_form {
+.add-distillation__form {
   display: flex;
   flex-direction: column;
 }
 
-.button {
+.add-distillation__form-title {
+  margin-bottom: 30px;
+}
+
+.add-distillation__form-button {
   margin-bottom: 20px;
 }
 </style>

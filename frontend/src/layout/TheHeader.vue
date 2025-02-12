@@ -1,34 +1,33 @@
 <template>
   <!-- Header section of the page -->
   <header class="header">
-    <nav class="nav">
+    <nav class="header__nav">
       <!-- Title of the application -->
-      <h1 class="title">Distill It</h1>
+      <h1 class="header__title">Distill It</h1>
       <!-- Navigation list -->
-      <ul class="list">
+      <ul class="header__list">
         <!-- Link to the add plant page -->
         <li v-if="isAuthenticated">
-          <router-link to="/add-plant" class="link">Dodaj surowiec</router-link>
+          <router-link to="/add-plant" class="header__link">Dodaj surowiec</router-link>
         </li>
         <!-- Link to the add distillation page -->
         <li v-if="isAuthenticated">
-          <router-link to="/add-distillation" class="link">Dodaj destylację</router-link>
+          <router-link to="/add-distillation" class="header__link">Dodaj destylację</router-link>
         </li>
         <li v-if="isAuthenticated">
-          <router-link to="/my-account" class="link">Moje konto</router-link>
+          <router-link to="/my-account" class="header__link">Moje konto</router-link>
         </li>
       </ul>
       <!-- Link to the login page -->
       <router-link to="/login" v-if="!isAuthenticated && !isLoadingAuthStatus">
-        <base-button class="base-button"
-          >Zaloguj się
+        <base-button class="header__button">Zaloguj się
           <!-- SVG icon for the login button -->
-          <svg-icon type="mdi" :path="path" size="18" class="icon"></svg-icon>
+          <svg-icon type="mdi" :path="path" size="18" class="header__icon"></svg-icon>
         </base-button>
       </router-link>
       <!-- Logout button -->
       <base-button
-      class="base-button"
+      class="header__button"
         v-if="isAuthenticated && !isLoadingAuthStatus"
         @click="handleLogout"
         >Wyloguj się</base-button
@@ -38,8 +37,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -89,7 +87,7 @@ export default {
   box-shadow: var(--box-shadow);
 }
 
-.nav {
+.header__nav {
   display: flex;
   flex-direction: row;
   padding: 10px;
@@ -99,24 +97,24 @@ export default {
   gap: 20px;
 }
 
-.title {
+.header__title {
   color: var(--header-text-color);
 }
 
-.list {
+.header__list {
   display: flex;
   flex-direction: row;
   gap: 35px;
 }
 
-.link {
+.header__link {
   position: relative;
   text-decoration: none;
   font-size: 18px;
   color: var(--header-text-color);
 }
 
-.link::after {
+.header__link::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -129,20 +127,20 @@ export default {
   transition: transform 0.3s ease-out;
 }
 
-.link:hover::after {
+.header__link:hover::after {
   transform: scaleX(1);
   transform-origin: center;
 }
 
-.router-link-active::after{
+.router-link-active::after {
   transform: scaleX(1);
 }
 
-.icon {
+.header__icon {
   margin-left: 5px;
 }
 
-.base-button {
+.header__button {
   color: var(--header-text-color);
 }
 </style>
