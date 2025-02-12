@@ -1,20 +1,20 @@
 <template>
-  <div class="sorting" ref="sortingContainer">
-    <div class="list-sorting">
+  <div class="list-sorting" ref="sortingContainer">
+    <div class="list-sorting__container">
       <!-- Label for sorting -->
-      <label class="sorting-label">Sortuj według:</label>
+      <label class="list-sorting__label">Sortuj według:</label>
       <!-- Container for the input and arrow -->
-      <div class="input-container" @click="toggleList">
+      <div class="list-sorting__input-container" @click="toggleList">
         <!-- Input field displaying the selected sorting option -->
         <input
           type="text"
-          :class="['sorting-input', { 'dark-sorting-input': isDarkTheme }]"
+          :class="['list-sorting__input', { 'list-sorting__input--dark': isDarkTheme }]"
           :value="selectedOption"
           readonly
         />
         <!-- Arrow icon for toggling the list -->
         <svg-icon
-          class="arrow-icon"
+          class="list-sorting__arrow-icon"
           type="mdi"
           :path="isOpen ? mdiChevronUp : mdiChevronDown"
           size="24"
@@ -22,12 +22,12 @@
       </div>
     </div>
     <!-- List of sorting options, displayed conditionally based on isOpen -->
-    <ul :class="['sorting-options', { 'dark-sorting-options': isDarkTheme }]" v-if="isOpen">
+    <ul :class="['list-sorting__options', { 'list-sorting__options--dark': isDarkTheme }]" v-if="isOpen">
       <li
         v-for="option in options"
         :key="option"
         @click="selectOption(option)"
-        class="sorting-option"
+        class="list-sorting__option"
       >
         {{ option }}
       </li>
@@ -93,29 +93,29 @@ export default {
 </script>
 
 <style scoped>
-.sorting {
+.list-sorting {
   position: relative;
 }
 
-.list-sorting {
+.list-sorting__container {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.sorting-label {
+.list-sorting__label {
   font-size: 15px;
   text-align: left;
 }
 
-.input-container {
+.list-sorting__input-container {
   display: flex;
   align-items: center;
   cursor: pointer;
   position: relative;
 }
 
-.sorting-input {
+.list-sorting__input {
   width: 100%;
   font-family: inherit;
   color: var(--text-color);
@@ -127,17 +127,17 @@ export default {
   cursor: pointer;
 }
 
-.dark-sorting-input {
+.list-sorting__input--dark {
   color: var(--text-color-dark);
   border: 2px solid var(--border-color-dark);
 }
 
-.arrow-icon {
+.list-sorting__arrow-icon {
   position: absolute;
   right: 10px;
 }
 
-.sorting-options {
+.list-sorting__options {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -150,12 +150,12 @@ export default {
   z-index: 10;
 }
 
-.dark-sorting-options {
+.list-sorting__options--dark {
   border: 2px solid var(--border-color-dark);
   background-color: var(--background-dark);
 }
 
-.sorting-option {
+.list-sorting__option {
   margin-block: 5px;
   cursor: pointer;
 }

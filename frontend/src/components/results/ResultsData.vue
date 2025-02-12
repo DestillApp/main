@@ -1,7 +1,7 @@
 <template>
-  <div class="results">
-    <h5 v-if="isEditing" class="results_title">wyniki</h5>
-    <div class="results_data">
+  <div class="results-data">
+    <h5 v-if="isEditing" class="results-data__title">wyniki</h5>
+    <div class="results-data__content">
       <!-- Input field for entering the distillation result -->
       <base-text-input
         v-model="formData.oilAmount"
@@ -26,7 +26,7 @@
           >
         </template>
       </base-text-input>
-      <div class="results_hydrosol">
+      <div class="results-data__hydrosol">
         <!-- Input field for entering the hydrosol amount -->
         <base-text-input
           v-model="formData.hydrosolAmount"
@@ -131,23 +131,23 @@ export default {
 </script>
 
 <style scoped>
-.results {
+.results-data {
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
-.results_title {
+.results-data__title {
   font-size: 16px;
 }
 
-.results_data {
+.results-data__content {
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
-.results_hydrosol {
+.results-data__hydrosol {
   display: flex;
   flex-direction: row;
   gap: 50px;

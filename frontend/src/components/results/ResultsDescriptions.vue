@@ -1,5 +1,5 @@
 <template>
-  <div class="results_descriptions">
+  <div class="results-descriptions">
     <!-- Text area for oil description -->
     <base-text-area
       v-model="formData.oilDescription"
@@ -84,7 +84,7 @@ export default {
 </script>
 
 <style scoped>
-.results_descriptions {
+.results-descriptions {
   display: flex;
   flex-direction: column;
   gap: 20px;

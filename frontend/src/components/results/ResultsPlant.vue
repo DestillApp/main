@@ -1,11 +1,11 @@
 <template>
-  <div class="distilled_plant">
+  <div class="results-plant">
     <!--Title for plant part of distillation form-->
-    <h5 class="plant_title">surowiec</h5>
+    <h5 class="results-plant__title">surowiec</h5>
     <!-- Autocomplete input for the plants in the magazin-->
     <base-text-input
       v-model="plantData.plantName"
-      class="plant_name"
+      class="results-plant__name"
       label="Surowiec z magazynu"
       placeholder="wybierz surowiec"
       id="plantName"
@@ -13,18 +13,24 @@
       :disabled="isEditing"
     >
       <template v-slot:message>
-        <div v-if="plantData.plantName" class="plant_informations">
-          <div class="plant_information">
+        <div v-if="plantData.plantName" class="results-plant__informations">
+          <div class="results-plant__information">
             <span>część rośliny: </span
-            ><span class="information">{{ plantData.plantPart }}</span>
+            ><span class="results-plant__information-value">{{
+              plantData.plantPart
+            }}</span>
           </div>
-          <div v-if="plantData.harvestDate" class="plant_information">
+          <div v-if="plantData.harvestDate" class="results-plant__information">
             <span>data zbioru: </span
-            ><span class="information">{{ plantData.harvestDate }}</span>
+            ><span class="results-plant__information-value">{{
+              plantData.harvestDate
+            }}</span>
           </div>
-          <div v-if="plantData.plantBuyDate" class="plant_information">
+          <div v-if="plantData.plantBuyDate" class="results-plant__information">
             <span>data kupna: </span
-            ><span class="information">{{ plantData.plantBuyDate }}</span>
+            ><span class="results-plant__information-value">{{
+              plantData.plantBuyDate
+            }}</span>
           </div>
         </div>
       </template>
@@ -33,7 +39,7 @@
     <base-text-input
       v-model="distillationData.weightForDistillation"
       type="number"
-      class="plant_weight"
+      class="results-plant__weight"
       classType="number"
       inputColor="plant"
       :disabled="isEditing"
@@ -44,16 +50,25 @@
         <div>kg</div>
       </template>
     </base-text-input>
-    <div class="container">
+    <div class="results-plant__container">
       <div>
-        <p class="paragraph" v-if="distillationData.isPlantSoaked">
+        <p
+          class="results-plant__paragraph"
+          v-if="distillationData.isPlantSoaked"
+        >
           Surowiec namaczany przed destylacją:
         </p>
-        <p class="paragraph"  v-if="!distillationData.isPlantSoaked">
+        <p
+          class="results-plant__paragraph"
+          v-if="!distillationData.isPlantSoaked"
+        >
           Surowiec nie namaczany przed destylacją
         </p>
         <!-- Additional inputs displayed if the plant was soaked -->
-        <div v-if="distillationData.isPlantSoaked" class="container--isSoaked">
+        <div
+          v-if="distillationData.isPlantSoaked"
+          class="results-plant__container--is-soaked"
+        >
           <!-- Input field for entering the soaking time -->
           <base-text-input
             v-model="distillationData.soakingTime"
@@ -71,7 +86,7 @@
           <!-- Input field for entering the weight after soaking -->
           <base-text-input
             v-model="distillationData.weightAfterSoaking"
-            class="weightAfterSoaking"
+            class="results-plant__weight-after-soaking"
             type="number"
             classType="number"
             inputColor="plant"
@@ -85,10 +100,16 @@
           </base-text-input>
         </div>
       </div>
-      <p class="paragraph"  v-if="distillationData.isPlantShredded">
+      <p
+        class="results-plant__paragraph"
+        v-if="distillationData.isPlantShredded"
+      >
         Surowiec rozdrobniony przed destylacją
       </p>
-      <p class="paragraph"  v-if="!distillationData.isPlantShredded">
+      <p
+        class="results-plant__paragraph"
+        v-if="!distillationData.isPlantShredded"
+      >
         Surowiec nie rozdrabniany przed destylacją
       </p>
     </div>
@@ -175,68 +196,67 @@ export default {
 </script>
 
 <style scoped>
-.distilled_plant {
+.results-plant {
   display: flex;
   flex-direction: column;
 }
 
-.plant_title {
+.results-plant__title {
   font-size: 16px;
   margin-bottom: 30px;
 }
 
-.plant_name {
+.results-plant__name {
   color: black;
   margin-bottom: 10px;
 }
 
-.plant_informations,
-.plant_information {
+.results-plant__informations,
+.results-plant__information {
   display: flex;
   flex-direction: row;
 }
 
-.plant_informations {
+.results-plant__informations {
   gap: 20px;
 }
 
-.plant_information {
+.results-plant__information {
   gap: 10px;
   font-size: 13px;
   color: black;
   justify-content: flex-start;
 }
 
-.information {
+.results-plant__information-value {
   color: var(--secondary-color);
 }
 
-.plant_weight {
+.results-plant__weight {
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+.results-plant__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
-.paragraph {
-text-align: left;
-color: var(--text-color);
-margin-bottom: 30px;
-font-size: 15px;
+.results-plant__paragraph {
+  text-align: left;
+  color: var(--text-color);
+  margin-bottom: 30px;
+  font-size: 15px;
 }
 
-.container--isSoaked {
-    display: flex;
+.results-plant__container--is-soaked {
+  display: flex;
   flex-direction: row;
-   gap: 50px;
+  gap: 50px;
 }
 
-.weightAfterSoaking {
+.results-plant__weight-after-soaking {
   margin-bottom: 20px;
 }
-
 </style>

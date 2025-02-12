@@ -1,9 +1,9 @@
 <template>
-  <div class="settings-container" ref="settingsContainer">
+  <div class="list-length-settings" ref="settingsContainer">
     <!-- Clickable settings icon -->
     <svg-icon
-      class="settings-icon"
-      :class="{ 'dark-settings-icon': isDarkTheme }"
+      class="list-length-settings__icon"
+      :class="{ 'list-length-settings__icon--dark': isDarkTheme }"
       type="mdi"
       :path="mdiCog"
       size="20"
@@ -12,12 +12,12 @@
     <!-- List with title and items, shown conditionally based on isListVisible -->
     <div
       v-if="isListVisible"
-      class="settings-list"
+      class="list-length-settings__list"
       :class="{
-        'list_color-plant': isPlantColor,
-        'list_color-distillation': isDistillationColor,
-        'list_color-results': isResultsColor,
-        'dark-settings-list': isDarkTheme,
+        'list-length-settings__list--plant': isPlantColor,
+        'list-length-settings__list--distillation': isDistillationColor,
+        'list-length-settings__list--results': isResultsColor,
+        'list-length-settings__list--dark': isDarkTheme,
       }"
     >
       <h3>{{ title }}</h3>
@@ -26,7 +26,7 @@
           v-for="length in lengths"
           :key="length"
           @click="selectLength(length)"
-          :class="{ 'selected-length': length === chosenLength }"
+          :class="{ 'list-length-settings__item--selected': length === chosenLength }"
         >
           {{ length }}
         </li>
@@ -104,25 +104,25 @@ export default {
 </script>
 
 <style scoped>
-.settings-container {
+.list-length-settings {
   position: relative;
   display: inline-block;
 }
 
-.settings-icon {
+.list-length-settings__icon {
   cursor: pointer;
   color: var(--text-color);
 }
 
-.dark-settings-icon {
+.list-length-settings__icon--dark {
   color: var(--text-color-dark);
 }
 
-.settings-icon:hover {
+.list-length-settings__icon:hover {
   color: var(--placeholder-color);
 }
 
-.settings-list {
+.list-length-settings__list {
   position: absolute;
   top: 30px;
   left: 0;
@@ -134,57 +134,57 @@ export default {
   z-index: 10;
 }
 
-.dark-settings-list {
+.list-length-settings__list--dark {
   background-color: var(--background-dark);
   border: 1px solid var(--border-color-dark);
   box-shadow: var(--box-shadow-dark);
 }
 
-.settings-list h3 {
+.list-length-settings__list h3 {
   margin: 0 0 10px 0;
   font-size: 14px;
 }
 
-.settings-list ul {
+.list-length-settings__list ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.settings-list li {
+.list-length-settings__list li {
   cursor: pointer;
   padding: 5px 0;
 }
 
-.settings-list li:hover {
+.list-length-settings__list li:hover {
   color: var(--placeholder-color);
 }
 
-.selected-length {
+.list-length-settings__item--selected {
   font-weight: bold;
 }
 
-.list_color-plant li:hover {
+.list-length-settings__list--plant li:hover {
   color: var(--primary-color);
 }
 
-.list_color-distillation li:hover {
+.list-length-settings__list--distillation li:hover {
   color: var(--primary-color-distillation);
 }
 
-.list_color-results li:hover {
+.list-length-settings__list--results li:hover {
   color: var(--primary-color-results);
 }
 
-.list_color-plant {
+.list-length-settings__list--plant {
   border: 2px solid var(--secondary-color);
 }
 
-.list_color-distillation {
+.list-length-settings__list--distillation {
   border: 2px solid var(--secondary-color-distillation);
 }
 
-.list_color-results {
+.list-length-settings__list--results {
   border: 2px solid var(--secondary-color-results);
 }
 </style>

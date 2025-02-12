@@ -1,9 +1,9 @@
 <template>
   <base-modal @close-modal="closeModal">
-    <base-card class="card">
-      <div class="modal-content">
-        <h3 class="title">Ustaw nowe hasło</h3>
-        <form @submit.prevent="changePassword" class="form">
+    <base-card class="password-change-form__card">
+      <div class="password-change-form__modal-content">
+        <h3 class="password-change-form__title">Ustaw nowe hasło</h3>
+        <form @submit.prevent="changePassword" class="password-change-form__form">
           <!-- Input for old password -->
           <base-text-input
             v-model="oldPassword"
@@ -63,7 +63,7 @@
             </template>
           </base-text-input>
           <!-- Submit button -->
-          <base-button type="submit" class="button">Zmień hasło</base-button>
+          <base-button type="submit" class="password-change-form__button">Zmień hasło</base-button>
         </form>
       </div>
     </base-card>
@@ -154,28 +154,28 @@ export default {
 </script>
 
 <style scoped>
-.card {
+.password-change-form__card {
   width: 35%;
 }
 
-.title {
+.password-change-form__title {
   text-align: center;
 }
 
-.modal-content {
+.password-change-form__modal-content {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.form {
+.password-change-form__form {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 10px;
 }
 
-.button {
+.password-change-form__button {
   margin-top: 10px;
 }
 </style>

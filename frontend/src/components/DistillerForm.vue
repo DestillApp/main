@@ -1,9 +1,9 @@
 <template>
   <base-modal @close-modal="closeModal">
-    <base-card class="card">
-      <div class="modal-content">
-        <h3 class="title">Dodaj destylator</h3>
-        <form @submit.prevent="addDistiller" class="form">
+    <base-card class="distiller-form__card">
+      <div class="distiller-form__modal-content">
+        <h3 class="distiller-form__title">Dodaj destylator</h3>
+        <form @submit.prevent="addDistiller" class="distiller-form__form">
           <!-- Input for material -->
           <base-text-input
             v-model="material"
@@ -54,7 +54,7 @@
             </template>
           </base-text-input>
           <!-- Submit button -->
-          <base-button type="submit" class="button">Dodaj</base-button>
+          <base-button type="submit" class="distiller-form__button">Dodaj</base-button>
         </form>
       </div>
     </base-card>
@@ -149,28 +149,28 @@ export default {
 </script>
 
 <style scoped>
-.card {
+.distiller-form__card {
   width: 35%;
 }
 
-.title {
+.distiller-form__title {
   text-align: center;
 }
 
-.modal-content {
+.distiller-form__modal-content {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.form {
+.distiller-form__form {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 10px;
 }
 
-.button {
+.distiller-form__button {
   margin-top: 10px;
 }
 </style>

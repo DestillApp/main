@@ -1,18 +1,18 @@
 <template>
   <!-- Modal container to confirm plant deletion-->
   <base-modal>
-    <base-card class="card">
-      <div class="container">
+    <base-card class="ask-modal__card">
+      <div class="ask-modal__container">
         <!-- Message asking user to confirm item deletion -->
-        <div class="text">
+        <div class="ask-modal__text">
           Czy chcesz przywrócić <br />{{ distillationWeight }} kg
           {{ nameOfPlant }} {{ plantPart }} do magazynu?
         </div>
-        <div class="buttons">
+        <div class="ask-modal__buttons">
           <!-- Button to confirm deletion -->
-          <base-button class="button--yes" @click="handleYes">Tak</base-button>
+          <base-button class="ask-modal__button--yes" @click="handleYes">Tak</base-button>
           <!-- Button to cancel deletion -->
-          <base-button class="button--no" @click="closeModal">Nie</base-button>
+          <base-button class="ask-modal__button--no" @click="closeModal">Nie</base-button>
         </div>
       </div>
     </base-card>
@@ -64,32 +64,32 @@ export default {
 </script>
 
 <style scoped>
-.card {
+.ask-modal__card {
   width: 55%;
 }
 
-.container {
+.ask-modal__container {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.text {
+.ask-modal__text {
   text-align: center;
 }
 
-.buttons {
+.ask-modal__buttons {
   display: flex;
   flex-direction: row;
   gap: 20px;
   justify-content: center;
 }
 
-.button--yes:hover {
+.ask-modal__button--yes:hover {
   color: var(--secondary-color);
 }
 
-.button--no:hover {
+.ask-modal__button--no:hover {
   color: red;
 }
 </style>

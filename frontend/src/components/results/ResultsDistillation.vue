@@ -1,36 +1,32 @@
 <template>
-  <div class="results_distillation">
+  <div class="results-distillation">
     <!-- Display distillation details -->
-    <div class="distillation_details">
-      <div class="distillation_details--process">
+    <div class="results-distillation__details">
+      <div class="results-distillation__details-process">
         <p>
-          <strong class="distillation_color">data destylacji:</strong>
+          <strong>data destylacji:</strong>
           {{ resultsForm.distillationData.distillationDate }}
         </p>
         <p>
-          <strong class="distillation_color">typ destylacji:</strong>
+          <strong>typ destylacji:</strong>
           {{ resultsForm.distillationData.distillationType }}
         </p>
         <p>
-          <strong class="distillation_color"
-            >ilość wody użyta do destylacji:</strong
-          >
+          <strong>ilość wody użyta do destylacji:</strong>
           {{ resultsForm.distillationData.waterForDistillation }} l
         </p>
       </div>
-      <div class="distillation_details--plant">
+      <div class="results-distillation__details-plant">
         <p>
-          <strong class="plant_color">destylowany surowiec:</strong>
+          <strong class>destylowany surowiec:</strong>
           {{ resultsForm.distilledPlant.plantName }}
         </p>
         <p>
-          <strong class="plant_color">część surowca:</strong>
+          <strong>część surowca:</strong>
           {{ resultsForm.distilledPlant.plantPart }}
         </p>
         <p>
-          <strong class="plant_color"
-            >ilość surowca użyta do destylacji:</strong
-          >
+          <strong>ilość surowca użyta do destylacji:</strong>
           {{ resultsForm.distillationData.weightForDistillation }} kg
         </p>
       </div>
@@ -58,22 +54,22 @@ export default {
 </script>
 
 <style scoped>
-.distillation_details {
+.results-distillation__details {
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
 
-.distillation_details--process,
-.distillation_details--plant {
+.results-distillation__details-process,
+.results-distillation__details-plant {
   width: 50%;
 }
 
-.plant_color {
+.results-distillation__details-plant p strong{
   color: var(--primary-color);
 }
 
-.distillation_color {
+.results-distillation__details-process p strong{
   color: var(--primary-color-distillation);
 }
 </style>
