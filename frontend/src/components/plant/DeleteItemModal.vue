@@ -1,25 +1,22 @@
-//no docs
 <template>
   <!-- Modal container to confirm plant deletion-->
   <base-modal>
-    <base-card :class="{ 'distiller-card': distiller, 'card': !distiller }">
-      <div class="container">
+    <base-card :class="{ 'delete-item-modal__distiller-card': distiller, 'delete-item-modal__card': !distiller }">
+      <div class="delete-item-modal__container">
         <!-- Message asking user to confirm item deletion -->
-        <div class="text" v-if="!distillationDate && !distiller">
+        <div class="delete-item-modal__text" v-if="!distillationDate && !distiller">
           Czy chcesz usunąć {{ nameOfPlant }} {{ plantPart }} z magazynu?
         </div>
-        <div class="text" v-if="distillationDate && !distiller"> 
+        <div class="delete-item-modal__text" v-if="distillationDate && !distiller"> 
           Czy chcesz usunąć destylacje <br> {{ nameOfPlant }} {{ plantPart }} z dnia
           {{ distillationDate }}?
         </div>
-        <div class="text" v-if="distiller">Czy chcesz usunąć zapisany destylator?</div>
-        <div class="buttons">
+        <div class="delete-item-modal__text" v-if="distiller">Czy chcesz usunąć zapisany destylator?</div>
+        <div class="delete-item-modal__buttons">
           <!-- Button to confirm deletion -->
-          <base-button class="button--yes" @click="deleteItem">Tak</base-button>
+          <base-button class="delete-item-modal__button--yes" @click="deleteItem">Tak</base-button>
           <!-- Button to cancel deletion -->
-          <base-button class="button--no" @click="closeDeleteModal"
-            >Nie</base-button
-          >
+          <base-button class="delete-item-modal__button--no" @click="closeDeleteModal">Nie</base-button>
         </div>
       </div>
     </base-card>
@@ -71,36 +68,36 @@ export default {
 </script>
 
 <style scoped>
-.card {
+.delete-item-modal__card {
   width: 55%;
 }
 
-.distiller-card {
+.delete-item-modal__distiller-card {
   width: 40%;
 }
 
-.container {
+.delete-item-modal__container {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.text {
+.delete-item-modal__text {
   text-align: center;
 }
 
-.buttons {
+.delete-item-modal__buttons {
   display: flex;
   flex-direction: row;
   gap: 20px;
   justify-content: center;
 }
 
-.button--yes:hover {
+.delete-item-modal__button--yes:hover {
   color: red;
 }
 
-.button--no:hover {
+.delete-item-modal__button--no:hover {
   color: var(--secondary-color);
 }
 </style>

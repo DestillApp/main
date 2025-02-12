@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading" class="plant_details">
+  <div v-if="!isLoading" class="plant-details">
     <div v-if="plantDetails.plantOrigin === 'kupno'">
       <div>data zakupu: {{ plantDetails.plantBuyDate }}</div>
       <div>producent: {{ plantDetails.plantProducer }}</div>
@@ -89,7 +89,7 @@ export default {
 </script>
 
 <style scoped>
-.plant_details {
+.plant-details {
   font-size: 13px;
 }
 </style>

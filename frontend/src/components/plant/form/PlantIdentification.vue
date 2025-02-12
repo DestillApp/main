@@ -1,13 +1,13 @@
 <template>
   <!-- Container for the plant identification form -->
-  <div class="plant_identification">
+  <div class="plant-identification">
     <!-- Input field for entering the plant name -->
     <base-text-input
       v-model="formData.plantName"
       type="text"
       label="Nazwa surowca"
       id="plantName"
-      class="plant_name"
+      class="plant-identification__name"
       inputColor="plant"
       :invalidInput="isFormValid === false && formData.plantName === ''"
       @update:modelValue="setValue"
@@ -25,7 +25,7 @@
       type="text"
       label="Część surowca"
       id="plantPart"
-      class="plant_part"
+      class="plant-identification__part"
       inputColor="plant"
       :invalidInput="isFormValid === false && formData.plantPart === ''"
       @update:modelValue="setValue"
@@ -82,18 +82,18 @@ export default {
 </script>
 
 <style scoped>
-.plant_identification {
+.plant-identification {
   display: flex;
   flex-direction: row;
   gap: 50px;
   width: 100%;
 }
 
-.plant_name {
+.plant-identification__name {
   width: 60%;
 }
 
-.plant_part {
+.plant-identification__part {
   width: 40%;
 }
 </style>

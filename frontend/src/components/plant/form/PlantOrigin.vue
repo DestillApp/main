@@ -1,7 +1,6 @@
-// update arch docs
 <template>
-  <!-- Container for the plant orgin form -->
-  <div class="plant_origin">
+  <!-- Container for the plant origin form -->
+  <div class="plant-origin">
     <div>
       <!-- Radio input for plant origin selection -->
       <base-radio-input
@@ -20,7 +19,7 @@
       >
     </div>
     <!-- Container for harvest details, displayed if plant origin is 'zbiór' -->
-    <div v-if="formData.plantOrigin === 'zbiór'" class="plant_origin--harvest">
+    <div v-if="formData.plantOrigin === 'zbiór'" class="plant-origin__harvest">
       <div>
         <!-- Date picker for selecting harvest date -->
         <base-input-date-picker
@@ -33,14 +32,14 @@
           color="plant"
         >
         </base-input-date-picker>
-        <div class="message">
+        <div class="plant-origin__message">
           <span v-if="isFormValid === false && formData.harvestDate === ''"
             >Wybierz datę zbioru</span
           >
           <span v-else>&nbsp;</span>
         </div>
       </div>
-      <div class="harvest_conditions">
+      <div class="plant-origin__harvest-conditions">
         <!-- Input field for entering harvest temperature -->
         <base-text-input
           v-model="formData.harvestTemperature"
@@ -73,13 +72,13 @@
             <span v-else>&nbsp;</span>
           </template>
         </base-text-input>
-        <div class="hours_container">
+        <div class="plant-origin__hours-container">
           <!-- Label for the harvest hours slider -->
-          <label for="hours_slider" class="hours_label">Godziny zbioru</label>
+          <label for="hours_slider" class="plant-origin__hours-label">Godziny zbioru</label>
           <!-- Range slider for selecting harvest hours -->
           <v-range-slider
             v-model="formData.harvestRange"
-            class="slider"
+            class="plant-origin__slider"
             id="hours_slider"
             :min="300"
             :max="1320"
@@ -109,7 +108,7 @@
       </div>
     </div>
     <!-- Container for purchase details, displayed if plant origin is 'kupno' -->
-    <div v-if="formData.plantOrigin === 'kupno'" class="plant_origin--buy">
+    <div v-if="formData.plantOrigin === 'kupno'" class="plant-origin__buy">
       <div>
         <!-- Date picker for selecting purchase date -->
         <base-input-date-picker
@@ -121,7 +120,7 @@
           :invalidInput="isFormValid === false && formData.plantBuyDate === ''"
           color="plant"
         ></base-input-date-picker>
-        <div class="message">
+        <div class="plant-origin__message">
           <span v-if="isFormValid === false && formData.plantBuyDate === ''"
             >Wybierz datę zakupu</span
           >
@@ -129,9 +128,9 @@
         </div>
       </div>
       <!-- Input field for entering the name of the producer -->
-      <div class="buy_containter">
+      <div class="plant-origin__buy-container">
         <base-text-input
-          class="buy_producer"
+          class="plant-origin__buy-producer"
           v-model="formData.plantProducer"
           type="text"
           label="Nazwa producenta"
@@ -150,7 +149,7 @@
         <!-- Autocomplete input for the country of origin -->
         <base-autocomplete-input
           v-model="countryName"
-          class="buy_country"
+          class="plant-origin__buy-country"
           label="Kraj pochodzenia"
           id="countryOfOrigin"
           color="plant"
@@ -420,62 +419,62 @@ export default {
 
 
 <style scoped>
-.plant_origin {
+.plant-origin {
   display: flex;
   flex-direction: column;
   gap: 20px;
   text-align: left;
 }
 
-.plant_origin--harvest {
+.plant-origin__harvest {
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
-.harvest_conditions {
+.plant-origin__harvest-conditions {
   display: flex;
   flex-direction: row;
   width: 100%;
   gap: 50px;
 }
 
-.hours_container {
+.plant-origin__hours-container {
   flex-grow: 3;
 }
 
-.hours_label {
+.plant-origin__hours-label {
   margin-left: 8px;
   font-size: 15px;
   line-height: 1.5;
 }
 
-.slider :deep(.v-input__prepend) {
+.plant-origin__slider :deep(.v-input__prepend) {
   margin-right: 16px;
 }
 
-.plant_origin--buy {
+.plant-origin__buy {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.buy_containter {
+.plant-origin__buy-container {
   display: flex;
   flex-direction: row;
   width: 100%;
   gap: 50px;
 }
 
-.buy_producer {
+.plant-origin__buy-producer {
   flex-grow: 3;
 }
 
-.buy_country {
+.plant-origin__buy-country {
   flex-grow: 2;
 }
 
-.message {
+.plant-origin__message {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;

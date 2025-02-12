@@ -1,8 +1,8 @@
 <template>
   <!-- Container for the plant data form -->
-  <div class="plant_data">
+  <div class="plant-data">
     <!-- Input field for entering the plant weight -->
-    <div class="plant__weights">
+    <div class="plant-data__weights">
       <base-text-input
         v-model="formData.plantWeight"
         type="number"
@@ -58,7 +58,7 @@
       </base-text-input>
     </div>
     <!-- Container for plant state inputs -->
-    <div class="plant_state">
+    <div class="plant-data__state">
       <!-- Radio input for plant state selection -->
       <base-radio-input
         v-model="formData.plantState"
@@ -66,7 +66,7 @@
         :title="title"
         color="var(--secondary-color)"
         name="plantState"
-        class="state_radioinput"
+        class="plant-data__state-radioinput"
       >
         <template v-slot:message>
           <span v-if="isFormValid === false && !formData.plantState"
@@ -283,7 +283,7 @@ export default {
 </script>
 
 <style scoped>
-.plant_data {
+.plant-data {
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -291,20 +291,20 @@ export default {
   text-align: left;
 }
 
-.plant__weights {
+.plant-data__weights {
   display: flex;
   flex-direction: row;
   gap: 50px;
 }
 
-.plant_state {
+.plant-data__state {
   display: flex;
   flex-direction: row;
   gap: 50px;
   width: 80%;
 }
 
-.state_radioinput {
+.plant-data__state-radioinput {
   width: 30%;
 }
 </style>
