@@ -1,14 +1,12 @@
-// no arch docs // fetching apparatus form the my account saved distillation
-apparatus
 <template>
   <div class="distillation__process">
     <!--Title for process part of distillation form-->
-    <h5 class="distillation__title">destylacja</h5>
-    <div class="distillation__informations">
+    <h5 class="distillation-process__title">destylacja</h5>
+    <div class="distillation-process__informations">
       <!-- Autocomplete input for distillation Type -->
       <base-autocomplete-input
         v-model="distillationType"
-        class="distillationType"
+        class="distillation-process__type"
         label="Rodzaj destylacji"
         id="distillationType"
         :results="distillationTypes"
@@ -35,7 +33,7 @@ apparatus
           label="Data destylacji"
           title="Wybierz datę destylacji"
           id="distillationDate"
-          class="distillationDate"
+          class="distillation-process__date-picker"
           :value="distillationDate"
           @date:value="setValue"
           :invalidInput="
@@ -43,7 +41,7 @@ apparatus
           "
           color="distillation"
         ></base-input-date-picker>
-        <div class="message">
+        <div class="distillation-process__message">
           <span v-if="isFormValid === false && formData.distillationDate === ''"
             >Wybierz datę destylacji</span
           >
@@ -54,7 +52,6 @@ apparatus
     <!-- Autocomplete input for the distillation apparatus -->
     <base-autocomplete-input
       v-model="distillationApparatus"
-      class="distillationApparatus"
       label="Rodzaj destylatora"
       id="distillationApparatus"
       :results="apparatus"
@@ -250,33 +247,33 @@ export default {
 </script>
 
 <style scoped>
-.distillation__process {
+.distillation-process {
   display: flex;
   flex-direction: column;
   gap: 30px;
   
 }
 
-.distillation__title {
+.distillation-process__title {
   font-size: 16px;
 }
 
-.distillation__informations {
+.distillation-process__informations {
   display: flex;
   flex-direction: row;
   gap: 50px;
   width: 100%;
 }
 
-.distillationType {
+.distillation-process__type {
   flex-grow: 2;
 }
 
-.distillationDate {
+.distillation-process__date-picker {
   flex-grow: 1;
 }
 
-.message {
+.distillation-process__message {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;

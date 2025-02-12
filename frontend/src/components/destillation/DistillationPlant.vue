@@ -1,11 +1,9 @@
 <template>
-  <div class="distillation_plant">
-    <!--Title for plant part of distillation form-->
-    <h5 class="plant_title">surowiec</h5>
-    <!-- Autocomplete input for the plants in the magazin-->
+  <div class="distillation-plant">
+    <h5 class="distillation-plant__title">surowiec</h5>
     <base-autocomplete-input
       v-model="plant"
-      class="checkbox"
+      class="distillation-plant__autocomplete"
       label="Surowiec z magazynu"
       placeholder="wybierz surowiec"
       id="choosedPlant"
@@ -21,25 +19,25 @@
         <span v-if="isFormValid === false && formData.choosedPlant.name === ''"
           >Wybierz surowiec z magazynu</span
         >
-        <div v-if="formData.choosedPlant.name" :class="['plant_informations', { 'dark-plant_information': isDarkTheme }]">
-          <div class="plant_information">
+        <div v-if="formData.choosedPlant.name" :class="['distillation-plant__informations', { 'dark-distillation-plant__information': isDarkTheme }]">
+          <div class="distillation-plant__information">
             <span>część rośliny: </span
-            ><span class="information">{{ formData.choosedPlant.part }}</span>
+            ><span class="distillation-plant__information-value">{{ formData.choosedPlant.part }}</span>
           </div>
           <div
             v-if="formData.choosedPlant.harvestDate"
-            class="plant_information"
+            class="distillation-plant__information"
           >
             <span>data zbioru: </span
-            ><span class="information">{{ formattedHarvestDate }}</span>
+            ><span class="distillation-plant__information-value">{{ formattedHarvestDate }}</span>
           </div>
-          <div v-if="formData.choosedPlant.buyDate" class="plant_information">
+          <div v-if="formData.choosedPlant.buyDate" class="distillation-plant__information">
             <span>data kupna: </span
-            ><span class="information">{{ formattedPlantBuyDate }}</span>
+            ><span class="distillation-plant__information-value">{{ formattedPlantBuyDate }}</span>
           </div>
-          <div class="plant_information">
+          <div class="distillation-plant__information">
             <span>ilość surowca na stanie: </span
-            ><span class="information"
+            ><span class="distillation-plant__information-value"
               >{{ updatedAvailableWeight }} kg</span
             >
           </div>
@@ -47,11 +45,10 @@
         <span v-else>&nbsp;</span>
       </template>
     </base-autocomplete-input>
-    <!-- Input field for entering the plant weight that will be use for distillation-->
     <base-text-input
       v-model="formData.weightForDistillation"
       type="number"
-      class="plant_weight"
+      class="distillation-plant__weight"
       classType="number"
       inputColor="plant"
       :invalidInput="
@@ -87,18 +84,16 @@
         <span v-else>&nbsp;</span>
       </template>
     </base-text-input>
-    <div class="checkbox_container">
-      <!-- Checkbox for indicating if the plant was soaked -->
-      <div class="checkbox_container--isSoaked">
+    <div class="distillation-plant__checkbox-container">
+      <div class="distillation-plant__checkbox-container--isSoaked">
         <v-checkbox
           v-model="formData.isPlantSoaked"
-          class="['checkbox', { 'dark-checkbox': isDarkTheme }]"
+          :class="{ 'dark-distillation-plant__checkbox': isDarkTheme }"
+          class="distillation-plant__checkbox"
           label="Surowiec namaczany przed destylacją"
           color="var(--secondary-color)"
         ></v-checkbox>
-        <!-- Additional inputs displayed if the plant was soaked -->
-        <div v-if="formData.isPlantSoaked" class="container--isSoaked">
-          <!-- Input field for entering the soaking time -->
+        <div v-if="formData.isPlantSoaked" class="distillation-plant__container--isSoaked">
           <base-text-input
             v-model="formData.soakingTime"
             type="number"
@@ -127,10 +122,9 @@
               <span v-else>&nbsp;</span>
             </template>
           </base-text-input>
-          <!-- Input field for entering the weight after soaking -->
           <base-text-input
             v-model="formData.weightAfterSoaking"
-            class="weightAfterSoaking"
+            class="distillation-plant__weightAfterSoaking"
             type="number"
             classType="number"
             inputColor="plant"
@@ -161,10 +155,9 @@
           </base-text-input>
         </div>
       </div>
-      <!-- Checkbox for indicating if the plant was shredded -->
       <v-checkbox
-        class="['checkbox_isPlantShredded', { 'dark-checkbox': isDarkTheme }]"
         v-model="formData.isPlantShredded"
+        :class="{ 'dark-distillation-plant__checkbox-isPlantShredded': isDarkTheme }"
         label="Surowiec rozdrobniony przed destylacją"
         color="var(--secondary-color)"
       ></v-checkbox>
@@ -576,79 +569,79 @@ export default {
 </script>
 
 <style scoped>
-.distillation_plant,
-.checkbox_container--isSoaked,
-.container--isSoaked {
+.distillation-plant,
+.distillation-plant__checkbox-container--isSoaked,
+.distillation-plant__container--isSoaked {
   display: flex;
   flex-direction: column;
 }
 
-.plant_title {
+.distillation-plant__title {
   font-size: 16px;
 }
 
-.plant_informations,
-.plant_information,
-.checkbox_container {
+.distillation-plant__informations,
+.distillation-plant__information,
+.distillation-plant__checkbox-container {
   display: flex;
   flex-direction: row;
 }
 
-.plant_informations {
+.distillation-plant__informations {
   gap: 20px;
 }
 
-.plant_information {
+.distillation-plant__information {
   gap: 10px;
   font-size: 13px;
   color: var(--text-color);
   justify-content: flex-start;
 }
 
-.dark-plant_information {
+.dark-distillation-plant__information {
   color: var(--text-color-dark);
 }
-.information {
+.distillation-plant__information-value {
   color: var(--secondary-color);
 }
 
-.plant_weight {
+.distillation-plant__weight {
   margin-top: 20px;
 }
 
-.checkbox_container {
+.distillation-plant__checkbox-container {
   gap: 50px;
   align-items: flex-start;
   justify-content: center;
 }
 
-.checkbox {
+.distillation-plant__checkbox {
   color:var(--text-color);
   margin-bottom: 10px;
 }
 
-.checkbox :deep(.v-input__details) {
+.distillation-plant__checkbox :deep(.v-input__details) {
   display: none;
 }
 
-.checkbox_container--isSoaked {
+.distillation-plant__checkbox-container--isSoaked {
   flex-grow: 1;
 }
 
-.container--isSoaked {
+.distillation-plant__container--isSoaked {
   gap: 20px;
 }
 
-.weightAfterSoaking {
+.distillation-plant__weightAfterSoaking {
   margin-bottom: 20px;
 }
 
-.checkbox_isPlantShredded {
+.dark-distillation-plant__checkbox-isPlantShredded {
   flex-grow: 1;
   color: var(--text-color);
 }
 
-.dark-checkbox {
+.dark-distillation-plant__checkbox {
   color: var(--text-color-dark);
 }
 </style>

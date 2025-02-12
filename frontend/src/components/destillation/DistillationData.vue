@@ -1,5 +1,5 @@
 <template>
-  <div class="distillation__data">
+  <div class="distillation">
     <!-- Input field for entering the amount of water used in distillation -->
     <base-text-input
       v-model="formData.waterForDistillation"
@@ -205,7 +205,7 @@ export default {
 </script>
 
 <style scoped>
-.distillation__data {
+.distillation {
   display: flex;
   flex-direction: row;
   gap: 50px;
