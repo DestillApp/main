@@ -3,7 +3,7 @@
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
-      class="spinner"
+      class="edit-archive-distillation__spinner"
       color="var(--secondary-color-results)"
       :size="60"
       :width="6"
@@ -13,10 +13,10 @@
     <form
       v-if="!isLoading"
       @submit.prevent="editDistillationArchive"
-      class="archivedistillation_form"
+      class="edit-archive-distillation__form"
     >
       <!-- Title for the plant information form -->
-      <h3 class="form_title">
+      <h3 class="edit-archive-distillation__form-title">
         Edytuj informacje o procesie destylacji i wynikach
       </h3>
       <!-- Distillation plan component -->
@@ -34,7 +34,7 @@
         :isFormValid="isFormValid"
         :isEditing="isEditing"
       ></distillation-data>
-      <div class="results_components">
+      <div class="edit-archive-distillation__results-components">
         <!-- Results data component -->
         <results-data
           :isFormValid="isFormValid"
@@ -44,7 +44,7 @@
         <results-descriptions :isFormValid="isFormValid"></results-descriptions>
       </div>
       <!-- Button to submit the distilation form -->
-      <base-button class="button" type="submit">Edytuj</base-button>
+      <base-button class="edit-archive-distillation__button" type="submit">Edytuj</base-button>
     </form>
   </base-card>
 </template>
@@ -483,22 +483,26 @@ export default {
 </script>
 
 <style scoped>
-.form_title {
+.edit-archive-distillation__spinner {
+  margin-block: 20px;
+}
+
+.edit-archive-distillation__form-title {
   margin-bottom: 30px;
 }
 
-.archivedistillation_form {
+.edit-archive-distillation__form {
   display: flex;
   flex-direction: column;
 }
 
-.results_components {
+.edit-archive-distillation__results-components {
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
-.button {
+.edit-archive-distillation__button {
   margin-top: 30px;
   margin-bottom: 20px;
 }

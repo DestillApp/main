@@ -1,10 +1,9 @@
-
 <template>
   <base-card>
     <!-- Results form -->
-    <form @submit.prevent="saveResults" class="results_form">
+    <form @submit.prevent="saveResults" class="results-form">
       <!-- Title for the results form -->
-      <h3 class="form_title">Wyniki destylacji</h3>
+      <h3>Wyniki destylacji</h3>
       <!-- Distillation results component -->
       <results-distillation></results-distillation>
       <!-- Results data component -->
@@ -12,7 +11,7 @@
       <!-- Results descriptions component -->
       <results-descriptions :isFormValid="isFormValid"></results-descriptions>
       <!-- Button to submit the results form -->
-      <base-button class="button" type="submit"
+      <base-button class="results-form__button" type="submit"
         >Zapisz wyniki destylacji</base-button
       >
     </form>
@@ -404,13 +403,13 @@ export default {
 </script>
 
 <style scoped>
-.results_form {
+.results-form {
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
-.button {
+.results-form__button {
   margin-bottom: 20px;
 }
 </style>

@@ -3,18 +3,18 @@
     <!-- Spinner that shows when data is loading -->
     <v-progress-circular
       v-if="isLoading"
-      class="spinner"
+      class="archive-distillation__spinner"
       color="var(--secondary-color-results)"
       :size="60"
       :width="6"
       indeterminate
     ></v-progress-circular>
     <!-- Display distillation details once data is loaded and no longer loading -->
-    <div v-if="distillationDetails && !isLoading" class="distillation">
-      <div class="distillation_container--one">
+    <div v-if="distillationDetails && !isLoading" class="archive-distillation">
+      <div class="archive-distillation__container-one">
         <!-- Display used weight of plant-->
-        <div class="plant_distillation">
-          <p class="plant_distillation--used">użyta ilość surowca:</p>
+        <div class="archive-distillation__plant">
+          <p class="archive-distillation__plant-used">użyta ilość surowca:</p>
           <span
             >{{
               distillationDetails.distillationData.weightForDistillation
@@ -23,7 +23,7 @@
           >
         </div>
         <!-- Display plant identification information -->
-        <div class="plant_identification">
+        <div class="archive-distillation__plant-identification">
           <h3>
             destylacja
             {{ distillationDetails.distillationData.distillationType }}
@@ -31,7 +31,7 @@
           <div>{{ distillationDetails.distilledPlant.plantName }}</div>
           <div>{{ distillationDetails.distilledPlant.plantPart }}</div>
         </div>
-        <div class="distillation_buttons">
+        <div class="archive-distillation__buttons">
           <router-link
             :to="{
               name: 'EditArchiveDistillationPage',
@@ -40,7 +40,7 @@
                 archiveId: archiveId,
               },
             }"
-            ><button class="distillation_button--edit">
+            ><button class="archive-distillation__button-edit">
               Edytuj
             </button></router-link
           >
@@ -53,7 +53,7 @@
                 distillationDetails.distillationData.distillationDate
               )
             "
-            class="distillation_button--delete"
+            class="archive-distillation__button-delete"
           >
             Usuń
           </button>
@@ -69,47 +69,47 @@
           ></delete-item-modal>
         </div>
       </div>
-      <div class="distillation_container--two">
-        <div class="plant_info">
-          <h5 class="plant_title">przygotowanie surowca</h5>
+      <div class="archive-distillation__container-two">
+        <div class="archive-distillation__plant-info">
+          <h5 class="archive-distillation__plant-title">przygotowanie surowca</h5>
           <div v-if="distillationDetails.distillationData.isPlantSoaked">
-            <div class="plant_data">surowiec namaczany</div>
-            <div class="plant_data">
+            <div class="archive-distillation__plant-data">surowiec namaczany</div>
+            <div class="archive-distillation__plant-data">
               czas namaczania:
               {{ distillationDetails.distillationData.soakingTime }} h
             </div>
-            <div class="plant_data">
+            <div class="archive-distillation__plant-data">
               waga po namoczeniu:
               {{ distillationDetails.distillationData.weightAfterSoaking }} kg
             </div>
           </div>
           <div
-            class="plant_data"
+            class="archive-distillation__plant-data"
             v-if="!distillationDetails.distillationData.isPlantSoaked"
           >
             surowiec nienamaczany
           </div>
           <div
-            class="plant_data"
+            class="archive-distillation__plant-data"
             v-if="!distillationDetails.distillationData.isPlantShredded"
           >
             surowiec nierozdrobniony
           </div>
           <div
-            class="plant_data"
+            class="archive-distillation__plant-data"
             v-if="distillationDetails.distillationData.isPlantShredded"
           >
             surowiec rozdrobniony
           </div>
-          <div class="plant_details">
+          <div class="archive-distillation__plant-details">
             <button
               v-if="!isPlantOpen"
               @click="openClosePlant"
-              class="plant_button"
+              class="archive-distillation__plant-button"
             >
               więcej o surowcu
               <svg-icon
-                class="icon"
+                class="archive-distillation__icon"
                 type="mdi"
                 :path="pathArrowDown"
                 size="18"
@@ -118,11 +118,11 @@
             <button
               v-if="isPlantOpen"
               @click="openClosePlant"
-              class="plant_button"
+              class="archive-distillation__plant-button"
             >
               mniej o surowcu
               <svg-icon
-                class="icon"
+                class="archive-distillation__icon"
                 type="mdi"
                 :path="pathArrowUp"
                 size="18"
@@ -130,43 +130,43 @@
             </button>
             <plant-details
               v-if="isPlantOpen"
-              class="plant_details--component"
+              class="archive-distillation__plant-details-component"
               :distilledPlant="distillationDetails.distilledPlant"
             ></plant-details>
           </div>
         </div>
-        <div class="distillation_info">
-          <h5 class="distillation_title">informacje o destylacji</h5>
-          <div class="distillation_data">
+        <div class="archive-distillation__info">
+          <h5 class="archive-distillation__title">informacje o destylacji</h5>
+          <div class="archive-distillation__data">
             data destylacji:
             {{ distillationDetails.distillationData.distillationDate }}
           </div>
-          <div class="distillation_data">
+          <div class="archive-distillation__data">
             {{ distillationDetails.distillationData.distillationApparatus }}
           </div>
-          <div class="distillation_data">
+          <div class="archive-distillation__data">
             ilość wody do destylacji:
             {{ distillationDetails.distillationData.waterForDistillation }} l
           </div>
         </div>
       </div>
       <div>
-        <h5 class="results_title">wyniki destylacji</h5>
-        <div class="results">
+        <h5 class="archive-distillation__results-title">wyniki destylacji</h5>
+        <div class="archive-distillation__results">
           <div>
             ilość olejku eterycznego: {{ distillationDetails.oilAmount }} ml
           </div>
-          <div class="results_hydrosol">
+          <div class="archive-distillation__results-hydrosol">
             <div>
               ilość hydrolatu: {{ distillationDetails.hydrosolAmount }} l
             </div>
             <div>pH hydrolatu: {{ distillationDetails.hydrosolpH }}</div>
           </div>
-          <div class="results_descriptions">
-            <div class="results_description">
+          <div class="archive-distillation__results-descriptions">
+            <div class="archive-distillation__results-description">
               opis olejku eterycznego: {{ distillationDetails.oilDescription }}
             </div>
-            <div class="results_description">
+            <div class="archive-distillation__results-description">
               opis hydrolatu: {{ distillationDetails.hydrosolDescription }}
             </div>
           </div>
@@ -344,37 +344,37 @@ export default {
 </script>
 
 <style scoped>
-.spinner {
+.archive-distillation__spinner {
   margin-block: 20px;
 }
 
-.distillation {
+.archive-distillation {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.distillation_container--one {
+.archive-distillation__container-one {
   display: flex;
   flex-direction: row;
 }
 
-.plant_distillation {
+.archive-distillation__plant {
   width: 20%;
   display: flex;
   flex-direction: column;
 }
 
-.plant_distillation--used {
+.archive-distillation__plant-used {
   font-size: 11px;
 }
 
-.plant_identification {
+.archive-distillation__plant-identification {
   width: 60%;
   padding-top: 20px;
 }
 
-.distillation_buttons {
+.archive-distillation__buttons {
   display: flex;
   flex-direction: row;
   width: 20%;
@@ -384,36 +384,36 @@ export default {
   gap: 10px;
 }
 
-.distillation_button--edit {
+.archive-distillation__button-edit {
   color: var(--secondary-color-results);
 }
 
-.distillation_button--edit:hover {
+.archive-distillation__button-edit:hover {
   color: var(--primary-color-results);
 }
 
-.distillation_button--delete:hover {
+.archive-distillation__button-delete:hover {
   color: red;
 }
 
-.distillation_container--two {
+.archive-distillation__container-two {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
 }
 
-.plant_info,
-.distillation_info {
+.archive-distillation__plant-info,
+.archive-distillation__info {
   width: 50%;
 }
 
-.plant_title {
+.archive-distillation__plant-title {
   color: var(--secondary-color);
   padding-bottom: 10px;
 }
 
-.plant_data,
-.distillation_data {
+.archive-distillation__plant-data,
+.archive-distillation__data {
   display: flex;
   justify-content: flex-start;
   font-size: 13px;
@@ -421,17 +421,17 @@ export default {
   padding-right: 10%;
 }
 
-.distillation_title {
+.archive-distillation__title {
   color: var(--secondary-color-distillation);
   padding-bottom: 10px;
 }
 
-.plant_details {
+.archive-distillation__plant-details {
   display: flex;
   flex-direction: column;
 }
 
-.plant_button {
+.archive-distillation__plant-button {
   position: relative;
   color: var(--secondary-color);
   font-size: 11px;
@@ -441,45 +441,45 @@ export default {
   text-align: left;
 }
 
-.plant_button:hover {
+.archive-distillation__plant-button:hover {
   color: var(--primary-color);
 }
 
-.plant_details--component {
+.archive-distillation__plant-details-component {
   text-align: left;
   margin-left: 20%;
 }
 
-.icon {
+.archive-distillation__icon {
   position: absolute;
 }
 
-.results_title {
+.archive-distillation__results-title {
   color: var(--secondary-color-results);
   padding-bottom: 10px;
 }
 
-.results {
+.archive-distillation__results {
   font-size: 13px;
   display: flex;
   flex-direction: column;
 }
 
-.results_hydrosol {
+.archive-distillation__results-hydrosol {
   display: flex;
   flex-direction: row;
   gap: 20px;
   justify-content: center;
 }
 
-.results_descriptions {
+.archive-distillation__results-descriptions {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 20px;
 }
 
-.results_description {
+.archive-distillation__results-description {
   text-align: start;
   padding-inline: 10%;
 }
