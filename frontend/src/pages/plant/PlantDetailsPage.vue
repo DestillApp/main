@@ -1,35 +1,34 @@
-// no docs // redirecting to the previous plant list page (now it is 1) //
 <template>
   <div>
     <!-- Spinner that shows when data is loading -->
     <v-progress-circular
       v-if="isLoading"
-      class="spinner"
+      class="plant-details__spinner"
       color="var(--secondary-color)"
       :size="60"
       :width="6"
       indeterminate
     ></v-progress-circular>
     <!-- Display plant details once data is loaded and no longer loading -->
-    <div v-if="plantDetails && !isLoading" class="plant">
-      <div class="plant_container--one">
+    <div v-if="plantDetails && !isLoading" class="plant-details">
+      <div class="plant-details__container-one">
         <!-- Display available stock -->
-        <div class="plant_instock">
-          <p class="plant_instock--state">na stanie:</p>
+        <div class="plant-details__instock">
+          <p class="plant-details__instock-state">na stanie:</p>
           <br />{{ plantDetails.availableWeight }} kg
         </div>
         <!-- Display plant identification information -->
-        <div class="plant_identification">
+        <div class="plant-details__identification">
           <h3>{{ plantDetails.plantName }}</h3>
           <div>{{ plantDetails.plantPart }}</div>
         </div>
         <!-- Edit and delete buttons for the plant -->
-        <div class="plant_buttons">
+        <div class="plant-details__buttons">
           <router-link
             :to="{ name: 'EditPlantPage', params: { page: page, id: plantId } }"
-            ><button class="plant_button--edit">Edytuj</button></router-link
+            ><button class="plant-details__button-edit">Edytuj</button></router-link
           >
-          <button class="plant_button--delete" @click="openDeleteModal">
+          <button class="plant-details__button-delete" @click="openDeleteModal">
             Usuń
           </button>
           <!-- Modal for deleting the plant -->
@@ -44,47 +43,47 @@
         </div>
       </div>
       <!-- Display additional plant data -->
-      <div class="plant_container--two">
+      <div class="plant-details__container-two">
         <!-- Show specific data if plant origin is 'zbiór' -->
-        <div v-if="plantDetails.plantOrigin === 'zbiór'" class="plant_info">
-          <h5 class="plant_title">warunki zbioru</h5>
-          <div class="plant_data">
+        <div v-if="plantDetails.plantOrigin === 'zbiór'" class="plant-details__info">
+          <h5 class="plant-details__title">warunki zbioru</h5>
+          <div class="plant-details__data">
             data zbioru: {{ plantDetails.harvestDate }}
           </div>
-          <div class="plant_data">
+          <div class="plant-details__data">
             temperatura: {{ plantDetails.harvestTemperature }} °C
           </div>
-          <div class="plant_data">
+          <div class="plant-details__data">
             godziny zbioru: {{ plantDetails.harvestStartTime }} -
             {{ plantDetails.harvestEndTime }}
           </div>
         </div>
         <!-- Show specific data if plant origin is 'kupno' -->
-        <div v-if="plantDetails.plantOrigin === 'kupno'" class="plant_info">
-          <h5 class="plant_title">dane zakupu</h5>
-          <div class="plant_data">
+        <div v-if="plantDetails.plantOrigin === 'kupno'" class="plant-details__info">
+          <h5 class="plant-details__title">dane zakupu</h5>
+          <div class="plant-details__data">
             data zakupu: {{ plantDetails.plantBuyDate }}
           </div>
-          <div class="plant_data">
+          <div class="plant-details__data">
             producent: {{ plantDetails.plantProducer }}
           </div>
-          <div class="plant_data">
+          <div class="plant-details__data">
             kraj pochodzenia: {{ plantDetails.countryOfOrigin }}
           </div>
         </div>
-        <div class="plant_info">
-          <h5 class="plant_title">informacje o surowcu</h5>
-          <div class="plant_data">
+        <div class="plant-details__info">
+          <h5 class="plant-details__title">informacje o surowcu</h5>
+          <div class="plant-details__data">
             początkowa ilość: {{ plantDetails.plantWeight }} kg
           </div>
-          <div class="plant_data" v-if="plantDetails.plantOrigin === 'kupno'">
+          <div class="plant-details__data" v-if="plantDetails.plantOrigin === 'kupno'">
             wiek przy zakupie: {{ plantDetails.plantAge }}
             {{ plantAgeWithSuffix(plantDetails.plantAge) }}
           </div>
-          <div class="plant_data">stan: {{ plantDetails.plantState }}</div>
+          <div class="plant-details__data">stan: {{ plantDetails.plantState }}</div>
           <div
             v-if="plantDetails.plantState === 'podsuszony'"
-            class="plant_data"
+            class="plant-details__data"
           >
             czas podsuszania: {{ plantDetails.dryingTime }} h
           </div>
@@ -93,8 +92,8 @@
       <!-- Button to navigate to the distillation form -->
       <router-link
         :to="{ name: 'AddDistillationPage', params: { id: plantId } }"
-        class="plant_distill"
-        ><base-button class="distill_button">Destyluj</base-button></router-link
+        class="plant-details__distill"
+        ><base-button class="plant-details__distill-button">Destyluj</base-button></router-link
       >
     </div>
   </div>
@@ -237,37 +236,37 @@ export default {
 </script>
 
 <style scoped>
-.spinner {
+.plant-details__spinner {
   margin-block: 20px;
 }
 
-.plant {
+.plant-details {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.plant_container--one {
+.plant-details__container-one {
   display: flex;
   flex-direction: row;
 }
 
-.plant_instock {
+.plant-details__instock {
   width: 20%;
   display: flex;
   justify-content: flex-start;
 }
 
-.plant_instock--state {
+.plant-details__instock-state {
   font-size: 11px;
 }
 
-.plant_identification {
+.plant-details__identification {
   width: 60%;
   padding-top: 20px;
 }
 
-.plant_buttons {
+.plant-details__buttons {
   display: flex;
   flex-direction: row;
   width: 20%;
@@ -277,34 +276,34 @@ export default {
   gap: 10px;
 }
 
-.plant_button--edit {
+.plant-details__button-edit {
   color: var(--secondary-color);
 }
 
-.plant_button--edit:hover {
+.plant-details__button-edit:hover {
   color: var(--primary-color);
 }
 
-.plant_button--delete:hover {
+.plant-details__button-delete:hover {
   color: red;
 }
 
-.plant_container--two {
+.plant-details__container-two {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
 }
 
-.plant_info {
+.plant-details__info {
   width: 50%;
 }
 
-.plant_title {
+.plant-details__title {
   color: var(--secondary-color);
   padding-bottom: 10px;
 }
 
-.plant_data {
+.plant-details__data {
   display: flex;
   justify-content: flex-start;
   font-size: 13px;
@@ -312,11 +311,11 @@ export default {
   padding-right: 10%;
 }
 
-.plant_distill {
+.plant-details__distill {
   padding-block: 10px;
 }
 
-.distill_button:hover {
+.plant-details__distill-button:hover {
   color: var(--secondary-color);
 }
 </style>

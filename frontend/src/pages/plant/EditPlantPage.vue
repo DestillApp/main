@@ -3,16 +3,16 @@
     <!-- Loading spinner while data is being fetched -->
     <v-progress-circular
       v-if="isLoading"
-      class="spinner"
+      class="edit-plant__spinner"
       color="var(--secondary-color)"
       :size="60"
       :width="6"
       indeterminate
     ></v-progress-circular>
     <!-- Plant form -->
-    <form v-if="!isLoading" @submit.prevent="editPlant" class="plant_form">
+    <form v-if="!isLoading" @submit.prevent="editPlant" class="edit-plant__form">
       <!-- Title for the plant form -->
-      <h3 class="form_title">Edytuj informacje o surowcu</h3>
+      <h3 class="edit-plant__form-title">Edytuj informacje o surowcu</h3>
       <!-- Plant identification component -->
       <plant-identification :isFormValid="isFormValid"></plant-identification>
       <!-- Plant origin component -->
@@ -319,16 +319,16 @@ export default {
 </script>
 
 <style scoped>
-.spinner {
+.edit-plant__spinner {
   margin-bottom: 40vh;
   margin-top: 10vh;
 }
 
-.form_title {
+.edit-plant__form-title {
   margin-bottom: 30px;
 }
 
-.plant_form {
+.edit-plant__form {
   display: flex;
   flex-direction: column;
   gap: 20px;
