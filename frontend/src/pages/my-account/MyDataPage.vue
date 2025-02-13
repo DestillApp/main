@@ -1,42 +1,42 @@
 <template>
   <div>
     <h3>Moje dane</h3>
-    <div class="my-data_user-info">
+    <div class="my-data__user-info">
       <p>nazwa użytkownika: {{ username }}</p>
       <p>adres e-mail: {{ email }}</p>
     </div>
-    <div class="my-distillers">
-      <h4 class="my-distillers-title">Moje destylatory:</h4>
-      <ul v-if="distillers.length > 0" class="distiller-list">
+    <div class="my-data__distillers">
+      <h4 class="my-data__distillers-title">Moje destylatory:</h4>
+      <ul v-if="distillers.length > 0" class="my-data__distiller-list">
         <li
           v-for="distiller in distillers"
           :key="distiller.id"
-          class="distiller-item"
+          class="my-data__distiller-item"
         >
-          <h5 class="distiller-title">Destylator</h5>
-          <div class="distiller-columns">
-            <div class="distiller-info">
+          <h5 class="my-data__distiller-title">Destylator</h5>
+          <div class="my-data__distiller-columns">
+            <div class="my-data__distiller-info">
               <p>Materiał: {{ distiller.material }}</p>
               <p>Pojemność: {{ distiller.capacity }} l</p>
               <p>Ogrzewanie: {{ distiller.heating }}</p>
             </div>
             <button
               @click="openDeleteModal(distiller.id)"
-              class="distiller-delete"
+              class="my-data__distiller-delete"
             >
               Usuń
             </button>
           </div>
         </li>
       </ul>
-      <p v-else class="distiller-none">Brak zapisanych destylatorów.</p>
-      <base-button class="my-distillers-button" @click="openDistillerForm"
+      <p v-else class="my-data__distiller-none">Brak zapisanych destylatorów.</p>
+      <base-button class="my-data__distillers-button" @click="openDistillerForm"
         >Dodaj nowy destylator</base-button
       >
     </div>
-    <div class="settings">
-      <h4 class="settings-title">Ustawienia:</h4>
-      <div class="settings-theme">
+    <div class="my-data__settings">
+      <h4 class="my-data__settings-title">Ustawienia:</h4>
+      <div class="my-data__settings-theme">
         <p v-if="isDarkTheme">Motyw ciemny aplikacji włączony</p>
         <p v-if="!isDarkTheme">Motyw ciemny aplikacji wyłączony</p>
         <v-switch
@@ -45,7 +45,7 @@
           color="var(--secondary-color)"
         ></v-switch>
       </div>
-      <base-button class="settings-button" @click="openPasswordChangeForm"
+      <base-button class="my-data__settings-button" @click="openPasswordChangeForm"
         >Zmień hasło</base-button
       >
     </div>
@@ -224,7 +224,7 @@ export default {
 </script>
 
 <style scoped>
-.my-data_user-info {
+.my-data__user-info {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -232,7 +232,7 @@ export default {
   margin-bottom: 50px;
 }
 
-.my-distillers {
+.my-data__distillers {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -240,19 +240,19 @@ export default {
   margin-bottom: 50px;
 }
 
-.my-distillers-title {
+.my-data__distillers-title {
   margin-left: 5%;
   text-align: left;
 }
 
-.distiller-list {
+.my-data__distiller-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
 }
 
-.distiller-item {
+.my-data__distiller-item {
   border: 2px solid var(--secondary-color);
   padding: 15px;
   margin-bottom: 10px;
@@ -260,61 +260,61 @@ export default {
   width: 50%;
 }
 
-.distiller-title {
+.my-data__distiller-title {
   margin-bottom: 5px;
 }
 
-.distiller-columns {
+.my-data__distiller-columns {
   display: flex;
   flex-direction: row;
   font-size: 13px;
   justify-content: space-around;
 }
 
-.distiller-info {
+.my-data__distiller-info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.distiller-delete {
+.my-data__distiller-delete {
   font-size: 11px;
 }
 
-.distiller-delete:hover {
+.my-data__distiller-delete:hover {
   color: var(--error-color);
 }
 
-.distiller-none {
+.my-data__distiller-none {
   margin-left: 5%;
   text-align: left;
 }
 
-.my-distillers-button {
+.my-data__distillers-button {
   width: 300px;
   margin: 0 auto;
   margin-top: 20px;
 }
 
-.settings {
+.my-data__settings {
   display: flex;
   flex-direction: column;
   justify-content: left;
   margin-left: 5%;
 }
 
-.settings-title {
+.my-data__settings-title {
   text-align: left;
 }
 
-.settings-theme {
+.my-data__settings-theme {
   display: flex;
   flex-direction: row;
   gap: 30px;
   align-items: center;
 }
 
-.settings-button {
+.my-data__settings-button {
   width: 150px;
 }
 </style>

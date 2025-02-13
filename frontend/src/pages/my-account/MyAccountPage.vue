@@ -1,31 +1,31 @@
 <template>
-  <div class="container">
-    <nav class="nav">
-      <h3 class="nav_title">Moje konto</h3>
-      <ul class="nav_list">
+  <div class="my-account">
+    <nav class="my-account__nav">
+      <h3 class="my-account__title">Moje konto</h3>
+      <ul class="my-account__list">
         <li>
-          <router-link to="/my-account/distillations-in-progress/1" class="link"
+          <router-link to="/my-account/distillations-in-progress/1" class="my-account__link"
             >Destylacje w toku</router-link
           >
         </li>
         <li>
-          <router-link to="/my-account/plant-list/1" class="link"
+          <router-link to="/my-account/plant-list/1" class="my-account__link"
             >Magazyn surowców</router-link
           >
         </li>
         <li>
-          <router-link to="/my-account/distillation-archives/1" class="link"
+          <router-link to="/my-account/distillation-archives/1" class="my-account__link"
             >Archiwum destylacji</router-link
           >
         </li>
         <li>
-          <router-link to="/my-account/my-data" class="link"
+          <router-link to="/my-account/my-data" class="my-account__link"
             >Moje dane</router-link
           >
         </li>
       </ul>
     </nav>
-    <base-card class="card">
+    <base-card class="my-account__card">
       <router-view></router-view>
     </base-card>
   </div>
@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.my-account {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -46,11 +46,11 @@ export default {
   margin-bottom: 50px;
 }
 
-.nav_title {
-font-size: 20px;
+.my-account__title {
+  font-size: 20px;
 }
 
-.nav {
+.my-account__nav {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -60,25 +60,24 @@ font-size: 20px;
   padding-top: 50px;
 }
 
-.nav_list {
+.my-account__list {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.link {
+.my-account__link {
   text-decoration: none;
   max-height: 24px;
 }
-.link:hover,
+.my-account__link:hover,
 .router-link-active {
   font-weight: 700;
 }
 
-.card {
+.my-account__card {
   margin-top: 50px;
   width: 75%;
-  /* min-height: 60%; */
   margin-left: 5vw;
 }
 </style>

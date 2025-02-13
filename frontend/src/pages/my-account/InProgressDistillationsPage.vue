@@ -1,17 +1,16 @@
-//no arch docs no code docs
 <template>
   <div>
     <!-- List length settings component -->
     <list-length-settings
-      class="distillation_list--settings"
+      class="distillation__settings"
       title="ilość destylacji"
       listColor="distillation"
       :chosenLength="distillationsPerPage"
       @select-length="handleSelectLength"
     ></list-length-settings>
     <!-- Title for the distillation list -->
-    <h3 class="distillation_list--title">Destylacje w toku</h3>
-    <div class="distillation_list--sort">
+    <h3 class="distillation__title">Destylacje w toku</h3>
+    <div class="distillation__sort">
       <!-- Search item component for searching distillations by name -->
       <base-search-item
         v-if="distillationsList.length >= 1"
@@ -23,7 +22,7 @@
       <!-- List sorting component for sorting distillations -->
       <list-sorting
         v-if="distillationsList.length >= 1"
-        class="distillation_list--sorting"
+        class="distillation__sorting"
         :options="options"
         :sorting="sortingOption"
         @choose:sorting="handleSorting"
@@ -40,35 +39,35 @@
     <!-- Distillation list -->
     <ul
       v-if="!isLoading && distillationsList.length >= 1"
-      class="distillation_list"
+      class="distillation__list"
     >
       <!-- Iterate through distillationList and display each distillation's data -->
       <li
         v-for="distillation in distillationsList"
         :key="distillation.id"
-        class="distillation"
+        class="distillation__item"
       >
-        <div class="distillation_container">
-          <div class="distillation_data">
-            <div class="distillation_type">
-              <p class="distillation_type_state">typ destylacji:</p>
+        <div class="distillation__container">
+          <div class="distillation__data">
+            <div class="distillation__type">
+              <p class="distillation__type-state">typ destylacji:</p>
               {{ distillation.distillationType }}
             </div>
-            <div class="distillation_date">
+            <div class="distillation__date">
               data destylacji: {{ distillation.distillationDate }}
             </div>
           </div>
-          <div class="plant_identification">
-            <div class="plant_name">{{ distillation.choosedPlant.name }}</div>
-            <div class="plant_part">{{ distillation.choosedPlant.part }}</div>
+          <div class="distillation__plant-identification">
+            <div class="distillation__plant-name">{{ distillation.choosedPlant.name }}</div>
+            <div class="distillation__plant-part">{{ distillation.choosedPlant.part }}</div>
           </div>
-          <div class="distillation_buttons">
+          <div class="distillation__buttons">
             <router-link
               :to="{
                 name: 'DistillationDetailsPage',
                 params: { page: page, distillId: distillation._id },
               }"
-              class="distillation_button--details"
+              class="distillation__button-details"
             >
               <button>Zobacz szczegóły</button>
             </router-link>
@@ -83,7 +82,7 @@
                   distillation.distillationDate
                 )
               "
-              class="distillation_button--delete"
+              class="distillation__button-delete"
             >
               Usuń
             </button>
@@ -94,7 +93,7 @@
             name: 'AddResultsPage',
             params: { distillId: distillation._id },
           }"
-          class="distillation_button--results"
+          class="distillation__button-results"
         >
           <base-button>Dodaj wyniki</base-button>
         </router-link>
@@ -130,7 +129,7 @@
       rounded="circle"
       :total-visible="4"
       :active-color="`var(--secondary-color-distillation)`"
-      class="distillation_pagination"
+      class="distillation__pagination"
     ></v-pagination>
   </div>
 </template>
@@ -140,16 +139,19 @@ import { ref, computed, onBeforeMount, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
-import { scrollToTop } from "@/helpers/displayHelpers";
+
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import ListSorting from "@/components/ListSorting.vue";
+
 import {
   updateListSorting,
   updateListSettings,
 } from "@/graphql/mutations/settingsFunctions.js";
+import { scrollToTop } from "@/helpers/displayHelpers";
+
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
@@ -562,31 +564,31 @@ export default {
 </script>
 
 <style scoped>
-.distillation_list--settings {
+.distillation__settings {
   float: right;
 }
 
-.distillation_list--title {
+.distillation__title {
   margin-bottom: 20px;
 }
 
-.distillation_list--sort {
+.distillation__sort {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.distillation_list--sorting {
+.distillation__sorting {
   width: 300px;
 }
 
-.distillation_list {
+.distillation__list {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.distillation {
+.distillation__item {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -595,37 +597,37 @@ export default {
   border-radius: var(--input-border-radius);
 }
 
-.distillation_container {
+.distillation__container {
   display: flex;
   flex-direction: row;
 }
 
-.distillation_data {
+.distillation__data {
   display: flex;
   flex-direction: column;
   gap: 15px;
   width: 25%;
 }
 
-.distillation_type {
+.distillation__type {
   display: flex;
   flex-direction: column;
   text-align: left;
 }
 
-.distillation_type_state {
+.distillation__type-state {
   display: flex;
   font-size: 11px;
   justify-content: flex-start;
 }
 
-.distillation_date {
+.distillation__date {
   display: flex;
   font-size: 11px;
   justify-content: flex-start;
 }
 
-.plant_identification {
+.distillation__plant-identification {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -633,15 +635,15 @@ export default {
   width: 50%;
 }
 
-.plant_name {
+.distillation__plant-name {
   font-size: 20px;
 }
 
-.plant_part {
+.distillation__plant-part {
   font-size: 12px;
 }
 
-.distillation_buttons {
+.distillation__buttons {
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -650,20 +652,20 @@ export default {
   font-size: 11px;
 }
 
-.distillation_button--details {
+.distillation__button-details {
   display: flex;
   color: var(--secondary-color-distillation);
 }
 
-.distillation_button--details:hover {
+.distillation__button-details:hover {
   color: var(--primary-color-distillation);
 }
 
-.distillation_button--delete:hover {
+.distillation__button-delete:hover {
   color: red;
 }
 
-.distillation_pagination {
+.distillation__pagination {
   margin-top: 20px;
 }
 </style>

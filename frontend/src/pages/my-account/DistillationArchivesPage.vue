@@ -2,15 +2,15 @@
   <div>
     <!-- List length settings component -->
     <list-length-settings
-      class="distillation_archives_list--settings"
+      class="distillation-archives__settings"
       title="ilość destylacji"
       listColor="results"
       :chosenLength="archivesPerPage"
       @select-length="handleSelectLength"
     ></list-length-settings>
     <!-- Title for the distillation archives list -->
-    <h3 class="distillation_archives_list--title">Archiwum destylacji</h3>
-    <div class="distillation_archives_list--sort">
+    <h3 class="distillation-archives__title">Archiwum destylacji</h3>
+    <div class="distillation-archives__sort">
       <!-- Search item component for searching distillation archives by name -->
       <base-search-item
         v-if="distillationArchivesList.length >= 1"
@@ -22,7 +22,7 @@
       <!-- List sorting component for sorting distillation archives -->
       <list-sorting
         v-if="distillationArchivesList.length >= 1"
-        class="distillation_archives_list--sorting"
+        class="distillation-archives__sorting"
         :options="options"
         :sorting="sortingOption"
         @choose:sorting="handleSorting"
@@ -39,35 +39,35 @@
     <!-- Distillation archives list -->
     <ul
       v-if="!isLoading && distillationArchivesList.length >= 1"
-      class="distillation_archives_list"
+      class="distillation-archives__list"
     >
       <!-- Iterate through distillationArchivesList and display each distillation archive's data -->
       <li
         v-for="archive in distillationArchivesList"
         :key="archive.id"
-        class="distillation_archive"
+        class="distillation-archives__item"
       >
-        <div class="distillation_archive--one">
-          <div class="distillation_data">
-            <div class="distillation_type">
-              <p class="distillation_type_state">typ destylacji:</p>
+        <div class="distillation-archives__item-container">
+          <div class="distillation-archives__data">
+            <div class="distillation-archives__type">
+              <p class="distillation-archives__type-state">typ destylacji:</p>
               {{ archive.distillationData.distillationType }}
             </div>
-            <div class="distillation_date">
+            <div class="distillation-archives__date">
               data destylacji: {{ archive.distillationData.distillationDate }}
             </div>
           </div>
-          <div class="plant_identification">
-            <div class="plant_name">{{ archive.distilledPlant.plantName }}</div>
-            <div class="plant_part">{{ archive.distilledPlant.plantPart }}</div>
+          <div class="distillation-archives__plant-identification">
+            <div class="distillation-archives__plant-name">{{ archive.distilledPlant.plantName }}</div>
+            <div class="distillation-archives__plant-part">{{ archive.distilledPlant.plantPart }}</div>
           </div>
-          <div class="distillation_buttons">
+          <div class="distillation-archives__buttons">
             <router-link
               :to="{
                 name: 'ArchiveDistillationDetailsPage',
                 params: { page: page, archiveId: archive._id },
               }"
-              class="archive_button--details"
+              class="distillation-archives__button-details"
             >
               <button>Zobacz szczegóły</button>
             </router-link>
@@ -82,17 +82,17 @@
                   archive.distillationData.distillationDate
                 )
               "
-              class="distillation_button--delete"
+              class="distillation-archives__button-delete"
             >
               Usuń
             </button>
           </div>
         </div>
-        <div class="distillation_results">
-          <div class="oil_amount">
+        <div class="distillation-archives__results">
+          <div class="distillation-archives__oil-amount">
             ilość olejku eterycznego: {{ archive.oilAmount }} ml
           </div>
-          <div class="hydrosol_amount">
+          <div class="distillation-archives__hydrosol-amount">
             ilość hydrolatu: {{ archive.hydrosolAmount }} l
           </div>
         </div>
@@ -120,7 +120,7 @@
       rounded="circle"
       :total-visible="4"
       :active-color="`var(--secondary-color-results)`"
-      class="distillation_pagination"
+      class="distillation-archives__pagination"
     ></v-pagination>
   </div>
 </template>
@@ -516,31 +516,31 @@ export default {
 </script>
 
 <style scoped>
-.distillation_archives_list--settings {
+.distillation-archives__settings {
   float: right;
 }
 
-.distillation_archives_list--title {
+.distillation-archives__title {
   margin-bottom: 20px;
 }
 
-.distillation_archives_list--sort {
+.distillation-archives__sort {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.distillation_archives_list--sorting {
+.distillation-archives__sorting {
   width: 300px;
 }
 
-.distillation_archives_list {
+.distillation-archives__list {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.distillation_archive {
+.distillation-archives__item {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -549,37 +549,37 @@ export default {
   border-radius: var(--input-border-radius);
 }
 
-.distillation_archive--one {
+.distillation-archives__item-container {
   display: flex;
   flex-direction: row;
 }
 
-.distillation_data {
+.distillation-archives__data {
   display: flex;
   flex-direction: column;
   gap: 15px;
   width: 25%;
 }
 
-.distillation_type {
+.distillation-archives__type {
   display: flex;
   flex-direction: column;
   text-align: left;
 }
 
-.distillation_type_state {
+.distillation-archives__type-state {
   display: flex;
   font-size: 11px;
   justify-content: flex-start;
 }
 
-.distillation_date {
+.distillation-archives__date {
   display: flex;
   font-size: 11px;
   justify-content: flex-start;
 }
 
-.plant_identification {
+.distillation-archives__plant-identification {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -587,15 +587,15 @@ export default {
   width: 50%;
 }
 
-.plant_name {
+.distillation-archives__plant-name {
   font-size: 20px;
 }
 
-.plant_part {
+.distillation-archives__plant-part {
   font-size: 12px;
 }
 
-.distillation_buttons {
+.distillation-archives__buttons {
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -604,20 +604,20 @@ export default {
   font-size: 11px;
 }
 
-.archive_button--details {
+.distillation-archives__button-details {
   display: flex;
   color: var(--secondary-color-results);
 }
 
-.archive_button--details:hover {
+.distillation-archives__button-details:hover {
   color: var(--primary-color-results);
 }
 
-.distillation_button--delete:hover {
+.distillation-archives__button-delete:hover {
   color: red;
 }
 
-.distillation_results {
+.distillation-archives__results {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -625,12 +625,12 @@ export default {
   font-size: 11px;
 }
 
-.oil_amount,
-.hydrosol_amount {
+.distillation-archives__oil-amount,
+.distillation-archives__hydrosol-amount {
   flex-grow: 1;
 }
 
-.distillation_pagination {
+.distillation-archives__pagination {
   margin-top: 20px;
 }
 </style>

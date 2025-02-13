@@ -2,15 +2,15 @@
   <div>
     <!-- List length settings component -->
     <list-length-settings
-      class="plant_list--settings"
+      class="plant-list__settings"
       title="ilość surowców"
       listColor="plant"
       :chosenLength="plantsPerPage"
       @select-length="handleSelectLength"
     ></list-length-settings>
     <!-- Title for the plant list -->
-    <h3 class="plant_list--title">Magazyn surowców</h3>
-    <div class="plant_list--sort">
+    <h3 class="plant-list__title">Magazyn surowców</h3>
+    <div class="plant-list__sort">
       <!-- Search item component for searching plants by name -->
       <base-search-item
         v-if="plantList.length >= 1"
@@ -21,8 +21,8 @@
       ></base-search-item>
       <!-- List sorting component for sorting plants -->
       <list-sorting
-       v-if="plantList.length >= 1"
-        class="plant_list--sorting"
+        v-if="plantList.length >= 1"
+        class="plant-list__sorting"
         :options="options"
         :sorting="sortingOption"
         @choose:sorting="handleSorting"
@@ -37,33 +37,40 @@
       indeterminate
     ></v-progress-circular>
     <!-- Plant list -->
-    <ul v-if="!isLoading && plantList.length >= 1" class="plant_list">
+    <ul
+      v-if="!isLoading && plantList.length >= 1"
+      class="plant-list__list"
+    >
       <!-- Iterate through plantList and display each plant's data -->
-      <li v-for="plant in plantList" :key="plant._id" class="plant">
-        <div class="plant_containter">
-          <div class="plant_data">
-            <div class="plant_weight">
-              <p class="plant_weight_state">na stanie:</p>
+      <li
+        v-for="plant in plantList"
+        :key="plant._id"
+        class="plant-list__item"
+      >
+        <div class="plant-list__container">
+          <div class="plant-list__data">
+            <div class="plant-list__weight">
+              <p class="plant-list__weight-state">na stanie:</p>
               {{ plant.availableWeight }} kg
             </div>
-            <div class="plant_date" v-if="plant.harvestDate !== null">
+            <div class="plant-list__date" v-if="plant.harvestDate !== null">
               zbiór: {{ plant.harvestDate }}
             </div>
-            <div class="plant_date" v-if="plant.plantBuyDate !== null">
+            <div class="plant-list__date" v-if="plant.plantBuyDate !== null">
               kupno: {{ plant.plantBuyDate }}
             </div>
           </div>
-          <div class="plant_identification">
-            <div class="plant_name">{{ plant.plantName }}</div>
-            <div class="plant_part">{{ plant.plantPart }}</div>
+          <div class="plant-list__identification">
+            <div class="plant-list__name">{{ plant.plantName }}</div>
+            <div class="plant-list__part">{{ plant.plantPart }}</div>
           </div>
-          <div class="plant_buttons">
+          <div class="plant-list__buttons">
             <router-link
               :to="{
                 name: 'PlantDetailsPage',
                 params: { page: page, id: plant._id },
               }"
-              class="plant_button--details"
+              class="plant-list__button-details"
             >
               <button>Zobacz szczegóły</button>
             </router-link>
@@ -71,7 +78,7 @@
               @click="
                 openDeleteModal(plant._id, plant.plantName, plant.plantPart)
               "
-              class="plant_button--delete"
+              class="plant-list__button-delete"
             >
               Usuń
             </button>
@@ -79,7 +86,7 @@
         </div>
         <router-link
           :to="{ name: 'AddDistillationPage', params: { id: plant._id } }"
-          class="plant_distill"
+          class="plant-list__distill"
         >
           <base-button>Destyluj</base-button>
         </router-link>
@@ -104,7 +111,7 @@
       rounded="circle"
       :total-visible="4"
       :active-color="`var(--secondary-color)`"
-      class="plant_pagination"
+      class="plant-list__pagination"
     ></v-pagination>
   </div>
 </template>
@@ -488,31 +495,31 @@ export default {
 </script>
 
 <style scoped>
-.plant_list--settings {
+.plant-list__settings {
   float: right;
 }
 
-.plant_list--title {
+.plant-list__title {
   margin-bottom: 20px;
 }
 
-.plant_list--sort {
+.plant-list__sort {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.plant_list--sorting {
+.plant-list__sorting {
   width: 300px;
 }
 
-.plant_list {
+.plant-list__list {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.plant {
+.plant-list__item {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -521,37 +528,37 @@ export default {
   border-radius: var(--input-border-radius);
 }
 
-.plant_containter {
+.plant-list__container {
   display: flex;
   flex-direction: row;
 }
 
-.plant_data {
+.plant-list__data {
   display: flex;
   flex-direction: column;
   gap: 15px;
   width: 25%;
 }
 
-.plant_weight {
+.plant-list__weight {
   display: flex;
   flex-direction: column;
   text-align: left;
 }
 
-.plant_weight_state {
+.plant-list__weight-state {
   display: flex;
   font-size: 11px;
   justify-content: flex-start;
 }
 
-.plant_date {
+.plant-list__date {
   display: flex;
   font-size: 11px;
   justify-content: flex-start;
 }
 
-.plant_identification {
+.plant-list__identification {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -559,15 +566,15 @@ export default {
   width: 50%;
 }
 
-.plant_name {
+.plant-list__name {
   font-size: 20px;
 }
 
-.plant_part {
+.plant-list__part {
   font-size: 12px;
 }
 
-.plant_buttons {
+.plant-list__buttons {
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -576,20 +583,20 @@ export default {
   font-size: 11px;
 }
 
-.plant_button--details {
+.plant-list__button-details {
   display: flex;
   color: var(--secondary-color);
 }
 
-.plant_button--details:hover {
+.plant-list__button-details:hover {
   color: var(--primary-color);
 }
 
-.plant_button--delete:hover {
+.plant-list__button-delete:hover {
   color: red;
 }
 
-.plant_pagination {
+.plant-list__pagination {
   margin-top: 20px;
 }
 </style>
