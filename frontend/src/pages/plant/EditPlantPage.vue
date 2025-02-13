@@ -1,5 +1,3 @@
-// change docs
-// problem with displaying countryOfOrigin after mounting the component!
 <template>
   <base-card>
     <!-- Loading spinner while data is being fetched -->

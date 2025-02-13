@@ -1,13 +1,9 @@
-// plant api?????
-// documentation without helpers and ui
-// change code docs
-// check validation
 <template>
   <base-card>
     <!-- Plant form -->
-    <form @submit.prevent="savePlant" class="plant_form">
+    <form @submit.prevent="savePlant" class="plant-form">
       <!-- Title for the plant form -->
-      <h3 class="form_title">Informacje o surowcu</h3>
+      <h3 class="plant-form__title">Informacje o surowcu</h3>
       <!-- Plant identification component -->
       <plant-identification :isFormValid="isFormValid"></plant-identification>
       <!-- Plant origin component -->
@@ -204,11 +200,11 @@ export default {
 </script>
 
 <style scoped>
-.form_title {
+.plant-form__title {
   margin-bottom: 30px;
 }
 
-.plant_form {
+.plant-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
