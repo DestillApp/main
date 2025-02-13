@@ -1,6 +1,6 @@
 <template>
   <!-- The root element of the card component, providing a styled container for its content -->
-  <div :class="['card', { 'dark-card': isDarkTheme }]">
+  <div :class="['card', { 'card--dark': isDarkTheme }]">
     <!-- Slot to display the content passed to the card component -->
     <slot></slot>
   </div>
@@ -42,7 +42,7 @@ export default {
     padding-left: 30px;
 }
 
-.dark-card {
+.card--dark {
   background-color: var(--background-dark);
   color: var(--text-color-dark);
   box-shadow: var(--box-shadow-dark);

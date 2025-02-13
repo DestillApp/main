@@ -2,7 +2,7 @@
   <!-- Container for the radio group -->
   <div>
     <!-- Title label for the radio group -->
-    <label class="title" :for="title">{{ title }}</label>
+    <label class="radio-group__title" :for="title">{{ title }}</label>
     <!-- Vuetify radio group component -->
     <v-radio-group :id="title" v-model="selectOption" hide-details>
       <!-- Iterating over options to create radio buttons -->
@@ -12,12 +12,12 @@
         :label="option"
         :value="option"
         :color="color"
-        :class="['radio_input', { 'dark-radio_input': isDarkTheme }]"
+        :class="['radio-group__input', { 'radio-group__input--dark': isDarkTheme }]"
         :name="name"
       ></v-radio>
     </v-radio-group>
     <!-- Slot for message display -->
-    <div class="message">
+    <div class="radio-group__message">
       <slot name="message"></slot>
     </div>
   </div>
@@ -64,21 +64,21 @@ export default {
 </script>
 
 <style scoped>
-.title {
+.radio-group__title {
   font-size: 15px;
 }
 
-.radio_input {
+.radio-group__input {
   font-family: inherit;
   font-size: 15px;
   color: var(--text-color);
 }
 
-.dark-radio_input {
+.radio-group__input--dark {
   color: var(--text-color-dark);
 }
 
-.message {
+.radio-group__message {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;

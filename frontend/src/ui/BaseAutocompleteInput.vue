@@ -1,17 +1,16 @@
-// no arch docs and no code docs
 <template>
   <!-- Container for the input field -->
-  <div class="input-wrap">
+  <div class="autocomplete-input">
     <!-- Label for the input field -->
-    <label class="label" :for="id">{{ label }}</label>
+    <label class="autocomplete-input__label" :for="id">{{ label }}</label>
     <!-- Container for the input element and optional unit slot -->
-    <div class="container">
-      <div v-if="choose" class="input_container input_container--choose">
+    <div class="autocomplete-input__container">
+      <div v-if="choose" class="autocomplete-input__input-container autocomplete-input__input-container--choose">
         <!-- Input field -->
         <input
-          class="input"
+          class="autocomplete-input__input"
           :class="{
-            'dark-input': isDarkTheme,
+            'autocomplete-input__input--dark': isDarkTheme,
           }"
           :id="id"
           :value="inputValue"
@@ -22,11 +21,11 @@
         />
         <svg-icon
           v-if="choose"
-          class="icon"
+          class="autocomplete-input__icon"
           :class="{
-            'icon_color-plant': plantColor,
-            'icon_color-distillation': distillationColor,
-            icon_invalid: invalidInput,
+            'autocomplete-input__icon--plant': plantColor,
+            'autocomplete-input__icon--distillation': distillationColor,
+            'autocomplete-input__icon--invalid': invalidInput,
           }"
           type="mdi"
           :path="path"
@@ -36,15 +35,15 @@
         <!-- Slot for optional unit display -->
         <slot name="unit"></slot>
       </div>
-      <div v-if="!choose" class="input_container">
+      <div v-if="!choose" class="autocomplete-input__input-container">
         <!-- Input field -->
         <input
-          class="input"
+          class="autocomplete-input__input"
           :class="{
-            'input_color-plant': plantColor,
-            'input_color-distillation': distillationColor,
-            input_invalid: invalidInput,
-            'dark-input': isDarkTheme,
+            'autocomplete-input__input--plant': plantColor,
+            'autocomplete-input__input--distillation': distillationColor,
+            'autocomplete-input__input--invalid': invalidInput,
+            'autocomplete-input__input--dark': isDarkTheme,
           }"
           :id="id"
           :value="modelValue"
@@ -62,15 +61,15 @@
           (isOpen && id === 'distillationType') ||
           (isOpen && id === 'distillationApparatus')
         "
-        class="list list--choose"
+        class="autocomplete-input__list autocomplete-input__list--choose"
         :class="{
-          'list_color-plant': plantColor,
-          'list_color-distillation': distillationColor,
-          'dark-list': isDarkTheme,
+          'autocomplete-input__list--plant': plantColor,
+          'autocomplete-input__list--distillation': distillationColor,
+          'autocomplete-input__list--dark': isDarkTheme,
         }"
       >
         <li
-          class="list_item list_item--choose"
+          class="autocomplete-input__list-item autocomplete-input__list-item--choose"
           @mousedown="() => chooseItem(result)"
           v-for="result in results"
           :key="result.id"
@@ -80,15 +79,15 @@
       </ul>
       <ul
         v-if="results.length && modelValue !== '' && id === 'countryOfOrigin'"
-        class="list"
+        class="autocomplete-input__list"
         :class="{
-          'list_color-plant': plantColor,
-          'list_color-distillation': distillationColor,
-          'dark-list': isDarkTheme,
+          'autocomplete-input__list--plant': plantColor,
+          'autocomplete-input__list--distillation': distillationColor,
+          'autocomplete-input__list--dark': isDarkTheme,
         }"
       >
         <li
-          class="list_item"
+          class="autocomplete-input__list-item"
           @mousedown="() => chooseItem(result)"
           v-for="result in results"
           :key="result.id"
@@ -98,31 +97,31 @@
       </ul>
       <ul
         v-if="results.length && modelValue !== '' && id === 'choosedPlant'"
-        class="list"
+        class="autocomplete-input__list"
         :class="{
-          'list_color-plant': plantColor,
-          'list_color-distillation': distillationColor,
-          'dark-list': isDarkTheme,
+          'autocomplete-input__list--plant': plantColor,
+          'autocomplete-input__list--distillation': distillationColor,
+          'autocomplete-input__list--dark': isDarkTheme,
         }"
       >
         <li
-          class="list_item"
+          class="autocomplete-input__list-item"
           @mousedown="() => chooseItem(result)"
           v-for="result in results"
           :key="result._id"
         >
-          <div class="plant_item">
-            <div class="plant_identification">
+          <div class="autocomplete-input__plant-item">
+            <div class="autocomplete-input__plant-identification">
               <span>{{ result.plantName }}</span>
-              <span class="plant_small">({{ result.plantPart }})</span>
+              <span class="autocomplete-input__plant-small">({{ result.plantPart }})</span>
             </div>
-            <div class="plant_small" v-if="result.plantBuyDate">
+            <div class="autocomplete-input__plant-small" v-if="result.plantBuyDate">
               kupno: <span>{{ result.plantBuyDate }}</span>
             </div>
-            <div class="plant_small" v-if="result.harvestDate">
+            <div class="autocomplete-input__plant-small" v-if="result.harvestDate">
               zbiór: <span>{{ result.harvestDate }}</span>
             </div>
-            <div class="plant_small">
+            <div class="autocomplete-input__plant-small">
               na stanie: <span>{{ result.availableWeight }} kg</span>
             </div>
           </div>
@@ -130,7 +129,7 @@
       </ul>
     </div>
     <!-- Slot for optional message display -->
-    <div class="message">
+    <div class="autocomplete-input__message">
       <slot name="message"></slot>
     </div>
   </div>
@@ -272,38 +271,38 @@ export default {
 </script>
 
 <style scoped>
-.input-wrap {
+.autocomplete-input {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 5px;
 }
 
-.label {
+.autocomplete-input__label {
   font-size: 15px;
   text-align: left;
 }
 
-.container {
+.autocomplete-input__container {
   position: relative;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
 }
 
-.input_container {
+.autocomplete-input__input-container {
   display: flex;
   flex-direction: row;
   gap: 7px;
   align-items: center;
 }
 
-.input_container--choose {
+.autocomplete-input__input-container--choose {
   position: relative;
   padding-right: 40px;
 }
 
-.input {
+.autocomplete-input__input {
   font-size: 15px;
   color: var(--text-color);
   font-family: inherit;
@@ -316,69 +315,69 @@ export default {
   width: 100%;
 }
 
-.dark-input {
+.autocomplete-input__input--dark {
   color: var(--text-color-dark);
   border: 2px solid var(--border-color-dark);
 }
 
-.input::placeholder {
+.autocomplete-input__input::placeholder {
   color: var(--placeholder-color);
 }
 
-.input:focus {
+.autocomplete-input__input:focus {
   outline: none;
 }
 
-.input_color-plant:focus {
+.autocomplete-input__input--plant:focus {
   border: 2px solid var(--secondary-color);
 }
 
-.input_color-distillation:focus {
+.autocomplete-input__input--distillation:focus {
   border: 2px solid var(--secondary-color-distillation);
 }
 
-.input_invalid {
+.autocomplete-input__input--invalid {
   border: 2px solid var(--error-color);
 }
 
-.input_invalid:focus {
+.autocomplete-input__input--invalid:focus {
   border: 2px solid var(--error-color);
 }
 
-.icon {
+.autocomplete-input__icon {
   cursor: pointer;
   position: absolute;
   right: 0;
 }
 
-.icon_color-plant {
+.autocomplete-input__icon--plant {
   color: var(--secondary-color);
 }
 
-.icon_color-plant:hover {
+.autocomplete-input__icon--plant:hover {
   color: var(--primary-color);
 }
 
-.icon_color-distillation {
+.autocomplete-input__icon--distillation {
   color: var(--secondary-color-distillation);
 }
 
-.icon_color-distillation:hover {
+.autocomplete-input__icon--distillation:hover {
   color: var(--primary-color-distillation);
 }
 
-.icon_invalid,
-.icon_invalid:hover {
+.autocomplete-input__icon--invalid,
+.autocomplete-input__icon--invalid:hover {
   color: var(--error-color);
 }
 
-.message {
+.autocomplete-input__message {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;
 }
 
-.list {
+.autocomplete-input__list {
   position: absolute;
   background-color: var(--background-bright);
   z-index: 10;
@@ -389,44 +388,44 @@ export default {
   padding-block: 10px;
 }
 
-.dark-list {
+.autocomplete-input__list--dark {
   background-color: var(--background-dark);
 }
 
-.list--choose {
+.autocomplete-input__list--choose {
   width: calc(100% - 40px);
 }
 
-.list_color-plant {
+.autocomplete-input__list--plant {
   border: 2px var(--secondary-color) solid;
 }
 
-.list_color-distillation {
+.autocomplete-input__list--distillation {
   border: 2px var(--secondary-color-distillation) solid;
 }
 
-.list_item {
+.autocomplete-input__list-item {
   cursor: pointer;
 }
 
-.list_item--choose {
+.autocomplete-input__list-item--choose {
   text-align: left;
 }
 
-.plant_item {
+.autocomplete-input__plant-item {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 
-.plant_identification {
+.autocomplete-input__plant-identification {
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
 
-.plant_small {
+.autocomplete-input__plant-small {
   font-size: 12px;
 }
 </style>

@@ -1,22 +1,22 @@
 <template>
   <!-- Container for the input field -->
-  <div class="input-wrap">
+  <div class="input">
     <!-- Label for the input field -->
-    <label class="label" :for="id">{{ label }}</label>
+    <label class="input__label" :for="id">{{ label }}</label>
     <!-- Container for the input element and optional unit slot -->
-    <div class="container">
+    <div class="input__container">
       <!-- Input field -->
       <input
-        class="input"
+        class="input__field"
         :class="{
-          'input_type--number': isNumberInput,
-          'input_type--time': isTimeInput,
-          'input_type--plant': isPlantInput,
-          'input_type--distillation': isDistillationInput,
-          'input_type--results': isResultsInput,
-          'input_type--results-color': isResultsInputColor,
-          input_invalid: invalidInput,
-          'dark-input': isDarkTheme,
+          'input__field--number': isNumberInput,
+          'input__field--time': isTimeInput,
+          'input__field--plant': isPlantInput,
+          'input__field--distillation': isDistillationInput,
+          'input__field--results': isResultsInput,
+          'input__field--results-color': isResultsInputColor,
+          'input__field--invalid': invalidInput,
+          'input__field--dark': isDarkTheme,
         }"
         :id="id"
         :value="modelValue"
@@ -31,7 +31,7 @@
       <slot name="unit"></slot>
     </div>
     <!-- Slot for optional message display -->
-    <div class="message">
+    <div class="input__message">
       <slot name="message"></slot>
     </div>
   </div>
@@ -156,26 +156,26 @@ export default {
 </script>
 
 <style scoped>
-.input-wrap {
+.input {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 5px;
 }
 
-.label {
+.input__label {
   font-size: 15px;
   text-align: left;
 }
 
-.container {
+.input__container {
   display: flex;
   flex-direction: row;
   gap: 7px;
   align-items: center;
 }
 
-.input {
+.input__field {
   font-size: 15px;
   color: var(--text-color);
   font-family: inherit;
@@ -186,59 +186,59 @@ export default {
   width: 100%;
 }
 
-.dark-input {
+.input__field--dark {
   color: var(--text-color-dark);
   border: 2px solid var(--border-color-dark);
 }
 
-.input::placeholder {
+.input__field::placeholder {
   color: var(--placeholder-color);
 }
 
-.input_type--number {
+.input__field--number {
   width: 70px;
   padding-right: 0px;
   padding-left: 10px;
 }
 
-.input_type--time {
+.input__field--time {
   width: 60px;
   padding-right: 5px;
   padding-left: 5px;
   text-align: center;
 }
 
-.input_type--results {
+.input__field--results {
   width: 100px;
   padding-right: 0px;
   padding-left: 10px;
 }
 
-.input_type--plant:focus {
+.input__field--plant:focus {
   border: 2px solid var(--secondary-color);
 }
 
-.input_type--distillation:focus {
+.input__field--distillation:focus {
   border: 2px solid var(--secondary-color-distillation);
 }
 
-.input_type--results-color:focus {
+.input__field--results-color:focus {
   border: 2px solid var(--secondary-color-results);
 }
 
-.input:focus {
+.input__field:focus {
   outline: none;
 }
 
-.input_invalid {
+.input__field--invalid {
   border: 2px solid var(--error-color);
 }
 
-.input_invalid:focus {
+.input__field--invalid:focus {
   border: 2px solid var(--error-color);
 }
 
-.message {
+.input__message {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;

@@ -1,15 +1,15 @@
 <template>
   <!-- Container for the text area field -->
-  <div class="textarea-wrap">
+  <div class="textarea">
     <!-- Label for the text area field -->
-    <label class="label" :for="id">{{ label }}</label>
+    <label class="textarea__label" :for="id">{{ label }}</label>
     <!-- Text area field -->
     <textarea
-      class="textarea"
+      class="textarea__input"
       :class="{
-        'textarea_type--results': isResultsTextArea,
-        textarea_invalid: invalidInput,
-        'dark-textarea': isDarkTheme,
+        'textarea__input--results': isResultsTextArea,
+        'textarea__input--invalid': invalidInput,
+        'textarea__input--dark': isDarkTheme,
       }"
       :id="id"
       :value="modelValue"
@@ -20,7 +20,7 @@
       v-bind="$attrs"
     ></textarea>
     <!-- Slot for optional message display -->
-    <div class="message">
+    <div class="textarea__message">
       <slot name="message"></slot>
     </div>
   </div>
@@ -113,19 +113,19 @@ export default {
 </script>
 
 <style scoped>
-.textarea-wrap {
+.textarea {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 5px;
 }
 
-.label {
+.textarea__label {
   font-size: 15px;
   text-align: left;
 }
 
-.textarea {
+.textarea__input {
   font-size: 15px;
   color: var(--text-color);
   font-family: inherit;
@@ -140,38 +140,38 @@ export default {
   min-height: 50px;
 }
 
-.dark-textarea {
+.textarea__input--dark {
   color: var(--text-color-dark);
   border: 2px solid var(--border-color-dark);
 }
 
-.textarea::placeholder {
+.textarea__input::placeholder {
   color: var(--placeholder-color);
 }
 
-.textarea_type--results {
+.textarea__input--results {
   width: 100%;
   padding-inline: 10px;
   padding-block: 3px;
 }
 
-.textarea_type--results:focus {
+.textarea__input--results:focus {
   border: 2px solid var(--secondary-color-results);
 }
 
-.textarea:focus {
+.textarea__input:focus {
   outline: none;
 }
 
-.textarea_invalid {
+.textarea__input--invalid {
   border: 2px solid var(--error-color);
 }
 
-.textarea_invalid:focus {
+.textarea__input--invalid:focus {
   border: 2px solid var(--error-color);
 }
 
-.message {
+.textarea__message {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;

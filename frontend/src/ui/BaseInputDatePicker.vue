@@ -1,7 +1,7 @@
 <template>
   <!-- Container for the input and date picker -->
-  <div class="container">
-    <div class="input">
+  <div class="date-picker">
+    <div class="date-picker__input">
       <!-- Text input component with a disabled attribute and a placeholder -->
       <base-text-input
         :label="label"
@@ -17,11 +17,11 @@
         :path="path"
         size="32"
         :class="{
-          'icon_color-plant': plantColor,
-          'icon_color-distillation': distillationColor,
-          icon_invalid: invalidInput,
+          'date-picker__icon--plant': plantColor,
+          'date-picker__icon--distillation': distillationColor,
+          'date-picker__icon--invalid': invalidInput,
         }"
-        class="icon"
+        class="date-picker__icon"
         @click="changeVisibility"
       ></svg-icon>
     </div>
@@ -177,7 +177,7 @@ export default {
 </script>
 
 <style scoped>
-.input {
+.date-picker__input {
   position: relative;
   display: flex;
   flex-direction: row;
@@ -187,7 +187,7 @@ export default {
   margin-right: 50px;
 }
 
-.icon {
+.date-picker__icon {
   position: absolute;
   cursor: pointer;
   margin-bottom: 2px;
@@ -195,23 +195,23 @@ export default {
   top: 27px;
 }
 
-.icon_color-plant {
+.date-picker__icon--plant {
   color: var(--secondary-color);
 }
 
-.icon_color-plant:hover {
+.date-picker__icon--plant:hover {
   color: var(--primary-color);
 }
 
-.icon_color-distillation {
+.date-picker__icon--distillation {
   color: var(--secondary-color-distillation);
 }
 
-.icon_color-distillation:hover {
+.date-picker__icon--distillation:hover {
   color: var(--primary-color-distillation);
 }
 
-.icon_invalid {
+.date-picker__icon--invalid {
   color: var(--error-color);
 }
 </style>

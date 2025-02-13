@@ -1,5 +1,5 @@
 <template>
-  <div class="search_item">
+  <div class="search-item">
     <!-- Input field for entering the name of the searched item -->
     <base-text-input
       v-model="inputValue"
@@ -13,17 +13,17 @@
     <svg-icon
       v-if="!isSearchEmitted"
       :class="[
-        'search_icon',
+        'search-item__icon',
         {
-          'search_icon--disabled': !inputValue,
-          'search_icon--plant_disabled': !inputValue && isPlantInput,
-          'search_icon--distillation_disabled':
+          'search-item__icon--disabled': !inputValue,
+          'search-item__icon--plant-disabled': !inputValue && isPlantInput,
+          'search-item__icon--distillation-disabled':
             !inputValue && isDistillationInput,
-            'search_icon--results_disabled': !inputValue && isResultsInput,
-          'search_icon--results': !inputValue && isResultsInput,
-          'search_icon--plant': isPlantInput,
-          'search_icon--distillation': isDistillationInput,
-          'search_icon--results': isResultsInput,
+            'search-item__icon--results-disabled': !inputValue && isResultsInput,
+          'search-item__icon--results': !inputValue && isResultsInput,
+          'search-item__icon--plant': isPlantInput,
+          'search-item__icon--distillation': isDistillationInput,
+          'search-item__icon--results': isResultsInput,
         },
       ]"
       type="mdi"
@@ -34,7 +34,7 @@
     <!-- Clickable red cross icon for clearing the search -->
     <svg-icon
       v-if="isSearchEmitted"
-      class="clear_icon"
+      class="search-item__clear-icon"
       type="mdi"
       :path="mdiClose"
       size="24"
@@ -139,75 +139,75 @@ export default {
 </script>
 
 <style scoped>
-.search_item {
+.search-item {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 10px;
 }
 
-.search_icon {
+.search-item__icon {
   cursor: pointer;
 }
 
-.search_icon--plant {
+.search-item__icon--plant {
   color: var(--secondary-color);
 }
 
-.search_icon--plant:hover {
+.search-item__icon--plant:hover {
   color: var(--primary-color);
 }
 
-.search_icon--distillation {
+.search-item__icon--distillation {
   color: var(--secondary-color-distillation);
 }
 
-.search_icon--distillation:hover {
+.search-item__icon--distillation:hover {
   color: var(--primary-color-distillation);
 }
 
-.search_icon--results {
+.search-item__icon--results {
   color: var(--secondary-color-results);
 }
 
-.search_icon--results:hover {
+.search-item__icon--results:hover {
   color: var(--primary-color-results);
 }
 
-.search_icon--disabled {
+.search-item__icon--disabled {
   cursor: default;
 }
 
-.search_icon--plant_disabled {
+.search-item__icon--plant-disabled {
   color: var(--secondary-color);
 }
 
-.search_icon--plant_disabled:hover {
+.search-item__icon--plant-disabled:hover {
   color: var(--secondary-color);
 }
 
-.search_icon--distillation_disabled {
+.search-item__icon--distillation-disabled {
   color: var(--secondary-color-distillation);
 }
 
-.search_icon--distillation_disabled:hover {
+.search-item__icon--distillation-disabled:hover {
   color: var(--secondary-color-distillation);
 }
 
-.search_icon--results_disabled {
+.search-item__icon--results-disabled {
   color: var(--secondary-color-results);
 }
 
-.search_icon--results_disabled:hover {
+.search-item__icon--results-disabled:hover {
   color: var(--secondary-color-results);
 }
 
-.clear_icon {
+.search-item__clear-icon {
   cursor: pointer;
   color: red;
 }
 
-.clear_icon:hover {
+.search-item__clear-icon:hover {
   color: darkred;
 }
 </style>
