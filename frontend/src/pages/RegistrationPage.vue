@@ -1,11 +1,11 @@
 //sprawdzenie w bazie danych czy nazwa użytkownika juą jest
 
 <template>
-  <base-card class="card">
+  <base-card class="registration__card">
     <!-- Title for the registration form -->
     <h3>Rejestracja</h3>
     <!-- Registration form -->
-    <form @submit.prevent="saveRegistration" class="form">
+    <form @submit.prevent="saveRegistration" class="registration__form">
       <!-- Input field for entering the username -->
       <base-text-input
         v-model="registrationForm.username"
@@ -54,12 +54,15 @@
         type="password"
         label="Hasło"
       >
-      <template v-slot:message>
-        <span v-if="!isPasswordCorrect && registrationForm.password">Wpisz poprawne hasło. Hasło musi zawierać conajmniej 8 znaków, jedną wielką literę i jedną liczbę.</span>
+        <template v-slot:message>
+          <span v-if="!isPasswordCorrect && registrationForm.password"
+            >Wpisz poprawne hasło. Hasło musi zawierać conajmniej 8 znaków,
+            jedną wielką literę i jedną liczbę.</span
+          >
           <span v-if="!isFormValid && !registrationForm.password">Wpisz hasło.</span>
           <span v-else>&nbsp;</span>
         </template>
-    </base-text-input>
+      </base-text-input>
       <!-- Input field for confirming the password -->
       <base-text-input
         v-model="confirmPassword"
@@ -74,12 +77,12 @@
         </template>
       </base-text-input>
       <!-- Button to submit the registration form -->
-      <base-button class="button" type="submit">Zarejestruj się</base-button>
+      <base-button class="registration__button" type="submit">Zarejestruj się</base-button>
     </form>
-    <div class="link">
+    <div class="registration__link">
       Masz już konto?
       <!-- Link to the login page -->
-      <router-link @click="scrollToTop" class="link_login" to="/login"
+      <router-link @click="scrollToTop" class="registration__link-login" to="/login"
         >Zaloguj się!</router-link
       >
     </div>
@@ -282,7 +285,7 @@ export default {
 </script>
 
 <style scoped>
-.card {
+.registration__card {
   width: 50%;
   margin-right: 25vw;
   margin-left: 25vw;
@@ -292,30 +295,30 @@ export default {
   padding-left: 50px;
 }
 
-.form {
+.registration__form {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.button {
+.registration__button {
   width: 40%;
   align-self: center;
   color: var(--secondary-color);
   margin-top: 20px;
 }
 
-.button:hover,
-.button:active {
+.registration__button:hover,
+.registration__button:active {
   color: var(--primary-color);
 }
 
-.link {
+.registration__link {
   font-size: 12px;
   margin-top: 20px;
 }
 
-.link_login {
+.registration__link-login {
   color: var(--primary-color);
 }
 </style>

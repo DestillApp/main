@@ -1,9 +1,9 @@
 <template>
-  <base-card class="card">
+  <base-card class="login__card">
     <!-- Title for the login form -->
     <h3>Logowanie</h3>
     <!-- Login form -->
-    <form @submit.prevent="loginUser" class="form">
+    <form @submit.prevent="loginUser" class="login__form">
       <!-- Input field for entering the email -->
       <base-text-input
         v-model="loginForm.email"
@@ -28,15 +28,15 @@
         </template></base-text-input
       >
       <!-- Button to submit the login form -->
-      <base-button class="button" type="submit">Zaloguj się</base-button>
+      <base-button class="login__button" type="submit">Zaloguj się</base-button>
     </form>
-    <div class="links">
+    <div class="login__links">
       <!-- Link to the password help -->
       <span>Nie pamiętam hasła</span>
       <!-- Link to the registration page -->
       <span
         >Nie masz konta?
-        <router-link @click="scrollToTop" class="link_register" to="/register"
+        <router-link @click="scrollToTop" class="login__link-register" to="/register"
           >Zarejestruj się </router-link
         >w Distill It!</span
       >
@@ -143,7 +143,7 @@ export default {
 </script>
 
 <style scoped>
-.card {
+.login__card {
   width: 50%;
   margin-right: 25vw;
   margin-left: 25vw;
@@ -153,25 +153,25 @@ export default {
   padding-left: 50px;
 }
 
-.form {
+.login__form {
   display: flex;
   flex-direction: column;
   gap: 5px;
   justify-content: center;
 }
 
-.button {
+.login__button {
   width: 30%;
   align-self: center;
   color: var(--secondary-color);
 }
 
-.button:hover,
-.button:active {
+.login__button:hover,
+.login__button:active {
   color: var(--primary-color);
 }
 
-.links {
+.login__links {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -180,7 +180,7 @@ export default {
   gap: 5px;
 }
 
-.link_register {
+.login__link-register {
   color: var(--primary-color);
 }
 </style>

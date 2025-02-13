@@ -1,9 +1,9 @@
 <template>
-    <h1 class="title">Witaj!</h1>
+    <h1 class="main-page__title">Witaj!</h1>
 </template>
 
 <style scoped>
-.title {
+.main-page__title {
     margin-top: 30vh;
 }
 </style>
