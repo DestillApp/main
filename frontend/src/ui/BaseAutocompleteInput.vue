@@ -5,7 +5,10 @@
     <label class="autocomplete-input__label" :for="id">{{ label }}</label>
     <!-- Container for the input element and optional unit slot -->
     <div class="autocomplete-input__container">
-      <div v-if="choose" class="autocomplete-input__input-container autocomplete-input__input-container--choose">
+      <div
+        v-if="choose"
+        class="autocomplete-input__input-container autocomplete-input__input-container--choose"
+      >
         <!-- Input field -->
         <input
           class="autocomplete-input__input"
@@ -113,12 +116,20 @@
           <div class="autocomplete-input__plant-item">
             <div class="autocomplete-input__plant-identification">
               <span>{{ result.plantName }}</span>
-              <span class="autocomplete-input__plant-small">({{ result.plantPart }})</span>
+              <span class="autocomplete-input__plant-small"
+                >({{ result.plantPart }})</span
+              >
             </div>
-            <div class="autocomplete-input__plant-small" v-if="result.plantBuyDate">
+            <div
+              class="autocomplete-input__plant-small"
+              v-if="result.plantBuyDate"
+            >
               kupno: <span>{{ result.plantBuyDate }}</span>
             </div>
-            <div class="autocomplete-input__plant-small" v-if="result.harvestDate">
+            <div
+              class="autocomplete-input__plant-small"
+              v-if="result.harvestDate"
+            >
               zbiór: <span>{{ result.harvestDate }}</span>
             </div>
             <div class="autocomplete-input__plant-small">

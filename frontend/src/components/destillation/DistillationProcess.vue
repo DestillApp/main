@@ -81,7 +81,7 @@ import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
 
 import { useStore } from "vuex";
-import { computed, ref, onMounted, watch } from "vue";
+import { computed, ref, onMounted, onBeforeMount, watch } from "vue";
 
 /**
  * @component DistillationProcess
@@ -107,8 +107,10 @@ export default {
         ? store.getters["results/distillationData"]
         : store.getters["distillation/distillationForm"]
     );
-    const distillationDate = computed(
-      () => props.isEditing ? store.getters["results/distillationDate"] : store.getters["distillation/distillationDate"]
+    const distillationDate = computed(() =>
+      props.isEditing
+        ? store.getters["results/distillationDate"]
+        : store.getters["distillation/distillationDate"]
     );
     //Computed property to get the value from Vuex store
     const comingFromRoute = computed(() => store.getters.comingFromRoute);
@@ -122,12 +124,20 @@ export default {
     const distillationType = ref("");
     const distillationTypes = ref(["wodna", "wodno-parowa", "parowa"]);
 
+    // Computed property to get distillerList from Vuex store
+    const distillerList = computed(
+      () => store.getters["settings/distillerList"]
+    );
+
     //Reactive references related to choosing distillation apparatus
     const distillationApparatus = ref("");
-    const apparatus = ref([
-      "destylator stal nierdzewna 200l",
-      "destylator stal nierdzewna 100l",
-    ]);
+
+    const apparatus = computed(() => {
+      return distillerList.value ? distillerList.value.map(
+        (distiller) =>
+          `Destylator ${distiller.material} - ${distiller.capacity}l - ${distiller.heating}`
+      ) : [];
+    });
 
     // Watch for changes in the specific formData values
     watch(
@@ -165,6 +175,12 @@ export default {
     const fetchArchiveData = (key) => {
       store.dispatch("results/fetchDistillationDataFromLocalStorage", key);
     };
+
+    onBeforeMount(() => {
+      store.dispatch("settings/fetchLocalStorageData", {
+        key: "distillerList",
+      });
+    });
 
     // Fetch initial form data from local storage on component mount
     onMounted(() => {
@@ -251,7 +267,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 30px;
-  
 }
 
 .distillation-process__title {
