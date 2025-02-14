@@ -13,7 +13,7 @@
     <div class="distillation__sort">
       <!-- Search item component for searching distillations by name -->
       <base-search-item
-        v-if="distillationsList.length >= 1"
+        v-if="distillationsList.length >= 1 || isSearching"
         label="Szukaj destylacji po nazwie rośliny"
         inputColor="distillation"
         @search="handleSearch"
@@ -21,7 +21,7 @@
       ></base-search-item>
       <!-- List sorting component for sorting distillations -->
       <list-sorting
-        v-if="distillationsList.length >= 1"
+        v-if="distillationsList.length >= 1 || isSearching"
         class="distillation__sorting"
         :options="options"
         :sorting="sortingOption"
@@ -118,9 +118,10 @@
       @close-modal="closeAskModal"
     ></ask-modal>
     <!-- Message displayed when no plants are available -->
-    <div v-if="!isLoading && distillationsList.length < 1">
+    <div v-if="!isLoading && distillationsList.length < 1 && !isSearching" >
       brak destylacji w toku...
     </div>
+    <div v-if="!isLoading && distillationsList.length < 1 && isSearching">brak wyników...</div>
     <!-- Pagination for navigating distillation list -->
     <v-pagination
       v-if="!isLoading && distillationsAmount > distillationsPerPage"
@@ -198,6 +199,11 @@ export default {
 
     // Reactive reference for loading state
     const isLoading = ref(true);
+
+            // Reactive reference for searching state
+            const isSearching = computed(() => {
+        return searchQuery.value ? true : false
+        });
 
     // Computed property for pagination length
     const paginationLength = computed(() => {
@@ -537,6 +543,7 @@ export default {
     return {
       distillationsList,
       isLoading,
+      isSearching,
       isModalOpen,
       isAskModalOpen,
       plantName,

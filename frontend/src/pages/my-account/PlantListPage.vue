@@ -13,7 +13,7 @@
     <div class="plant-list__sort">
       <!-- Search item component for searching plants by name -->
       <base-search-item
-        v-if="plantList.length >= 1"
+        v-if="plantList.length >= 1 || isSearching"
         label="Szukaj surowca po nazwie"
         inputColor="plant"
         @search="handleSearch"
@@ -21,7 +21,7 @@
       ></base-search-item>
       <!-- List sorting component for sorting plants -->
       <list-sorting
-        v-if="plantList.length >= 1"
+        v-if="plantList.length >= 1 || isSearching"
         class="plant-list__sorting"
         :options="options"
         :sorting="sortingOption"
@@ -102,7 +102,8 @@
       @delete-item="deletePlant"
     ></delete-item-modal>
     <!-- Message displayed when no plants are available -->
-    <div v-if="!isLoading && plantList.length < 1">magazyn jest pusty...</div>
+    <div v-if="!isLoading && plantList.length < 1 && !isSearching">magazyn jest pusty...</div>
+    <div v-if="!isLoading && plantList.length < 1 && isSearching">brak wyników...</div>
     <!-- Pagination for navigating plant list -->
     <v-pagination
       v-if="!isLoading && plantsAmount > plantsPerPage"
@@ -180,6 +181,11 @@ export default {
 
     // Reactive reference for loading state
     const isLoading = ref(true);
+
+        // Reactive reference for searching state
+        const isSearching = computed(() => {
+        return searchQuery.value ? true : false
+        });
 
     // Computed property for pagination length
     const paginationLength = computed(() => {
@@ -262,7 +268,6 @@ export default {
      * @param {String} query - The search query.
      */
     const handleSearch = async () => {
-      console.log("Search query from Vuex:", searchQuery.value);
       await fetchPlantList(searchQuery.value, sorting.value);
     };
 
@@ -479,6 +484,7 @@ export default {
       page,
       plantsPerPage,
       isLoading,
+      isSearching, 
       paginationLength,
       searchQuery,
       options,

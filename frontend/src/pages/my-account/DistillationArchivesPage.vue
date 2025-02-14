@@ -13,7 +13,7 @@
     <div class="distillation-archives__sort">
       <!-- Search item component for searching distillation archives by name -->
       <base-search-item
-        v-if="distillationArchivesList.length >= 1"
+        v-if="distillationArchivesList.length >= 1 || isSearching"
         label="Szukaj destylacji po nazwie rośliny"
         inputColor="results"
         @search="handleSearch"
@@ -21,7 +21,7 @@
       ></base-search-item>
       <!-- List sorting component for sorting distillation archives -->
       <list-sorting
-        v-if="distillationArchivesList.length >= 1"
+        v-if="distillationArchivesList.length >= 1 || isSearching"
         class="distillation-archives__sorting"
         :options="options"
         :sorting="sortingOption"
@@ -109,9 +109,10 @@
       @delete-item="deleteDistillationArchive"
     ></delete-item-modal>
     <!-- Message displayed when no archives are available -->
-    <div v-if="!isLoading && distillationArchivesList.length < 1">
+    <div v-if="!isLoading && distillationArchivesList.length < 1 && !isSearching">
       brak archiwalnych destylacji...
     </div>
+    <div v-if="!isLoading && distillationArchivesList.length < 1 && isSearching">brak wyników...</div>
     <!-- Pagination for navigating distillation archives list -->
     <v-pagination
       v-if="!isLoading && archivesAmount > archivesPerPage"
@@ -184,6 +185,11 @@ export default {
 
     // Reactive reference for loading state
     const isLoading = ref(true);
+
+            // Reactive reference for searching state
+            const isSearching = computed(() => {
+        return searchQuery.value ? true : false
+        });
 
     // Computed property for pagination length
     const paginationLength = computed(() => {
@@ -493,6 +499,7 @@ export default {
     return {
       distillationArchivesList,
       isLoading,
+      isSearching,
       isModalOpen,
       plantName,
       plantPart,
