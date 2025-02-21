@@ -18,7 +18,7 @@
           :id="id"
           :value="inputValue"
           :disabled="disabled"
-          :placeholder="placeholder"
+           :placeholder="id === 'distillationApparatus' && results.length === 0 ? 'brak zapisanych destylatorów' : placeholder"
           @input="updateValue"
           v-bind="$attrs"
         />
@@ -30,6 +30,7 @@
             'autocomplete-input__icon--distillation': distillationColor,
             'autocomplete-input__icon--invalid': invalidInput,
           }"
+          :style="{ cursor: id === 'distillationApparatus' && results.length === 0 ? 'not-allowed' : 'pointer' }"
           type="mdi"
           :path="path"
           size="36"
@@ -241,6 +242,9 @@ export default {
     };
 
     const openList = () => {
+      if (props.id === "distillationApparatus" && props.results.length === 0) {
+        return;
+      }
       if (!isOpen.value) {
         isOpen.value = true;
       } else {

@@ -68,7 +68,7 @@
       <template v-slot:message>
         <span
           v-if="isFormValid === false && formData.distillationApparatus === ''"
-          >Wybierz rodzaj destylacji</span
+          >Wybierz rodzaj destylalora</span
         >
         <span v-else>&nbsp;</span>
       </template>
