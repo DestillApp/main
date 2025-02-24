@@ -5,7 +5,7 @@
       <!-- Title of the application -->
       <h1 class="header__title">Distill It</h1>
       <!-- Navigation list -->
-      <ul class="header__list">
+      <ul class="header__list" v-if="!isMobileView">
         <!-- Link to the add plant page -->
         <li v-if="isAuthenticated">
           <router-link to="/add-plant" class="header__link">Dodaj surowiec</router-link>
@@ -22,27 +22,39 @@
       <router-link to="/login" v-if="!isAuthenticated && !isLoadingAuthStatus">
         <base-button class="header__button">Zaloguj się
           <!-- SVG icon for the login button -->
-          <svg-icon type="mdi" :path="path" size="18" class="header__icon"></svg-icon>
+          <svg-icon type="mdi" :path="path" size="24" class="header__icon"></svg-icon>
         </base-button>
       </router-link>
       <!-- Logout button -->
       <base-button
       class="header__button"
-        v-if="isAuthenticated && !isLoadingAuthStatus"
+        v-if="isAuthenticated && !isLoadingAuthStatus && !isMobileView"
         @click="handleLogout"
         >Wyloguj się</base-button
       >
+      <!-- Menu icon for mobile view -->
+      <svg-icon
+        v-if="isMobileView && isAuthenticated"
+        class="header__menu-icon"
+        type="mdi"
+        :path="mdiMenu"
+        size="30"
+        @click="toggleMenu"
+      ></svg-icon>
     </nav>
+    <!-- Mobile menu component -->
+    <mobile-menu v-if="isMenuOpen && isMobileView" @toggle-menu="toggleMenu"></mobile-menu>
   </header>
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
-import { mdiAccount } from "@mdi/js";
+import MobileMenu from "@/layout/MobileMenu.vue";
+import { mdiAccount, mdiMenu } from "@mdi/js";
 
 /**
  * @component TheHeader
@@ -50,7 +62,7 @@ import { mdiAccount } from "@mdi/js";
  */
 export default {
   name: "TheHeader",
-  components: { BaseButton, SvgIcon },
+  components: { BaseButton, SvgIcon, MobileMenu },
   setup() {
     // Path for the SVG icon
     const path = ref(mdiAccount);
@@ -69,6 +81,27 @@ export default {
       () => store.getters["auth/isLoadingAuthStatus"]
     );
 
+    // Reactive reference for mobile view
+    const isMobileView = ref(window.innerWidth < 576);
+
+    // Reactive reference for menu open state
+    const isMenuOpen = ref(false);
+
+    // Function to handle window resize
+    const handleResize = () => {
+      isMobileView.value = window.innerWidth < 576;
+    };
+
+    // Add event listener for window resize
+    onMounted(() => {
+      window.addEventListener("resize", handleResize);
+    });
+
+    // Remove event listener for window resize
+    onBeforeUnmount(() => {
+      window.removeEventListener("resize", handleResize);
+    });
+
     //Handling user logout
     const handleLogout = async () => {
       await store.dispatch("auth/logout");
@@ -76,7 +109,13 @@ export default {
       router.push("/login");
     };
 
-    return { path, isAuthenticated, isLoadingAuthStatus, handleLogout };
+    // Function to toggle menu
+    const toggleMenu = () => {
+      isMenuOpen.value = !isMenuOpen.value;
+      console.log("menu", isMenuOpen.value);
+    };
+
+    return { path, isAuthenticated, isLoadingAuthStatus, handleLogout, isMobileView, isMenuOpen, mdiMenu, toggleMenu };
   },
 };
 </script>
@@ -141,6 +180,11 @@ export default {
 }
 
 .header__button {
+  color: var(--header-text-color);
+}
+
+.header__menu-icon {
+  cursor: pointer;
   color: var(--header-text-color);
 }
 </style>

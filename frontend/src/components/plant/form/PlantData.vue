@@ -305,6 +305,6 @@ export default {
 }
 
 .plant-data__state-radioinput {
-  width: 30%;
+  width: 80%;
 }
 </style>
