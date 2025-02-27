@@ -48,7 +48,6 @@
     <base-text-input
       v-model="formData.weightForDistillation"
       type="number"
-      class="distillation-plant__weight"
       classType="number"
       inputColor="plant"
       :invalidInput="
@@ -124,7 +123,6 @@
           </base-text-input>
           <base-text-input
             v-model="formData.weightAfterSoaking"
-            class="distillation-plant__weightAfterSoaking"
             type="number"
             classType="number"
             inputColor="plant"
@@ -576,6 +574,10 @@ export default {
   flex-direction: column;
 }
 
+.distillation-plant {
+  gap: 20px;
+}
+
 .distillation-plant__title {
   font-size: 16px;
 }
@@ -605,19 +607,10 @@ export default {
   color: var(--secondary-color);
 }
 
-.distillation-plant__weight {
-  margin-top: 20px;
-}
-
 .distillation-plant__checkbox-container {
   gap: 50px;
   align-items: flex-start;
   justify-content: center;
-}
-
-.distillation-plant__checkbox {
-  color:var(--text-color);
-  margin-bottom: 10px;
 }
 
 .distillation-plant__checkbox :deep(.v-input__details) {
@@ -632,10 +625,6 @@ export default {
   gap: 20px;
 }
 
-.distillation-plant__weightAfterSoaking {
-  margin-bottom: 20px;
-}
-
 .dark-distillation-plant__checkbox-isPlantShredded {
   flex-grow: 1;
   color: var(--text-color);
@@ -643,5 +632,12 @@ export default {
 
 .dark-distillation-plant__checkbox {
   color: var(--text-color-dark);
+}
+
+@media (max-width: 1024px) {
+  .distillation-plant__checkbox-container {
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 </style>

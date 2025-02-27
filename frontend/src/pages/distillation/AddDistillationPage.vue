@@ -275,6 +275,7 @@ export default {
 .add-distillation__form {
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
 .add-distillation__form-title {
@@ -282,6 +283,6 @@ export default {
 }
 
 .add-distillation__form-button {
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 </style>

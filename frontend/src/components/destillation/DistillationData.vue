@@ -208,19 +208,23 @@ export default {
 .distillation {
   display: flex;
   flex-direction: row;
-  gap: 50px;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  gap: 100px;
 }
 
 .distillation__time {
   position: relative;
-  width: 40%;
 }
 
 .distillation__minutes {
   position: absolute;
   top: 23px;
   left: 100px;
+}
+
+@media (max-width: 1024px) {
+  .distillation {
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 </style>

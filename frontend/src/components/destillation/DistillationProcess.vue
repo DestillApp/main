@@ -1,5 +1,5 @@
 <template>
-  <div class="distillation__process">
+  <div class="distillation-process">
     <!--Title for process part of distillation form-->
     <h5 class="distillation-process__title">destylacja</h5>
     <div class="distillation-process__informations">
@@ -266,7 +266,7 @@ export default {
 .distillation-process {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 }
 
 .distillation-process__title {
@@ -292,5 +292,13 @@ export default {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;
+  margin-top: 5px;
+}
+
+@media (max-width: 1024px) {
+  .distillation-process__informations {
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 </style>
