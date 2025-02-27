@@ -286,7 +286,7 @@ export default {
 .plant-data {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
   justify-content: flex-start;
   text-align: left;
 }
@@ -301,11 +301,11 @@ export default {
   display: flex;
   flex-direction: row;
   gap: 50px;
-  width: 80%;
+  width: 100%;
 }
 
 .plant-data__state-radioinput {
-  width: 80%;
+  width: 50%;
 }
 
 @media (max-width: 600px) {

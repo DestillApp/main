@@ -218,4 +218,15 @@ export default {
 ::v-deep .input__message {
   display: none;
 }
+
+@media (max-width: 600px) {
+  .date-picker__input {
+    width: 150px;
+margin-right: 0px;
+  }
+
+  .date-picker__icon {
+    left: 160px;
+  }
+}
 </style>

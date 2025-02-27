@@ -107,7 +107,7 @@
             </template>
           </v-range-slider>
 
-        <div class="plant-origin__message">
+        <div class="plant-origin__slider-values">
           <base-text-input
                 v-model="formData.harvestStartTime"
                 type="text"
@@ -474,7 +474,7 @@ export default {
     display: none;
   }
 
-.plant-origin__message {
+.plant-origin__slider-values {
   display: none;
 }
 
@@ -503,6 +503,7 @@ export default {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;
+  padding-top: 5px;
 }
 
 @media (max-width: 1024px) {
@@ -522,7 +523,7 @@ export default {
     display: none;
   }
 
-  .plant-origin__message {
+  .plant-origin__slider-values {
     display: flex;
     flex-direction: row;
     justify-content: space-between;

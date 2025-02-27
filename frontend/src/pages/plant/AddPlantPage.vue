@@ -11,7 +11,7 @@
       <!-- Plant data component -->
       <plant-data :isFormValid="isFormValid" :isResetting="isResetting"></plant-data>
       <!-- Button to submit the plant form -->
-      <base-button type="submit">Zapisz</base-button>
+      <base-button class="plant-form__button" type="submit">Zapisz</base-button>
       <!-- Button to submit and go to the distillation form -->
       <base-button @click="savePlantAndDistill">Zapisz i dodaj destylację</base-button>
     </form>
@@ -208,5 +208,9 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.plant-form__button {
+margin-top: 20px;
 }
 </style>
