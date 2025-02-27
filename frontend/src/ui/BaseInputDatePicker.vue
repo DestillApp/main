@@ -214,4 +214,8 @@ export default {
 .date-picker__icon--invalid {
   color: var(--error-color);
 }
+
+::v-deep .input__message {
+  display: none;
+}
 </style>

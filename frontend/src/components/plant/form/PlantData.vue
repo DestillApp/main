@@ -307,4 +307,11 @@ export default {
 .plant-data__state-radioinput {
   width: 80%;
 }
+
+@media (max-width: 600px) {
+  .plant-data__state {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
 </style>

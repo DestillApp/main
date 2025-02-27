@@ -23,12 +23,12 @@
         <base-button class="header__button">Zaloguj się
           <!-- SVG icon for the login button -->
           <svg-icon type="mdi" :path="path" size="24" class="header__icon"></svg-icon>
-        </base-button>
+</base-button>
       </router-link>
       <!-- Logout button -->
       <base-button
       class="header__button"
-        v-if="isAuthenticated && !isLoadingAuthStatus && !isMobileView"
+        v-if="isAuthenticated && !isLoadingAuthStatus && !isMobileView && !isTabletView"
         @click="handleLogout"
         >Wyloguj się</base-button
       >
@@ -40,6 +40,15 @@
         :path="mdiMenu"
         size="30"
         @click="toggleMenu"
+      ></svg-icon>
+      <!-- Logout icon for mobile view -->
+      <svg-icon
+        v-if="isTabletView && isAuthenticated"
+        class="header__menu-icon"
+        type="mdi"
+        :path="mdiLogout"
+        size="30"
+        @click="handleLogout"
       ></svg-icon>
     </nav>
     <!-- Mobile menu component -->
@@ -54,7 +63,7 @@ import { useRouter } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import MobileMenu from "@/layout/MobileMenu.vue";
-import { mdiAccount, mdiMenu } from "@mdi/js";
+import { mdiAccount, mdiMenu, mdiLogout } from "@mdi/js";
 
 /**
  * @component TheHeader
@@ -82,14 +91,18 @@ export default {
     );
 
     // Reactive reference for mobile view
-    const isMobileView = ref(window.innerWidth < 576);
+    const isMobileView = ref(window.innerWidth < 600);
+
+    // Reactive reference for tablet view
+    const isTabletView = ref(window.innerWidth >= 600 && window.innerWidth <= 1024);
 
     // Reactive reference for menu open state
     const isMenuOpen = ref(false);
 
     // Function to handle window resize
     const handleResize = () => {
-      isMobileView.value = window.innerWidth < 576;
+      isMobileView.value = window.innerWidth < 600;
+      isTabletView.value = window.innerWidth >= 600 && window.innerWidth <= 1024;
     };
 
     // Add event listener for window resize
@@ -115,7 +128,7 @@ export default {
       console.log("menu", isMenuOpen.value);
     };
 
-    return { path, isAuthenticated, isLoadingAuthStatus, handleLogout, isMobileView, isMenuOpen, mdiMenu, toggleMenu };
+    return { path, isAuthenticated, isLoadingAuthStatus, handleLogout, isMobileView, isTabletView, isMenuOpen, mdiMenu, mdiLogout, toggleMenu };
   },
 };
 </script>
@@ -129,11 +142,18 @@ export default {
 .header__nav {
   display: flex;
   flex-direction: row;
-  padding: 10px;
+  padding-block: 20px;
+  padding-inline: 30px;
   width: 100%;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .header__nav {
+    padding-block: 10px;
+  }
 }
 
 .header__title {

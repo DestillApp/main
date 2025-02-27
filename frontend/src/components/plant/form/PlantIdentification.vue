@@ -96,4 +96,20 @@ export default {
 .plant-identification__part {
   width: 40%;
 }
+
+@media (max-width: 600px) {
+  .plant-identification {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .plant-identification__name {
+   width: 100%;
+  }
+
+  
+  .plant-identification__part {
+   width: 60%;
+  }
+}
 </style>

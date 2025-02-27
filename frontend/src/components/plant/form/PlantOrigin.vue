@@ -74,7 +74,9 @@
         </base-text-input>
         <div class="plant-origin__hours-container">
           <!-- Label for the harvest hours slider -->
-          <label for="hours_slider" class="plant-origin__hours-label">Godziny zbioru</label>
+          <label for="hours_slider" class="plant-origin__hours-label"
+            >Godziny zbioru</label
+          >
           <!-- Range slider for selecting harvest hours -->
           <v-range-slider
             v-model="formData.harvestRange"
@@ -104,6 +106,23 @@
               ></base-text-input>
             </template>
           </v-range-slider>
+
+        <div class="plant-origin__message">
+          <base-text-input
+                v-model="formData.harvestStartTime"
+                type="text"
+                classType="time"
+                id="start_time"
+                disabled="disabled"
+              ></base-text-input>
+              <base-text-input
+                v-model="formData.harvestEndTime"
+                type="text"
+                classType="time"
+                id="end_time"
+                disabled="disabled"
+              ></base-text-input>
+        </div>
         </div>
       </div>
     </div>
@@ -171,7 +190,6 @@
   </div>
 </template>
 
-
 <script>
 import { useStore } from "vuex";
 import { ref, reactive, computed, watch, onMounted } from "vue";
@@ -221,7 +239,7 @@ export default {
     const harvestRange = computed(() => store.getters["plant/harvestRange"]);
     const plantOrigin = computed(() => store.getters["plant/plantOrigin"]);
 
-     // Watch for changes in the specific formData value (countryOfOrigin)
+    // Watch for changes in the specific formData value (countryOfOrigin)
     watch(
       () => formData.value.countryOfOrigin,
       (newCountryOfOrigin) => {
@@ -229,7 +247,7 @@ export default {
       }
     );
 
-        // Watcher to handle changes in harvest range
+    // Watcher to handle changes in harvest range
     watch(harvestRange, (newValue) => {
       if (props.isResetting) {
         return;
@@ -417,7 +435,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .plant-origin {
   display: flex;
@@ -453,6 +470,14 @@ export default {
   margin-right: 16px;
 }
 
+.plant-origin__slider :deep(.v-input__details) {
+    display: none;
+  }
+
+.plant-origin__message {
+  display: none;
+}
+
 .plant-origin__buy {
   display: flex;
   flex-direction: column;
@@ -478,5 +503,35 @@ export default {
   color: var(--error-color);
   font-size: 12px;
   text-align: left;
+}
+
+@media (max-width: 1024px) {
+  .plant-origin__harvest-conditions {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .plant-origin__hours-label {
+    margin-left: 0px;
+  }
+}
+
+@media (max-width: 600px) {
+  .plant-origin__slider :deep(.v-input__prepend),
+  .plant-origin__slider :deep(.v-input__append) {
+    display: none;
+  }
+
+  .plant-origin__message {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+ .plant-origin__buy-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
 }
 </style>
