@@ -4,17 +4,38 @@
       <h3 class="my-account__title">Moje konto</h3>
       <ul class="my-account__list">
         <li>
-          <router-link to="/my-account/distillations-in-progress/1" class="my-account__link"
+          <router-link
+            to="/my-account/distillations-in-progress/1"
+            class="my-account__link"
+            :class="{
+              'my-account__link--active': $route.path.includes(
+                '/my-account/distillations-in-progress'
+              ),
+            }"
             >Destylacje w toku</router-link
           >
         </li>
         <li>
-          <router-link to="/my-account/plant-list/1" class="my-account__link"
+          <router-link
+            to="/my-account/plant-list/1"
+            class="my-account__link"
+            :class="{
+              'my-account__link--active': $route.path.includes(
+                '/my-account/plant-list'
+              ),
+            }"
             >Magazyn surowców</router-link
           >
         </li>
         <li>
-          <router-link to="/my-account/distillation-archives/1" class="my-account__link"
+          <router-link
+            to="/my-account/distillation-archives/1"
+            class="my-account__link"
+            :class="{
+              'my-account__link--active': $route.path.includes(
+                '/my-account/distillation-archives'
+              ),
+            }"
             >Archiwum destylacji</router-link
           >
         </li>
@@ -71,6 +92,7 @@ export default {
   max-height: 24px;
 }
 .my-account__link:hover,
+.my-account__link--active,
 .router-link-active {
   font-weight: 700;
 }

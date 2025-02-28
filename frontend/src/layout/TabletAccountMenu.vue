@@ -2,24 +2,25 @@
   <div class="tablet-menu">
     <div class="tablet-menu__content">
       <button class="tablet-menu__close" @click="toggleMenu">×</button>
+      <h3 class="tablet-menu__title">Moje konto</h3>
       <ul class="tablet-menu__list">
         <li>
-          <router-link to="/my-account/distillations-in-progress/1" class="tablet-menu__link" @click="toggleMenu">
+          <router-link to="/my-account/distillations-in-progress/1" class="tablet-menu__link" :class="{ 'tablet-menu__link--active': $route.path.includes('/my-account/distillations-in-progress') }" @click="toggleMenu">
             Destylacje w toku
           </router-link>
         </li>
         <li>
-          <router-link to="/my-account/plant-list/1" class="tablet-menu__link" @click="toggleMenu">
+          <router-link to="/my-account/plant-list/1" class="tablet-menu__link" :class="{ 'tablet-menu__link--active': $route.path.includes('/my-account/plant-list') }" @click="toggleMenu">
             Magazyn surowców
           </router-link>
         </li>
         <li>
-          <router-link to="/my-account/distillation-archives/1" class="tablet-menu__link" @click="toggleMenu">
+          <router-link to="/my-account/distillation-archives/1" class="tablet-menu__link" :class="{ 'tablet-menu__link--active': $route.path.includes('/my-account/distillation-archives') }" @click="toggleMenu">
             Archiwum destylacji
           </router-link>
         </li>
         <li>
-          <router-link to="/my-account/my-data" class="tablet-menu__link" @click="toggleMenu">
+          <router-link to="/my-account/my-data" class="tablet-menu__link" :class="{ 'tablet-menu__link--active': $route.path.includes('/my-account/my-data') }" @click="toggleMenu">
             Moje dane
           </router-link>
         </li>
@@ -81,6 +82,12 @@ export default {
   color: var(--header-text-color);
 }
 
+.tablet-menu__title {
+  font-size: 24px;
+  color: var(--header-text-color);
+  margin-bottom: 20px;
+}
+
 .tablet-menu__list {
   display: flex;
   flex-direction: column;
@@ -91,5 +98,9 @@ export default {
   text-decoration: none;
   font-size: 18px;
   color: var(--header-text-color);
+}
+
+.tablet-menu__link--active {
+  font-weight: bold;
 }
 </style>
