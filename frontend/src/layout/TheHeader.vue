@@ -8,27 +8,47 @@
       <ul class="header__list" v-if="!isMobileView">
         <!-- Link to the add plant page -->
         <li v-if="isAuthenticated">
-          <router-link to="/add-plant" class="header__link">Dodaj surowiec</router-link>
+          <router-link to="/add-plant" class="header__link"
+            >Dodaj surowiec</router-link
+          >
         </li>
         <!-- Link to the add distillation page -->
         <li v-if="isAuthenticated">
-          <router-link to="/add-distillation" class="header__link">Dodaj destylację</router-link>
+          <router-link to="/add-distillation" class="header__link"
+            >Dodaj destylację</router-link
+          >
         </li>
-        <li v-if="isAuthenticated">
-          <router-link to="/my-account" class="header__link">Moje konto</router-link>
+        <li v-if="isAuthenticated && !isTabletView">
+          <router-link to="/my-account" class="header__link"
+            >Moje konto</router-link
+          >
+        </li>
+        <li v-if="isTabletView">
+          <a class="header__link" :class="{ 'header__link--isActive': isMyAccountActive }" @click="toggleTabletMenu">Moje konto</a>
         </li>
       </ul>
       <!-- Link to the login page -->
       <router-link to="/login" v-if="!isAuthenticated && !isLoadingAuthStatus">
-        <base-button class="header__button">Zaloguj się
+        <base-button class="header__button"
+          >Zaloguj się
           <!-- SVG icon for the login button -->
-          <svg-icon type="mdi" :path="path" size="24" class="header__icon"></svg-icon>
-</base-button>
+          <svg-icon
+            type="mdi"
+            :path="path"
+            size="24"
+            class="header__icon"
+          ></svg-icon>
+        </base-button>
       </router-link>
       <!-- Logout button -->
       <base-button
-      class="header__button"
-        v-if="isAuthenticated && !isLoadingAuthStatus && !isMobileView && !isTabletView"
+        class="header__button"
+        v-if="
+          isAuthenticated &&
+          !isLoadingAuthStatus &&
+          !isMobileView &&
+          !isTabletView
+        "
         @click="handleLogout"
         >Wyloguj się</base-button
       >
@@ -52,17 +72,26 @@
       ></svg-icon>
     </nav>
     <!-- Mobile menu component -->
-    <mobile-menu v-if="isMenuOpen && isMobileView" @toggle-menu="toggleMenu"></mobile-menu>
+    <mobile-menu
+      v-if="isMenuOpen && isMobileView"
+      @toggle-menu="toggleMenu"
+    ></mobile-menu>
+    <!-- Tablet menu component -->
+    <tablet-account-menu
+      v-if="isTabletMenuOpen && isTabletView"
+      @toggle-menu="toggleTabletMenu"
+    ></tablet-account-menu>
   </header>
 </template>
 
 <script>
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import MobileMenu from "@/layout/MobileMenu.vue";
+import TabletAccountMenu from "@/layout/TabletAccountMenu.vue";
 import { mdiAccount, mdiMenu, mdiLogout } from "@mdi/js";
 
 /**
@@ -71,13 +100,14 @@ import { mdiAccount, mdiMenu, mdiLogout } from "@mdi/js";
  */
 export default {
   name: "TheHeader",
-  components: { BaseButton, SvgIcon, MobileMenu },
+  components: { BaseButton, SvgIcon, MobileMenu, TabletAccountMenu },
   setup() {
     // Path for the SVG icon
     const path = ref(mdiAccount);
 
     //useRouter hook
     const router = useRouter();
+    const route = useRoute();
 
     // Vuex store instance
     const store = useStore();
@@ -94,15 +124,24 @@ export default {
     const isMobileView = ref(window.innerWidth < 600);
 
     // Reactive reference for tablet view
-    const isTabletView = ref(window.innerWidth >= 600 && window.innerWidth <= 1024);
+    const isTabletView = ref(
+      window.innerWidth >= 600 && window.innerWidth <= 1024
+    );
 
     // Reactive reference for menu open state
     const isMenuOpen = ref(false);
 
+    // Reactive reference for tablet menu open state
+    const isTabletMenuOpen = ref(false);
+
+    // Computed property to check if the current path starts with /my-account
+    const isMyAccountActive = computed(() => route.path.startsWith("/my-account"));
+
     // Function to handle window resize
     const handleResize = () => {
       isMobileView.value = window.innerWidth < 600;
-      isTabletView.value = window.innerWidth >= 600 && window.innerWidth <= 1024;
+      isTabletView.value =
+        window.innerWidth >= 600 && window.innerWidth <= 1024;
     };
 
     // Add event listener for window resize
@@ -128,7 +167,27 @@ export default {
       console.log("menu", isMenuOpen.value);
     };
 
-    return { path, isAuthenticated, isLoadingAuthStatus, handleLogout, isMobileView, isTabletView, isMenuOpen, mdiMenu, mdiLogout, toggleMenu };
+    // Function to toggle tablet menu
+    const toggleTabletMenu = () => {
+      isTabletMenuOpen.value = !isTabletMenuOpen.value;
+      console.log("tablet menu", isTabletMenuOpen.value);
+    };
+
+    return {
+      path,
+      isAuthenticated,
+      isLoadingAuthStatus,
+      handleLogout,
+      isMobileView,
+      isTabletView,
+      isMenuOpen,
+      isTabletMenuOpen,
+      isMyAccountActive,
+      mdiMenu,
+      mdiLogout,
+      toggleMenu,
+      toggleTabletMenu,
+    };
   },
 };
 </script>
@@ -186,7 +245,8 @@ export default {
   transition: transform 0.3s ease-out;
 }
 
-.header__link:hover::after {
+.header__link:hover::after,
+.header__link--isActive::after {
   transform: scaleX(1);
   transform-origin: center;
 }
