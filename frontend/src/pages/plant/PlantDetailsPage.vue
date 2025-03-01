@@ -26,7 +26,9 @@
         <div class="plant-details__buttons">
           <router-link
             :to="{ name: 'EditPlantPage', params: { page: page, id: plantId } }"
-            ><button class="plant-details__button-edit">Edytuj</button></router-link
+            ><button class="plant-details__button-edit">
+              Edytuj
+            </button></router-link
           >
           <button class="plant-details__button-delete" @click="openDeleteModal">
             Usuń
@@ -45,7 +47,10 @@
       <!-- Display additional plant data -->
       <div class="plant-details__container-two">
         <!-- Show specific data if plant origin is 'zbiór' -->
-        <div v-if="plantDetails.plantOrigin === 'zbiór'" class="plant-details__info">
+        <div
+          v-if="plantDetails.plantOrigin === 'zbiór'"
+          class="plant-details__info"
+        >
           <h5 class="plant-details__title">warunki zbioru</h5>
           <div class="plant-details__data">
             data zbioru: {{ plantDetails.harvestDate }}
@@ -59,7 +64,10 @@
           </div>
         </div>
         <!-- Show specific data if plant origin is 'kupno' -->
-        <div v-if="plantDetails.plantOrigin === 'kupno'" class="plant-details__info">
+        <div
+          v-if="plantDetails.plantOrigin === 'kupno'"
+          class="plant-details__info"
+        >
           <h5 class="plant-details__title">dane zakupu</h5>
           <div class="plant-details__data">
             data zakupu: {{ plantDetails.plantBuyDate }}
@@ -76,11 +84,16 @@
           <div class="plant-details__data">
             początkowa ilość: {{ plantDetails.plantWeight }} kg
           </div>
-          <div class="plant-details__data" v-if="plantDetails.plantOrigin === 'kupno'">
+          <div
+            class="plant-details__data"
+            v-if="plantDetails.plantOrigin === 'kupno'"
+          >
             wiek przy zakupie: {{ plantDetails.plantAge }}
             {{ plantAgeWithSuffix(plantDetails.plantAge) }}
           </div>
-          <div class="plant-details__data">stan: {{ plantDetails.plantState }}</div>
+          <div class="plant-details__data">
+            stan: {{ plantDetails.plantState }}
+          </div>
           <div
             v-if="plantDetails.plantState === 'podsuszony'"
             class="plant-details__data"
@@ -93,7 +106,9 @@
       <router-link
         :to="{ name: 'AddDistillationPage', params: { id: plantId } }"
         class="plant-details__distill"
-        ><base-button class="plant-details__distill-button">Destyluj</base-button></router-link
+        ><base-button class="plant-details__distill-button"
+          >Destyluj</base-button
+        ></router-link
       >
     </div>
   </div>
@@ -236,6 +251,10 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .my-account__card {
+ margin-top: 50px;
+}
+
 .plant-details__spinner {
   margin-block: 20px;
 }
@@ -317,5 +336,25 @@ export default {
 
 .plant-details__distill-button:hover {
   color: var(--secondary-color);
+}
+
+@media (max-width: 800px) {
+  .plant-details__instock {
+    flex-direction: column;
+  }
+
+  .plant-details__container-two {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .plant-details__info {
+    width: 100%;
+  }
+  .plant-details__data {
+    padding-left: 0;
+    padding-right: 0;
+    justify-content: center;
+  }
 }
 </style>
