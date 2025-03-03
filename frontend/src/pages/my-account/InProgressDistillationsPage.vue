@@ -58,8 +58,12 @@
             </div>
           </div>
           <div class="distillation__plant-identification">
-            <div class="distillation__plant-name">{{ distillation.choosedPlant.name }}</div>
-            <div class="distillation__plant-part">{{ distillation.choosedPlant.part }}</div>
+            <div class="distillation__plant-name">
+              {{ distillation.choosedPlant.name }}
+            </div>
+            <div class="distillation__plant-part">
+              {{ distillation.choosedPlant.part }}
+            </div>
           </div>
           <div class="distillation__buttons">
             <router-link
@@ -118,10 +122,12 @@
       @close-modal="closeAskModal"
     ></ask-modal>
     <!-- Message displayed when no plants are available -->
-    <div v-if="!isLoading && distillationsList.length < 1 && !isSearching" >
+    <div v-if="!isLoading && distillationsList.length < 1 && !isSearching">
       brak destylacji w toku...
     </div>
-    <div v-if="!isLoading && distillationsList.length < 1 && isSearching">brak wyników...</div>
+    <div v-if="!isLoading && distillationsList.length < 1 && isSearching">
+      brak wyników...
+    </div>
     <!-- Pagination for navigating distillation list -->
     <v-pagination
       v-if="!isLoading && distillationsAmount > distillationsPerPage"
@@ -200,10 +206,10 @@ export default {
     // Reactive reference for loading state
     const isLoading = ref(true);
 
-            // Reactive reference for searching state
-            const isSearching = computed(() => {
-        return searchQuery.value ? true : false
-        });
+    // Reactive reference for searching state
+    const isSearching = computed(() => {
+      return searchQuery.value ? true : false;
+    });
 
     // Computed property for pagination length
     const paginationLength = computed(() => {
@@ -268,7 +274,6 @@ export default {
         const end = page.value * distillationsPerPage.value;
 
         distillationsList.value = data.getDistillations.slice(start, end);
-        console.log(distillationsList.value);
       } catch (error) {
         if (error.message === "Unauthorized") {
           await store.dispatch("auth/logout");
@@ -283,7 +288,6 @@ export default {
     };
 
     const handleSearch = async () => {
-      console.log("Search query from Vuex:", searchQuery.value);
       await fetchDistillationList(searchQuery.value, sorting.value);
     };
 
@@ -314,82 +318,47 @@ export default {
     };
 
     /**
+     * @function updateSorting
+     * @description Update the sorting option and fetch the distillation list.
+     * @param {String} sortingKey - The sorting key.
+     * @param {String} sortingValue - The sorting value.
+     */
+    const updateSorting = async (sortingKey, sortingValue) => {
+      const update = await updateListSorting(
+        apolloClient,
+        "distillationListSorting",
+        sortingKey
+      );
+      if (update === "Unauthorized") {
+        await store.dispatch("auth/logout");
+        router.push("/login");
+        return;
+      } else {
+        store.dispatch("settings/setValue", {
+          input: "distillationListSorting",
+          value: sortingKey,
+        });
+        await fetchDistillationList(searchQuery.value, sortingValue);
+      }
+    };
+
+    /**
      * @function handleSorting
      * @description Handle the sorting of the distillation list.
      * @param {String} sorting - The sorting option.
      */
     const handleSorting = async (option) => {
       if (option === "nazwy rośliny alfabetycznie") {
-        const update = await updateListSorting(
-          apolloClient,
-          "distillationListSorting",
-          "plantName"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          store.dispatch("settings/setValue", {
-            input: "distillationListSorting",
-            value: "plantName",
-          });
-          await fetchDistillationList(searchQuery.value, "plantName");
-        }
+        await updateSorting("plantName", "plantName");
       }
       if (option === "daty dodania destylacji") {
-        const update = await updateListSorting(
-          apolloClient,
-          "distillationListSorting",
-          "createdAt"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          store.dispatch("settings/setValue", {
-            input: "distillationListSorting",
-            value: "createdAt",
-          });
-          await fetchDistillationList(searchQuery.value, "createdAt");
-        }
+        await updateSorting("createdAt", "createdAt");
       }
       if (option === "najstarszej daty destylacji") {
-        const update = await updateListSorting(
-          apolloClient,
-          "distillationListSorting",
-          "oldDate"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          store.dispatch("settings/setValue", {
-            input: "distillationListSorting",
-            value: "oldDate",
-          });
-          await fetchDistillationList(searchQuery.value, "oldDate");
-        }
+        await updateSorting("oldDate", "oldDate");
       }
       if (option === "najnowszej daty destylacji") {
-        const update = await updateListSorting(
-          apolloClient,
-          "distillationListSorting",
-          "youngDate"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          store.dispatch("settings/setValue", {
-            input: "distillationListSorting",
-            value: "youngDate",
-          });
-          await fetchDistillationList(searchQuery.value, "youngDate");
-        }
+        await updateSorting("youngDate", "youngDate");
       }
       page.value = 1;
     };
@@ -583,6 +552,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .distillation__sorting {
@@ -674,5 +644,16 @@ export default {
 
 .distillation__pagination {
   margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+  .distillation__sort {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .distillation__sorting {
+    width: 250px;
+  }
 }
 </style>

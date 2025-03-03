@@ -294,82 +294,47 @@ export default {
     };
 
     /**
+     * @function updateSorting
+     * @description Update the sorting option and fetch the plant list.
+     * @param {String} sortingKey - The sorting key.
+     * @param {String} sortingValue - The sorting value.
+     */
+    const updateSorting = async (sortingKey, sortingValue) => {
+      const update = await updateListSorting(
+        apolloClient,
+        "plantListSorting",
+        sortingKey
+      );
+      if (update === "Unauthorized") {
+        await store.dispatch("auth/logout");
+        router.push("/login");
+        return;
+      } else {
+        store.dispatch("settings/setValue", {
+          input: "plantListSorting",
+          value: sortingKey,
+        });
+        await fetchPlantList(searchQuery.value, sortingValue);
+      }
+    };
+
+    /**
      * @function handleSorting
      * @description Handle the sorting of the plant list.
-     * @param {String} sorting - The sorting option.
+     * @param {String} option - The sorting option.
      */
     const handleSorting = async (option) => {
       if (option === "nazwy rośliny alfabetycznie") {
-        const update = await updateListSorting(
-          apolloClient,
-          "plantListSorting",
-          "plantName"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          store.dispatch("settings/setValue", {
-            input: "plantListSorting",
-            value: "plantName",
-          });
-          await fetchPlantList(searchQuery.value, "plantName");
-        }
+        await updateSorting("plantName", "plantName");
       }
       if (option === "daty dodania") {
-        const update = await updateListSorting(
-          apolloClient,
-          "plantListSorting",
-          "createdAt"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          store.dispatch("settings/setValue", {
-            input: "plantListSorting",
-            value: "createdAt",
-          });
-          await fetchPlantList(searchQuery.value, "createdAt");
-        }
+        await updateSorting("createdAt", "createdAt");
       }
       if (option === "najstarszej daty zbioru i zakupu") {
-        const update = await updateListSorting(
-          apolloClient,
-          "plantListSorting",
-          "oldDate"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          store.dispatch("settings/setValue", {
-            input: "plantListSorting",
-            value: "oldDate",
-          });
-          await fetchPlantList(searchQuery.value, "oldDate");
-        }
+        await updateSorting("oldDate", "oldDate");
       }
       if (option === "najnowszej daty zbioru i zakupu") {
-        const update = await updateListSorting(
-          apolloClient,
-          "plantListSorting",
-          "youngDate"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          store.dispatch("settings/setValue", {
-            input: "plantListSorting",
-            value: "youngDate",
-          });
-          await fetchPlantList(searchQuery.value, "youngDate");
-        }
+        await updateSorting("youngDate", "youngDate");
       }
       page.value = 1;
     };
@@ -513,6 +478,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .plant-list__sorting {
@@ -604,5 +570,16 @@ export default {
 
 .plant-list__pagination {
   margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+  .plant-list__sort {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .plant-list__sorting {
+    width: 260px;
+  }
 }
 </style>

@@ -58,8 +58,12 @@
             </div>
           </div>
           <div class="distillation-archives__plant-identification">
-            <div class="distillation-archives__plant-name">{{ archive.distilledPlant.plantName }}</div>
-            <div class="distillation-archives__plant-part">{{ archive.distilledPlant.plantPart }}</div>
+            <div class="distillation-archives__plant-name">
+              {{ archive.distilledPlant.plantName }}
+            </div>
+            <div class="distillation-archives__plant-part">
+              {{ archive.distilledPlant.plantPart }}
+            </div>
           </div>
           <div class="distillation-archives__buttons">
             <router-link
@@ -109,10 +113,16 @@
       @delete-item="deleteDistillationArchive"
     ></delete-item-modal>
     <!-- Message displayed when no archives are available -->
-    <div v-if="!isLoading && distillationArchivesList.length < 1 && !isSearching">
+    <div
+      v-if="!isLoading && distillationArchivesList.length < 1 && !isSearching"
+    >
       brak archiwalnych destylacji...
     </div>
-    <div v-if="!isLoading && distillationArchivesList.length < 1 && isSearching">brak wyników...</div>
+    <div
+      v-if="!isLoading && distillationArchivesList.length < 1 && isSearching"
+    >
+      brak wyników...
+    </div>
     <!-- Pagination for navigating distillation archives list -->
     <v-pagination
       v-if="!isLoading && archivesAmount > archivesPerPage"
@@ -186,10 +196,10 @@ export default {
     // Reactive reference for loading state
     const isLoading = ref(true);
 
-            // Reactive reference for searching state
-            const isSearching = computed(() => {
-        return searchQuery.value ? true : false
-        });
+    // Reactive reference for searching state
+    const isSearching = computed(() => {
+      return searchQuery.value ? true : false;
+    });
 
     // Computed property for pagination length
     const paginationLength = computed(() => {
@@ -279,7 +289,6 @@ export default {
      * @param {String} query - The search query.
      */
     const handleSearch = async () => {
-      console.log("Search query from Vuex:", searchQuery.value);
       await fetchDistillationArchivesList(searchQuery.value, sorting.value);
     };
 
@@ -309,81 +318,52 @@ export default {
       }
     };
 
+    /**
+     * @function updateSorting
+     * @description Update the sorting option and fetch the distillation archives list.
+     * @param {String} sortingKey - The sorting key.
+     * @param {String} sortingValue - The sorting value.
+     */
+    const updateSorting = async (sortingKey, sortingValue) => {
+      const update = await updateListSorting(
+        apolloClient,
+        "archiveDistillationListSorting",
+        sortingKey
+      );
+      if (update === "Unauthorized") {
+        await store.dispatch("auth/logout");
+        router.push("/login");
+        return;
+      } else {
+        store.dispatch("settings/setValue", {
+          input: "archiveDistillationListSorting",
+          value: sortingKey,
+        });
+        await fetchDistillationArchivesList(searchQuery.value, sortingValue);
+      }
+    };
+
+    /**
+     * @function handleSorting
+     * @description Handle the sorting of the distillation archives list.
+     * @param {String} option - The sorting option.
+     */
     const handleSorting = async (option) => {
       if (option === "nazwy rośliny alfabetycznie") {
-        const update = await updateListSorting(
-          apolloClient,
-          "archiveDistillationListSorting",
-          "plantName"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          store.dispatch("settings/setValue", {
-            input: "archiveDistillationListSorting",
-            value: "plantName",
-          });
-          await fetchDistillationArchivesList(searchQuery.value, "plantName");
-        }
+        await updateSorting("plantName", "plantName");
       }
       if (option === "daty dodania destylacji") {
-        const update = await updateListSorting(
-          apolloClient,
-          "archiveDistillationListSorting",
-          "createdAt"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-        store.dispatch("settings/setValue", {
-          input: "archiveDistillationListSorting",
-          value: "createdAt",
-        });
-        await fetchDistillationArchivesList(searchQuery.value, "createdAt");
-      }
+        await updateSorting("createdAt", "createdAt");
       }
       if (option === "najstarszej daty destylacji") {
-        const update = await updateListSorting(
-          apolloClient,
-          "archiveDistillationListSorting",
-          "oldDate"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-        store.dispatch("settings/setValue", {
-          input: "archiveDistillationListSorting",
-          value: "oldDate",
-        });
-        await fetchDistillationArchivesList(searchQuery.value, "oldDate");
-      }
+        await updateSorting("oldDate", "oldDate");
       }
       if (option === "najnowszej daty destylacji") {
-        const update = await updateListSorting(
-          apolloClient,
-          "archiveDistillationListSorting",
-          "youngDate"
-        );
-        if (update === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-        store.dispatch("settings/setValue", {
-          input: "archiveDistillationListSorting",
-          value: "youngDate",
-        });
-        await fetchDistillationArchivesList(searchQuery.value, "youngDate");
-      }
+        await updateSorting("youngDate", "youngDate");
       }
       page.value = 1;
     };
+
 
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
@@ -535,6 +515,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .distillation-archives__sorting {
@@ -639,5 +620,16 @@ export default {
 
 .distillation-archives__pagination {
   margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+  .distillation-archives__sort {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .distillation-archives__sorting {
+    width: 250px;
+  }
 }
 </style>

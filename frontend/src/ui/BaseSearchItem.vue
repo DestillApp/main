@@ -34,7 +34,7 @@
     <!-- Clickable red cross icon for clearing the search -->
     <svg-icon
       v-if="isSearchEmitted"
-      class="search-item__clear-icon"
+      class="search-item__icon search-item__clear-icon"
       type="mdi"
       :path="mdiClose"
       size="24"
@@ -142,12 +142,13 @@ export default {
 .search-item {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-end;
   gap: 10px;
 }
 
 .search-item__icon {
   cursor: pointer;
+  margin-bottom: 4px;
 }
 
 .search-item__icon--plant {
@@ -203,11 +204,14 @@ export default {
 }
 
 .search-item__clear-icon {
-  cursor: pointer;
-  color: red;
+  color: var(--error-color);
 }
 
 .search-item__clear-icon:hover {
   color: darkred;
+}
+
+::v-deep .input__message {
+  display: none;
 }
 </style>
