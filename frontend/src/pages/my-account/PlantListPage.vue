@@ -37,16 +37,9 @@
       indeterminate
     ></v-progress-circular>
     <!-- Plant list -->
-    <ul
-      v-if="!isLoading && plantList.length >= 1"
-      class="plant-list__list"
-    >
+    <ul v-if="!isLoading && plantList.length >= 1" class="plant-list__list">
       <!-- Iterate through plantList and display each plant's data -->
-      <li
-        v-for="plant in plantList"
-        :key="plant._id"
-        class="plant-list__item"
-      >
+      <li v-for="plant in plantList" :key="plant._id" class="plant-list__item">
         <div class="plant-list__container">
           <div class="plant-list__data">
             <div class="plant-list__weight">
@@ -102,8 +95,12 @@
       @delete-item="deletePlant"
     ></delete-item-modal>
     <!-- Message displayed when no plants are available -->
-    <div v-if="!isLoading && plantList.length < 1 && !isSearching">magazyn jest pusty...</div>
-    <div v-if="!isLoading && plantList.length < 1 && isSearching">brak wyników...</div>
+    <div v-if="!isLoading && plantList.length < 1 && !isSearching">
+      magazyn jest pusty...
+    </div>
+    <div v-if="!isLoading && plantList.length < 1 && isSearching">
+      brak wyników...
+    </div>
     <!-- Pagination for navigating plant list -->
     <v-pagination
       v-if="!isLoading && plantsAmount > plantsPerPage"
@@ -118,7 +115,7 @@
 </template>
 
 <script>
-import { ref, onBeforeMount, onMounted, watch, computed } from "vue";
+import { ref, reactive, onBeforeMount, onMounted, watch, computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
@@ -131,7 +128,10 @@ import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
-import { updateListSorting, updateListSettings } from "@/graphql/mutations/settingsFunctions.js";
+import {
+  updateListSorting,
+  updateListSettings,
+} from "@/graphql/mutations/settingsFunctions.js";
 import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
 
 /**
@@ -182,10 +182,10 @@ export default {
     // Reactive reference for loading state
     const isLoading = ref(true);
 
-        // Reactive reference for searching state
-        const isSearching = computed(() => {
-        return searchQuery.value ? true : false
-        });
+    // Reactive reference for searching state
+    const isSearching = computed(() => {
+      return searchQuery.value ? true : false;
+    });
 
     // Computed property for pagination length
     const paginationLength = computed(() => {
@@ -195,22 +195,17 @@ export default {
     // Computed property to get searchQuery from Vuex store
     const searchQuery = computed(() => store.getters.searchQuery);
 
-    const options = ref([
-      "nazwy rośliny alfabetycznie",
-      "daty dodania",
-      "najnowszej daty zbioru i zakupu",
-      "najstarszej daty zbioru i zakupu",
-    ]);
+    const options = reactive({
+      plantName: "nazwy rośliny alfabetycznie",
+      createdAt: "daty dodania",
+      oldDate: "najstarszej daty zbioru i zakupu",
+      youngDate: "najnowszej daty zbioru i zakupu",
+    });
 
     const sortingOption = computed(() => {
       const sortingValue =
         store.getters["settings/settingsForm"].plantListSorting;
-      if (sortingValue === "plantName") return "nazwy rośliny alfabetycznie";
-      if (sortingValue === "createdAt") return "daty dodania";
-      if (sortingValue === "oldDate") return "najstarszej daty zbioru i zakupu";
-      if (sortingValue === "youngDate")
-        return "najnowszej daty zbioru i zakupu";
-      return "";
+      return options[sortingValue] || "";
     });
 
     const sorting = computed(
@@ -277,7 +272,11 @@ export default {
      * @param {Number} length - The selected length.
      */
     const handleSelectLength = async (length) => {
-      const isUpdating = await updateListSettings(apolloClient, "plantListLength", length);
+      const isUpdating = await updateListSettings(
+        apolloClient,
+        "plantListLength",
+        length
+      );
       if (isUpdating === "Unauthorized") {
         await store.dispatch("auth/logout");
         router.push("/login");
@@ -291,6 +290,19 @@ export default {
         });
         page.value = 1;
       }
+    };
+
+    /**
+     * @function handleSorting
+     * @description Handle the sorting of the items list.
+     * @param {String} option - The sorting option.
+     */
+    const handleSorting = async (option) => {
+      const sortingKey = Object.keys(options).find(
+        (key) => options[key] === option
+      );
+      await updateSorting(sortingKey, sortingKey);
+      page.value = 1;
     };
 
     /**
@@ -318,27 +330,6 @@ export default {
       }
     };
 
-    /**
-     * @function handleSorting
-     * @description Handle the sorting of the plant list.
-     * @param {String} option - The sorting option.
-     */
-    const handleSorting = async (option) => {
-      if (option === "nazwy rośliny alfabetycznie") {
-        await updateSorting("plantName", "plantName");
-      }
-      if (option === "daty dodania") {
-        await updateSorting("createdAt", "createdAt");
-      }
-      if (option === "najstarszej daty zbioru i zakupu") {
-        await updateSorting("oldDate", "oldDate");
-      }
-      if (option === "najnowszej daty zbioru i zakupu") {
-        await updateSorting("youngDate", "youngDate");
-      }
-      page.value = 1;
-    };
-
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "plantListLength",
@@ -351,7 +342,7 @@ export default {
 
     // Fetch plant list when the component is mounted
     onMounted(async () => {
-        await fetchPlantList(searchQuery.value, sorting.value);
+      await fetchPlantList(searchQuery.value, sorting.value);
     });
 
     // Watch for changes in the page number and refetch plant list.
@@ -449,7 +440,7 @@ export default {
       page,
       plantsPerPage,
       isLoading,
-      isSearching, 
+      isSearching,
       paginationLength,
       searchQuery,
       options,

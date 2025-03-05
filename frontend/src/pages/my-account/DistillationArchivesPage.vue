@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { ref, computed, onBeforeMount, onMounted, watch } from "vue";
+import { ref, reactive, computed, onBeforeMount, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
@@ -209,21 +209,17 @@ export default {
     // Computed property to get searchQuery from Vuex store
     const searchQuery = computed(() => store.getters.searchQuery);
 
-    const options = ref([
-      "nazwy rośliny alfabetycznie",
-      "daty dodania destylacji",
-      "najnowszej daty destylacji",
-      "najstarszej daty destylacji",
-    ]);
+    const options = reactive({
+    plantName: "nazwy rośliny alfabetycznie",
+    createdAt: "daty dodania destylacji",
+     youngDate: "najnowszej daty destylacji",
+    oldDate: "najstarszej daty destylacji",
+  });
 
     const sortingOption = computed(() => {
       const sortingValue =
         store.getters["settings/settingsForm"].archiveDistillationListSorting;
-      if (sortingValue === "plantName") return "nazwy rośliny alfabetycznie";
-      if (sortingValue === "createdAt") return "daty dodania destylacji";
-      if (sortingValue === "oldDate") return "najstarszej daty destylacji";
-      if (sortingValue === "youngDate") return "najnowszej daty destylacji";
-      return "";
+      return options[sortingValue] || "";
     });
 
     const sorting = ref(
@@ -343,27 +339,18 @@ export default {
       }
     };
 
-    /**
+        /**
      * @function handleSorting
-     * @description Handle the sorting of the distillation archives list.
+     * @description Handle the sorting of the items list.
      * @param {String} option - The sorting option.
      */
-    const handleSorting = async (option) => {
-      if (option === "nazwy rośliny alfabetycznie") {
-        await updateSorting("plantName", "plantName");
-      }
-      if (option === "daty dodania destylacji") {
-        await updateSorting("createdAt", "createdAt");
-      }
-      if (option === "najstarszej daty destylacji") {
-        await updateSorting("oldDate", "oldDate");
-      }
-      if (option === "najnowszej daty destylacji") {
-        await updateSorting("youngDate", "youngDate");
-      }
+     const handleSorting = async (option) => {
+      const sortingKey = Object.keys(options).find(
+        (key) => options[key] === option
+      );
+      await updateSorting(sortingKey, sortingKey);
       page.value = 1;
     };
-
 
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
