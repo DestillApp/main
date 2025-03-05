@@ -54,7 +54,8 @@
               {{ distillation.distillationType }}
             </div>
             <div class="distillation__date">
-              data destylacji: {{ distillation.distillationDate }}
+              <p class="distillation__date-state">data destylacji:</p>
+              {{ distillation.distillationDate }}
             </div>
           </div>
           <div class="distillation__plant-identification">
@@ -588,8 +589,14 @@ export default {
 
 .distillation__date {
   display: flex;
+  flex-direction: column;
   font-size: 11px;
+  gap: 6px;
   justify-content: flex-start;
+}
+
+.distillation__date-state {
+  margin-right: 5px;
 }
 
 .distillation__plant-identification {
@@ -597,7 +604,7 @@ export default {
   flex-direction: column;
   gap: 5px;
   padding-block: 10px;
-  width: 50%;
+  width: 100%;
 }
 
 .distillation__plant-name {
@@ -642,6 +649,73 @@ export default {
 
   .distillation__sorting {
     width: 250px;
+  }
+
+}
+
+@media (max-width: 600px) {
+  .distillation__item {
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid var(--primary-color-distillation);
+  }
+
+  .distillation__container {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .distillation__buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .distillation__button-details,
+  .distillation__button-delete {
+    flex: 1;
+    text-align: center;
+  }
+
+  .distillation__button-details {
+    margin-left: 10px;
+  }
+
+  .distillation__button-delete {
+    margin-right: 10px;
+    text-align: right;
+  }
+
+  .distillation__data {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-inline: 20px;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .distillation__identification {
+    width: 100%;
+  }
+
+  .distillation__type,
+  .distillation__date {
+    flex: 1;
+    text-align: left;
+  }
+
+  .distillation__date {
+    text-align: right;
+  }
+
+  .distillation__date-state {
+    margin-right: 0px;
+  }
+
+  .distillation__type-state {
+    font-size: 11px;
   }
 }
 </style>

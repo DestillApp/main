@@ -47,10 +47,10 @@
               {{ plant.availableWeight }} kg
             </div>
             <div class="plant-list__date" v-if="plant.harvestDate !== null">
-              zbiór: {{ plant.harvestDate }}
+              <p class="plant-list__date-state">zbiór:</p> {{ plant.harvestDate }}
             </div>
             <div class="plant-list__date" v-if="plant.plantBuyDate !== null">
-              kupno: {{ plant.plantBuyDate }}
+             <p class="plant-list__date-state">kupno:</p>{{ plant.plantBuyDate }}
             </div>
           </div>
           <div class="plant-list__identification">
@@ -521,6 +521,10 @@ export default {
   justify-content: flex-start;
 }
 
+.plant-list__date-state {
+  margin-right: 5px;
+}
+
 .plant-list__identification {
   display: flex;
   flex-direction: column;
@@ -571,6 +575,74 @@ export default {
 
   .plant-list__sorting {
     width: 260px;
+  }
+}
+
+@media (max-width: 600px) {
+  .plant-list__item {
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid var(--primary-color);
+  }
+
+  .plant-list__container {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .plant-list__buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .plant-list__button-details,
+  .plant-list__button-delete {
+    flex: 1;
+    text-align: center;
+  }
+
+  .plant-list__button-details {
+    margin-left: 10px;
+  }
+
+  .plant-list__button-delete {
+    margin-right: 10px;
+    text-align: right;
+  }
+
+  .plant-list__data {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-inline: 20px;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .plant-list__identification {
+    width: 100%;
+  }
+
+  .plant-list__weight,
+  .plant-list__date {
+    flex: 1;
+    text-align: left;
+  }
+
+  .plant-list__date {
+    flex-direction: column;
+    gap: 6px;
+    text-align: right;
+  }
+
+  .plant-list__date-state {
+    margin-right: 0px;
+  }
+
+  .plant-list__weight-state {
+    font-size: 11px;
   }
 }
 </style>

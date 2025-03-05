@@ -54,7 +54,8 @@
               {{ archive.distillationData.distillationType }}
             </div>
             <div class="distillation-archives__date">
-              data destylacji: {{ archive.distillationData.distillationDate }}
+              <p class="distillation-archives__date-state">data destylacji:</p>
+              {{ archive.distillationData.distillationDate }}
             </div>
           </div>
           <div class="distillation-archives__plant-identification">
@@ -550,8 +551,14 @@ export default {
 
 .distillation-archives__date {
   display: flex;
+  flex-direction: column;
   font-size: 11px;
+  gap: 6px;
   justify-content: flex-start;
+}
+
+.distillation-archives__date-state{
+margin-right: 5px;
 }
 
 .distillation-archives__plant-identification {
@@ -617,6 +624,76 @@ export default {
 
   .distillation-archives__sorting {
     width: 250px;
+  }
+}
+
+@media (max-width: 600px) {
+  .distillation-archives__item {
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid var(--primary-color-results);
+  }
+
+  .distillation-archives__item-container {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .distillation-archives__buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .distillation-archives__button-details,
+  .distillation-archives__button-delete {
+    flex: 1;
+    text-align: center;
+  }
+
+  .distillation-archives__button-details {
+    margin-left: 10px;
+  }
+
+  .distillation-archives__button-delete {
+    margin-right: 10px;
+    text-align: right;
+  }
+
+  .distillation-archives__data {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-inline: 20px;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .distillation-archives__plant-identification {
+    width: 100%;
+  }
+
+  .distillation-archives__type,
+  .distillation-archives__date {
+    flex: 1;
+    text-align: left;
+  }
+
+  .distillation-archives__date {
+    text-align: right;
+  }
+
+  .distillation-archives__date-state {
+    margin-right: 0px;
+  }
+
+  .distillation-archives__type-state {
+    font-size: 11px;
+  }
+
+  .distillation-archives__results {
+    flex-direction: column;
   }
 }
 </style>

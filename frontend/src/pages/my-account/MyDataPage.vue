@@ -317,4 +317,16 @@ export default {
 .my-data__settings-button {
   width: 150px;
 }
+
+@media (max-width: 600px) { 
+  .my-data__user-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .my-data__distiller-item {
+    width: 80%;  }
+}
+
 </style>
