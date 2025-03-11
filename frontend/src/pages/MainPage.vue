@@ -4,6 +4,7 @@
 
 <style scoped>
 .main-page__title {
-    margin-top: 30vh;
+    margin-top: 40vh;
+
 }
 </style>

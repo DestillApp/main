@@ -23,7 +23,7 @@
             >Moje konto</router-link
           >
         </li>
-        <li v-if="isTabletView">
+        <li v-if="isAuthenticated && isTabletView">
           <a class="header__link" :class="{ 'header__link--isActive': isMyAccountActive }" @click="toggleTabletMenu">Moje konto</a>
         </li>
       </ul>

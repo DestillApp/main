@@ -147,7 +147,7 @@ export default {
   width: 50%;
   margin-right: 25vw;
   margin-left: 25vw;
-  margin-top: 40px;
+  margin-top: 100px;
   margin-bottom: 40px;
   padding-right: 50px;
   padding-left: 50px;
@@ -182,5 +182,31 @@ export default {
 
 .login__link-register {
   color: var(--primary-color);
+}
+
+@media (max-width: 1024px) {
+  .login__card {
+    width: 70%;
+    margin-top: 70px;
+    margin-right: 15vw;
+    margin-left: 15vw;
+  }
+
+  .login__button {
+  width: 40%;
+}
+}
+
+@media (max-width: 600px) {
+  .login__card {
+    width: 80%;
+    margin-top: 50px;
+    margin-right: 10vw;
+    margin-left: 10vw;
+  }
+
+  .login__button {
+  width: 50%;
+}
 }
 </style>
