@@ -10,7 +10,19 @@
           <router-link to="/add-distillation" class="mobile-menu__link" @click="toggleMenu">Dodaj destylację</router-link>
         </li>
         <li v-if="isAuthenticated">
-          <router-link to="/my-account" class="mobile-menu__link" @click="toggleMenu">Moje konto</router-link>
+          <div class="mobile-menu__link" :class="{'mobile-menu__link--isActive' : isMyAccount}" @click="toggleMyAccount">Moje konto</div>
+        </li>
+        <li v-if="isAuthenticated && isMyAccount">
+          <router-link to="/my-account/distillations-in-progress/1" class="mobile-menu__link" @click="toggleMenu">Destylacje w toku</router-link>
+        </li>
+        <li v-if="isAuthenticated && isMyAccount">
+          <router-link to="/my-account/plant-list/1" class="mobile-menu__link" @click="toggleMenu">Magazyn surowców</router-link>
+        </li>
+        <li v-if="isAuthenticated && isMyAccount">
+          <router-link to="/my-account/distillation-archives/1" class="mobile-menu__link" @click="toggleMenu">Archiwum destylacji</router-link>
+        </li>
+        <li v-if="isAuthenticated && isMyAccount">
+          <router-link to="/my-account/my-data" class="mobile-menu__link" @click="toggleMenu">Moje dane</router-link>
         </li>
       </ul>
       <base-button
@@ -23,9 +35,9 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
 
 /**
@@ -36,14 +48,15 @@ export default {
   name: "MobileMenu",
   components: { BaseButton },
   props: ["isOpen"],
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     // Vuex store instance
     const store = useStore();
 
-    //useRouter hook
+    // useRouter and useRoute hooks
     const router = useRouter();
+    const route = useRoute();
 
-    //Checking user authentication and loading state in vuex store
+    // Checking user authentication and loading state in vuex store
     const isAuthenticated = computed(
       () => store.getters["auth/isAuthenticated"]
     );
@@ -51,11 +64,25 @@ export default {
       () => store.getters["auth/isLoadingAuthStatus"]
     );
 
-    const toggleMenu = () => {
-        emit("toggle-menu");
-    }
+    // Reactive reference for "Moje konto" section
+    const isMyAccount = ref(false);
 
-    //Handling user logout
+    const toggleMenu = () => {
+      emit("toggle-menu");
+    };
+
+    const toggleMyAccount = () => {
+      isMyAccount.value = !isMyAccount.value;
+    };
+
+    // Set isMyAccount to true if the route path includes "my-account"
+    onMounted(() => {
+      if (route.path.includes("my-account")) {
+        isMyAccount.value = true;
+      }
+    });
+
+    // Handling user logout
     const handleLogout = async () => {
       await store.dispatch("auth/logout");
       console.log("logout");
@@ -63,7 +90,7 @@ export default {
       emit("toggle-menu");
     };
 
-    return { isAuthenticated, isLoadingAuthStatus, toggleMenu, handleLogout };
+    return { isAuthenticated, isLoadingAuthStatus, toggleMenu, handleLogout, isMyAccount, toggleMyAccount };
   },
 };
 </script>
@@ -113,6 +140,11 @@ export default {
   text-decoration: none;
   font-size: 18px;
   color: var(--header-text-color);
+  cursor: pointer;
+}
+
+.mobile-menu__link--isActive {
+  font-weight: 700;
 }
 
 .mobile-menu__button {

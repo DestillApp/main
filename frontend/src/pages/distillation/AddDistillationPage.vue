@@ -1,5 +1,6 @@
 /<template>
-  <base-card>
+  <base-card
+  class="add-distillation">
     <!-- Distillation form -->
     <form @submit.prevent="saveDistillation" class="add-distillation__form">
       <!-- Title for the plant information form -->
@@ -272,6 +273,10 @@ export default {
 </script>
 
 <style scoped>
+/* .add-distillation {
+  margin-bottom: 100px;
+} */
+ 
 .add-distillation__form {
   display: flex;
   flex-direction: column;
