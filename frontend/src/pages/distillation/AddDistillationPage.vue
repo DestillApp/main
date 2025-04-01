@@ -15,7 +15,7 @@
       <base-button class="add-distillation__form-button" type="submit">Zapisz</base-button>
       <!-- Button to submit and go to the distillation results form -->
       <base-button @click="saveDistillationAddResults"
-        >Zapisz i dodaj wyniki destylacji</base-button
+        >Zapisz i dodaj wyniki</base-button
       >
     </form>
   </base-card>
@@ -273,10 +273,11 @@ export default {
 </script>
 
 <style scoped>
-/* .add-distillation {
+.add-distillation {
+  margin-top: 50px;
   margin-bottom: 100px;
-} */
- 
+}
+
 .add-distillation__form {
   display: flex;
   flex-direction: column;

@@ -1,5 +1,5 @@
 <template>
-  <base-card>
+  <base-card class="plant">
     <!-- Plant form -->
     <form @submit.prevent="savePlant" class="plant-form">
       <!-- Title for the plant form -->
@@ -200,6 +200,11 @@ export default {
 </script>
 
 <style scoped>
+.plant {
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
 .plant-form__title {
   margin-bottom: 30px;
 }

@@ -635,9 +635,17 @@ export default {
 }
 
 @media (max-width: 1024px) {
+  .distillation-plant__informations {
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+  }
+
   .distillation-plant__checkbox-container {
     flex-direction: column;
     gap: 20px;
   }
 }
+
+
 </style>

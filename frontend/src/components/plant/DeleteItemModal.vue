@@ -1,22 +1,43 @@
 <template>
   <!-- Modal container to confirm plant deletion-->
   <base-modal>
-    <base-card :class="{ 'delete-item-modal__distiller-card': distiller, 'delete-item-modal__card': !distiller }">
+    <base-card
+      :class="{
+        'delete-item-modal__distiller-card': distiller,
+        'delete-item-modal__card': !distiller,
+      }"
+    >
       <div class="delete-item-modal__container">
         <!-- Message asking user to confirm item deletion -->
-        <div class="delete-item-modal__text" v-if="!distillationDate && !distiller">
+        <div
+          class="delete-item-modal__text"
+          v-if="!distillationDate && !distiller"
+        >
           Czy chcesz usunąć {{ nameOfPlant }} {{ plantPart }} z magazynu?
         </div>
-        <div class="delete-item-modal__text" v-if="distillationDate && !distiller"> 
-          Czy chcesz usunąć destylacje <br> {{ nameOfPlant }} {{ plantPart }} z dnia
-          {{ distillationDate }}?
+        <div
+          class="delete-item-modal__text"
+          v-if="distillationDate && !distiller"
+        >
+          Czy chcesz usunąć destylacje <br />
+          {{ nameOfPlant }} {{ plantPart }} z dnia {{ distillationDate }}?
         </div>
-        <div class="delete-item-modal__text" v-if="distiller">Czy chcesz usunąć zapisany destylator?</div>
+        <div class="delete-item-modal__text" v-if="distiller">
+          Czy chcesz usunąć zapisany destylator?
+        </div>
         <div class="delete-item-modal__buttons">
           <!-- Button to confirm deletion -->
-          <base-button class="delete-item-modal__button--yes" @click="deleteItem">Tak</base-button>
+          <base-button
+            class="delete-item-modal__button--yes"
+            @click="deleteItem"
+            >Tak</base-button
+          >
           <!-- Button to cancel deletion -->
-          <base-button class="delete-item-modal__button--no" @click="closeDeleteModal">Nie</base-button>
+          <base-button
+            class="delete-item-modal__button--no"
+            @click="closeDeleteModal"
+            >Nie</base-button
+          >
         </div>
       </div>
     </base-card>
@@ -44,7 +65,9 @@ export default {
   emits: ["close-delete-modal", "delete-item"],
   setup(props, context) {
     // Reactive reference for the lowercase version of plant name.
-    const nameOfPlant = ref(props.plantName ? props.plantName.toLowerCase() : "");
+    const nameOfPlant = ref(
+      props.plantName ? props.plantName.toLowerCase() : ""
+    );
 
     /**
      * @function deleteItem
@@ -99,5 +122,11 @@ export default {
 
 .delete-item-modal__button--no:hover {
   color: var(--secondary-color);
+}
+
+@media (max-width: 1024px) {
+  .delete-item-modal__card {
+    width: 70%;
+  }
 }
 </style>

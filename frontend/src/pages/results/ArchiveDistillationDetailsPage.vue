@@ -483,4 +483,29 @@ export default {
   text-align: start;
   padding-inline: 10%;
 }
+
+@media (max-width: 800px) {
+.archive-distillation__container-two {
+flex-direction: column;
+justify-content: center;
+gap: 20px;
+}
+
+.archive-distillation__plant-info,
+.archive-distillation__info {
+  width: 100%;
+}
+
+.archive-distillation__plant-data,
+.archive-distillation__data {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.archive-distillation__plant-button {
+  margin-left: 0;
+  text-align: center;
+}
+}
 </style>

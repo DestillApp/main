@@ -6,7 +6,7 @@
       :class="{ 'list-length-settings__icon--dark': isDarkTheme }"
       type="mdi"
       :path="mdiCog"
-      size="20"
+
       @click="toggleList"
     ></svg-icon>
     <!-- List with title and items, shown conditionally based on isListVisible -->
@@ -112,6 +112,8 @@ export default {
 .list-length-settings__icon {
   cursor: pointer;
   color: var(--text-color);
+  width: 20px;
+  height: 20px;
 }
 
 .list-length-settings__icon--dark {
@@ -186,5 +188,12 @@ export default {
 
 .list-length-settings__list--results {
   border: 2px solid var(--secondary-color-results);
+}
+
+@media (max-width: 600px) {
+  .list-length-settings__icon {
+  width: 16px;
+  height: 16px;
+}
 }
 </style>

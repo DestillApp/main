@@ -1,5 +1,5 @@
 <template>
-  <base-card>
+  <base-card class="results">
     <!-- Results form -->
     <form @submit.prevent="saveResults" class="results-form">
       <!-- Title for the results form -->
@@ -403,6 +403,11 @@ export default {
 </script>
 
 <style scoped>
+.results {
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
 .results-form {
   display: flex;
   flex-direction: column;

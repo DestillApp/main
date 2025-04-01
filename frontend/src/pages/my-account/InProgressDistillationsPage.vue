@@ -654,6 +654,7 @@ export default {
 }
 
 @media (max-width: 600px) {
+
   .distillation__item {
     flex-direction: column;
     padding: 10px;

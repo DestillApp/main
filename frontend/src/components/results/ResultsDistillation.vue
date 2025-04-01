@@ -72,4 +72,16 @@ export default {
 .results-distillation__details-process p strong{
   color: var(--primary-color-distillation);
 }
+
+@media (max-width: 1024px) {
+  .results-distillation__details {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .results-distillation__details-process,
+  .results-distillation__details-plant {
+    width: 100%;
+  }
+}
+
 </style>

@@ -14,19 +14,19 @@
     >
       <template v-slot:message>
         <div v-if="plantData.plantName" class="results-plant__informations">
-          <div class="results-plant__information">
+          <div :class="['results-plant__information', {'dark-results-plant__information': isDarkTheme}]">
             <span>część rośliny: </span
             ><span class="results-plant__information-value">{{
               plantData.plantPart
             }}</span>
           </div>
-          <div v-if="plantData.harvestDate" class="results-plant__information">
+          <div v-if="plantData.harvestDate" :class="['results-plant__information', {'dark-results-plant__information': isDarkTheme}]">
             <span>data zbioru: </span
             ><span class="results-plant__information-value">{{
               plantData.harvestDate
             }}</span>
           </div>
-          <div v-if="plantData.plantBuyDate" class="results-plant__information">
+          <div v-if="plantData.plantBuyDate" :class="['results-plant__information', {'dark-results-plant__information': isDarkTheme}]">
             <span>data kupna: </span
             ><span class="results-plant__information-value">{{
               plantData.plantBuyDate
@@ -143,6 +143,8 @@ export default {
       () => store.getters["results/distillationData"]
     );
 
+    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+
     const comingFromRoute = computed(() => store.getters.comingFromRoute);
 
     /**
@@ -190,6 +192,7 @@ export default {
     return {
       plantData,
       distillationData,
+      isDarkTheme,
     };
   },
 };
@@ -207,7 +210,6 @@ export default {
 }
 
 .results-plant__name {
-  color: black;
   margin-bottom: 10px;
 }
 
@@ -226,6 +228,10 @@ export default {
   font-size: 13px;
   color: black;
   justify-content: flex-start;
+}
+
+.dark-results-plant__information {
+  color: var(--text-color-dark);
 }
 
 .results-plant__information-value {
@@ -258,5 +264,13 @@ export default {
 
 .results-plant__weight-after-soaking {
   margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+.results-plant__informations {
+flex-direction: column;
+gap: 5px;
+margin-top: 5px;
+}
 }
 </style>

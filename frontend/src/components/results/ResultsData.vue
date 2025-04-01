@@ -152,4 +152,11 @@ export default {
   flex-direction: row;
   gap: 50px;
 }
+
+@media (max-width: 600px) {
+  .results-data__hydrosol {
+    flex-direction: column;
+    gap: 30px;
+  }
+}
 </style>

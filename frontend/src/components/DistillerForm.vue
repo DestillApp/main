@@ -173,4 +173,15 @@ export default {
 .distiller-form__button {
   margin-top: 10px;
 }
+
+@media (max-width: 1024px) {
+  .distiller-form__card {
+    width: 50%;  }
+}
+
+@media (max-width: 600px) {
+  .distiller-form__card {
+    width: 70%;
+  }
+}
 </style>

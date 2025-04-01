@@ -628,6 +628,7 @@ margin-right: 5px;
 }
 
 @media (max-width: 600px) {
+
   .distillation-archives__item {
     flex-direction: column;
     padding: 10px;

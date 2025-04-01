@@ -178,4 +178,15 @@ export default {
 .password-change-form__button {
   margin-top: 10px;
 }
+
+@media (max-width: 1024px) {
+  .password-change-form__card {
+    width: 50%;  }
+}
+
+@media (max-width: 600px) {
+  .password-change-form__card {
+    width: 70%;
+  }
+}
 </style>

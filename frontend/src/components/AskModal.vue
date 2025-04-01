@@ -92,4 +92,10 @@ export default {
 .ask-modal__button--no:hover {
   color: red;
 }
+
+@media (max-width: 1024px) {
+  .ask-modal__card {
+    width: 70%;
+  }
+}
 </style>

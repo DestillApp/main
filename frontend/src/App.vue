@@ -49,6 +49,8 @@ export default {
  min-height: 100vh;
   color: var(--text-color);
   background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
 }
 
 ul {
