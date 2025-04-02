@@ -81,7 +81,8 @@
               czas namaczania: {{ distillationDetails.soakingTime }} h
             </div>
             <div class="distillation__plant-data">
-              waga po namoczeniu: {{ distillationDetails.weightAfterSoaking }} kg
+              waga po namoczeniu:
+              {{ distillationDetails.weightAfterSoaking }} kg
             </div>
           </div>
           <div v-if="!distillationDetails.isPlantSoaked">
@@ -91,9 +92,25 @@
             <div class="distillation__plant-data">surowiec rozdrobniony</div>
           </div>
           <div v-if="!distillationDetails.isPlantShredded">
-            <div class="distillation__plant-data">surowiec nie rozdrobniony</div>
+            <div class="distillation__plant-data">
+              surowiec nie rozdrobniony
+            </div>
           </div>
           <button
+            v-if="!isPlantOpen"
+            @click="openClosePlant"
+            class="distillation__plant-button"
+          >
+            więcej o surowcu
+            <svg-icon
+              class="distillation__icon"
+              type="mdi"
+              :path="pathArrowDown"
+              size="18"
+            ></svg-icon>
+          </button>
+          <button
+            v-if="isPlantOpen"
             @click="openClosePlant"
             class="distillation__plant-button"
           >
@@ -470,6 +487,7 @@ export default {
   float: left;
   margin-left: 20%;
   text-align: left;
+  width: 100%;
 }
 
 .distillation__plant-button:hover {
@@ -487,5 +505,45 @@ export default {
 
 .distillation__results-button:hover {
   color: var(--secondary-color-distillation);
+}
+
+@media (max-width: 800px) {
+  .distillation__container--two {
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .distillation__plant-info,
+  .distillation__info {
+    width: 100%;
+  }
+
+  .distillation__plant-data,
+  .distillation__data {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .distillation__plant-details-component {
+  text-align: center;
+  margin-left: 0;
+}
+
+  .distillation__plant-button {
+  margin-left: 0;
+  text-align: center;
+}
+
+.distillation__results {
+  margin-inline: 20%;
+}
+}
+
+@media (max-width: 600px) {
+  .distillation__results {
+  margin-inline: 0;
+}
 }
 </style>

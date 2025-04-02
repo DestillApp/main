@@ -503,6 +503,11 @@ gap: 20px;
   padding-right: 0;
 }
 
+.archive-distillation__plant-details-component {
+  text-align: center;
+  margin-left: 0;
+}
+
 .archive-distillation__plant-button {
   margin-left: 0;
   text-align: center;
