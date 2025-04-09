@@ -177,11 +177,9 @@ export default {
 
     // Fetch initial data from local storage on component mount
     onMounted(() => {
-      store.dispatch("plant/fetchLocalStorageData", "plantWeight");
-      store.dispatch("plant/fetchLocalStorageData", "availableWeight");
-      store.dispatch("plant/fetchLocalStorageData", "plantState");
-      store.dispatch("plant/fetchLocalStorageData", "dryingTime");
-      store.dispatch("plant/fetchLocalStorageData", "plantAge");
+      ["plantWeight", "availableWeight", "plantState", "dryingTime", "plantAge"].forEach((field) => {
+        store.dispatch("plant/fetchLocalStorageData", field);
+      });
     });
 
     // Using the format function
@@ -196,74 +194,20 @@ export default {
 
     // Watcher to handle changes in the plant state. Updates related fields and dispatches changes to the store.
     watch(
-      () => plantState.value, // Watch the value of plantState
+      () => plantState.value,
       (newValue, oldValue) => {
-        if (props.isResetting) {
-          return;
-        } else {
-          // If the old value is an empty string, update the plant state in the store
-          if (oldValue === "") {
-            store.dispatch("plant/setValue", {
-              input: "plantState",
-              value: newValue,
-            });
-          }
+        if (props.isResetting) return;
 
-          // If the new plant state is 'świeży'
-          if (newValue === "świeży") {
-            // Clear the drying time if the previous state was 'podsuszony'
-            if (oldValue === "podsuszony") {
-              store.dispatch("plant/setValue", {
-                input: "dryingTime",
-                value: null,
-              });
-            }
-            // Clear the plant age if the previous state was 'suchy'
-            if (oldValue === "suchy") {
-              store.dispatch("plant/setValue", {
-                input: "plantAge",
-                value: null,
-              });
-            }
-            // Update the plant state in the store
-            store.dispatch("plant/setValue", {
-              input: "plantState",
-              value: newValue,
-            });
-          }
+        const resetFields = {
+          podsuszony: "dryingTime",
+          suchy: "plantAge",
+        };
 
-          // If the new plant state is 'podsuszony'
-          if (newValue === "podsuszony") {
-            // Clear the plant age if the previous state was 'suchy'
-            if (oldValue === "suchy") {
-              store.dispatch("plant/setValue", {
-                input: "plantAge",
-                value: null,
-              });
-            }
-            // Update the plant state in the store
-            store.dispatch("plant/setValue", {
-              input: "plantState",
-              value: newValue,
-            });
-          }
-
-          // If the new plant state is 'suchy'
-          if (newValue === "suchy") {
-            // Clear the drying time if the previous state was 'podsuszony'
-            if (oldValue === "podsuszony") {
-              store.dispatch("plant/setValue", {
-                input: "dryingTime",
-                value: null,
-              });
-            }
-            // Update the plant state in the store
-            store.dispatch("plant/setValue", {
-              input: "plantState",
-              value: newValue,
-            });
-          }
+        if (oldValue && resetFields[oldValue]) {
+          store.dispatch("plant/setValue", { input: resetFields[oldValue], value: null });
         }
+
+        store.dispatch("plant/setValue", { input: "plantState", value: newValue });
       }
     );
 

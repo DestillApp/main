@@ -215,7 +215,7 @@ export default {
   color: var(--error-color);
 }
 
-::v-deep .input__message {
+:deep(.input__message) {
   display: none;
 }
 

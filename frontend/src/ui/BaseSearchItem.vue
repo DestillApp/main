@@ -211,7 +211,7 @@ export default {
   color: darkred;
 }
 
-::v-deep .input__message {
+:deep(.input__message) {
   display: none;
 }
 </style>

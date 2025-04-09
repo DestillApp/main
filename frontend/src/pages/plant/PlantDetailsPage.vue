@@ -251,7 +251,7 @@ export default {
 </script>
 
 <style scoped>
-::v-deep .my-account__card {
+:deep(.my-account__card) {
  margin-top: 50px;
 }
 
