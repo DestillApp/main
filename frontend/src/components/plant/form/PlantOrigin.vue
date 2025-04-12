@@ -263,64 +263,40 @@ export default {
 
     // Watcher to handle changes in the plant origin
     watch(
-      () => plantOrigin.value, // Watch the value of plantOrigin
+      () => plantOrigin.value,
       (newValue, oldValue) => {
-        if (props.isResetting) {
-          return;
-        } else {
-          store.dispatch("plant/setValue", {
-            input: "plantOrigin",
-            value: newValue,
-          });
+        if (props.isResetting) return;
 
-          // If the new plant origin is 'kupno'
-          if (newValue === "kupno") {
-            // Set data to initial values if the previous origin was 'zbiór'
-            if (oldValue === "zbiór") {
-              store.dispatch("plant/setValue", {
-                input: "harvestDate",
-                value: "",
-              });
-              store.dispatch("plant/setValue", {
-                input: "harvestTemperature",
-                value: null,
-              });
-              store.dispatch("plant/setValue", {
-                input: "harvestRange",
-                value: [600, 900],
-              });
-            }
-          }
+        store.dispatch("plant/setValue", { input: "plantOrigin", value: newValue });
 
-          // If the new plant origin is 'zbiór'
-          if (newValue === "zbiór") {
-            // Set data to initial values if the previous origin was 'kupno'
-            if (oldValue === "kupno") {
-              store.dispatch("plant/setValue", {
-                input: "plantBuyDate",
-                value: "",
-              });
-              store.dispatch("plant/setValue", {
-                input: "plantProducer",
-                value: "",
-              });
-            }
-          }
+        const resetFields = {
+          kupno: ["plantBuyDate", "plantProducer", "countryOfOrigin"],
+          zbiór: ["harvestDate", "harvestTemperature", "harvestRange"],
+        };
+
+        if (resetFields[oldValue]) {
+          resetFields[oldValue].forEach((field) =>
+            store.dispatch("plant/setValue", { input: field, value: field === "harvestRange" ? [600, 900] : "" })
+          );
         }
       }
     );
 
+
     // Fetch initial data from local storage on component mount
     onMounted(() => {
-      store.dispatch("plant/fetchLocalStorageData", "plantOrigin");
-      store.dispatch("plant/fetchLocalStorageData", "plantBuyDate");
-      store.dispatch("plant/fetchLocalStorageData", "plantProducer");
-      store.dispatch("plant/fetchLocalStorageData", "harvestDate");
-      store.dispatch("plant/fetchLocalStorageData", "harvestTemperature");
-      store.dispatch("plant/fetchLocalStorageData", "harvestRange");
-      store.dispatch("plant/fetchLocalStorageData", "countryOfOrigin");
+      const fieldsToFetch = [
+        "plantOrigin",
+        "plantBuyDate",
+        "plantProducer",
+        "harvestDate",
+        "harvestTemperature",
+        "harvestRange",
+        "countryOfOrigin",
+      ];
+
+      fieldsToFetch.forEach((field) => store.dispatch("plant/fetchLocalStorageData", field));
       countryName.value = formData.value.countryOfOrigin;
-      console.log("origin date", formData.value.harvestDate, countryName.value);
     });
 
     /**
@@ -370,7 +346,6 @@ export default {
           variables: { name },
         });
         countryNames.value = data.getCountryNames.slice(0, 10);
-        console.log("countryNames", countryNames.value);
       } catch (error) {
         console.error("Failed to get country names:", error);
         countryNames.value = [];

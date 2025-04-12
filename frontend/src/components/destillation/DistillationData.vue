@@ -131,33 +131,24 @@ export default {
 
     // Fetch initial form data from local storage on component mount
     onMounted(() => {
-      if (props.isEditing) {
-        store.dispatch(
-          "results/fetchDistillationDataFromLocalStorage",
-          "waterForDistillation"
-        );
-        store.dispatch(
-          "results/fetchDistillationTimeFromLocalStorage",
-          "distillationHours"
-        );
-        store.dispatch(
-          "results/fetchDistillationTimeFromLocalStorage",
-          "distillationMinutes"
-        );
-      } else {
-        store.dispatch("distillation/fetchLocalStorageData", {
+      const fieldsToFetch = [
+        {
           key: "waterForDistillation",
+          action: "fetchLocalStorageData",
           isPlant: false,
-        });
-        store.dispatch(
-          "distillation/fetchTimeFromLocalStorageData",
-          "distillationHours"
-        );
-        store.dispatch(
-          "distillation/fetchTimeFromLocalStorageData",
-          "distillationMinutes"
-        );
-      }
+        },
+        { key: "distillationHours", action: "fetchTimeFromLocalStorageData" },
+        { key: "distillationMinutes", action: "fetchTimeFromLocalStorageData" },
+      ];
+
+      fieldsToFetch.forEach(({ key, action, isPlant }) => {
+        const module = props.isEditing ? "results" : "distillation";
+        if (module === "distillation" && key === "waterForDistillation") {
+          store.dispatch(`${module}/${action}`, { key, isPlant });
+        } else {
+          store.dispatch(`${module}/${action}`, key);
+        }
+      });
     });
 
     // Using the format function to handle integer input for water volume
@@ -172,25 +163,13 @@ export default {
 
     const saveTime = (value, key) => {
       const sanitizedValue = Number(DOMPurify.sanitize(value));
-      if (!isNaN(sanitizedValue) && sanitizedValue >= 0) {
-        if (storeName.value === "distillation") {
-          store.dispatch("distillation/setDistillationTime", { key, value: sanitizedValue });
-        } else {
-          store.dispatch("results/setDistillationTime", {
-            input: key,
-            value: sanitizedValue,
-          });
-        }
-      } else {
-        if (storeName.value === "distillation") {
-          store.dispatch("distillation/setDistillationTime", { key, value: null });
-        } else {
-          store.dispatch("results/setDistillationTime", {
-            input: key,
-            value: null,
-          });
-        }
-      }
+      const isValid = !isNaN(sanitizedValue) && sanitizedValue >= 0;
+      const module = storeName.value;
+
+      store.dispatch(`${module}/setDistillationTime`, {
+        [module === "distillation" ? "key" : "input"]: key,
+        value: isValid ? sanitizedValue : null,
+      });
     };
 
     return {

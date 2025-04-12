@@ -19,21 +19,36 @@
         <span v-if="isFormValid === false && formData.choosedPlant.name === ''"
           >Wybierz surowiec z magazynu</span
         >
-        <div v-if="formData.choosedPlant.name" :class="['distillation-plant__informations', { 'dark-distillation-plant__information': isDarkTheme }]">
+        <div
+          v-if="formData.choosedPlant.name"
+          :class="[
+            'distillation-plant__informations',
+            { 'dark-distillation-plant__information': isDarkTheme },
+          ]"
+        >
           <div class="distillation-plant__information">
             <span>część rośliny: </span
-            ><span class="distillation-plant__information-value">{{ formData.choosedPlant.part }}</span>
+            ><span class="distillation-plant__information-value">{{
+              formData.choosedPlant.part
+            }}</span>
           </div>
           <div
             v-if="formData.choosedPlant.harvestDate"
             class="distillation-plant__information"
           >
             <span>data zbioru: </span
-            ><span class="distillation-plant__information-value">{{ formattedHarvestDate }}</span>
+            ><span class="distillation-plant__information-value">{{
+              formData.choosedPlant.harvestDate
+            }}</span>
           </div>
-          <div v-if="formData.choosedPlant.buyDate" class="distillation-plant__information">
+          <div
+            v-if="formData.choosedPlant.buyDate"
+            class="distillation-plant__information"
+          >
             <span>data kupna: </span
-            ><span class="distillation-plant__information-value">{{ formattedPlantBuyDate }}</span>
+            ><span class="distillation-plant__information-value">{{
+              formData.choosedPlant.buyDate
+            }}</span>
           </div>
           <div class="distillation-plant__information">
             <span>ilość surowca na stanie: </span
@@ -92,7 +107,10 @@
           label="Surowiec namaczany przed destylacją"
           color="var(--secondary-color)"
         ></v-checkbox>
-        <div v-if="formData.isPlantSoaked" class="distillation-plant__container--isSoaked">
+        <div
+          v-if="formData.isPlantSoaked"
+          class="distillation-plant__container--isSoaked"
+        >
           <base-text-input
             v-model="formData.soakingTime"
             type="number"
@@ -155,7 +173,9 @@
       </div>
       <v-checkbox
         v-model="formData.isPlantShredded"
-        :class="{ 'dark-distillation-plant__checkbox-isPlantShredded': isDarkTheme }"
+        :class="{
+          'dark-distillation-plant__checkbox-isPlantShredded': isDarkTheme,
+        }"
         label="Surowiec rozdrobniony przed destylacją"
         color="var(--secondary-color)"
       ></v-checkbox>
@@ -234,6 +254,15 @@ export default {
     );
     const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
 
+    const plantFields = [
+      { key: "id", valueKey: "_id" },
+      { key: "name", valueKey: "plantName" },
+      { key: "part", valueKey: "plantPart" },
+      { key: "availableWeight", valueKey: "availableWeight" },
+      { key: "harvestDate", valueKey: "harvestDate", format: true },
+      { key: "buyDate", valueKey: "plantBuyDate", format: true },
+    ];
+
     // Computed property to calculate the new available weight
     const updatedAvailableWeight = computed(() => {
       const sanitizedAvailableWeight = Number(
@@ -260,22 +289,22 @@ export default {
     });
 
     // Format the plantBuyDate
-    const formattedPlantBuyDate = computed(() => {
-      const plantBuyDate = formData.value.choosedPlant.buyDate;
-      console.log("plantBuyDate", plantBuyDate);
-      return plantBuyDate && !isNaN(new Date(plantBuyDate).getTime())
-        ? format(new Date(plantBuyDate), "dd-MM-yyyy")
-        : plantBuyDate;
-    });
+    // const formattedPlantBuyDate = computed(() => {
+    //   const plantBuyDate = formData.value.choosedPlant.buyDate;
+    //   console.log("plantBuyDate", plantBuyDate);
+    //   return plantBuyDate && !isNaN(new Date(plantBuyDate).getTime())
+    //     ? format(new Date(plantBuyDate), "dd-MM-yyyy")
+    //     : plantBuyDate;
+    // });
 
     // Format the harvestDate
-    const formattedHarvestDate = computed(() => {
-      const plantHarvestDate = formData.value.choosedPlant.harvestDate;
-      console.log("harvestDate", plantHarvestDate);
-      return plantHarvestDate && !isNaN(new Date(plantHarvestDate).getTime())
-        ? format(new Date(plantHarvestDate), "dd-MM-yyyy")
-        : plantHarvestDate;
-    });
+    // const formattedHarvestDate = computed(() => {
+    //   const plantHarvestDate = formData.value.choosedPlant.harvestDate;
+    //   console.log("harvestDate", plantHarvestDate);
+    //   return plantHarvestDate && !isNaN(new Date(plantHarvestDate).getTime())
+    //     ? format(new Date(plantHarvestDate), "dd-MM-yyyy")
+    //     : plantHarvestDate;
+    // });
 
     const comingFromRoute = computed(() => store.getters.comingFromRoute);
 
@@ -306,55 +335,39 @@ export default {
 
     // Fetch initial data from local storage on component mount
     onMounted(async () => {
-      console.log(route.params.id);
+      console.log("formData", formData.value);
       if (comingFromRoute.value) {
         if (route.params.id) {
           const plantData = await getPlantData();
-          store.dispatch("distillation/setChoosedPlant", {
-            key: "id",
-            value: plantData._id,
-          });
-          store.dispatch("distillation/setChoosedPlant", {
-            key: "name",
-            value: plantData.plantName,
-          });
-          store.dispatch("distillation/setChoosedPlant", {
-            key: "part",
-            value: plantData.plantPart,
-          });
-          store.dispatch("distillation/setChoosedPlant", {
-            key: "availableWeight",
-            value: plantData.availableWeight,
-          });
-          store.dispatch("distillation/setChoosedPlant", {
-            key: "harvestDate",
-            value: plantData.harvestDate
-              ? format(new Date(plantData.harvestDate), "dd-MM-yyyy")
-              : "",
-          });
-          store.dispatch("distillation/setChoosedPlant", {
-            key: "buyDate",
-            value: plantData.plantBuyDate
-              ? format(new Date(plantData.plantBuyDate), "dd-MM-yyyy")
-              : "",
+
+          plantFields.forEach(({ key, valueKey, format: shouldFormat }) => {
+            const value =
+              shouldFormat && plantData[valueKey]
+                ? format(new Date(plantData[valueKey]), "dd-MM-yyyy")
+                : plantData[valueKey];
+
+            store.dispatch("distillation/setChoosedPlant", { key, value });
           });
           plant.value = formData.value.choosedPlant.name;
-          console.log("PLANT DATA", formData.value);
         } else {
           return;
         }
       } else {
-        fetchData("id", true);
-        fetchData("name", true);
-        fetchData("part", true);
-        fetchData("availableWeight", true);
-        fetchData("harvestDate", true);
-        fetchData("buyDate", true);
-        fetchData("weightForDistillation", false);
-        fetchData("isPlantSoaked", false);
-        fetchData("soakingTime", false);
-        fetchData("weightAfterSoaking", false);
-        fetchData("isPlantShredded", false);
+        const distillationFields = [
+          "weightForDistillation",
+          "isPlantSoaked",
+          "soakingTime",
+          "weightAfterSoaking",
+          "isPlantShredded",
+        ];
+
+        plantFields.forEach(({ key }) => {
+          fetchData(key, true);
+        });
+
+        distillationFields.forEach((field) => {
+          fetchData(field, false);
+        });
         plant.value = formData.value.choosedPlant.name;
       }
     });
@@ -378,17 +391,14 @@ export default {
      * @param {Object} value - The selected plant object from the plant list.
      * @param {string} input - The input identifier triggering the event.
      */
-    const setPlant = (value, input) => {
-      setPlantState("id", value._id);
-      setPlantState("name", value.plantName);
-      setPlantState("part", value.plantPart);
-      setPlantState("availableWeight", value.availableWeight);
-      setPlantState("harvestDate", value.harvestDate);
-      setPlantState("buyDate", value.plantBuyDate);
+    const setPlant = (value) => {
+      plantFields.forEach(({ key, valueKey }) => {
+        setPlantState(key, value[valueKey]);
+      });
       searchQuery.value = "";
       plant.value = value.plantName;
       plants.value = [];
-      console.log("setPlant", plant, input);
+
       if (props.isEditing) {
         router.replace({
           name: "EditDistillationPage",
@@ -409,27 +419,17 @@ export default {
      * @returns {Promise<void>}
      */
     const fetchPlants = async (name) => {
-      console.log("fetch plants!", name);
       try {
         const { data } = await apolloClient.query({
           query: GET_PLANTS,
           fetchPolicy: "network-only",
           variables: {
-            fields: [
-              "plantName",
-              "plantPart",
-              "availableWeight",
-              "harvestDate",
-              "plantBuyDate",
-              "_id",
-            ],
+            fields: plantFields.map(({ valueKey }) => valueKey),
             formatDates: true,
             name: name,
           },
         });
-
         plants.value = data.getPlants;
-        console.log("plants", plants.value);
       } catch (error) {
         if (error.message === "Unauthorized") {
           await store.dispatch("auth/logout");
@@ -448,12 +448,11 @@ export default {
      */
     const onInput = (value, input) => {
       if (input === "choosedPlant") {
-        setPlantState("id", null);
-        setPlantState("name", "");
-        setPlantState("part", "");
-        setPlantState("availableWeight", null);
-        setPlantState("harvestDate", "");
-        setPlantState("buyDate", "");
+        plantFields.forEach(({ key }) => {
+          key === "id" || key === "availableWeight"
+            ? setPlantState(key, null)
+            : setPlantState(key, "");
+        });
       }
       if (props.isEditing) {
         router.replace({ name: "EditDistillationPage", params: { id: null } });
@@ -497,6 +496,8 @@ export default {
       setNumberFormat(store, value, id, storeName);
     };
 
+
+
     // Watcher to handle changes in the isPlantSoaked state. Updates related fields and dispatches changes to the store.
     watch(
       () => isPlantSoaked.value, // Watch the value of isPlantSoaked
@@ -509,6 +510,7 @@ export default {
           });
         }
 
+        //PROBLEM WITH CLEANING FIELDS!!!
         // If the new value is false
         if (newValue === false) {
           // Clear soaking-related fields if the previous state was true
@@ -521,10 +523,10 @@ export default {
               input: "weightAfterSoaking",
               value: null,
             });
-            store.dispatch("plant/setValue", {
-              input: "isPlantSoaked",
-              value: newValue,
-            });
+          store.dispatch("plant/setValue", {
+            input: "isPlantSoaked",
+            value: newValue,
+          });
           }
         }
       }
@@ -549,8 +551,6 @@ export default {
       formData,
       isPlantSoaked,
       updatedAvailableWeight,
-      formattedPlantBuyDate,
-      formattedHarvestDate,
       plant,
       plants,
       setPlant,
@@ -646,6 +646,4 @@ export default {
     gap: 20px;
   }
 }
-
-
 </style>

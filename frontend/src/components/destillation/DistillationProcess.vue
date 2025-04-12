@@ -185,23 +185,23 @@ export default {
     // Fetch initial form data from local storage on component mount
     onMounted(() => {
       if (!comingFromRoute.value) {
+        const keys = [
+          "distillationDate",
+          "distillationType",
+          "distillationApparatus",
+        ];
         if (props.isEditing) {
-          fetchArchiveData("distillationDate");
-          fetchArchiveData("distillationType");
-          fetchArchiveData("distillationApparatus");
-          distillationType.value = formData.value.distillationType;
-          distillationApparatus.value = formData.value.distillationApparatus;
+          keys.forEach((key) => {
+            fetchArchiveData(key);
+          });
         } else {
-          fetchData("distillationDate", false);
-          fetchData("distillationType", false);
-          fetchData("distillationApparatus", false);
-          distillationType.value = formData.value.distillationType;
-          distillationApparatus.value = formData.value.distillationApparatus;
+          keys.forEach((key) => {
+            fetchData(key, false);
+          });
         }
-      } else {
-        distillationType.value = formData.value.distillationType;
-        distillationApparatus.value = formData.value.distillationApparatus;
       }
+      distillationType.value = formData.value.distillationType;
+      distillationApparatus.value = formData.value.distillationApparatus;
     });
 
     /**
