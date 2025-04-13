@@ -157,20 +157,17 @@ export default {
     //Handling user logout
     const handleLogout = async () => {
       await store.dispatch("auth/logout");
-      console.log("logout");
       router.push("/login");
     };
 
     // Function to toggle menu
     const toggleMenu = () => {
       isMenuOpen.value = !isMenuOpen.value;
-      console.log("menu", isMenuOpen.value);
     };
 
     // Function to toggle tablet menu
     const toggleTabletMenu = () => {
       isTabletMenuOpen.value = !isTabletMenuOpen.value;
-      console.log("tablet menu", isTabletMenuOpen.value);
     };
 
     return {

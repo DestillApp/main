@@ -115,9 +115,14 @@ export default {
 
     // Fetch initial data from local storage on component mount
     onMounted(() => {
-      store.dispatch("results/fetchLocalStorageData", "oilAmount");
-      store.dispatch("results/fetchLocalStorageData", "hydrosolAmount");
-      store.dispatch("results/fetchLocalStorageData", "hydrosolpH");
+      const keys = [
+        "oilAmount",
+        "hydrosolAmount",
+        "hydrosolpH",
+      ];
+      keys.forEach((key) => {
+        store.dispatch("results/fetchLocalStorageData", key);
+      });
     });
 
     return {

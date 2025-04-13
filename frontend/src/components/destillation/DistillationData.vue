@@ -134,19 +134,33 @@ export default {
       const fieldsToFetch = [
         {
           key: "waterForDistillation",
-          action: "fetchLocalStorageData",
           isPlant: false,
         },
-        { key: "distillationHours", action: "fetchTimeFromLocalStorageData" },
-        { key: "distillationMinutes", action: "fetchTimeFromLocalStorageData" },
+        { key: "distillationHours" },
+        { key: "distillationMinutes" },
       ];
 
-      fieldsToFetch.forEach(({ key, action, isPlant }) => {
+      fieldsToFetch.forEach(({ key, isPlant }) => {
         const module = props.isEditing ? "results" : "distillation";
-        if (module === "distillation" && key === "waterForDistillation") {
-          store.dispatch(`${module}/${action}`, { key, isPlant });
-        } else {
-          store.dispatch(`${module}/${action}`, key);
+        if (module === "distillation") {
+          if (key === "waterForDistillation") {
+            store.dispatch(`${module}/fetchLocalStorageData`, { key, isPlant });
+          } else {
+            store.dispatch(`${module}/fetchTimeFromLocalStorageData`, key);
+          }
+        }
+        if (module === "results") {
+          if (key === "waterForDistillation") {
+            store.dispatch(
+              `${module}/fetchDistillationDataFromLocalStorage`,
+              key
+            );
+          } else {
+            store.dispatch(
+              `${module}/fetchDistillationTimeFromLocalStorage`,
+              key
+            );
+          }
         }
       });
     });

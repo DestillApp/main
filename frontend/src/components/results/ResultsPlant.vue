@@ -119,6 +119,7 @@
 <script>
 import { useStore } from "vuex";
 import { onMounted, computed } from "vue";
+import { initialResultsForm } from "@/helpers/formsInitialState.js";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 /**
@@ -168,24 +169,21 @@ export default {
     // Fetch initial data from local storage on component mount
     onMounted(async () => {
       if (!comingFromRoute.value) {
-        fetchPlantData("plantName");
-        fetchPlantData("plantPart");
-        fetchPlantData("harvestDate");
-        fetchPlantData("plantBuyDate");
-        fetchPlantData("plantProducer");
-        fetchPlantData("countryOfOrigin");
-        fetchPlantData("harvestTemperature");
-        fetchPlantData("harvestEndTime");
-        fetchPlantData("harvestStartTime");
-        fetchPlantData("plantOrigin");
-        fetchPlantData("plantState");
-        fetchPlantData("dryingTime");
-        fetchPlantData("plantAge");
-        fetchDistillationData("weightForDistillation");
-        fetchDistillationData("isPlantSoaked");
-        fetchDistillationData("soakingTime");
-        fetchDistillationData("weightAfterSoaking");
-        fetchDistillationData("isPlantShredded");
+        const distilledPlantKeys = Object.keys(initialResultsForm.distilledPlant);
+        distilledPlantKeys.forEach((key) => {
+          fetchPlantData(key);
+        });
+
+        const distillationKeys = [
+          "weightForDistillation",
+          "isPlantSoaked",
+          "soakingTime",
+          "weightAfterSoaking",
+          "isPlantShredded",
+        ];
+        distillationKeys.forEach((key) => {
+          fetchDistillationData(key);
+        });
       }
     });
 

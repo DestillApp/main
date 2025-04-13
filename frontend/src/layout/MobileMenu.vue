@@ -85,7 +85,6 @@ export default {
     // Handling user logout
     const handleLogout = async () => {
       await store.dispatch("auth/logout");
-      console.log("logout");
       router.push("/login");
       emit("toggle-menu");
     };
