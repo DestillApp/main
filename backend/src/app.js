@@ -35,7 +35,7 @@ app.use(cookieParser());
 
 // Enable CORS with specific options
 const corsOptions = {
-  origin: "http://localhost:8080", // Allow requests from this origin
+  origin: "http://localhost:5173", // Allow requests from this origin
   credentials: true, // Allow credentials (cookies, authorization headers)
 };
 
@@ -97,7 +97,7 @@ const server = new ApolloServer({
   formatResponse: (response, requestContext) => {
     requestContext.response.http.headers.set(
       "Access-Control-Allow-Origin",
-      "http://localhost:8080"
+      "http://localhost:5173"
     );
     requestContext.response.http.headers.set(
       "Access-Control-Allow-Credentials",
