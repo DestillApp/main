@@ -1,10 +1,12 @@
-/<template>
-  <base-card
-  class="add-distillation">
+/
+<template>
+  <base-card class="add-distillation">
     <!-- Distillation form -->
     <form @submit.prevent="saveDistillation" class="add-distillation__form">
       <!-- Title for the plant information form -->
-      <h3 class="add-distillation__form-title">Informacje o procesie destylacji</h3>
+      <h3 class="add-distillation__form-title">
+        Informacje o procesie destylacji
+      </h3>
       <!-- Distillation plan component -->
       <distillation-plant :isFormValid="isFormValid"></distillation-plant>
       <!-- Distillation process component -->
@@ -12,7 +14,9 @@
       <!-- Distillation data component -->
       <distillation-data :isFormValid="isFormValid"></distillation-data>
       <!-- Button to submit the distilation form -->
-      <base-button class="add-distillation__form-button" type="submit">Zapisz</base-button>
+      <base-button class="add-distillation__form-button" type="submit"
+        >Zapisz</base-button
+      >
       <!-- Button to submit and go to the distillation results form -->
       <base-button @click="saveDistillationAddResults"
         >Zapisz i dodaj wyniki</base-button
@@ -21,7 +25,8 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import DistillationPlant from "../../components/destillation/DistillationPlant.vue";
 import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
 import DistillationData from "../../components/destillation/DistillationData.vue";
@@ -42,7 +47,7 @@ import DOMPurify from "dompurify";
  * @module AddDistillationPage
  * @description This component renders a destillation form and handles sending destillation data.
  */
-export default {
+export default defineComponent({
   name: "AddDistillationPage",
   components: { DistillationPlant, DistillationProcess, DistillationData },
 
@@ -269,7 +274,7 @@ export default {
 
     return { saveDistillation, saveDistillationAddResults, isFormValid };
   },
-};
+});
 </script>
 
 <style scoped>
