@@ -1,4 +1,8 @@
-export const initialPlantForm = {
+import { PlantForm } from "@/types/forms/plantForm";
+import { DistillationForm } from "@/types/forms/distillationForm";
+import { ResultsForm } from "@/types/forms/resultsForm";
+
+export const initialPlantForm: PlantForm = {
   plantName: "",
   plantPart: "",
   plantOrigin: "",
@@ -20,7 +24,7 @@ export const initialPlantForm = {
   weightAfterSoaking: null,
 };
 
-export const initialDistillationForm = {
+export const initialDistillationForm: DistillationForm = {
   choosedPlant: {
     id: null,
     name: "",
@@ -45,7 +49,7 @@ export const initialDistillationForm = {
   },
 };
 
-export const initialResultsForm = {
+export const initialResultsForm: ResultsForm = {
   oilAmount: null,
   hydrosolAmount: null,
   hydrosolpH: null,

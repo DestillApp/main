@@ -1,4 +1,3 @@
-/
 <template>
   <base-card class="add-distillation">
     <!-- Distillation form -->
@@ -39,8 +38,12 @@ import { defineComponent } from "vue";
 import DistillationPlant from "../../components/destillation/DistillationPlant.vue";
 import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
 import DistillationData from "../../components/destillation/DistillationData.vue";
+
+import { DistillationForm } from "@/types/forms/distillationForm";
+
 import { distillationFormValidation } from "@/helpers/formsValidation";
 import { initialDistillationForm } from "@/helpers/formsInitialState";
+import { mapDistillationForm } from "@/helpers/formsMapping";
 import store from "@/store/index";
 
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
@@ -50,7 +53,6 @@ import { useStore } from "vuex";
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
-import DOMPurify from "dompurify";
 
 /**
  * @module AddDistillationPage
@@ -76,15 +78,15 @@ export default defineComponent({
     const store = useStore();
 
     // Computed property to get plant form data from Vuex store
-    const distillationForm = computed(
+    const distillationForm = computed<DistillationForm>(
       () => store.getters["distillation/distillationForm"]
     );
 
-    const distillId = ref(null);
+    const distillId = ref<string | null>(null);
 
     // Reactive reference to track form validity
-    const isFormValid = ref(false);
-    const wasSubmitted = ref(false);
+    const isFormValid = ref<boolean>(false);
+    const wasSubmitted = ref<boolean>(false);
 
     // Router object for navigation
     const router = useRouter();
@@ -111,111 +113,68 @@ export default defineComponent({
      * @returns {Promise<void>} Resolves when the form submission process is complete.
      * @throws {Error} Throws an error if the form submission fails.
      */
-    const submitDistillationForm = async () => {
+    const submitDistillationForm = async (): Promise<void> => {
       // Validate the form
       wasSubmitted.value = true;
       isFormValid.value = distillationFormValidation(distillationForm.value);
       if (isFormValid.value) {
         try {
-          const form = distillationForm.value;
-
-          const distillationFormData = {
-            choosedPlant: {
-              id: DOMPurify.sanitize(form.choosedPlant.id),
-              name: DOMPurify.sanitize(form.choosedPlant.name),
-              part: DOMPurify.sanitize(form.choosedPlant.part),
-              availableWeight: form.choosedPlant.availableWeight
-                ? Number(DOMPurify.sanitize(form.choosedPlant.availableWeight))
-                : null,
-              harvestDate: DOMPurify.sanitize(form.choosedPlant.harvestDate),
-              buyDate: DOMPurify.sanitize(form.choosedPlant.buyDate),
-            },
-            weightForDistillation: form.weightForDistillation
-              ? Number(DOMPurify.sanitize(form.weightForDistillation))
-              : null,
-            isPlantSoaked: Boolean(DOMPurify.sanitize(form.isPlantSoaked)),
-            soakingTime: form.soakingTime
-              ? Number(DOMPurify.sanitize(form.soakingTime))
-              : null,
-            weightAfterSoaking: form.weightAfterSoaking
-              ? Number(DOMPurify.sanitize(form.weightAfterSoaking))
-              : null,
-            isPlantShredded: Boolean(DOMPurify.sanitize(form.isPlantShredded)),
-            distillationType: DOMPurify.sanitize(form.distillationType),
-            distillationDate: DOMPurify.sanitize(form.distillationDate),
-            distillationApparatus: DOMPurify.sanitize(
-              form.distillationApparatus
-            ),
-            waterForDistillation: form.waterForDistillation
-              ? Number(DOMPurify.sanitize(form.waterForDistillation))
-              : null,
-            distillationTime: {
-              distillationHours: form.distillationTime.distillationHours
-                ? Number(
-                    DOMPurify.sanitize(form.distillationTime.distillationHours)
-                  )
-                : null,
-              distillationMinutes: form.distillationTime.distillationMinutes
-                ? Number(
-                    DOMPurify.sanitize(
-                      form.distillationTime.distillationMinutes
-                    )
-                  )
-                : null,
-            },
-          };
-
-          const { data } = await createDistillation({
+          const distillationFormData = mapDistillationForm(
+            distillationForm.value
+          );
+          const result = await createDistillation({
             input: distillationFormData,
           });
-          distillId.value = data.createDistillation._id;
-          console.log("Created distillation:", data.createDistillation);
-          console.log("Created distillation ID:", data.createDistillation._id);
-        } catch (error) {
-          if (error.message === "Unauthorized") {
-            await store.dispatch("auth/logout");
-            router.push("/login");
+          if (result?.data) {
+            distillId.value = result.data.createDistillation._id;
           }
-          console.error("Error submitting form", error);
+        } catch (error) {
+          if (error instanceof Error) {
+            if (error.message === "Unauthorized") {
+              await store.dispatch("auth/logout");
+              router.push("/login");
+            }
+            console.error("Error submitting form", error);
+          } else {
+            console.error("An unknown error occured", error);
+          }
           wasSubmitted.value = false;
         }
       } else {
-        console.log(isFormValid.value);
         console.log("invalid form!");
         return;
       }
     };
 
-    const changeAvailableWeight = async () => {
+    const changeAvailableWeight = async (): Promise<void> => {
       try {
-        const sanitizedAvailableWeight = Number(
-          DOMPurify.sanitize(
-            distillationForm.value.choosedPlant.availableWeight
-          )
-        );
-        const sanitizedWeightForDistillation = Number(
-          DOMPurify.sanitize(distillationForm.value.weightForDistillation)
-        );
-        let newWeight =
-          sanitizedAvailableWeight - sanitizedWeightForDistillation;
+        const availableWeight =
+          distillationForm.value.choosedPlant.availableWeight ?? 0;
+        const weightForDistillation =
+          distillationForm.value.weightForDistillation ?? 0;
+        let newWeight = availableWeight - weightForDistillation;
         newWeight = parseFloat(newWeight.toFixed(1));
 
         await updateAvailableWeight({
           input: {
-            id: route.params.id,
+            id: route.params.id as string,
             availableWeight: newWeight,
           },
         });
       } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
+        if (error instanceof Error) {
+          if (error.message === "Unauthorized") {
+            await store.dispatch("auth/logout");
+            router.push("/login");
+          }
+          console.error("Error changing form available weight:", error.message);
+        } else {
+          console.error("An unknown error occurred:", error);
         }
-        console.error("Error changing form available weight", error);
       }
     };
 
-    const saveDistillation = async () => {
+    const saveDistillation = async (): Promise<void> => {
       try {
         await submitDistillationForm();
         if (!isFormValid.value) {
@@ -244,7 +203,7 @@ export default defineComponent({
      * @returns {Promise<void>} - A promise that resolves when the operation is complete.
      * @throws {Error} - Throws an error if the submission or weight change fails.
      */
-    const saveDistillationAddResults = async () => {
+    const saveDistillationAddResults = async (): Promise<void> => {
       try {
         // Submit the distillation form
         await submitDistillationForm();

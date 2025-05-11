@@ -42,3 +42,6 @@ export interface DistillationForm {
   waterForDistillation: number | null;
   distillationTime: DistillationTime;
 }
+
+export interface DistillationFormSubmit
+  extends Omit<DistillationForm, "initialWeightForDistillation"> {}

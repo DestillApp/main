@@ -14,19 +14,36 @@
     >
       <template v-slot:message>
         <div v-if="plantData.plantName" class="results-plant__informations">
-          <div :class="['results-plant__information', {'dark-results-plant__information': isDarkTheme}]">
+          <div
+            :class="[
+              'results-plant__information',
+              { 'dark-results-plant__information': isDarkTheme },
+            ]"
+          >
             <span>część rośliny: </span
             ><span class="results-plant__information-value">{{
               plantData.plantPart
             }}</span>
           </div>
-          <div v-if="plantData.harvestDate" :class="['results-plant__information', {'dark-results-plant__information': isDarkTheme}]">
+          <div
+            v-if="plantData.harvestDate"
+            :class="[
+              'results-plant__information',
+              { 'dark-results-plant__information': isDarkTheme },
+            ]"
+          >
             <span>data zbioru: </span
             ><span class="results-plant__information-value">{{
               plantData.harvestDate
             }}</span>
           </div>
-          <div v-if="plantData.plantBuyDate" :class="['results-plant__information', {'dark-results-plant__information': isDarkTheme}]">
+          <div
+            v-if="plantData.plantBuyDate"
+            :class="[
+              'results-plant__information',
+              { 'dark-results-plant__information': isDarkTheme },
+            ]"
+          >
             <span>data kupna: </span
             ><span class="results-plant__information-value">{{
               plantData.plantBuyDate
@@ -119,7 +136,7 @@
 <script>
 import { useStore } from "vuex";
 import { onMounted, computed } from "vue";
-import { initialResultsForm } from "@/helpers/formsInitialState.js";
+import { initialResultsForm } from "@/helpers/formsInitialState";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 /**
@@ -169,7 +186,9 @@ export default {
     // Fetch initial data from local storage on component mount
     onMounted(async () => {
       if (!comingFromRoute.value) {
-        const distilledPlantKeys = Object.keys(initialResultsForm.distilledPlant);
+        const distilledPlantKeys = Object.keys(
+          initialResultsForm.distilledPlant
+        );
         distilledPlantKeys.forEach((key) => {
           fetchPlantData(key);
         });
@@ -265,10 +284,10 @@ export default {
 }
 
 @media (max-width: 600px) {
-.results-plant__informations {
-flex-direction: column;
-gap: 5px;
-margin-top: 5px;
-}
+  .results-plant__informations {
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+  }
 }
 </style>

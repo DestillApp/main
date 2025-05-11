@@ -310,7 +310,7 @@ export default defineComponent({
           query: GET_BASIC_PLANT_BY_ID,
           variables: { id: route.params.id, formatDates: false },
         });
-        console.log("plantData", data.getPlantById);
+
         return data.getPlantById;
       } catch (error) {
         console.error("Failed to get plant details:", error);
