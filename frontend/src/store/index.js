@@ -5,9 +5,9 @@
 
 import { createStore } from "vuex";
 
-import plantModule from "../store/plant/index.js";
-import authModule from "../store/auth/index.js";
-import distillationModule from "./distillation/index.js";
+import plantModule from "../store/plant/index";
+import authModule from "../store/auth/index";
+import distillationModule from "./distillation/index";
 import resultsModule from "./results/index.js";
 import settingsModule from "./settings/index.js";
 

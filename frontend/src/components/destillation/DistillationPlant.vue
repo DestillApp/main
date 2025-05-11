@@ -10,13 +10,15 @@
       color="plant"
       :disabled="isEditing"
       :results="plants"
-      :invalidInput="isFormValid === false && formData.choosedPlant.name === ''"
+      :invalidInput="
+        wasSubmitted && !isFormValid && !formData.choosedPlant.name
+      "
       @update:modelValue="onInput"
       @choose:item="setPlant"
       @update:onBlur="onBlur"
     >
       <template v-slot:message>
-        <span v-if="isFormValid === false && formData.choosedPlant.name === ''"
+        <span v-if="wasSubmitted && !isFormValid && !formData.choosedPlant.name"
           >Wybierz surowiec z magazynu</span
         >
         <div
@@ -66,7 +68,7 @@
       classType="number"
       inputColor="plant"
       :invalidInput="
-        isFormValid === false && formData.weightForDistillation === null
+        wasSubmitted && !isFormValid && !formData.weightForDistillation
       "
       :storeName="storeName"
       @change:modelValue="setNumber"
@@ -79,20 +81,18 @@
       step="0.1"
     >
       <template v-slot:unit>
-        <div v-if="formData.weightForDistillation !== null">kg</div>
+        <div v-if="formData.weightForDistillation">kg</div>
       </template>
       <template v-slot:message>
         <span
           v-if="
-            formData.weightForDistillation >
+            formData.weightForDistillation &&
             formData.choosedPlant.availableWeight
           "
           >Brak wystarczającej ilości surowca w magazynie</span
         >
         <span
-          v-if="
-            isFormValid === false && formData.weightForDistillation === null
-          "
+          v-if="wasSubmitted && !isFormValid && !formData.weightForDistillation"
           >Wpisz wagę surowca</span
         >
         <span v-else>&nbsp;</span>
@@ -117,7 +117,7 @@
             classType="number"
             inputColor="plant"
             :invalidInput="
-              isFormValid === false && formData.soakingTime === null
+              wasSubmitted && !isFormValid && !formData.soakingTime
             "
             :storeName="storeName"
             @update:modelValue="setInteger"
@@ -129,11 +129,10 @@
             step="1"
           >
             <template v-slot:unit>
-              <div v-if="formData.soakingTime !== null">h</div>
+              <div v-if="formData.soakingTime">h</div>
             </template>
             <template v-slot:message>
-              <span
-                v-if="isFormValid === false && formData.soakingTime === null"
+              <span v-if="wasSubmitted && !isFormValid && !formData.soakingTime"
                 >Wpisz czas namaczania</span
               >
               <span v-else>&nbsp;</span>
@@ -145,7 +144,7 @@
             classType="number"
             inputColor="plant"
             :invalidInput="
-              isFormValid === false && formData.weightAfterSoaking === null
+              wasSubmitted && !isFormValid && !formData.weightAfterSoaking
             "
             :storeName="storeName"
             @change:modelValue="setNumber"
@@ -157,12 +156,12 @@
             step="0.1"
           >
             <template v-slot:unit>
-              <div v-if="formData.weightAfterSoaking !== null">kg</div>
+              <div v-if="formData.weightAfterSoaking">kg</div>
             </template>
             <template v-slot:message>
               <span
                 v-if="
-                  isFormValid === false && formData.weightAfterSoaking === null
+                  wasSubmitted && !isFormValid && !formData.weightAfterSoaking
                 "
                 >Wpisz wagę po namaczaniu</span
               >
@@ -183,9 +182,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, onMounted, computed, watch, ref } from "vue";
 import { useStore } from "vuex";
-import { onMounted, computed, watch, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import { format } from "date-fns";
@@ -198,6 +197,13 @@ import {
 } from "@/helpers/formatHelpers.js";
 import DOMPurify from "dompurify";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
+
+import {
+  ChoosedPlant,
+  FormChoosedPlant,
+  DistillationForm,
+} from "@/types/forms/distillationForm";
+import { BasicPlant } from "@/types/forms/plantForm";
 
 import { GET_PLANTS } from "@/graphql/queries/plant.js";
 import { GET_BASIC_PLANT_BY_ID } from "@/graphql/queries/plant.js";
@@ -218,12 +224,18 @@ import { GET_BASIC_PLANT_BY_ID } from "@/graphql/queries/plant.js";
  * @see setKeyboardFormatedNumber
  */
 
-export default {
+interface Props {
+  isFormValid: boolean;
+  wasSubmitted: boolean;
+  isEditing?: boolean;
+}
+
+export default defineComponent({
   name: "DistillationPlant",
   components: { BaseTextInput, BaseAutocompleteInput },
-  props: ["isFormValid", "isEditing"],
+  props: ["isFormValid", "wasSubmitted", "isEditing"],
 
-  setup(props) {
+  setup(props: Props) {
     // Apollo client instance
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
@@ -237,24 +249,30 @@ export default {
     const router = useRouter();
     const route = useRoute();
 
-    const searchQuery = ref("");
-    const plant = ref("");
-    const plants = ref([]);
-    const timeout = ref(null);
+    const searchQuery = ref<string>("");
+    const plant = ref<string>("");
+    const plants = ref<BasicPlant[]>([]);
+    const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
 
     // Computed properties to get form data from Vuex store
-    const formData = computed(
+    const formData = computed<DistillationForm>(
       () => store.getters["distillation/distillationForm"]
     );
-    const isPlantSoaked = computed(
+    const isPlantSoaked = computed<boolean>(
       () => store.getters["distillation/isPlantSoaked"]
     );
-    const isPlantShredded = computed(
+    const isPlantShredded = computed<boolean>(
       () => store.getters["distillation/isPlantShredded"]
     );
-    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+    const isDarkTheme = computed<boolean>(
+      () => store.getters["settings/isDarkTheme"]
+    );
 
-    const plantFields = [
+    const plantFields: {
+      key: keyof ChoosedPlant;
+      valueKey: keyof BasicPlant;
+      format?: boolean;
+    }[] = [
       { key: "id", valueKey: "_id" },
       { key: "name", valueKey: "plantName" },
       { key: "part", valueKey: "plantPart" },
@@ -264,56 +282,35 @@ export default {
     ];
 
     // Computed property to calculate the new available weight
-    const updatedAvailableWeight = computed(() => {
-      const sanitizedAvailableWeight = Number(
-        DOMPurify.sanitize(formData.value.choosedPlant.availableWeight)
-      );
-      const sanitizedWeightForDistillation = Number(
-        DOMPurify.sanitize(formData.value.weightForDistillation)
-      );
+    const updatedAvailableWeight = computed<number | undefined>(() => {
+      const availableWeight = formData.value.choosedPlant.availableWeight ?? 0;
+      const weightForDistillation = formData.value.weightForDistillation ?? 0;
       const initialWeightForDistillation =
-        formData.value.initialWeightForDistillation;
+        formData.value.initialWeightForDistillation ?? 0;
       if (props.isEditing) {
         return parseFloat(
           (
-            sanitizedAvailableWeight +
+            availableWeight +
             initialWeightForDistillation -
-            sanitizedWeightForDistillation
+            weightForDistillation
           ).toFixed(1)
         );
       } else {
-        return parseFloat(
-          (sanitizedAvailableWeight - sanitizedWeightForDistillation).toFixed(1)
-        );
+        return parseFloat((availableWeight - weightForDistillation).toFixed(1));
       }
     });
 
-    // Format the plantBuyDate
-    // const formattedPlantBuyDate = computed(() => {
-    //   const plantBuyDate = formData.value.choosedPlant.buyDate;
-    //   console.log("plantBuyDate", plantBuyDate);
-    //   return plantBuyDate && !isNaN(new Date(plantBuyDate).getTime())
-    //     ? format(new Date(plantBuyDate), "dd-MM-yyyy")
-    //     : plantBuyDate;
-    // });
+    const comingFromRoute = computed<boolean>(
+      () => store.getters.comingFromRoute
+    );
 
-    // Format the harvestDate
-    // const formattedHarvestDate = computed(() => {
-    //   const plantHarvestDate = formData.value.choosedPlant.harvestDate;
-    //   console.log("harvestDate", plantHarvestDate);
-    //   return plantHarvestDate && !isNaN(new Date(plantHarvestDate).getTime())
-    //     ? format(new Date(plantHarvestDate), "dd-MM-yyyy")
-    //     : plantHarvestDate;
-    // });
-
-    const comingFromRoute = computed(() => store.getters.comingFromRoute);
-
-    const getPlantData = async () => {
+    const getPlantData = async (): Promise<BasicPlant | undefined> => {
       try {
         const { data } = await apolloClient.query({
           query: GET_BASIC_PLANT_BY_ID,
           variables: { id: route.params.id, formatDates: false },
         });
+        console.log("plantData", data.getPlantById);
         return data.getPlantById;
       } catch (error) {
         console.error("Failed to get plant details:", error);
@@ -326,7 +323,7 @@ export default {
      * @param {string} key - The key for the specific data to fetch.
      * @param {boolean} value - Indicates if the fetched data is related to plant information.
      */
-    const fetchData = (key, value) => {
+    const fetchData = (key: string, value: boolean): void => {
       store.dispatch("distillation/fetchLocalStorageData", {
         key: key,
         isPlant: value,
@@ -335,20 +332,21 @@ export default {
 
     // Fetch initial data from local storage on component mount
     onMounted(async () => {
-      console.log("formData", formData.value);
       if (comingFromRoute.value) {
         if (route.params.id) {
           const plantData = await getPlantData();
 
-          plantFields.forEach(({ key, valueKey, format: shouldFormat }) => {
-            const value =
-              shouldFormat && plantData[valueKey]
-                ? format(new Date(plantData[valueKey]), "dd-MM-yyyy")
-                : plantData[valueKey];
+          if (plantData) {
+            plantFields.forEach(({ key, valueKey, format: shouldFormat }) => {
+              const value =
+                shouldFormat && plantData[valueKey]
+                  ? format(new Date(plantData[valueKey]), "dd-MM-yyyy")
+                  : plantData[valueKey];
 
-            store.dispatch("distillation/setChoosedPlant", { key, value });
-          });
-          plant.value = formData.value.choosedPlant.name;
+              store.dispatch("distillation/setChoosedPlant", { key, value });
+            });
+            plant.value = formData.value.choosedPlant.name;
+          }
         } else {
           return;
         }
@@ -378,7 +376,10 @@ export default {
      * @param {string} key - The key of the plant attribute.
      * @param {any} value - The value of the plant attribute.
      */
-    const setPlantState = (key, value) => {
+    const setPlantState = (
+      key: keyof FormChoosedPlant,
+      value: string | number | null
+    ): void => {
       store.dispatch("distillation/setChoosedPlant", {
         key: key,
         value: value,
@@ -389,36 +390,28 @@ export default {
      * @function setPlant
      * @desctiption Sets the selected plant details in the form, including plant ID, name, part, and weight. Clears the search input and list of plants after selection.
      * @param {Object} value - The selected plant object from the plant list.
-     * @param {string} input - The input identifier triggering the event.
      */
-    const setPlant = (value) => {
+    const setPlant = (value: BasicPlant): void => {
       plantFields.forEach(({ key, valueKey }) => {
-        setPlantState(key, value[valueKey]);
+        setPlantState(key, value[valueKey] ?? null);
       });
       searchQuery.value = "";
       plant.value = value.plantName;
       plants.value = [];
 
-      if (props.isEditing) {
-        router.replace({
-          name: "EditDistillationPage",
-          params: { id: value._id },
-        });
-      } else {
-        router.replace({
-          name: "AddDistillationPage",
-          params: { id: value._id },
-        });
-      }
+      const targetRoute = props.isEditing
+        ? "EditDistillationPage"
+        : "AddDistillationPage";
+      router.replace({ name: targetRoute, params: { id: value._id } });
     };
 
     /**
      * @async
-     * @function fetchPlantList
+     * @function fetchPlants
      * @description Fetch the list of plants from the GraphQL server by matching name.
      * @returns {Promise<void>}
      */
-    const fetchPlants = async (name) => {
+    const fetchPlants = async (name: string): Promise<void> => {
       try {
         const { data } = await apolloClient.query({
           query: GET_PLANTS,
@@ -431,11 +424,16 @@ export default {
         });
         plants.value = data.getPlants;
       } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
+        // Narrow the type of error to check its properties
+        if (error instanceof Error) {
+          if (error.message === "Unauthorized") {
+            await store.dispatch("auth/logout");
+            router.push("/login");
+          }
+          console.error("Failed to get plant list:", error.message);
+        } else {
+          console.error("An unknown error occurred:", error);
         }
-        console.error("Failed to get plant list:", error);
         plants.value = [];
       }
     };
@@ -443,10 +441,9 @@ export default {
     /**
      * @function onInput
      * @description Handles the input event for the search or autocomplete component. Updates the search query and manages the timer to limit the frequency of fetch requests.
-     * @param {Event} e - The input event triggered by user interaction.
      * @returns {void}
      */
-    const onInput = (value, input) => {
+    const onInput = (value: string, input: string): void => {
       if (input === "choosedPlant") {
         plantFields.forEach(({ key }) => {
           key === "id" || key === "availableWeight"
@@ -454,11 +451,12 @@ export default {
             : setPlantState(key, "");
         });
       }
-      if (props.isEditing) {
-        router.replace({ name: "EditDistillationPage", params: { id: null } });
-      } else {
-        router.replace({ name: "AddDistillationPage", params: { id: null } });
-      }
+
+      const routeName = props.isEditing
+        ? "EditDistillationPage"
+        : "AddDistillationPage";
+      router.replace({ name: routeName, params: { id: null } });
+
       searchQuery.value = value;
       plant.value = searchQuery.value;
       if (timeout.value) {
@@ -487,16 +485,14 @@ export default {
     };
 
     // Using the format function
-    const setInteger = (value, id, storeName) => {
+    const setInteger = (value: string, id: string, storeName: string) => {
       setIntegerNumber(store, value, id, storeName);
     };
 
     // Using the format function
-    const setNumber = (value, id, storeName) => {
+    const setNumber = (value: string, id: string, storeName: string) => {
       setNumberFormat(store, value, id, storeName);
     };
-
-
 
     // Watcher to handle changes in the isPlantSoaked state. Updates related fields and dispatches changes to the store.
     watch(
@@ -523,10 +519,10 @@ export default {
               input: "weightAfterSoaking",
               value: null,
             });
-          store.dispatch("plant/setValue", {
-            input: "isPlantSoaked",
-            value: newValue,
-          });
+            store.dispatch("plant/setValue", {
+              input: "isPlantSoaked",
+              value: newValue,
+            });
           }
         }
       }
@@ -563,7 +559,7 @@ export default {
       isDarkTheme,
     };
   },
-};
+});
 </script>
 
 <style scoped>

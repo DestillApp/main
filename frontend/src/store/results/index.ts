@@ -1,3 +1,4 @@
+import { ResultsForm } from "@/types/forms/resultsForm";
 import resultsMutations from "./mutations";
 import resultsActions from "./actions";
 import resultsGetters from "./getters";
@@ -14,7 +15,7 @@ export default {
    * @function state
    * @returns {Object} The initial state object.
    */
-  state() {
+  state(): { resultsForm: ResultsForm } {
     return {
       resultsForm: {
         oilAmount: null,

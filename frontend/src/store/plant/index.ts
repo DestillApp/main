@@ -1,3 +1,4 @@
+import { PlantForm } from "@/types/forms/plantForm.js";
 import plantMutations from "../plant/mutations.js";
 import plantActions from "../plant/actions.js";
 import plantGetters from "../plant/getters.js";
@@ -14,7 +15,7 @@ export default {
    * @function state
    * @returns {Object} The initial state object.
    */
-  state() {
+  state(): { plantForm: PlantForm } {
     return {
       plantForm: {
         plantName: "",

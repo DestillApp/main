@@ -7,7 +7,9 @@
       classType="number"
       placeholder="l"
       inputColor="distillation"
-      :invalidInput="isFormValid === false && !formData.waterForDistillation"
+      :invalidInput="
+        wasSubmitted && !isFormValid && !formData.waterForDistillation
+      "
       :storeName="storeName"
       @update:modelValue="setInteger"
       @set:keyboard="setKeyboardIntegerNumber"
@@ -20,7 +22,9 @@
         <div v-if="formData.waterForDistillation">l</div>
       </template>
       <template v-slot:message>
-        <span v-if="isFormValid === false && !formData.waterForDistillation">
+        <span
+          v-if="wasSubmitted && !isFormValid && !formData.waterForDistillation"
+        >
           Wprowadź ilość wody użytej do destylacji
         </span>
         <span v-else>&nbsp;</span>
@@ -34,7 +38,8 @@
         placeholder="h"
         inputColor="distillation"
         :invalidInput="
-          isFormValid === false &&
+          wasSubmitted &&
+          !isFormValid &&
           !formData.distillationTime.distillationHours &&
           !formData.distillationTime.distillationMinutes
         "
@@ -52,15 +57,17 @@
         <template v-slot:message>
           <span
             v-if="
-              isFormValid === false &&
+              wasSubmitted &&
+              !isFormValid &&
               !formData.distillationTime.distillationHours &&
               !formData.distillationTime.distillationMinutes
             "
-            >Wpisz długość procesu destylacji</span
           >
+            Wpisz długość procesu destylacji
+          </span>
           <span v-else>&nbsp;</span>
-        </template></base-text-input
-      >
+        </template>
+      </base-text-input>
       <base-text-input
         v-model="formData.distillationTime.distillationMinutes"
         type="number"
@@ -69,7 +76,8 @@
         placeholder="min"
         inputColor="distillation"
         :invalidInput="
-          isFormValid === false &&
+          wasSubmitted &&
+          !isFormValid &&
           !formData.distillationTime.distillationHours &&
           !formData.distillationTime.distillationMinutes
         "
@@ -83,21 +91,23 @@
       >
         <template v-slot:unit>
           <div v-if="formData.distillationTime.distillationMinutes">min</div>
-        </template></base-text-input
-      >
+        </template>
+      </base-text-input>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import { useStore } from "vuex";
 import { computed, onMounted } from "vue";
+import { ResultsDistillation } from "@/types/forms/resultsForm";
+import { DistillationForm } from "@/types/forms/distillationForm";
 import {
   setIntegerNumber,
   setKeyboardIntegerNumber,
 } from "@/helpers/formatHelpers.js";
-import DOMPurify from "dompurify";
 
 /**
  * @component DistillationData
@@ -109,23 +119,29 @@ import DOMPurify from "dompurify";
  * @see saveTime
  */
 
-export default {
+interface Props {
+  isFormValid: boolean;
+  wasSubmitted: boolean;
+  isEditing?: boolean;
+}
+
+export default defineComponent({
   name: "DistillationData",
   components: { BaseTextInput },
-  props: ["isFormValid", "isEditing"],
-  setup(props) {
+  props: ["isFormValid", "wasSubmitted", "isEditing"],
+  setup(props: Props) {
     // Vuex store
     const store = useStore();
 
     // Computed properties to get form data from Vuex store
-    const formData = computed(() =>
+    const formData = computed<ResultsDistillation | DistillationForm>(() =>
       props.isEditing
         ? store.getters["results/distillationData"]
         : store.getters["distillation/distillationForm"]
     );
 
     // Name of the vuex store module
-    const storeName = computed(() =>
+    const storeName = computed<string>(() =>
       props.isEditing ? "results" : "distillation"
     );
 
@@ -166,23 +182,28 @@ export default {
     });
 
     // Using the format function to handle integer input for water volume
-    const setInteger = (value, id, storeName) => {
-      const sanitizedValue = Number(DOMPurify.sanitize(value));
-      if (!isNaN(sanitizedValue) && sanitizedValue >= 0) {
-        setIntegerNumber(store, sanitizedValue, id, storeName);
-      } else {
-        setIntegerNumber(store, null, id, storeName);
-      }
+    const setInteger = (
+      value: string | number,
+      id: string,
+      storeName: string
+    ) => {
+      const numericValue = typeof value === "string" ? Number(value) : value;
+      setIntegerNumber(
+        store,
+        numericValue >= 0 ? numericValue : null,
+        id,
+        storeName
+      );
     };
 
-    const saveTime = (value, key) => {
-      const sanitizedValue = Number(DOMPurify.sanitize(value));
-      const isValid = !isNaN(sanitizedValue) && sanitizedValue >= 0;
+    const saveTime = (value: string | number, key: string) => {
+      const numericValue = typeof value === "string" ? Number(value) : value;
+      const isValid = !isNaN(numericValue) && numericValue >= 0;
       const module = storeName.value;
 
       store.dispatch(`${module}/setDistillationTime`, {
         [module === "distillation" ? "key" : "input"]: key,
-        value: isValid ? sanitizedValue : null,
+        value: isValid ? numericValue : null,
       });
     };
 
@@ -194,7 +215,7 @@ export default {
       saveTime,
     };
   },
-};
+});
 </script>
 
 <style scoped>

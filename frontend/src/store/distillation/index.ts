@@ -1,3 +1,4 @@
+import { DistillationForm } from "@/types/forms/distillationForm.js";
 import distillationMutations from "./mutations";
 import distillationActions from "./actions.js";
 import distillationGetters from "./getters.js";
@@ -14,7 +15,7 @@ export default {
    * @function state
    * @returns {Object} The initial state object.
    */
-  state() {
+  state(): { distillationForm: DistillationForm } {
     return {
       distillationForm: {
         choosedPlant: {

@@ -8,11 +8,20 @@
         Informacje o procesie destylacji
       </h3>
       <!-- Distillation plan component -->
-      <distillation-plant :isFormValid="isFormValid"></distillation-plant>
+      <distillation-plant
+        :isFormValid="isFormValid"
+        :wasSubmitted="wasSubmitted"
+      ></distillation-plant>
       <!-- Distillation process component -->
-      <distillation-process :isFormValid="isFormValid"></distillation-process>
+      <distillation-process
+        :isFormValid="isFormValid"
+        :wasSubmitted="wasSubmitted"
+      ></distillation-process>
       <!-- Distillation data component -->
-      <distillation-data :isFormValid="isFormValid"></distillation-data>
+      <distillation-data
+        :isFormValid="isFormValid"
+        :wasSubmitted="wasSubmitted"
+      ></distillation-data>
       <!-- Button to submit the distilation form -->
       <base-button class="add-distillation__form-button" type="submit"
         >Zapisz</base-button
@@ -74,7 +83,8 @@ export default defineComponent({
     const distillId = ref(null);
 
     // Reactive reference to track form validity
-    const isFormValid = ref(null);
+    const isFormValid = ref(false);
+    const wasSubmitted = ref(false);
 
     // Router object for navigation
     const router = useRouter();
@@ -82,7 +92,8 @@ export default defineComponent({
 
     // Lifecycle hook to reset form validity on component mount
     onMounted(() => {
-      isFormValid.value = null;
+      isFormValid.value = false;
+      wasSubmitted.value = false;
     });
 
     // Using GraphQL mutation for creating a new plant
@@ -102,6 +113,7 @@ export default defineComponent({
      */
     const submitDistillationForm = async () => {
       // Validate the form
+      wasSubmitted.value = true;
       isFormValid.value = distillationFormValidation(distillationForm.value);
       if (isFormValid.value) {
         try {
@@ -165,6 +177,7 @@ export default defineComponent({
             router.push("/login");
           }
           console.error("Error submitting form", error);
+          wasSubmitted.value = false;
         }
       } else {
         console.log(isFormValid.value);
@@ -272,7 +285,12 @@ export default defineComponent({
       next();
     });
 
-    return { saveDistillation, saveDistillationAddResults, isFormValid };
+    return {
+      saveDistillation,
+      saveDistillationAddResults,
+      isFormValid,
+      wasSubmitted,
+    };
   },
 });
 </script>
