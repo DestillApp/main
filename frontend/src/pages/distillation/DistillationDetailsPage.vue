@@ -158,8 +158,8 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -169,12 +169,14 @@ import SvgIcon from "@jamescoyle/vue-icon";
 import PlantDetails from "@/components/plant/PlantDetails.vue";
 import { mdiChevronDown } from "@mdi/js";
 import { mdiChevronUp } from "@mdi/js";
-import DOMPurify from "dompurify";
+
+import { GetDistillationById } from "@/types/forms/distillationForm";
+
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
-export default {
+export default defineComponent({
   name: "DistillationDetailsPage",
   components: { DeleteItemModal, BaseButton, SvgIcon, PlantDetails },
   setup() {
@@ -190,28 +192,28 @@ export default {
     const router = useRouter();
 
     // Reactive references for distillation data
-    const distillationId = ref(route.params.distillId);
-    const distillationDetails = ref(null);
-    const selectedDistillationId = ref(null);
-    const selectedPlantId = ref(null);
-    const plantName = ref(null);
-    const plantPart = ref(null);
-    const distillationWeight = ref(null);
-    const distillationDate = ref(null);
+    const distillationId = ref<string | string[]>(route.params.distillId);
+    const distillationDetails = ref<GetDistillationById | null>(null);
+    const selectedDistillationId = ref<string | null>(null);
+    const selectedPlantId = ref<string | null>(null);
+    const plantName = ref<string | null>(null);
+    const plantPart = ref<string | null>(null);
+    const distillationWeight = ref<number | null>(null);
+    const distillationDate = ref<string | null>(null);
 
     // Reactive reference to store the plant ID and plant page number from the route
-    const page = ref(Number(route.params.page));
+    const page = ref<number>(Number(route.params.page));
 
     // Reactive reference to track if the delete modal is open
-    const isModalOpen = ref(false);
-    const isAskModalOpen = ref(false);
+    const isModalOpen = ref<boolean>(false);
+    const isAskModalOpen = ref<boolean>(false);
 
     // Reactive reference to track loading state
-    const isLoading = ref(true);
-    const isPlantOpen = ref(false);
+    const isLoading = ref<boolean>(true);
+    const isPlantOpen = ref<boolean>(false);
 
-    const pathArrowDown = ref(mdiChevronDown);
-    const pathArrowUp = ref(mdiChevronUp);
+    const pathArrowDown = ref<string>(mdiChevronDown);
+    const pathArrowUp = ref<string>(mdiChevronUp);
 
     /**
      * @async
@@ -219,7 +221,7 @@ export default {
      * @description Fetches the plant details by plant ID from GraphQL API.
      * @returns {Promise<void>}
      */
-    const fetchDistillationDetails = async () => {
+    const fetchDistillationDetails = async (): Promise<void> => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -228,7 +230,6 @@ export default {
           variables: { id: distillationId.value, formatDates: true },
         });
         distillationDetails.value = data.getDistillationById;
-        console.log(distillationDetails.value);
       } catch (error) {
         if (error.message === "Unauthorized") {
           await store.dispatch("auth/logout");
@@ -245,7 +246,7 @@ export default {
       fetchDistillationDetails();
     });
 
-    const openClosePlant = () => {
+    const openClosePlant = (): void => {
       if (isPlantOpen.value) {
         isPlantOpen.value = false;
       } else {
@@ -261,7 +262,14 @@ export default {
      * @param {String} part - The part of the plant.
      * @param {String} date - Distillation date.
      */
-    const openDeleteModal = (id, plantId, name, part, dWeight, date) => {
+    const openDeleteModal = (
+      id: string,
+      plantId: string,
+      name: string,
+      part: string,
+      dWeight: number,
+      date: string
+    ): void => {
       selectedDistillationId.value = id;
       selectedPlantId.value = plantId;
       plantName.value = name;
@@ -275,7 +283,7 @@ export default {
      * @function closeDeleteModal
      * @description Close the delete modal.
      */
-    const closeDeleteModal = () => {
+    const closeDeleteModal = (): void => {
       distillationDate.value = null;
       isModalOpen.value = false;
     };
@@ -284,7 +292,7 @@ export default {
      * @function openAskModal
      * @description Open the ask modal.
      */
-    const openAskModal = () => {
+    const openAskModal = (): void => {
       isAskModalOpen.value = true;
     };
 
@@ -332,17 +340,14 @@ export default {
      * @description Add the distillation weight back to the plant's available weight.
      * @returns {Promise<void>}
      */
-    const addPlantWeight = async () => {
+    const addPlantWeight = async (): Promise<void> => {
       try {
-        const sanitizedAvailableWeight = Number(
-          DOMPurify.sanitize(distillationWeight.value)
-        );
         await apolloClient.mutate({
           mutation: CHANGE_AVAILABLE_WEIGHT,
           variables: {
             input: {
               id: selectedPlantId.value,
-              availableWeight: sanitizedAvailableWeight,
+              availableWeight: distillationWeight.value,
             },
           },
         });
@@ -361,7 +366,7 @@ export default {
      * @description Handle the confirmation of adding plant weight.
      * @returns {Promise<void>}
      */
-    const handleYes = async () => {
+    const handleYes = async (): Promise<void> => {
       await addPlantWeight();
       closeAskModal();
     };
@@ -388,7 +393,7 @@ export default {
       handleYes,
     };
   },
-};
+});
 </script>
 
 <style scoped>
@@ -527,23 +532,23 @@ export default {
   }
 
   .distillation__plant-details-component {
-  text-align: center;
-  margin-left: 0;
-}
+    text-align: center;
+    margin-left: 0;
+  }
 
   .distillation__plant-button {
-  margin-left: 0;
-  text-align: center;
-}
+    margin-left: 0;
+    text-align: center;
+  }
 
-.distillation__results {
-  margin-inline: 20%;
-}
+  .distillation__results {
+    margin-inline: 20%;
+  }
 }
 
 @media (max-width: 600px) {
   .distillation__results {
-  margin-inline: 0;
-}
+    margin-inline: 0;
+  }
 }
 </style>

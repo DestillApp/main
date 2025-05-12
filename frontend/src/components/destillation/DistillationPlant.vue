@@ -86,8 +86,8 @@
       <template v-slot:message>
         <span
           v-if="
-            formData.weightForDistillation &&
-            formData.choosedPlant.availableWeight
+            (formData.weightForDistillation ?? 0) >
+            (formData.choosedPlant.availableWeight ?? 0)
           "
           >Brak wystarczającej ilości surowca w magazynie</span
         >

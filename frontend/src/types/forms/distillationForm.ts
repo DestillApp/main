@@ -17,6 +17,9 @@ export interface ChoosedPlant extends Pick<FormChoosedPlant, "name" | "part"> {
   buyDate?: string;
 }
 
+export interface ShortPlant
+  extends Omit<ChoosedPlant, "availableWeight" | "harvestDate" | "buyDate"> {}
+
 /*
  * Interface representing the structure of the distillation time.
  */
@@ -45,3 +48,18 @@ export interface DistillationForm {
 
 export interface DistillationFormSubmit
   extends Omit<DistillationForm, "initialWeightForDistillation"> {}
+
+export interface GetDistillationById {
+  _id: string;
+  choosedPlant: ShortPlant;
+  weightForDistillation: number;
+  isPlantSoaked: boolean;
+  soakingTime: number | null;
+  weightAfterSoaking: number | null;
+  isPlantShredded: boolean;
+  distillationType: string;
+  distillationDate: string;
+  distillationApparatus: string;
+  waterForDistillation: number;
+  distillationTime: DistillationTime;
+}

@@ -16,18 +16,29 @@
       class="distillation__form"
     >
       <!-- Title for the plant information form -->
-      <h3 class="distillation__form-title">Edytuj informacje o procesie destylacji</h3>
+      <h3 class="distillation__form-title">
+        Edytuj informacje o procesie destylacji
+      </h3>
       <!-- Distillation plan component -->
       <distillation-plant
         :isFormValid="isFormValid"
         :isEditing="isEditing"
+        :wasSubmitted="wasSubmitted"
       ></distillation-plant>
       <!-- Distillation process component -->
-      <distillation-process :isFormValid="isFormValid"></distillation-process>
+      <distillation-process
+        :isFormValid="isFormValid"
+        :wasSubmitted="wasSubmitted"
+      ></distillation-process>
       <!-- Distillation data component -->
-      <distillation-data :isFormValid="isFormValid"></distillation-data>
+      <distillation-data
+        :isFormValid="isFormValid"
+        :wasSubmitted="wasSubmitted"
+      ></distillation-data>
       <!-- Button to submit the distilation form -->
-      <base-button class="distillation__button" type="submit">Edytuj</base-button>
+      <base-button class="distillation__button" type="submit"
+        >Edytuj</base-button
+      >
       <!-- Button to submit and go to the distillation results form -->
       <base-button @click="editDistillationAddResults"
         >Edytuj i dodaj wyniki destylacji</base-button
@@ -36,30 +47,41 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import DistillationPlant from "../../components/destillation/DistillationPlant.vue";
 import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
 import DistillationData from "../../components/destillation/DistillationData.vue";
 import { distillationFormValidation } from "@/helpers/formsValidation";
 import { initialDistillationForm } from "@/helpers/formsInitialState";
+import { mapDistillationForm } from "@/helpers/formsMapping";
 import store from "@/store/index";
 
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { UPDATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
 import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant.js";
 
+import {
+  GetDistillationById,
+  DistillationForm,
+} from "@/types/forms/distillationForm";
+
 import { useStore } from "vuex";
-import { ref, computed, onMounted, nextTick } from "vue";
+import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
-import DOMPurify from "dompurify";
+
+interface DistillationValues
+  extends Omit<
+    GetDistillationById,
+    "_id" | "choosedPlant" | "distillationTime"
+  > {}
 
 /**
  * @module AddDistillationPage
  * @description This component renders a destillation form and handles sending destillation data.
  */
-export default {
+export default defineComponent({
   name: "EditDistillationPage",
   components: { DistillationPlant, DistillationProcess, DistillationData },
 
@@ -80,32 +102,35 @@ export default {
     // Vuex store instance
     const store = useStore();
     //Computed property to get the value from Vuex store
-    const comingFromRoute = computed(() => store.getters.comingFromRoute);
+    const comingFromRoute = computed<boolean>(
+      () => store.getters.comingFromRoute
+    );
 
     // Router object for navigation
     const router = useRouter();
     const route = useRoute();
 
     // Reactive reference to store the plant ID and page number from the route
-    const distillationId = ref(route.params.distillId);
-    const page = ref(Number(route.params.page));
+    const distillationId = ref<string | string[]>(route.params.distillId);
+    const page = ref<number>(Number(route.params.page));
 
     // Computed property to get plant form data from Vuex store
-    const distillationForm = computed(
+    const distillationForm = computed<DistillationForm>(
       () => store.getters["distillation/distillationForm"]
     );
 
     // Reactive reference to store fetched distillation details
-    const distillationDetails = ref(null);
+    const distillationDetails = ref<GetDistillationById | null>(null);
 
     // Reactive reference to track form validity
-    const isFormValid = ref(null);
+    const isFormValid = ref<boolean>(false);
+    const wasSubmitted = ref<boolean>(false);
     // Reactive reference for loading state
-    const isLoading = ref(true);
+    const isLoading = ref<boolean>(true);
     //Reactive reference to pass that this is a edit form
-    const isEditing = ref(true);
+    const isEditing = ref<boolean>(true);
 
-    const fetchDistillationDetails = async () => {
+    const fetchDistillationDetails = async (): Promise<void> => {
       try {
         isLoading.value = true;
         // Make a query to fetch plant details by plant ID
@@ -115,7 +140,6 @@ export default {
         });
         // Store the fetched plant details in the plantDetails reference
         distillationDetails.value = data.getDistillationById;
-        console.log("edit distillation", distillationDetails.value);
       } catch (error) {
         if (error.message === "Unauthorized") {
           await store.dispatch("auth/logout");
@@ -131,59 +155,33 @@ export default {
 
     // Lifecycle hook to reset form validity on component mount
     onMounted(async () => {
-      isFormValid.value = null;
+      isFormValid.value = false;
       if (comingFromRoute.value) {
         await fetchDistillationDetails();
-        store.dispatch("distillation/setValue", {
-          input: "isPlantShredded",
-          value: distillationDetails.value.isPlantShredded,
-        });
-        store.dispatch("distillation/setValue", {
-          input: "isPlantSoaked",
-          value: distillationDetails.value.isPlantSoaked,
-        });
-        store.dispatch("distillation/setValue", {
-          input: "soakingTime",
-          value: distillationDetails.value.soakingTime,
-        });
-        store.dispatch("distillation/setValue", {
-          input: "weightAfterSoaking",
-          value: distillationDetails.value.weightAfterSoaking,
-        });
-        store.dispatch("distillation/setValue", {
-          input: "weightForDistillation",
-          value: distillationDetails.value.weightForDistillation,
-        });
-        store.dispatch("distillation/setValue", {
-          input: "initialWeightForDistillation",
-          value: distillationDetails.value.weightForDistillation,
-        });
-        store.dispatch("distillation/setValue", {
-          input: "distillationApparatus",
-          value: distillationDetails.value.distillationApparatus,
-        });
-        store.dispatch("distillation/setValue", {
-          input: "distillationDate",
-          value: distillationDetails.value.distillationDate,
-        });
-        store.dispatch("distillation/setValue", {
-          input: "distillationType",
-          value: distillationDetails.value.distillationType,
-        });
-        store.dispatch("distillation/setValue", {
-          input: "waterForDistillation",
-          value: distillationDetails.value.waterForDistillation,
-        });
-        store.dispatch("distillation/setDistillationTime", {
-          key: "distillationHours",
-          value: distillationDetails.value.distillationTime.distillationHours,
-        });
-        store.dispatch("distillation/setDistillationTime", {
-          key: "distillationMinutes",
-          value:
-            distillationDetails.value.distillationTime.distillationMinutess,
-        });
-        console.log("form", distillationForm.value);
+        if (distillationDetails.value) {
+          const keys = Object.keys(distillationDetails.value).filter(
+            (key) =>
+              key !== "_id" &&
+              key !== "choosedPlant" &&
+              key !== "distillationTime"
+          ) as (keyof DistillationValues)[];
+
+          for (const key of keys) {
+            store.dispatch("distillation/setValue", {
+              input: key,
+              value: distillationDetails.value[key],
+            });
+          }
+          store.dispatch("distillation/setDistillationTime", {
+            key: "distillationHours",
+            value: distillationDetails.value.distillationTime.distillationHours,
+          });
+          store.dispatch("distillation/setDistillationTime", {
+            key: "distillationMinutes",
+            value:
+              distillationDetails.value.distillationTime.distillationMinutes,
+          });
+        }
       } else {
         // If not coming from another route, set loading to false
         isLoading.value = false;
@@ -200,73 +198,30 @@ export default {
      * @returns {Promise<void>} Resolves when the form submission process is complete.
      * @throws {Error} Throws an error if the form submission fails.
      */
-    const editDistillationForm = async () => {
+    const editDistillationForm = async (): Promise<void> => {
       // Validate the form
+      wasSubmitted.value = true;
       isFormValid.value = distillationFormValidation(distillationForm.value);
       if (isFormValid.value) {
         try {
-          const form = distillationForm.value;
+          const distillationFormData = mapDistillationForm(
+            distillationForm.value
+          );
 
-          const distillationFormData = {
-            choosedPlant: {
-              id: DOMPurify.sanitize(form.choosedPlant.id),
-              name: DOMPurify.sanitize(form.choosedPlant.name),
-              part: DOMPurify.sanitize(form.choosedPlant.part),
-              availableWeight: form.choosedPlant.availableWeight
-                ? Number(DOMPurify.sanitize(form.choosedPlant.availableWeight))
-                : null,
-              harvestDate: DOMPurify.sanitize(form.choosedPlant.harvestDate),
-              buyDate: DOMPurify.sanitize(form.choosedPlant.buyDate),
-            },
-            weightForDistillation: form.weightForDistillation
-              ? Number(DOMPurify.sanitize(form.weightForDistillation))
-              : null,
-            isPlantSoaked: Boolean(DOMPurify.sanitize(form.isPlantSoaked)),
-            soakingTime: form.soakingTime
-              ? Number(DOMPurify.sanitize(form.soakingTime))
-              : null,
-            weightAfterSoaking: form.weightAfterSoaking
-              ? Number(DOMPurify.sanitize(form.weightAfterSoaking))
-              : null,
-            isPlantShredded: Boolean(DOMPurify.sanitize(form.isPlantShredded)),
-            distillationType: DOMPurify.sanitize(form.distillationType),
-            distillationDate: DOMPurify.sanitize(form.distillationDate),
-            distillationApparatus: DOMPurify.sanitize(
-              form.distillationApparatus
-            ),
-            waterForDistillation: form.waterForDistillation
-              ? Number(DOMPurify.sanitize(form.waterForDistillation))
-              : null,
-            distillationTime: {
-              distillationHours: form.distillationTime.distillationHours
-                ? Number(
-                    DOMPurify.sanitize(form.distillationTime.distillationHours)
-                  )
-                : null,
-              distillationMinutes: form.distillationTime.distillationMinutes
-                ? Number(
-                    DOMPurify.sanitize(
-                      form.distillationTime.distillationMinutes
-                    )
-                  )
-                : null,
-            },
-          };
           // Send the GraphQL mutation to edit the exsisting distillation
-          const { data } = await updateDistillation({
+          await updateDistillation({
             id: distillationId.value,
             input: distillationFormData,
           });
-          console.log("Edited distillation:", data.updateDistillation);
         } catch (error) {
           if (error.message === "Unauthorized") {
             await store.dispatch("auth/logout");
             router.push("/login");
           }
           console.error("Error editing form", error);
+          wasSubmitted.value = true;
         }
       } else {
-        console.log(isFormValid.value);
         console.log("invalid form!");
         return;
       }
@@ -277,28 +232,24 @@ export default {
       UPDATE_AVAILABLE_WEIGHT
     );
 
-    const changeAvailableWeight = async () => {
+    const changeAvailableWeight = async (): Promise<void> => {
       try {
-        const sanitizedAvailableWeight = Number(
-          DOMPurify.sanitize(
-            distillationForm.value.choosedPlant.availableWeight
-          )
-        );
-        const sanitizedWeightForDistillation = Number(
-          DOMPurify.sanitize(distillationForm.value.weightForDistillation)
-        );
+        const availableWeight =
+          distillationForm.value.choosedPlant.availableWeight ?? 0;
+        const sanitizedWeightForDistillation =
+          distillationForm.value.weightForDistillation ?? 0;
         const initialWeightForDistillation =
-          distillationForm.value.initialWeightForDistillation;
+          distillationForm.value.initialWeightForDistillation ?? 0;
 
         let newWeight =
-          sanitizedAvailableWeight +
+          availableWeight +
           initialWeightForDistillation -
           sanitizedWeightForDistillation;
         newWeight = parseFloat(newWeight.toFixed(1));
 
         await updateAvailableWeight({
           input: {
-            id: route.params.id,
+            id: route.params.id as string,
             availableWeight: newWeight,
           },
         });
@@ -311,7 +262,7 @@ export default {
       }
     };
 
-    const editDistillation = async () => {
+    const editDistillation = async (): Promise<void> => {
       try {
         await editDistillationForm();
         if (!isFormValid.value) {
@@ -328,7 +279,7 @@ export default {
       }
     };
 
-    const editDistillationAddResults = async () => {
+    const editDistillationAddResults = async (): Promise<void> => {
       try {
         // Submit the distillation form
         await editDistillationForm();
@@ -371,11 +322,12 @@ export default {
       editDistillationAddResults,
       distillationDetails,
       isFormValid,
+      wasSubmitted,
       isLoading,
       isEditing,
     };
   },
-};
+});
 </script>
 
 <style scoped>
