@@ -8,7 +8,7 @@
         type="number"
         classType="number"
         inputColor="plant"
-        :invalidInput="isFormValid === false && !formData.plantWeight"
+        :invalidInput="wasSubmitted && !isFormValid && !formData.plantWeight"
         :storeName="storeName"
         @change:modelValue="setNumber"
         @set:keyboard="setKeyboardFormatedNumber"
@@ -22,7 +22,7 @@
           <div v-if="formData.plantWeight">kg</div>
         </template>
         <template v-slot:message>
-          <span v-if="isFormValid === false && !formData.plantWeight"
+          <span v-if="wasSubmitted && !isFormValid && !formData.plantWeight"
             >Wpisz wagę surowca</span
           >
           <span v-else>&nbsp;</span>
@@ -35,7 +35,7 @@
         classType="number"
         inputColor="plant"
         :invalidInput="
-          isFormValid === false && !formData.availableWeight
+          wasSubmitted && !isFormValid && !formData.availableWeight
         "
         :storeName="storeName"
         @change:modelValue="setNumber"
@@ -50,7 +50,7 @@
           <div v-if="formData.availableWeight">kg</div>
         </template>
         <template v-slot:message>
-          <span v-if="isFormValid === false && !formData.availableWeight"
+          <span v-if="wasSubmitted && !isFormValid && !formData.availableWeight"
             >Wpisz wagę surowca na stanie</span
           >
           <span v-else>&nbsp;</span>
@@ -69,7 +69,7 @@
         class="plant-data__state-radioinput"
       >
         <template v-slot:message>
-          <span v-if="isFormValid === false && !formData.plantState"
+          <span v-if="wasSubmitted && !isFormValid && !formData.plantState"
             >Wybierz stan surowca</span
           >
           <span v-else>&nbsp;</span>
@@ -82,7 +82,7 @@
         type="number"
         classType="number"
         inputColor="plant"
-        :invalidInput="isFormValid === false && !formData.dryingTime"
+        :invalidInput="wasSubmitted && !isFormValid && !formData.dryingTime"
         :storeName="storeName"
         @update:modelValue="setInteger"
         @set:keyboard="setKeyboardIntegerNumber"
@@ -96,7 +96,7 @@
           <div v-if="formData.dryingTime">h</div>
         </template>
         <template v-slot:message>
-          <span v-if="isFormValid === false && !formData.dryingTime"
+          <span v-if="wasSubmitted && !isFormValid && !formData.dryingTime"
             >Wpisz czas podsuszania</span
           >
           <span v-else>&nbsp;</span>
@@ -111,7 +111,7 @@
         type="number"
         classType="number"
         inputColor="plant"
-        :invalidInput="isFormValid === false && !formData.plantAge"
+        :invalidInput="wasSubmitted && !isFormValid && !formData.plantAge"
         :storeName="storeName"
         @update:modelValue="setInteger"
         @set:keyboard="setKeyboardIntegerNumber"
@@ -126,7 +126,7 @@
           </div>
         </template>
         <template v-slot:message>
-          <span v-if="isFormValid === false && !formData.plantAge"
+          <span v-if="wasSubmitted && !isFormValid && !formData.plantAge"
             >Wpisz wiek surowca</span
           >
           <span v-else>&nbsp;</span>
@@ -136,16 +136,24 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useStore } from "vuex";
-import { ref, reactive, computed, watch, onMounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+} from "vue";
 import {
   setIntegerNumber,
   setNumberFormat,
   setKeyboardIntegerNumber,
   setKeyboardFormatedNumber,
 } from "@/helpers/formatHelpers.js";
-import {plantAgeWithSuffix} from "@/helpers/displayHelpers.js";
+import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
+import { PlantForm } from "@/types/forms/plantForm";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 /**
@@ -156,15 +164,33 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
  * @see setKeyboardIntegerNumber
  * @see setKeyboardFormatedNumber
  */
-export default {
+
+enum PlantState {
+  ŚWIEŻY = "świeży",
+  PODSUSZONY = "podsuszony",
+  SUCHY = "suchy",
+}
+
+interface Props {
+  isFormValid: boolean;
+  isResetting?: boolean;
+  isEditing?: boolean;
+  wasSubmitted: boolean;
+}
+
+export default defineComponent({
   name: "PlantData",
   components: { BaseTextInput },
-  props: ["isFormValid", "isResetting", "isEditing"],
-  setup(props) {
+  props: ["isFormValid", "isResetting", "isEditing", "wasSubmitted"],
+  setup(props: Props) {
     // Options for plant state
-    const states = reactive(["świeży", "podsuszony", "suchy"]);
+    const states = reactive<PlantState[]>([
+      PlantState.ŚWIEŻY,
+      PlantState.PODSUSZONY,
+      PlantState.SUCHY,
+    ]);
     // Title of the radio inputs
-    const title = ref("Stan surowca");
+    const title = ref<string>("Stan surowca");
 
     // Vuex store
     const store = useStore();
@@ -172,24 +198,54 @@ export default {
     const storeName = "plant";
 
     // Computed properties to get form data from Vuex store
-    const formData = computed(() => store.getters["plant/plantForm"]);
-    const plantState = computed(() => store.getters["plant/plantState"]);
+    const formData = computed<PlantForm>(
+      () => store.getters["plant/plantForm"]
+    );
+    const plantState = computed<PlantState | "">(
+      () => store.getters["plant/plantState"]
+    );
 
     // Fetch initial data from local storage on component mount
     onMounted(() => {
-      ["plantWeight", "availableWeight", "plantState", "dryingTime", "plantAge"].forEach((field) => {
+      [
+        "plantWeight",
+        "availableWeight",
+        "plantState",
+        "dryingTime",
+        "plantAge",
+      ].forEach((field) => {
         store.dispatch("plant/fetchLocalStorageData", field);
       });
     });
 
     // Using the format function
-    const setInteger = (value, id, storeName) => {
-      setIntegerNumber(store, value, id, storeName);
+    const setInteger = (
+      value: string | number,
+      id: string,
+      storeName: string
+    ): void => {
+      const numericValue = typeof value === "string" ? Number(value) : value;
+      setIntegerNumber(
+        store,
+        numericValue >= 0 ? numericValue : null,
+        id,
+        storeName
+      );
     };
 
     // Using the format function
-    const setNumber = (value, id, storeName) => {
-      setNumberFormat(store, value, id, storeName);
+    const setNumber = (
+      value: string | number,
+      id: string,
+      storeName: string
+    ): void => {
+      const numericValue = typeof value === "string" ? Number(value) : value;
+      setNumberFormat(
+        store,
+        numericValue >= 0 ? numericValue : null,
+        id,
+        storeName
+      );
     };
 
     // Watcher to handle changes in the plant state. Updates related fields and dispatches changes to the store.
@@ -198,16 +254,22 @@ export default {
       (newValue, oldValue) => {
         if (props.isResetting) return;
 
-        const resetFields = {
-          podsuszony: "dryingTime",
-          suchy: "plantAge",
+        const resetFields: Partial<Record<PlantState, string>> = {
+          [PlantState.PODSUSZONY]: "dryingTime",
+          [PlantState.SUCHY]: "plantAge",
         };
 
         if (oldValue && resetFields[oldValue]) {
-          store.dispatch("plant/setValue", { input: resetFields[oldValue], value: null });
+          store.dispatch("plant/setValue", {
+            input: resetFields[oldValue],
+            value: null,
+          });
         }
 
-        store.dispatch("plant/setValue", { input: "plantState", value: newValue });
+        store.dispatch("plant/setValue", {
+          input: "plantState",
+          value: newValue,
+        });
       }
     );
 
@@ -223,7 +285,7 @@ export default {
       setKeyboardFormatedNumber,
     };
   },
-};
+});
 </script>
 
 <style scoped>

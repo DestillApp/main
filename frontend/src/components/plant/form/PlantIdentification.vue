@@ -9,11 +9,11 @@
       id="plantName"
       class="plant-identification__name"
       inputColor="plant"
-      :invalidInput="isFormValid === false && formData.plantName === ''"
+      :invalidInput="wasSubmitted && !isFormValid && !formData.plantName"
       @update:modelValue="setValue"
     >
       <template v-slot:message>
-        <span v-if="isFormValid === false && formData.plantName === ''"
+        <span v-if="wasSubmitted && !isFormValid && !formData.plantName"
           >Nazwa surowca jest wymagana</span
         >
         <span v-else>&nbsp;</span>
@@ -27,11 +27,11 @@
       id="plantPart"
       class="plant-identification__part"
       inputColor="plant"
-      :invalidInput="isFormValid === false && formData.plantPart === ''"
+      :invalidInput="wasSubmitted && !isFormValid && !formData.plantPart"
       @update:modelValue="setValue"
     >
       <template v-slot:message
-        ><span v-if="isFormValid === false && formData.plantPart === ''"
+        ><span v-if="wasSubmitted && !isFormValid && !formData.plantPart"
           >Część surowca jest wymagana</span
         >
         <span v-else>&nbsp;</span>
@@ -40,9 +40,10 @@
   </div>
 </template>
 
-<script>
-import { computed, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, computed, onMounted } from "vue";
 import { useStore } from "vuex";
+import { PlantForm } from "@/types/forms/plantForm";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 /**
@@ -50,15 +51,23 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
  * @description This component renders a form to input and manage data related to plant material used in distillation, including plant name and part.
  * @see setValue
  */
-export default {
+
+interface Props {
+  isFormValid: boolean;
+  wasSubmitted: boolean;
+}
+
+export default defineComponent({
   name: "PlantIdentification",
   components: { BaseTextInput },
-  props: ["isFormValid"],
-  setup() {
+  props: ["isFormValid", "wasSubmitted"],
+  setup(props: Props) {
     // Vuex store
     const store = useStore();
     // Computed property to get form data from Vuex store
-    const formData = computed(() => store.getters["plant/plantForm"]);
+    const formData = computed<PlantForm>(
+      () => store.getters["plant/plantForm"]
+    );
 
     /**
      * Function to dispatch an action to the Vuex store to set a specific value.
@@ -66,7 +75,7 @@ export default {
      * @param {any} currentValue - The current value to be set.
      * @param {string} input - The input field name.
      */
-    const setValue = (currentValue, input) => {
+    const setValue = (currentValue: string, input: string): void => {
       store.dispatch("plant/setValue", { input, value: currentValue });
     };
 
@@ -78,7 +87,7 @@ export default {
 
     return { formData, setValue };
   },
-};
+});
 </script>
 
 <style scoped>
@@ -104,12 +113,11 @@ export default {
   }
 
   .plant-identification__name {
-   width: 100%;
+    width: 100%;
   }
 
-  
   .plant-identification__part {
-   width: 60%;
+    width: 60%;
   }
 }
 </style>

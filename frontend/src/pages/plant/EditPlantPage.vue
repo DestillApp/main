@@ -10,21 +10,30 @@
       indeterminate
     ></v-progress-circular>
     <!-- Plant form -->
-    <form v-if="!isLoading" @submit.prevent="editPlant" class="edit-plant__form">
+    <form
+      v-if="!isLoading"
+      @submit.prevent="editPlant"
+      class="edit-plant__form"
+    >
       <!-- Title for the plant form -->
       <h3 class="edit-plant__form-title">Edytuj informacje o surowcu</h3>
       <!-- Plant identification component -->
-      <plant-identification :isFormValid="isFormValid"></plant-identification>
+      <plant-identification
+        :isFormValid="isFormValid"
+        :wasSubmitted="wasSubmitted"
+      ></plant-identification>
       <!-- Plant origin component -->
       <plant-origin
         :isFormValid="isFormValid"
         :isResetting="isResetting"
+        :wasSubmitted="wasSubmitted"
       ></plant-origin>
       <!-- Plant data component -->
       <plant-data
         :isFormValid="isFormValid"
         :isResetting="isResetting"
         :isEditing="isEditing"
+        :wasSubmitted="wasSubmitted"
       ></plant-data>
       <!-- Button to submit the plant form -->
       <base-button type="submit">Edytuj</base-button>
@@ -36,19 +45,28 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import PlantIdentification from "@/components/plant/form/PlantIdentification.vue";
 import PlantOrigin from "@/components/plant/form/PlantOrigin.vue";
 import PlantData from "@/components/plant/form/PlantData.vue";
+
+import {
+  PlantForm,
+  GetPlantById,
+  NormalizedPlantById,
+} from "@/types/forms/plantForm";
+
 import { initialPlantForm } from "@/helpers/formsInitialState";
 import { plantFormValidation } from "@/helpers/formsValidation";
+import { mapPlantForm } from "@/helpers/formsMapping";
+import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 
 import { UPDATE_PLANT } from "@/graphql/mutations/plant.js";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
 
 import { useStore } from "vuex";
 import store from "@/store/index";
-import { computed, ref, onMounted, nextTick } from "vue";
+import { defineComponent, computed, ref, onMounted, nextTick } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useMutation } from "@vue/apollo-composable";
@@ -63,7 +81,7 @@ import DOMPurify from "dompurify";
  * @see editPlantAndDistill
  */
 
-export default {
+export default defineComponent({
   name: "EditPlantPage",
   components: { PlantIdentification, PlantOrigin, PlantData },
 
@@ -84,7 +102,9 @@ export default {
     // Vuex store instance
     const store = useStore();
     //Computed property to get the value from Vuex store
-    const comingFromRoute = computed(() => store.getters.comingFromRoute);
+    const comingFromRoute = computed<boolean>(
+      () => store.getters.comingFromRoute
+    );
 
     // Router object for navigation
     const router = useRouter();
@@ -92,25 +112,37 @@ export default {
     const route = useRoute();
 
     // Reactive reference to store the plant ID and page number from the route
-    const plantId = ref(route.params.id);
-    const page = ref(Number(route.params.page));
+    const plantId = ref<string | string[]>(route.params.id);
+    const page = ref<number>(Number(route.params.page));
 
     // Computed property to get plant form data from Vuex store
-    const plantForm = computed(() => store.getters["plant/plantForm"]);
+    const plantForm = computed<PlantForm>(
+      () => store.getters["plant/plantForm"]
+    );
 
     // Reactive reference to store fetched plant details
-    const plantDetails = ref(null);
+    const plantDetails = ref<NormalizedPlantById | null>(null);
     // Reactive reference to track form validity
-    const isFormValid = ref(null);
+    const isFormValid = ref<boolean>(false);
     // Reactive reference for loading state
-    const isLoading = ref(true);
+    const isLoading = ref<boolean>(true);
     //Reactive reference to track when component is resetting
-    const isResetting = ref(false);
+    const isResetting = ref<boolean>(false);
     //Reactive reference to pass that this is a edit form
-    const isEditing = ref(true);
+    const isEditing = ref<boolean>(true);
+    const wasSubmitted = ref<boolean>(false);
 
     // Using GraphQL mutation for creating a new plant
     const { mutate: updatePlant } = useMutation(UPDATE_PLANT);
+
+    const fieldsToNormalize: (keyof GetPlantById)[] = [
+      "harvestDate",
+      "harvestStartTime",
+      "harvestEndTime",
+      "countryOfOrigin",
+      "plantBuyDate",
+      "plantProducer",
+    ];
 
     /**
      * @async
@@ -118,7 +150,7 @@ export default {
      * @description Fetches the plant details by plant ID from GraphQL API.
      * @returns {Promise<void>}
      */
-    const fetchPlantDetails = async () => {
+    const fetchPlantDetails = async (): Promise<void> => {
       try {
         // Set loading to true while fetching the data
         isLoading.value = true;
@@ -129,8 +161,10 @@ export default {
           fetchPolicy: "network-only",
         });
         // Store the fetched plant details in the plantDetails reference
-        plantDetails.value = data.getPlantById;
-        console.log("edit plant", plantDetails.value);
+        plantDetails.value = normalizeSelectedFields(
+          data.getPlantById,
+          fieldsToNormalize
+        );
       } catch (error) {
         if (error.message === "Unauthorized") {
           await store.dispatch("auth/logout");
@@ -150,32 +184,25 @@ export default {
      * @param {String} input - The form field to be updated.
      * @param {*} value - The new value for the form field.
      */
-    const setValue = (input, value) => {
+    const setValue = (
+      input: keyof NormalizedPlantById,
+      value: string | null | number
+    ): void => {
       store.dispatch("plant/setValue", { input: input, value: value });
     };
 
     // Lifecycle hook to reset form validity, fetch Plant details by id and set plant details in vuex store and local storage on component mount
     onMounted(async () => {
       // Reset form validity on mount
-      isFormValid.value = null;
+      isFormValid.value = false;
       // If user comes from another route, fetch plant details and set plant form fields in vuex state basen on the fetched plant details
       if (comingFromRoute.value) {
         await fetchPlantDetails();
-        setValue("plantName", plantDetails.value.plantName);
-        setValue("plantPart", plantDetails.value.plantPart);
-        setValue("plantOrigin", plantDetails.value.plantOrigin);
-        setValue("plantBuyDate", plantDetails.value.plantBuyDate);
-        setValue("plantProducer", plantDetails.value.plantProducer);
-        setValue("countryOfOrigin", plantDetails.value.countryOfOrigin);
-        setValue("harvestDate", plantDetails.value.harvestDate);
-        setValue("harvestTemperature", plantDetails.value.harvestTemperature);
-        setValue("harvestStartTime", plantDetails.value.harvestStartTime);
-        setValue("harvestEndTime", plantDetails.value.harvestEndTime);
-        setValue("plantWeight", plantDetails.value.plantWeight);
-        setValue("availableWeight", plantDetails.value.availableWeight);
-        setValue("plantState", plantDetails.value.plantState);
-        setValue("dryingTime", plantDetails.value.dryingTime);
-        setValue("plantAge", plantDetails.value.plantAge);
+        if (plantDetails.value) {
+          Object.entries(plantDetails.value).forEach(([key, value]) => {
+            setValue(key as keyof typeof plantDetails.value, value);
+          });
+        }
         store.dispatch("plant/setHarvestRange");
       } else {
         // If not coming from another route, set loading to false
@@ -190,55 +217,24 @@ export default {
      * @returns {Promise<void>} Resolves when the form submission process is complete.
      * @throws {Error} Throws an error if the form submission fails.
      */
-    const submitPlantForm = async () => {
+    const submitPlantForm = async (): Promise<void> => {
       // Validate the form
       isFormValid.value = plantFormValidation(plantForm.value);
 
       if (isFormValid.value) {
         try {
-          console.log("try", isFormValid.value);
-          const form = plantForm.value;
-
-          // Create an object with sanitized form data
-          const plantFormData = {
-            plantName: DOMPurify.sanitize(form.plantName),
-            plantPart: DOMPurify.sanitize(form.plantPart),
-            plantOrigin: DOMPurify.sanitize(form.plantOrigin),
-            plantBuyDate: DOMPurify.sanitize(form.plantBuyDate),
-            plantProducer: DOMPurify.sanitize(form.plantProducer),
-            countryOfOrigin: DOMPurify.sanitize(form.countryOfOrigin),
-            harvestDate: DOMPurify.sanitize(form.harvestDate),
-            harvestTemperature: form.harvestTemperature
-              ? Number(DOMPurify.sanitize(form.harvestTemperature))
-              : null,
-            harvestStartTime: DOMPurify.sanitize(form.harvestStartTime),
-            harvestEndTime: DOMPurify.sanitize(form.harvestEndTime),
-            plantWeight: form.plantWeight
-              ? Number(DOMPurify.sanitize(form.plantWeight))
-              : null,
-            availableWeight: form.availableWeight
-              ? Number(DOMPurify.sanitize(form.availableWeight))
-              : null,
-            plantState: DOMPurify.sanitize(form.plantState),
-            dryingTime: form.dryingTime
-              ? Number(DOMPurify.sanitize(form.dryingTime))
-              : null,
-            plantAge: form.plantAge
-              ? Number(DOMPurify.sanitize(form.plantAge))
-              : null,
-          };
+          const plantFormData = mapPlantForm(plantForm.value);
 
           // Send the GraphQL mutation to edit the exsisting plant
-          const { data } = await updatePlant({
+          await updatePlant({
             id: plantId.value,
             plantInput: plantFormData,
           });
-          console.log("Updated plant:", data.updatePlant);
         } catch (error) {
           if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
+            await store.dispatch("auth/logout");
+            router.push("/login");
+          }
           console.error("Error submitting form", error);
         }
       } else {
@@ -252,7 +248,7 @@ export default {
      * @function editPlant
      * @description Function to edit an existing plant and navigate back to the plant list.
      */
-    const editPlant = async () => {
+    const editPlant = async (): Promise<void> => {
       try {
         // Submit the plant form
         await submitPlantForm();
@@ -271,7 +267,7 @@ export default {
      * @function editPlantAndDistill
      * @description Function to edit an existing plant and navigate to the add distillation page.
      */
-    const editPlantAndDistill = async () => {
+    const editPlantAndDistill = async (): Promise<void> => {
       try {
         // Submit the plant form
         await submitPlantForm();
@@ -313,9 +309,10 @@ export default {
       isLoading,
       isResetting,
       isEditing,
+      wasSubmitted,
     };
   },
-};
+});
 </script>
 
 <style scoped>

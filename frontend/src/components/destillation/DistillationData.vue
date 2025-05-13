@@ -186,7 +186,7 @@ export default defineComponent({
       value: string | number,
       id: string,
       storeName: string
-    ) => {
+    ): void => {
       const numericValue = typeof value === "string" ? Number(value) : value;
       setIntegerNumber(
         store,
@@ -196,7 +196,7 @@ export default defineComponent({
       );
     };
 
-    const saveTime = (value: string | number, key: string) => {
+    const saveTime = (value: string | number, key: string): void => {
       const numericValue = typeof value === "string" ? Number(value) : value;
       const isValid = !isNaN(numericValue) && numericValue >= 0;
       const module = storeName.value;

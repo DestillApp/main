@@ -11,7 +11,7 @@
         name="plantOrigin"
       >
         <template v-slot:message>
-          <span v-if="isFormValid === false && formData.plantOrigin === ''"
+          <span v-if="wasSubmitted && !isFormValid && !formData.plantOrigin"
             >Wybierz pochodzenie surowca</span
           >
           <span v-else>&nbsp;</span>
@@ -28,12 +28,12 @@
           id="harvestDate"
           :value="formData.harvestDate"
           @date:value="storeDate"
-          :invalidInput="isFormValid === false && formData.harvestDate === ''"
+          :invalidInput="wasSubmitted && !isFormValid && !formData.harvestDate"
           color="plant"
         >
         </base-input-date-picker>
         <div class="plant-origin__message">
-          <span v-if="isFormValid === false && formData.harvestDate === ''"
+          <span v-if="wasSubmitted && !isFormValid && !formData.harvestDate"
             >Wybierz datę zbioru</span
           >
           <span v-else>&nbsp;</span>
@@ -48,7 +48,7 @@
           placeholder="°C"
           inputColor="plant"
           :invalidInput="
-            isFormValid === false && formData.harvestTemperature === null
+            wasSubmitted && !isFormValid && !formData.harvestTemperature
           "
           :storeName="storeName"
           @update:modelValue="setInteger"
@@ -60,12 +60,12 @@
           step="1"
         >
           <template v-slot:unit>
-            <div v-if="formData.harvestTemperature !== null">°C</div>
+            <div v-if="formData.harvestTemperature">°C</div>
           </template>
           <template v-slot:message>
             <span
               v-if="
-                isFormValid === false && formData.harvestTemperature === null
+                wasSubmitted && !isFormValid && !formData.harvestTemperature
               "
               >Wpisz temperaturę zbioru</span
             >
@@ -107,22 +107,22 @@
             </template>
           </v-range-slider>
 
-        <div class="plant-origin__slider-values">
-          <base-text-input
-                v-model="formData.harvestStartTime"
-                type="text"
-                classType="time"
-                id="start_time"
-                disabled="disabled"
-              ></base-text-input>
-              <base-text-input
-                v-model="formData.harvestEndTime"
-                type="text"
-                classType="time"
-                id="end_time"
-                disabled="disabled"
-              ></base-text-input>
-        </div>
+          <div class="plant-origin__slider-values">
+            <base-text-input
+              v-model="formData.harvestStartTime"
+              type="text"
+              classType="time"
+              id="start_time"
+              disabled="disabled"
+            ></base-text-input>
+            <base-text-input
+              v-model="formData.harvestEndTime"
+              type="text"
+              classType="time"
+              id="end_time"
+              disabled="disabled"
+            ></base-text-input>
+          </div>
         </div>
       </div>
     </div>
@@ -136,11 +136,11 @@
           id="plantBuyDate"
           :value="formData.plantBuyDate"
           @date:value="storeDate"
-          :invalidInput="isFormValid === false && formData.plantBuyDate === ''"
+          :invalidInput="wasSubmitted && !isFormValid && !formData.plantBuyDate"
           color="plant"
         ></base-input-date-picker>
         <div class="plant-origin__message">
-          <span v-if="isFormValid === false && formData.plantBuyDate === ''"
+          <span v-if="wasSubmitted && !isFormValid && !formData.plantBuyDate"
             >Wybierz datę zakupu</span
           >
           <span v-else>&nbsp;</span>
@@ -155,11 +155,13 @@
           label="Nazwa producenta"
           id="plantProducer"
           inputColor="plant"
-          :invalidInput="isFormValid === false && formData.plantProducer === ''"
+          :invalidInput="
+            wasSubmitted && !isFormValid && !formData.plantProducer
+          "
           @update:modelValue="setValue"
         >
           <template v-slot:message>
-            <span v-if="isFormValid === false && formData.plantProducer === ''"
+            <span v-if="wasSubmitted && !isFormValid && !formData.plantProducer"
               >Wpisz nazwę producenta</span
             >
             <span v-else>&nbsp;</span>
@@ -179,7 +181,7 @@
         >
           <template v-slot:message>
             <span
-              v-if="isFormValid === false && formData.countryOfOrigin === ''"
+              v-if="wasSubmitted && !isFormValid && !formData.countryOfOrigin"
               >Wybierz kraj pochodzenia</span
             >
             <span v-else>&nbsp;</span>
@@ -190,9 +192,16 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useStore } from "vuex";
-import { ref, reactive, computed, watch, onMounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+} from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
@@ -201,6 +210,7 @@ import {
   setIntegerNumber,
   setKeyboardIntegerNumber,
 } from "@/helpers/formatHelpers.js";
+import { PlantForm } from "@/types/forms/plantForm";
 import { GET_COUNTRY_NAMES } from "@/graphql/queries/country.js";
 
 /**
@@ -211,11 +221,23 @@ import { GET_COUNTRY_NAMES } from "@/graphql/queries/country.js";
  * @see setKeyboardIntegerNumber
  * @see storeDate
  */
-export default {
+
+enum PlantOrigin {
+  ZBIÓR = "zbiór",
+  KUPNO = "kupno",
+}
+
+interface Props {
+  isFormValid: boolean;
+  isResetting?: boolean;
+  wasSubmitted: boolean;
+}
+
+export default defineComponent({
   name: "PlantOrigin",
   components: { BaseInputDatePicker, BaseTextInput, BaseAutocompleteInput },
-  props: ["isFormValid", "isResetting"],
-  setup(props) {
+  props: ["isFormValid", "isResetting", "wasSubmitted"],
+  setup(props: Props) {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
 
@@ -225,19 +247,28 @@ export default {
     const storeName = "plant";
 
     // Title of the radio inputs
-    const title = ref("Pochodzenie surowca");
+    const title = ref<string>("Pochodzenie surowca");
     // Options for plant origin
-    const origins = reactive(["zbiór", "kupno"]);
+    const origins = reactive<PlantOrigin[]>([
+      PlantOrigin.ZBIÓR,
+      PlantOrigin.KUPNO,
+    ]);
     //Reactive references related to fetching country
-    const countryNames = ref([]);
-    const searchQuery = ref("");
-    const countryName = ref("");
-    const timeout = ref(null);
+    const countryNames = ref<string[]>([]);
+    const searchQuery = ref<string>("");
+    const countryName = ref<string>("");
+    const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
 
     // Computed properties to get form data from Vuex store
-    const formData = computed(() => store.getters["plant/plantForm"]);
-    const harvestRange = computed(() => store.getters["plant/harvestRange"]);
-    const plantOrigin = computed(() => store.getters["plant/plantOrigin"]);
+    const formData = computed<PlantForm>(
+      () => store.getters["plant/plantForm"]
+    );
+    const harvestRange = computed<[number, number]>(
+      () => store.getters["plant/harvestRange"]
+    );
+    const plantOrigin = computed<PlantOrigin>(
+      () => store.getters["plant/plantOrigin"]
+    );
 
     // Watch for changes in the specific formData value (countryOfOrigin)
     watch(
@@ -267,7 +298,10 @@ export default {
       (newValue, oldValue) => {
         if (props.isResetting) return;
 
-        store.dispatch("plant/setValue", { input: "plantOrigin", value: newValue });
+        store.dispatch("plant/setValue", {
+          input: "plantOrigin",
+          value: newValue,
+        });
 
         const resetFields = {
           kupno: ["plantBuyDate", "plantProducer", "countryOfOrigin"],
@@ -276,16 +310,18 @@ export default {
 
         if (resetFields[oldValue]) {
           resetFields[oldValue].forEach((field) =>
-            store.dispatch("plant/setValue", { input: field, value: field === "harvestRange" ? [600, 900] : "" })
+            store.dispatch("plant/setValue", {
+              input: field,
+              value: field === "harvestRange" ? [600, 900] : "",
+            })
           );
         }
       }
     );
 
-
     // Fetch initial data from local storage on component mount
     onMounted(() => {
-      const fieldsToFetch = [
+      [
         "plantOrigin",
         "plantBuyDate",
         "plantProducer",
@@ -293,9 +329,9 @@ export default {
         "harvestTemperature",
         "harvestRange",
         "countryOfOrigin",
-      ];
-
-      fieldsToFetch.forEach((field) => store.dispatch("plant/fetchLocalStorageData", field));
+      ].forEach((field) =>
+        store.dispatch("plant/fetchLocalStorageData", field)
+      );
       countryName.value = formData.value.countryOfOrigin;
     });
 
@@ -305,13 +341,23 @@ export default {
      * @param {any} currentValue - The current value to be set.
      * @param {string} input - The input field name.
      */
-    const setValue = (currentValue, input) => {
+    const setValue = (currentValue: string, input: string): void => {
       store.dispatch("plant/setValue", { input, value: currentValue });
     };
 
     // Using the format function
-    const setInteger = (value, id, storeName) => {
-      setIntegerNumber(store, value, id, storeName);
+    const setInteger = (
+      value: string | number,
+      id: string,
+      storeName: string
+    ): void => {
+      const numericValue = typeof value === "string" ? Number(value) : value;
+      setIntegerNumber(
+        store,
+        numericValue >= 0 ? numericValue : null,
+        id,
+        storeName
+      );
     };
 
     /**
@@ -320,11 +366,11 @@ export default {
      * @param {Date} date - The date value to be stored.
      * @param {string} input - The input field name.
      */
-    const storeDate = (date, input) => {
+    const storeDate = (date: string, input: string): void => {
       store.dispatch("plant/setValue", { input, value: date });
     };
 
-    const setCountry = (currentValue, input) => {
+    const setCountry = (currentValue: string, input: string): void => {
       setValue(currentValue, input);
       searchQuery.value = "";
       countryName.value = currentValue;
@@ -339,7 +385,7 @@ export default {
      * @returns {Promise<void>} Resolves when the country names are fetched and stored in the reactive variable.
      * @throws {Error} Throws an error if the fetching fails.
      */
-    const fetchCountries = async (name) => {
+    const fetchCountries = async (name: string): Promise<void> => {
       try {
         const { data } = await apolloClient.query({
           query: GET_COUNTRY_NAMES,
@@ -360,7 +406,7 @@ export default {
      * @param {Event} e - The input event triggered by user interaction.
      * @returns {void}
      */
-    const onInput = (value, input) => {
+    const onInput = (value: string, input: string): void => {
       setValue("", input);
       searchQuery.value = value;
       countryName.value = searchQuery.value;
@@ -382,7 +428,7 @@ export default {
      * @description Handles the blur event for the country input field. When the input field loses focus, it checks whether the user has selected a country. If no country is selected, it clears the country list and resets the search query and country name.
      * @returns {void}
      */
-    const onBlur = () => {
+    const onBlur = (): void => {
       if (formData.value.countryOfOrigin === "") {
         countryNames.value = [];
         searchQuery.value = "";
@@ -407,7 +453,7 @@ export default {
       countryName,
     };
   },
-};
+});
 </script>
 
 <style scoped>
@@ -446,8 +492,8 @@ export default {
 }
 
 .plant-origin__slider :deep(.v-input__details) {
-    display: none;
-  }
+  display: none;
+}
 
 .plant-origin__slider-values {
   display: none;
@@ -504,10 +550,9 @@ export default {
     justify-content: space-between;
   }
 
- .plant-origin__buy-container {
+  .plant-origin__buy-container {
     flex-direction: column;
     gap: 20px;
   }
-
 }
 </style>
