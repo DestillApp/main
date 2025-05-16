@@ -44,9 +44,9 @@
   </base-modal>
 </template>
 
-<script>
-import { ref } from "vue";
-
+<script lang="ts">
+import { defineComponent, ref } from "vue";
+import { DeleteItemModalEvents } from "@/types/events";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 
@@ -58,14 +58,24 @@ import BaseButton from "@/ui/BaseButton.vue";
  * @emits close-delete-modal - Event emitted when the modal is closed without deletion.
  * @emits delete-item - Event emitted when the user confirms the plant deletion.
  */
-export default {
+
+interface Props {
+  plantName?: string;
+  plantPart?: string;
+  distillationDate?: string;
+  distiller?: string;
+}
+
+export default defineComponent({
   name: "DeleteItemModal",
   components: { BaseModal, BaseButton },
   props: ["plantName", "plantPart", "distillationDate", "distiller"],
   emits: ["close-delete-modal", "delete-item"],
-  setup(props, context) {
+  setup(props: Props, context) {
+    const emit = context.emit as DeleteItemModalEvents;
+
     // Reactive reference for the lowercase version of plant name.
-    const nameOfPlant = ref(
+    const nameOfPlant = ref<string>(
       props.plantName ? props.plantName.toLowerCase() : ""
     );
 
@@ -73,21 +83,21 @@ export default {
      * @function deleteItem
      * @description Emits the delete-item event to confirm plant deletion.
      */
-    const deleteItem = () => {
-      context.emit("delete-item");
+    const deleteItem = (): void => {
+      emit("delete-item");
     };
 
     /**
      * @function closeDeleteModal
      * @description Emits the close-delete-modal event to close the modal without deletion.
      */
-    const closeDeleteModal = () => {
-      context.emit("close-delete-modal");
+    const closeDeleteModal = (): void => {
+      emit("close-delete-modal");
     };
 
     return { nameOfPlant, deleteItem, closeDeleteModal };
   },
-};
+});
 </script>
 
 <style scoped>

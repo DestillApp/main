@@ -70,7 +70,6 @@ import { defineComponent, computed, ref, onMounted, nextTick } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useMutation } from "@vue/apollo-composable";
-import DOMPurify from "dompurify";
 
 /**
  * @component EditPlantPage

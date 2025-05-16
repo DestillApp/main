@@ -114,15 +114,18 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
+import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
+
+import { GetPlantById, NormalizedPlantById } from "@/types/forms/plantForm";
 
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant.js";
 import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
@@ -135,7 +138,7 @@ import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
  * @see closeDeleteModal
  * @see deletePlant
  */
-export default {
+export default defineComponent({
   name: "PlantDetailsPage",
   components: { DeleteItemModal, BaseButton },
   setup() {
@@ -150,14 +153,23 @@ export default {
     const router = useRouter();
 
     // Reactive reference to store the plant ID and plant page number from the route
-    const plantId = ref(route.params.id);
-    const page = ref(Number(route.params.page));
+    const plantId = ref<string | string[]>(route.params.id);
+    const page = ref<number>(Number(route.params.page));
     // Reactive reference to store fetched plant details
-    const plantDetails = ref(null);
+    const plantDetails = ref<NormalizedPlantById | null>(null);
     // Reactive reference to track if the delete modal is open
-    const isModalOpen = ref(false);
+    const isModalOpen = ref<boolean>(false);
     // Reactive reference to track loading state
-    const isLoading = ref(true);
+    const isLoading = ref<boolean>(true);
+
+    const fieldsToNormalize: (keyof GetPlantById)[] = [
+      "harvestDate",
+      "harvestStartTime",
+      "harvestEndTime",
+      "countryOfOrigin",
+      "plantBuyDate",
+      "plantProducer",
+    ];
 
     /**
      * @async
@@ -165,7 +177,7 @@ export default {
      * @description Fetches the plant details by plant ID from GraphQL API.
      * @returns {Promise<void>}
      */
-    const fetchPlantDetails = async () => {
+    const fetchPlantDetails = async (): Promise<void> => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -173,8 +185,10 @@ export default {
           variables: { id: plantId.value, formatDates: true },
           fetchPolicy: "network-only",
         });
-        plantDetails.value = data.getPlantById;
-        console.log(plantDetails.value, plantDetails.value.plantName);
+        plantDetails.value = normalizeSelectedFields(
+          data.getPlantById,
+          fieldsToNormalize
+        );
       } catch (error) {
         if (error.message === "Unauthorized") {
           await store.dispatch("auth/logout");
@@ -196,7 +210,7 @@ export default {
      * @function openDeleteModal
      * @description Opens the delete confirmation modal.
      */
-    const openDeleteModal = () => {
+    const openDeleteModal = (): void => {
       isModalOpen.value = true;
     };
 
@@ -204,7 +218,7 @@ export default {
      * @function closeDeleteModal
      * @description Closes the delete confirmation modal.
      */
-    const closeDeleteModal = () => {
+    const closeDeleteModal = (): void => {
       isModalOpen.value = false;
     };
 
@@ -214,13 +228,13 @@ export default {
      * @description Deletes the plant by ID and navigates back to the plant list.
      * @returns {Promise<void>}
      */
-    const deletePlant = async () => {
+    const deletePlant = async (): Promise<void> => {
       try {
         const { data } = await apolloClient.mutate({
           mutation: DELETE_PLANT,
           variables: { id: plantId.value },
         });
-        console.log(data.deletePlant);
+
         if (data.deletePlant) {
           await apolloClient.resetStore();
           router.push({ name: "PlantListPage", params: { page: 1 } });
@@ -247,12 +261,12 @@ export default {
       deletePlant,
     };
   },
-};
+});
 </script>
 
 <style scoped>
 :deep(.my-account__card) {
- margin-top: 50px;
+  margin-top: 50px;
 }
 
 .plant-details__spinner {

@@ -3,7 +3,10 @@
     <base-card class="password-change-form__card">
       <div class="password-change-form__modal-content">
         <h3 class="password-change-form__title">Ustaw nowe hasło</h3>
-        <form @submit.prevent="changePassword" class="password-change-form__form">
+        <form
+          @submit.prevent="changePassword"
+          class="password-change-form__form"
+        >
           <!-- Input for old password -->
           <base-text-input
             v-model="oldPassword"
@@ -63,7 +66,9 @@
             </template>
           </base-text-input>
           <!-- Submit button -->
-          <base-button type="submit" class="password-change-form__button">Zmień hasło</base-button>
+          <base-button type="submit" class="password-change-form__button"
+            >Zmień hasło</base-button
+          >
         </form>
       </div>
     </base-card>
@@ -76,7 +81,7 @@ import { useStore } from "vuex";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseButton from "@/ui/BaseButton.vue";
-import { changePasswordFormValidation } from "@/helpers/formsValidation.js";
+import { changePasswordFormValidation } from "@/helpers/formsValidation";
 
 export default {
   components: {
@@ -181,7 +186,8 @@ export default {
 
 @media (max-width: 1024px) {
   .password-change-form__card {
-    width: 50%;  }
+    width: 50%;
+  }
 }
 
 @media (max-width: 600px) {

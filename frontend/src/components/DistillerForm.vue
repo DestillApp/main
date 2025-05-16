@@ -54,41 +54,46 @@
             </template>
           </base-text-input>
           <!-- Submit button -->
-          <base-button type="submit" class="distiller-form__button">Dodaj</base-button>
+          <base-button type="submit" class="distiller-form__button"
+            >Dodaj</base-button
+          >
         </form>
       </div>
     </base-card>
   </base-modal>
 </template>
 
-<script>
-import { ref } from "vue";
+<script lang="ts">
+import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
-import {useRouter} from "vue-router"
+import { useRouter } from "vue-router";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseButton from "@/ui/BaseButton.vue";
-import { setKeyboardIntegerNumber } from "@/helpers/formatHelpers.js";
-import { distillerFormValidation } from "@/helpers/formsValidation.js";
+import { DistillerForm } from "@/types/events";
+import { setKeyboardIntegerNumber } from "@/helpers/formatHelpers";
+import { distillerFormValidation } from "@/helpers/formsValidation";
 
-export default {
+export default defineComponent({
   components: {
     BaseModal,
     BaseTextInput,
     BaseButton,
   },
-  setup(_, { emit }) {
-    const store = useStore(); 
+  setup(_, context) {
+    const store = useStore();
 
     const router = useRouter();
 
-    const material = ref("");
-    const capacity = ref(null);
-    const heating = ref("");
-    const isFormValid = ref(true);
+    const emit = context.emit as DistillerForm;
+
+    const material = ref<string>("");
+    const capacity = ref<number | null>(null);
+    const heating = ref<string>("");
+    const isFormValid = ref<boolean>(true);
 
     // Using the format function
-    const setInteger = (value) => {
+    const setInteger = (value: string): void => {
       if (!value) {
         capacity.value = null;
         return;
@@ -98,24 +103,31 @@ export default {
       }
     };
 
-    const addDistiller = async () => {
-      const distiller = {
-        material: material.value,
-        capacity: parseFloat(capacity.value),
-        heating: heating.value,
-      };
+    const addDistiller = async (): Promise<void> => {
+      //?
+      const distiller: { material: string; capacity: number; heating: string } =
+        {
+          material: material.value,
+          capacity: capacity.value ? capacity.value : 0,
+          heating: heating.value,
+        };
 
       isFormValid.value = distillerFormValidation(distiller);
       if (isFormValid.value) {
         try {
-          const addDistillerResult = await store.dispatch("settings/addDistiller", distiller);
+          const addDistillerResult = await store.dispatch(
+            "settings/addDistiller",
+            distiller
+          );
           if (addDistillerResult === "Unauthorized") {
             await store.dispatch("auth/logout");
             router.push("/login");
             return;
           }
 
-          const fetchSettingsResult = await store.dispatch("settings/fetchSettings");
+          const fetchSettingsResult = await store.dispatch(
+            "settings/fetchSettings"
+          );
           if (fetchSettingsResult === "Unauthorized") {
             await store.dispatch("auth/logout");
             router.push("/login");
@@ -130,7 +142,7 @@ export default {
       }
     };
 
-    const closeModal = () => {
+    const closeModal = (): void => {
       emit("close-modal");
     };
 
@@ -145,7 +157,7 @@ export default {
       setKeyboardIntegerNumber,
     };
   },
-};
+});
 </script>
 
 <style scoped>
@@ -176,7 +188,8 @@ export default {
 
 @media (max-width: 1024px) {
   .distiller-form__card {
-    width: 50%;  }
+    width: 50%;
+  }
 }
 
 @media (max-width: 600px) {

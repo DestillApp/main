@@ -176,7 +176,7 @@ export const editArchiveDistillationFormValidation = (form) => {
 export const registrationFormValidation = (form, username) => {
   let isFormValid = true;
   let isPasswordCorrect = true;
-console.log("username", username);
+  console.log("username", username);
   // Initial form validation for required fields
   if (
     form.username === "" ||
@@ -184,12 +184,12 @@ console.log("username", username);
     form.password === "" ||
     form.confirmPassword === ""
   ) {
-    console.log("empty false")
+    console.log("empty false");
     isFormValid = false;
   }
 
   if (username) {
-    console.log("username, false")
+    console.log("username, false");
     isFormValid = false;
   }
 
@@ -202,7 +202,7 @@ console.log("username", username);
 
   // Check if passwords match
   if (form.password !== form.confirmPassword) {
-    console.log("passwords false")
+    console.log("passwords false");
     isFormValid = false;
   }
 
@@ -215,7 +215,11 @@ console.log("username", username);
  * @param {Object} form - The distiller form data object
  * @returns {boolean} Returns true if the form is valid, otherwise false
  */
-export const distillerFormValidation = (form) => {
+export const distillerFormValidation = (form: {
+  material: string;
+  capacity: number;
+  heating: string;
+}): boolean => {
   let isFormValid = true;
 
   // Validate required fields

@@ -57,7 +57,9 @@
             >Wpisz poprawne hasło. Hasło musi zawierać conajmniej 8 znaków,
             jedną wielką literę i jedną liczbę.</span
           >
-          <span v-if="!isFormValid && !registrationForm.password">Wpisz hasło.</span>
+          <span v-if="!isFormValid && !registrationForm.password"
+            >Wpisz hasło.</span
+          >
           <span v-else>&nbsp;</span>
         </template>
       </base-text-input>
@@ -66,21 +68,30 @@
         v-model="confirmPassword"
         type="password"
         label="Potwierdź hasło"
-        :invalidInput="(!isFormValid && !confirmPassword) || isPasswordMatch === false"
+        :invalidInput="
+          (!isFormValid && !confirmPassword) || isPasswordMatch === false
+        "
       >
         <template v-slot:message>
           <span v-if="isPasswordMatch === false">Hasła nie są takie same.</span>
-          <span v-if="!isFormValid && !confirmPassword">Powtórz wpisane hasło.</span>
+          <span v-if="!isFormValid && !confirmPassword"
+            >Powtórz wpisane hasło.</span
+          >
           <span v-else>&nbsp;</span>
         </template>
       </base-text-input>
       <!-- Button to submit the registration form -->
-      <base-button class="registration__button" type="submit">Zarejestruj się</base-button>
+      <base-button class="registration__button" type="submit"
+        >Zarejestruj się</base-button
+      >
     </form>
     <div class="registration__link">
       Masz już konto?
       <!-- Link to the login page -->
-      <router-link @click="scrollToTop" class="registration__link-login" to="/login"
+      <router-link
+        @click="scrollToTop"
+        class="registration__link-login"
+        to="/login"
         >Zaloguj się!</router-link
       >
     </div>
@@ -96,8 +107,8 @@ import { useApolloClient } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
 import { scrollToTop } from "../helpers/displayHelpers.js";
 import { REGISTER_USER } from "@/graphql/mutations/auth.js";
-import { CHECK_USERNAME_EXISTENCE } from "@/graphql/queries/auth.js";
-import { registrationFormValidation } from "@/helpers/formsValidation.js";
+import { CHECK_USERNAME_EXISTENCE } from "@/graphql/queries/auth";
+import { registrationFormValidation } from "@/helpers/formsValidation";
 
 /**
  * @component RegistrationForm
@@ -181,14 +192,15 @@ export default {
       usernameExists.value = false;
     };
 
-        /**
+    /**
      * Function to check if the password is correct on input change.
      */
-     const checkPassword = () => {
+    const checkPassword = () => {
       const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
-      isPasswordCorrect.value = passwordRegex.test(registrationForm.value.password);
+      isPasswordCorrect.value = passwordRegex.test(
+        registrationForm.value.password
+      );
     };
-
 
     /**
      * Function to handle the submission of the registration form.
@@ -225,7 +237,10 @@ export default {
         console.log("Created user:", data.registerUser);
 
         // Dispatch the setInitialSettings action with the userId
-        await store.dispatch("settings/setInitialSettings", data.registerUser._id);
+        await store.dispatch(
+          "settings/setInitialSettings",
+          data.registerUser._id
+        );
 
         router.push({ name: "LoginPage" });
       } catch (error) {
@@ -240,18 +255,21 @@ export default {
       emailExists.value = false;
     };
 
-        /**
+    /**
      * Function to validate the form and call submitRegistrationForm if valid.
      * @async
      * @function saveRegistration
      * @returns {Promise<void>} Resolves when the form validation and submission process is complete.
      * @throws {Error} Throws an error if the form validation or submission fails.
      */
-     const saveRegistration = async () => {
-     const validationResults = registrationFormValidation({
-        ...registrationForm.value,
-        confirmPassword: confirmPassword.value,
-      }, usernameExists.value);
+    const saveRegistration = async () => {
+      const validationResults = registrationFormValidation(
+        {
+          ...registrationForm.value,
+          confirmPassword: confirmPassword.value,
+        },
+        usernameExists.value
+      );
 
       isFormValid.value = validationResults.isFormValid;
       isPasswordCorrect.value = validationResults.isPasswordCorrect;
@@ -276,7 +294,7 @@ export default {
       resetUsernameExists,
       checkPassword,
       saveRegistration,
-      resetEmailExists
+      resetEmailExists,
     };
   },
 };
@@ -329,8 +347,8 @@ export default {
   }
 
   .registration__button {
-  width: 50%;
-}
+    width: 50%;
+  }
 }
 
 @media (max-width: 600px) {
@@ -342,7 +360,7 @@ export default {
   }
 
   .registration__button {
-  width: 65%;
-}
+    width: 65%;
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading" class="plant-details">
+  <div v-if="!isLoading && plantDetails" class="plant-details">
     <div v-if="plantDetails.plantOrigin === 'kupno'">
       <div>data zakupu: {{ plantDetails.plantBuyDate }}</div>
       <div>producent: {{ plantDetails.plantProducer }}</div>
@@ -24,18 +24,28 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant.js";
 import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
+import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 
-export default {
+import { GetPlantById, NormalizedPlantById } from "@/types/forms/plantForm";
+
+interface Props {
+  plantId?: string;
+  // distilledPlant?: NormalizedPlantById;
+  //Should be type NormalizedPlantById but in ArchiveDistillationPage values are not
+  //normalized and it cause types problem
+}
+
+export default defineComponent({
   name: "PlantDetails",
   props: ["plantId", "distilledPlant"],
-  setup(props) {
+  setup(props: Props) {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
 
@@ -45,22 +55,35 @@ export default {
     // Router object for navigation
     const router = useRouter();
 
-    const isLoading = ref(true);
-    const plantDetails = ref(null);
+    const isLoading = ref<boolean>(true);
+    const plantDetails = ref<NormalizedPlantById | null>(null);
+
+    const fieldsToNormalize: (keyof GetPlantById)[] = [
+      "harvestDate",
+      "harvestStartTime",
+      "harvestEndTime",
+      "countryOfOrigin",
+      "plantBuyDate",
+      "plantProducer",
+    ];
+
     /**
      * @async
      * @function fetchPlantDetails
      * @description Fetches the plant details by plant ID from GraphQL API.
      * @returns {Promise<void>}
      */
-    const fetchPlantDetails = async () => {
+    const fetchPlantDetails = async (): Promise<void> => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
           query: GET_PLANT_BY_ID,
           variables: { id: props.plantId, formatDates: true },
         });
-        plantDetails.value = data.getPlantById;
+        plantDetails.value = normalizeSelectedFields(
+          data.getPlantById,
+          fieldsToNormalize
+        );
       } catch (error) {
         if (error.message === "Unauthorized") {
           await store.dispatch("auth/logout");
@@ -79,13 +102,14 @@ export default {
       }
       if (props.distilledPlant) {
         plantDetails.value = props.distilledPlant;
+        // console.log("destilled plant", props.distilledPlant);
         isLoading.value = false;
       }
     });
 
     return { isLoading, plantDetails, plantAgeWithSuffix };
   },
-};
+});
 </script>
 
 <style scoped>
