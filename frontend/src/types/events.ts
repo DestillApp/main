@@ -3,11 +3,10 @@ export interface DeleteItemModalEvents {
   (e: "delete-item"): void;
 }
 
-export interface AskModalEvents {
+export interface CloseModal {
   (e: "close-modal"): void;
-  (e: "handle-yes"): void;
 }
 
-export interface DistillerForm {
-  (e: "close-modal"): void;
+export interface AskModalEvents extends CloseModal {
+  (e: "handle-yes"): void;
 }

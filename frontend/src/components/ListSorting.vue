@@ -8,7 +8,10 @@
         <!-- Input field displaying the selected sorting option -->
         <input
           type="text"
-          :class="['list-sorting__input', { 'list-sorting__input--dark': isDarkTheme }]"
+          :class="[
+            'list-sorting__input',
+            { 'list-sorting__input--dark': isDarkTheme },
+          ]"
           :value="selectedOption"
           readonly
         />
@@ -22,7 +25,13 @@
       </div>
     </div>
     <!-- List of sorting options, displayed conditionally based on isOpen -->
-    <ul :class="['list-sorting__options', { 'list-sorting__options--dark': isDarkTheme }]" v-if="isOpen">
+    <ul
+      :class="[
+        'list-sorting__options',
+        { 'list-sorting__options--dark': isDarkTheme },
+      ]"
+      v-if="isOpen"
+    >
       <li
         v-for="option in options"
         :key="option"
@@ -35,26 +44,37 @@
   </div>
 </template>
 
-<script>
-import { ref, computed } from "vue";
-import { useStore } from "vuex";
+<script lang="ts">
+import { defineComponent, ref, computed } from "vue";
+import { useStore } from "@/store/useStore";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 
-export default {
+// interface Props {
+//   options: ;
+//   sorting: string;
+// }
+
+export default defineComponent({
   name: "ListSorting",
   components: { SvgIcon },
   props: ["options", "sorting"],
   emits: ["choose:sorting"],
   setup(props, { emit }) {
     const store = useStore();
-    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+    const isDarkTheme = computed<boolean>(
+      () => store.getters["settings/isDarkTheme"]
+    );
 
-    const isOpen = ref(false);
-    const selectedOption = ref(props.sorting);
+    console.log("SORTING", props.sorting);
+    console.log("OPTIONS", props.options);
+    const isOpen = ref<boolean>(false);
+    const selectedOption = ref<string>(props.sorting);
     const sortingContainer = ref(null);
 
-    const toggleList = () => {
+    console.log("sorting container", sortingContainer);
+
+    const toggleList = (): void => {
       isOpen.value = !isOpen.value;
       if (isOpen.value) {
         document.addEventListener("click", handleClickOutside);
@@ -63,13 +83,13 @@ export default {
       }
     };
 
-    const selectOption = (option) => {
+    const selectOption = (option): void => {
       selectedOption.value = option;
       isOpen.value = false;
       emit("choose:sorting", option);
     };
 
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event): void => {
       if (
         sortingContainer.value &&
         !sortingContainer.value.contains(event.target)
@@ -89,7 +109,7 @@ export default {
       isDarkTheme,
     };
   },
-};
+});
 </script>
 
 <style scoped>
@@ -144,7 +164,7 @@ export default {
   top: 59px;
   border: 2px solid var(--border-color);
   border-radius: var(--input-border-radius);
-  background-color: var(--background-bright);;
+  background-color: var(--background-bright);
   position: absolute;
   width: 100%;
   z-index: 10;

@@ -193,7 +193,7 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import {
   defineComponent,
   ref,
@@ -209,7 +209,7 @@ import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import {
   setIntegerNumber,
   setKeyboardIntegerNumber,
-} from "@/helpers/formatHelpers.js";
+} from "@/helpers/formatHelpers";
 import { PlantForm } from "@/types/forms/plantForm";
 import { GET_COUNTRY_NAMES } from "@/graphql/queries/country.js";
 

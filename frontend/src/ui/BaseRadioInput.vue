@@ -12,7 +12,10 @@
         :label="option"
         :value="option"
         :color="color"
-        :class="['radio-group__input', { 'radio-group__input--dark': isDarkTheme }]"
+        :class="[
+          'radio-group__input',
+          { 'radio-group__input--dark': isDarkTheme },
+        ]"
         :name="name"
       ></v-radio>
     </v-radio-group>
@@ -25,7 +28,7 @@
 
 <script>
 import { ref, watch, computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 
 /**
  * @component BaseRadioGroup
@@ -48,9 +51,12 @@ export default {
     const selectOption = ref(props.modelValue);
 
     // Watcher to update selectOption when modelValue changes
-    watch(() => props.modelValue, (newValue) => {
-      selectOption.value = newValue;
-    });
+    watch(
+      () => props.modelValue,
+      (newValue) => {
+        selectOption.value = newValue;
+      }
+    );
 
     // Watcher to emit events when selectOption changes
     watch(selectOption, (newOption) => {

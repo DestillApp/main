@@ -9,7 +9,7 @@
         classType="results"
         placeholder="ml"
         inputColor="results"
-        :invalidInput="isFormValid === false && !formData.oilAmount"
+        :invalidInput="wasSubmitted && !isFormValid && !formData.oilAmount"
         :storeName="storeName"
         @change:modelValue="setNumberOne"
         label="Ilość olejku eterycznego"
@@ -18,10 +18,10 @@
         step="0.1"
       >
         <template v-slot:unit>
-          <div v-if="formData.oilAmount !== null">ml</div>
+          <div v-if="formData.oilAmount">ml</div>
         </template>
         <template v-slot:message>
-          <span v-if="isFormValid === false && !formData.oilAmount"
+          <span v-if="wasSubmitted && !isFormValid && !formData.oilAmount"
             >Wpisz ilość olejku eterycznego</span
           >
         </template>
@@ -34,7 +34,9 @@
           classType="results"
           placeholder="l"
           inputColor="results"
-          :invalidInput="isFormValid === false && !formData.hydrosolAmount"
+          :invalidInput="
+            wasSubmitted && !isFormValid && !formData.hydrosolAmount
+          "
           :storeName="storeName"
           @change:modelValue="setNumberOne"
           label="Ilość hydrolatu"
@@ -43,10 +45,11 @@
           step="0.1"
         >
           <template v-slot:unit>
-            <div v-if="formData.hydrosolAmount !== null">l</div>
+            <div v-if="formData.hydrosolAmount">l</div>
           </template>
           <template v-slot:message>
-            <span v-if="isFormValid === false && !formData.hydrosolAmount"
+            <span
+              v-if="wasSubmitted && !isFormValid && !formData.hydrosolAmount"
               >Wpisz ilość hydrolatu</span
             >
           </template>
@@ -59,7 +62,7 @@
           classType="number"
           placeholder="pH"
           inputColor="results"
-          :invalidInput="isFormValid === false && !formData.hydrosolpH"
+          :invalidInput="wasSubmitted && !isFormValid && !formData.hydrosolpH"
           :storeName="storeName"
           @change:modelValue="setNumberTwo"
           label="pH hydrolatu"
@@ -69,7 +72,7 @@
           step="0.01"
         >
           <template v-slot:message>
-            <span v-if="isFormValid === false && !formData.hydrosolpH"
+            <span v-if="wasSubmitted && !isFormValid && !formData.hydrosolpH"
               >Wpisz pH hydrolatu</span
             >
           </template>
@@ -79,47 +82,77 @@
   </div>
 </template>
 
-<script>
-import { computed, onMounted } from "vue";
-import { useStore } from "vuex";
+<script lang="ts">
+import { defineComponent, computed, onMounted } from "vue";
+import { useStore } from "@/store/useStore";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
-import { setNumberFormat } from "@/helpers/formatHelpers.js";
+import { setNumberFormat } from "@/helpers/formatHelpers";
+import { ResultsForm } from "@/types/forms/resultsForm";
 
 /**
  * @component ResultsData
  * @description This component renders inputs and manages data related to distillation results.
  * @see setNumberFormat
  */
-export default {
+
+interface Props {
+  isFormValid: boolean;
+  isEditing?: boolean;
+  wasSubmitted: boolean;
+}
+
+export default defineComponent({
   name: "ResultsData",
   components: { BaseTextInput },
-  props: ["isFormValid", "isEditing"],
-  setup() {
+  props: ["isFormValid", "isEditing", "wasSubmitted"],
+  setup(props: Props) {
     // Vuex store
     const store = useStore();
     // Name of the vuex store module
     const storeName = "results";
 
     // Computed properties to get form data from Vuex store
-    const formData = computed(() => store.getters["results/resultsForm"]);
+    const formData = computed<ResultsForm>(
+      () => store.getters["results/resultsForm"]
+    );
 
     // Function to format number input and set value in Vuex store
-    const setNumberOne = (value, id, storeName) => {
-      setNumberFormat(store, value, id, storeName, 1);
+    const setNumberOne = (
+      value: string | number,
+      id: string,
+      storeName: string
+    ): void => {
+      let decimals = 1;
+      const numericValue = typeof value === "string" ? Number(value) : value;
+      setNumberFormat(
+        store,
+        numericValue >= 0 ? numericValue : null,
+        id,
+        storeName,
+        decimals
+      );
     };
 
     // Function to format number input and set value in Vuex store
-    const setNumberTwo = (value, id, storeName) => {
-      setNumberFormat(store, value, id, storeName, 2);
+    const setNumberTwo = (
+      value: string | number,
+      id: string,
+      storeName: string
+    ): void => {
+      let decimals = 2;
+      const numericValue = typeof value === "string" ? Number(value) : value;
+      setNumberFormat(
+        store,
+        numericValue >= 0 ? numericValue : null,
+        id,
+        storeName,
+        decimals
+      );
     };
 
     // Fetch initial data from local storage on component mount
     onMounted(() => {
-      const keys = [
-        "oilAmount",
-        "hydrosolAmount",
-        "hydrosolpH",
-      ];
+      const keys = ["oilAmount", "hydrosolAmount", "hydrosolpH"];
       keys.forEach((key) => {
         store.dispatch("results/fetchLocalStorageData", key);
       });
@@ -132,7 +165,7 @@ export default {
       storeName,
     };
   },
-};
+});
 </script>
 
 <style scoped>

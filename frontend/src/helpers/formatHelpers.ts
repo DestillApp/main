@@ -1,3 +1,5 @@
+import type { Store } from "vuex";
+import type { RootState } from "@/types/store/index";
 /**
  * Formats the number input and dispatches the formatted value to the store.
  * @function setNumberFormat
@@ -5,12 +7,12 @@
  * @param {string} input - The input identifier.
  */
 export const setNumberFormat = (
-  store,
-  currentValue,
-  input,
-  storeName,
-  decimals
-) => {
+  store: Store<RootState>,
+  currentValue: number | null,
+  input: string,
+  storeName: string,
+  decimals?: number
+): void => {
   if (!currentValue || isNaN(currentValue)) {
     store.dispatch(`${storeName}/setValue`, { input, value: null });
   } else {
@@ -29,27 +31,18 @@ export const setNumberFormat = (
  * @param {string} input - The input identifier.
  */
 export const setIntegerNumber = (
-  store,
-  currentValue,
-  input,
-  storeName,
-  object
-) => {
+  store: Store<RootState>,
+  currentValue: number | null,
+  input: string,
+  storeName: string
+): void => {
   if (!currentValue || isNaN(currentValue)) {
     store.dispatch(`${storeName}/setValue`, { input, value: null });
   } else {
-    if (!object) {
-      store.dispatch(`${storeName}/setIntegerValue`, {
-        input,
-        value: currentValue,
-      });
-    } else {
-      store.dispatch(`${storeName}/setIntegerValue`, {
-        input,
-        value: currentValue,
-        object,
-      });
-    }
+    store.dispatch(`${storeName}/setIntegerValue`, {
+      input,
+      value: currentValue,
+    });
   }
 };
 
@@ -58,7 +51,7 @@ export const setIntegerNumber = (
  * @function setKeyboardIntegerNumber
  * @param {Event} e - The keyboard event.
  */
-export const setKeyboardIntegerNumber = (e) => {
+export const setKeyboardIntegerNumber = (e: KeyboardEvent): void => {
   if (e.key === "." || e.key === ",") {
     e.preventDefault();
   }
@@ -69,7 +62,7 @@ export const setKeyboardIntegerNumber = (e) => {
  * @function setKeyboardFormatedNumber
  * @param {Event} e - The keyboard event.
  */
-export const setKeyboardFormatedNumber = (e) => {
+export const setKeyboardFormatedNumber = (e: KeyboardEvent): void => {
   if (e.key === "." || e.key === "-") {
     e.preventDefault();
   }

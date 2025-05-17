@@ -75,39 +75,46 @@
   </base-modal>
 </template>
 
-<script>
-import { ref } from "vue";
-import { useStore } from "vuex";
+<script lang="ts">
+import { defineComponent, ref } from "vue";
+import { useStore } from "@/store/useStore";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseButton from "@/ui/BaseButton.vue";
+import { CloseModal } from "@/types/events";
 import { changePasswordFormValidation } from "@/helpers/formsValidation";
 
-export default {
+export default defineComponent({
   components: {
     BaseModal,
     BaseTextInput,
     BaseButton,
   },
-  setup(_, { emit }) {
+  setup(_, context) {
     const store = useStore();
 
-    const oldPassword = ref("");
-    const newPassword = ref("");
-    const confirmNewPassword = ref("");
+    const emit = context.emit as CloseModal;
+
+    const oldPassword = ref<string>("");
+    const newPassword = ref<string>("");
+    const confirmNewPassword = ref<string>("");
 
     // Reactive reference to track form validity
-    const isFormValid = ref(true);
-    const isPasswordCorrect = ref(true);
-    const isOldPasswordCorrect = ref(true);
+    const isFormValid = ref<boolean>(true);
+    const isPasswordCorrect = ref<boolean>(true);
+    const isOldPasswordCorrect = ref<boolean>(true);
 
-    const checkPassword = () => {
+    const checkPassword = (): void => {
       const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
       isPasswordCorrect.value = passwordRegex.test(newPassword.value);
     };
 
-    const changePassword = async () => {
-      const form = {
+    const changePassword = async (): Promise<void> => {
+      const form: {
+        oldPassword: string;
+        newPassword: string;
+        confirmNewPassword: string;
+      } = {
         oldPassword: oldPassword.value,
         newPassword: newPassword.value,
         confirmNewPassword: confirmNewPassword.value,
@@ -139,7 +146,7 @@ export default {
       }
     };
 
-    const closeModal = () => {
+    const closeModal = (): void => {
       emit("close-modal");
     };
 
@@ -155,7 +162,7 @@ export default {
       isOldPasswordCorrect,
     };
   },
-};
+});
 </script>
 
 <style scoped>

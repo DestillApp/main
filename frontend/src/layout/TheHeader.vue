@@ -24,7 +24,12 @@
           >
         </li>
         <li v-if="isAuthenticated && isTabletView">
-          <a class="header__link" :class="{ 'header__link--isActive': isMyAccountActive }" @click="toggleTabletMenu">Moje konto</a>
+          <a
+            class="header__link"
+            :class="{ 'header__link--isActive': isMyAccountActive }"
+            @click="toggleTabletMenu"
+            >Moje konto</a
+          >
         </li>
       </ul>
       <!-- Link to the login page -->
@@ -86,7 +91,7 @@
 
 <script>
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { useRouter, useRoute } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
@@ -135,7 +140,9 @@ export default {
     const isTabletMenuOpen = ref(false);
 
     // Computed property to check if the current path starts with /my-account
-    const isMyAccountActive = computed(() => route.path.startsWith("/my-account"));
+    const isMyAccountActive = computed(() =>
+      route.path.startsWith("/my-account")
+    );
 
     // Function to handle window resize
     const handleResize = () => {

@@ -4,39 +4,76 @@
       <button class="mobile-menu__close" @click="toggleMenu">×</button>
       <ul class="mobile-menu__list">
         <li v-if="isAuthenticated">
-          <router-link to="/add-plant" class="mobile-menu__link" @click="toggleMenu">Dodaj surowiec</router-link>
+          <router-link
+            to="/add-plant"
+            class="mobile-menu__link"
+            @click="toggleMenu"
+            >Dodaj surowiec</router-link
+          >
         </li>
         <li v-if="isAuthenticated">
-          <router-link to="/add-distillation" class="mobile-menu__link" @click="toggleMenu">Dodaj destylację</router-link>
+          <router-link
+            to="/add-distillation"
+            class="mobile-menu__link"
+            @click="toggleMenu"
+            >Dodaj destylację</router-link
+          >
         </li>
         <li v-if="isAuthenticated">
-          <div class="mobile-menu__link" :class="{'mobile-menu__link--isActive' : isMyAccount}" @click="toggleMyAccount">Moje konto</div>
+          <div
+            class="mobile-menu__link"
+            :class="{ 'mobile-menu__link--isActive': isMyAccount }"
+            @click="toggleMyAccount"
+          >
+            Moje konto
+          </div>
         </li>
         <li v-if="isAuthenticated && isMyAccount">
-          <router-link to="/my-account/distillations-in-progress/1" class="mobile-menu__link" @click="toggleMenu">Destylacje w toku</router-link>
+          <router-link
+            to="/my-account/distillations-in-progress/1"
+            class="mobile-menu__link"
+            @click="toggleMenu"
+            >Destylacje w toku</router-link
+          >
         </li>
         <li v-if="isAuthenticated && isMyAccount">
-          <router-link to="/my-account/plant-list/1" class="mobile-menu__link" @click="toggleMenu">Magazyn surowców</router-link>
+          <router-link
+            to="/my-account/plant-list/1"
+            class="mobile-menu__link"
+            @click="toggleMenu"
+            >Magazyn surowców</router-link
+          >
         </li>
         <li v-if="isAuthenticated && isMyAccount">
-          <router-link to="/my-account/distillation-archives/1" class="mobile-menu__link" @click="toggleMenu">Archiwum destylacji</router-link>
+          <router-link
+            to="/my-account/distillation-archives/1"
+            class="mobile-menu__link"
+            @click="toggleMenu"
+            >Archiwum destylacji</router-link
+          >
         </li>
         <li v-if="isAuthenticated && isMyAccount">
-          <router-link to="/my-account/my-data" class="mobile-menu__link" @click="toggleMenu">Moje dane</router-link>
+          <router-link
+            to="/my-account/my-data"
+            class="mobile-menu__link"
+            @click="toggleMenu"
+            >Moje dane</router-link
+          >
         </li>
       </ul>
       <base-button
         class="mobile-menu__button"
         v-if="isAuthenticated && !isLoadingAuthStatus"
         @click="handleLogout"
-      >Wyloguj się</base-button>
+        >Wyloguj się</base-button
+      >
     </div>
   </div>
 </template>
 
 <script>
 import { ref, computed, onMounted } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { useRouter, useRoute } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
 
@@ -89,7 +126,14 @@ export default {
       emit("toggle-menu");
     };
 
-    return { isAuthenticated, isLoadingAuthStatus, toggleMenu, handleLogout, isMyAccount, toggleMyAccount };
+    return {
+      isAuthenticated,
+      isLoadingAuthStatus,
+      toggleMenu,
+      handleLogout,
+      isMyAccount,
+      toggleMyAccount,
+    };
   },
 };
 </script>

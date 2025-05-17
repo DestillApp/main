@@ -71,9 +71,13 @@
       </div>
       <div class="archive-distillation__container-two">
         <div class="archive-distillation__plant-info">
-          <h5 class="archive-distillation__plant-title">przygotowanie surowca</h5>
+          <h5 class="archive-distillation__plant-title">
+            przygotowanie surowca
+          </h5>
           <div v-if="distillationDetails.distillationData.isPlantSoaked">
-            <div class="archive-distillation__plant-data">surowiec namaczany</div>
+            <div class="archive-distillation__plant-data">
+              surowiec namaczany
+            </div>
             <div class="archive-distillation__plant-data">
               czas namaczania:
               {{ distillationDetails.distillationData.soakingTime }} h
@@ -179,7 +183,7 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { useApolloClient } from "@vue/apollo-composable";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
@@ -485,32 +489,32 @@ export default {
 }
 
 @media (max-width: 800px) {
-.archive-distillation__container-two {
-flex-direction: column;
-justify-content: center;
-gap: 20px;
-}
+  .archive-distillation__container-two {
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+  }
 
-.archive-distillation__plant-info,
-.archive-distillation__info {
-  width: 100%;
-}
+  .archive-distillation__plant-info,
+  .archive-distillation__info {
+    width: 100%;
+  }
 
-.archive-distillation__plant-data,
-.archive-distillation__data {
-  justify-content: center;
-  padding-left: 0;
-  padding-right: 0;
-}
+  .archive-distillation__plant-data,
+  .archive-distillation__data {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
 
-.archive-distillation__plant-details-component {
-  text-align: center;
-  margin-left: 0;
-}
+  .archive-distillation__plant-details-component {
+    text-align: center;
+    margin-left: 0;
+  }
 
-.archive-distillation__plant-button {
-  margin-left: 0;
-  text-align: center;
-}
+  .archive-distillation__plant-button {
+    margin-left: 0;
+    text-align: center;
+  }
 }
 </style>

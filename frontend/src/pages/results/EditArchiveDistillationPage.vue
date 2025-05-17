@@ -44,7 +44,9 @@
         <results-descriptions :isFormValid="isFormValid"></results-descriptions>
       </div>
       <!-- Button to submit the distilation form -->
-      <base-button class="edit-archive-distillation__button" type="submit">Edytuj</base-button>
+      <base-button class="edit-archive-distillation__button" type="submit"
+        >Edytuj</base-button
+      >
     </form>
   </base-card>
 </template>
@@ -61,7 +63,7 @@ import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
 import { UPDATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import store from "@/store/index";
 
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useApolloClient, useMutation } from "@vue/apollo-composable";
 import { useRoute, onBeforeRouteLeave, useRouter } from "vue-router";
@@ -412,7 +414,6 @@ export default {
             id: archiveId.value,
             input: distillationArchiveFormData,
           });
-          
         } catch (error) {
           if (error.message === "Unauthorized") {
             await store.dispatch("auth/logout");

@@ -19,9 +19,6 @@ export const initialPlantForm: PlantForm = {
   plantState: "",
   dryingTime: null,
   plantAge: null,
-  isPlantSoaked: false,
-  soakingTime: null,
-  weightAfterSoaking: null,
 };
 
 export const initialDistillationForm: DistillationForm = {

@@ -142,11 +142,21 @@
   </div>
 </template>
 
-<script>
-import { ref, reactive, computed, onBeforeMount, onMounted, watch } from "vue";
+<script lang="ts">
+import {
+  defineComponent,
+  ref,
+  reactive,
+  computed,
+  onBeforeMount,
+  onMounted,
+  watch,
+} from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
+
+import { ListSortingOptions } from "@/types/enums";
 
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -164,7 +174,7 @@ import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
-export default {
+export default defineComponent({
   name: "InProgressDistillationsPage",
   components: {
     DeleteItemModal,
@@ -525,7 +535,7 @@ export default {
       handleSelectLength,
     };
   },
-};
+});
 </script>
 
 <style scoped>
@@ -650,11 +660,9 @@ export default {
   .distillation__sorting {
     width: 250px;
   }
-
 }
 
 @media (max-width: 600px) {
-
   .distillation__item {
     flex-direction: column;
     padding: 10px;

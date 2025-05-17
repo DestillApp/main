@@ -42,7 +42,7 @@
 
 <script>
 import { computed, onMounted } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import BaseTextArea from "@/ui/BaseTextArea.vue";
 
 /**

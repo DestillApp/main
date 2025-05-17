@@ -65,13 +65,13 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { useRouter } from "vue-router";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseButton from "@/ui/BaseButton.vue";
-import { DistillerForm } from "@/types/events";
-import { setKeyboardIntegerNumber } from "@/helpers/formatHelpers";
+import { CloseModal } from "@/types/events";
+import { setKeyboardIntegerNumber } from "src/helpers/formatHelpers";
 import { distillerFormValidation } from "@/helpers/formsValidation";
 
 export default defineComponent({
@@ -85,7 +85,7 @@ export default defineComponent({
 
     const router = useRouter();
 
-    const emit = context.emit as DistillerForm;
+    const emit = context.emit as CloseModal;
 
     const material = ref<string>("");
     const capacity = ref<number | null>(null);
@@ -104,7 +104,6 @@ export default defineComponent({
     };
 
     const addDistiller = async (): Promise<void> => {
-      //?
       const distiller: { material: string; capacity: number; heating: string } =
         {
           material: material.value,

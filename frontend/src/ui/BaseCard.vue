@@ -8,7 +8,7 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 
 /**
  * @component BaseCard
@@ -28,18 +28,18 @@ export default {
 
 <style scoped>
 .card {
-    width: 80%;
-    background-color: var(--background-bright);
-    box-shadow: var(--box-shadow);
-    border-radius: var(--card-border-radius);
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin-right: 10vw; 
-    margin-left: 10vw;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    padding-right: 30px;
-    padding-left: 30px;
+  width: 80%;
+  background-color: var(--background-bright);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--card-border-radius);
+  margin-top: 30px;
+  margin-bottom: 30px;
+  margin-right: 10vw;
+  margin-left: 10vw;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-right: 30px;
+  padding-left: 30px;
 }
 
 .card--dark {

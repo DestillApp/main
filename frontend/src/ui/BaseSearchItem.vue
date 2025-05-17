@@ -19,7 +19,7 @@
           'search-item__icon--plant-disabled': !inputValue && isPlantInput,
           'search-item__icon--distillation-disabled':
             !inputValue && isDistillationInput,
-            'search-item__icon--results-disabled': !inputValue && isResultsInput,
+          'search-item__icon--results-disabled': !inputValue && isResultsInput,
           'search-item__icon--results': !inputValue && isResultsInput,
           'search-item__icon--plant': isPlantInput,
           'search-item__icon--distillation': isDistillationInput,
@@ -48,7 +48,7 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMagnify, mdiClose } from "@mdi/js";
 import { ref, computed, onMounted } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 
 export default {
   name: "BaseSearchItem",

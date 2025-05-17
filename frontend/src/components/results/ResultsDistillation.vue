@@ -36,7 +36,7 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 
 export default {
   name: "ResultsDistillation",
@@ -65,11 +65,11 @@ export default {
   width: 50%;
 }
 
-.results-distillation__details-plant p strong{
+.results-distillation__details-plant p strong {
   color: var(--primary-color);
 }
 
-.results-distillation__details-process p strong{
+.results-distillation__details-process p strong {
   color: var(--primary-color-distillation);
 }
 
@@ -83,5 +83,4 @@ export default {
     width: 100%;
   }
 }
-
 </style>

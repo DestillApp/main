@@ -49,7 +49,7 @@ import store from "@/store/index";
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
 import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant.js";
 
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";

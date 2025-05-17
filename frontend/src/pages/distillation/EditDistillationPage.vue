@@ -65,7 +65,7 @@ import {
   DistillationForm,
 } from "@/types/forms/distillationForm";
 
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";

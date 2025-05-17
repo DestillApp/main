@@ -39,7 +39,7 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 /**
  * @component BaseTextInput
  * @description A customizable text input component.
@@ -137,7 +137,6 @@ export default {
     const isResultsInputColor = computed(() => {
       return props.inputColor === "results";
     });
-
 
     return {
       isDarkTheme,

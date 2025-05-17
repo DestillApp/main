@@ -36,7 +36,10 @@
       <!-- Link to the registration page -->
       <span
         >Nie masz konta?
-        <router-link @click="scrollToTop" class="login__link-register" to="/register"
+        <router-link
+          @click="scrollToTop"
+          class="login__link-register"
+          to="/register"
           >Zarejestruj się </router-link
         >w Distill It!</span
       >
@@ -47,7 +50,7 @@
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { scrollToTop } from "../helpers/displayHelpers.js";
 import DOMPurify from "dompurify";
 
@@ -193,8 +196,8 @@ export default {
   }
 
   .login__button {
-  width: 40%;
-}
+    width: 40%;
+  }
 }
 
 @media (max-width: 600px) {
@@ -206,7 +209,7 @@ export default {
   }
 
   .login__button {
-  width: 50%;
-}
+    width: 50%;
+  }
 }
 </style>

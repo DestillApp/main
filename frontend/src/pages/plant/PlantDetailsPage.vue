@@ -116,7 +116,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";

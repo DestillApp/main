@@ -6,8 +6,8 @@
 
 <script>
 import { onBeforeMount, computed, watch } from "vue";
-import { useStore } from "vuex";
-import TheHeader from './layout/TheHeader.vue';
+import { useStore } from "@/store/useStore";
+import TheHeader from "./layout/TheHeader.vue";
 
 /**
  * Main application component.
@@ -15,9 +15,9 @@ import TheHeader from './layout/TheHeader.vue';
  * @description The root component of the application layout, including the header, footer, and router view.
  */
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    TheHeader
+    TheHeader,
   },
   setup() {
     const store = useStore();
@@ -29,15 +29,21 @@ export default {
     });
 
     watch(isDarkTheme, (newValue) => {
-      document.documentElement.style.setProperty('--text-color', newValue ? 'var(--text-color-dark)' : 'var(--text-color)');
-      document.documentElement.style.setProperty('--background-color', newValue ? 'var(--background-dark)' : 'var(--background-bright)');
+      document.documentElement.style.setProperty(
+        "--text-color",
+        newValue ? "var(--text-color-dark)" : "var(--text-color)"
+      );
+      document.documentElement.style.setProperty(
+        "--background-color",
+        newValue ? "var(--background-dark)" : "var(--background-bright)"
+      );
     });
 
     return {
       isDarkTheme,
     };
-  }
-}
+  },
+};
 </script>
 
 <style>
@@ -46,7 +52,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
- min-height: 100vh;
+  min-height: 100vh;
   color: var(--text-color);
   background-color: var(--background-color);
   display: flex;
@@ -57,7 +63,7 @@ ul {
   list-style-type: none;
 }
 
-a, 
+a,
 a:visited {
   text-decoration: none;
   color: inherit;

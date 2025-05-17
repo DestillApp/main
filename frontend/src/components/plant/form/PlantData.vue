@@ -137,7 +137,7 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import {
   defineComponent,
   ref,
@@ -151,7 +151,7 @@ import {
   setNumberFormat,
   setKeyboardIntegerNumber,
   setKeyboardFormatedNumber,
-} from "@/helpers/formatHelpers.js";
+} from "@/helpers/formatHelpers";
 import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
 import { PlantForm } from "@/types/forms/plantForm";
 import BaseTextInput from "@/ui/BaseTextInput.vue";

@@ -141,7 +141,7 @@
 import { ref, reactive, computed, onBeforeMount, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
@@ -211,11 +211,11 @@ export default {
     const searchQuery = computed(() => store.getters.searchQuery);
 
     const options = reactive({
-    plantName: "nazwy rośliny alfabetycznie",
-    createdAt: "daty dodania destylacji",
-     youngDate: "najnowszej daty destylacji",
-    oldDate: "najstarszej daty destylacji",
-  });
+      plantName: "nazwy rośliny alfabetycznie",
+      createdAt: "daty dodania destylacji",
+      youngDate: "najnowszej daty destylacji",
+      oldDate: "najstarszej daty destylacji",
+    });
 
     const sortingOption = computed(() => {
       const sortingValue =
@@ -340,12 +340,12 @@ export default {
       }
     };
 
-        /**
+    /**
      * @function handleSorting
      * @description Handle the sorting of the items list.
      * @param {String} option - The sorting option.
      */
-     const handleSorting = async (option) => {
+    const handleSorting = async (option) => {
       const sortingKey = Object.keys(options).find(
         (key) => options[key] === option
       );
@@ -557,8 +557,8 @@ export default {
   justify-content: flex-start;
 }
 
-.distillation-archives__date-state{
-margin-right: 5px;
+.distillation-archives__date-state {
+  margin-right: 5px;
 }
 
 .distillation-archives__plant-identification {
@@ -628,7 +628,6 @@ margin-right: 5px;
 }
 
 @media (max-width: 600px) {
-
   .distillation-archives__item {
     flex-direction: column;
     padding: 10px;

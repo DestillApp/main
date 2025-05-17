@@ -47,10 +47,12 @@
               {{ plant.availableWeight }} kg
             </div>
             <div class="plant-list__date" v-if="plant.harvestDate !== null">
-              <p class="plant-list__date-state">zbiór:</p> {{ plant.harvestDate }}
+              <p class="plant-list__date-state">zbiór:</p>
+              {{ plant.harvestDate }}
             </div>
             <div class="plant-list__date" v-if="plant.plantBuyDate !== null">
-             <p class="plant-list__date-state">kupno:</p>{{ plant.plantBuyDate }}
+              <p class="plant-list__date-state">kupno:</p>
+              {{ plant.plantBuyDate }}
             </div>
           </div>
           <div class="plant-list__identification">
@@ -118,7 +120,7 @@
 import { ref, reactive, onBeforeMount, onMounted, watch, computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";

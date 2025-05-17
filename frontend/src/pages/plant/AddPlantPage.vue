@@ -44,7 +44,7 @@ import { mapPlantForm } from "@/helpers/formsMapping";
 
 import { CREATE_PLANT } from "@/graphql/mutations/plant.js";
 
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { defineComponent, computed, ref, onMounted, nextTick } from "vue";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";

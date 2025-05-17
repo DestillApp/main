@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { onMounted, computed } from "vue";
 import { initialResultsForm } from "@/helpers/formsInitialState";
 import BaseTextInput from "@/ui/BaseTextInput.vue";

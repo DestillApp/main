@@ -93,7 +93,7 @@ import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
 import { ResultsDistillation } from "@/types/forms/resultsForm";
 import { DistillationForm } from "@/types/forms/distillationForm";
 
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 
 /**
  * @component DistillationProcess

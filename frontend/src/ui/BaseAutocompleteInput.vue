@@ -18,7 +18,11 @@
           :id="id"
           :value="inputValue"
           :disabled="disabled"
-           :placeholder="id === 'distillationApparatus' && results.length === 0 ? 'brak zapisanych destylatorów' : placeholder"
+          :placeholder="
+            id === 'distillationApparatus' && results.length === 0
+              ? 'brak zapisanych destylatorów'
+              : placeholder
+          "
           @input="updateValue"
           v-bind="$attrs"
         />
@@ -30,7 +34,12 @@
             'autocomplete-input__icon--distillation': distillationColor,
             'autocomplete-input__icon--invalid': invalidInput,
           }"
-          :style="{ cursor: id === 'distillationApparatus' && results.length === 0 ? 'not-allowed' : 'pointer' }"
+          :style="{
+            cursor:
+              id === 'distillationApparatus' && results.length === 0
+                ? 'not-allowed'
+                : 'pointer',
+          }"
           type="mdi"
           :path="path"
           size="36"
@@ -149,7 +158,7 @@
 
 <script>
 import { ref, computed, watch } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiArrowDownBoldBox } from "@mdi/js";
 

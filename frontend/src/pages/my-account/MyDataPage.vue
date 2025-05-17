@@ -29,7 +29,9 @@
           </div>
         </li>
       </ul>
-      <p v-else class="my-data__distiller-none">Brak zapisanych destylatorów.</p>
+      <p v-else class="my-data__distiller-none">
+        Brak zapisanych destylatorów.
+      </p>
       <base-button class="my-data__distillers-button" @click="openDistillerForm"
         >Dodaj nowy destylator</base-button
       >
@@ -45,7 +47,9 @@
           color="var(--secondary-color)"
         ></v-switch>
       </div>
-      <base-button class="my-data__settings-button" @click="openPasswordChangeForm"
+      <base-button
+        class="my-data__settings-button"
+        @click="openPasswordChangeForm"
         >Zmień hasło</base-button
       >
     </div>
@@ -73,7 +77,7 @@
 import { ref, onMounted, computed, onBeforeMount, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRouter } from "vue-router";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { GET_USER_DETAILS } from "@/graphql/queries/auth.js";
 import { UPDATE_DARK_THEME } from "@/graphql/mutations/settings.js";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -318,7 +322,7 @@ export default {
   width: 150px;
 }
 
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
   .my-data__user-info {
     flex-direction: column;
     align-items: center;
@@ -326,7 +330,7 @@ export default {
   }
 
   .my-data__distiller-item {
-    width: 80%;  }
+    width: 80%;
+  }
 }
-
 </style>

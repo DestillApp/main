@@ -28,7 +28,7 @@ import { CREATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { ref, onMounted, computed, nextTick } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useMutation, useApolloClient } from "@vue/apollo-composable";
@@ -319,9 +319,9 @@ export default {
           console.log("Created results:", data.createDistillationArchive);
         } catch (error) {
           if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
+            await store.dispatch("auth/logout");
+            router.push("/login");
+          }
           console.error("Error submitting form", error);
           throw error;
         }

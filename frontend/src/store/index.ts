@@ -3,10 +3,11 @@
  * @module store
  */
 
-import { createStore } from "vuex";
+import { createStore, Store } from "vuex";
+import type { RootStateOnly } from "@/types/store/index";
 
-import plantModule from "../store/plant/index";
-import authModule from "../store/auth/index";
+import plantModule from "./plant/index";
+import authModule from "./auth/index";
 import distillationModule from "./distillation/index";
 import resultsModule from "./results/index.js";
 import settingsModule from "./settings/index.js";
@@ -23,26 +24,24 @@ const store = createStore({
     results: resultsModule,
     settings: settingsModule,
   },
-  state() {
-    return {
-      comingFromRoute: false,
-      searchQuery: "",
-    };
-  },
+  state: (): RootStateOnly => ({
+    comingFromRoute: false,
+    searchQuery: "",
+  }),
   mutations: {
-    changeComingFromRoute(state, value) {
+    changeComingFromRoute(state, value: boolean) {
       state.comingFromRoute = value;
     },
-    setSearchQuery(state, value) {
+    setSearchQuery(state, value: string) {
       state.searchQuery = value;
       localStorage.setItem("searchQuery", value);
     },
   },
   actions: {
-    setComingFromRoute(context, value) {
+    setComingFromRoute(context, value: boolean) {
       context.commit("changeComingFromRoute", value);
     },
-    updateSearchQuery(context, value) {
+    updateSearchQuery(context, value: string) {
       context.commit("setSearchQuery", value);
     },
     fetchSearchQueryFromLocalStorage(context) {

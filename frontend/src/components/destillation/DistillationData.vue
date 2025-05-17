@@ -100,14 +100,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { computed, onMounted } from "vue";
 import { ResultsDistillation } from "@/types/forms/resultsForm";
 import { DistillationForm } from "@/types/forms/distillationForm";
 import {
   setIntegerNumber,
   setKeyboardIntegerNumber,
-} from "@/helpers/formatHelpers.js";
+} from "@/helpers/formatHelpers";
 
 /**
  * @component DistillationData

@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { PlantForm } from "@/types/forms/plantForm";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 

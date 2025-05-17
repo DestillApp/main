@@ -21,7 +21,7 @@
 
 <script>
 import { ref, computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import BaseModal from "./BaseModal.vue";
 
 /**
@@ -165,5 +165,4 @@ export default {
 .date-picker.dark-theme :deep(.v-btn__content) {
   color: var(--text-color-dark);
 }
-
 </style>

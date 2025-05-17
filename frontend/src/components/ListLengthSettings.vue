@@ -6,7 +6,6 @@
       :class="{ 'list-length-settings__icon--dark': isDarkTheme }"
       type="mdi"
       :path="mdiCog"
-
       @click="toggleList"
     ></svg-icon>
     <!-- List with title and items, shown conditionally based on isListVisible -->
@@ -26,7 +25,9 @@
           v-for="length in lengths"
           :key="length"
           @click="selectLength(length)"
-          :class="{ 'list-length-settings__item--selected': length === chosenLength }"
+          :class="{
+            'list-length-settings__item--selected': length === chosenLength,
+          }"
         >
           {{ length }}
         </li>
@@ -39,12 +40,12 @@
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiCog } from "@mdi/js";
 import { ref, computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 
 export default {
   name: "ListLengthSettings",
   components: { SvgIcon },
-  props: ['title', 'listColor', 'chosenLength'],
+  props: ["title", "listColor", "chosenLength"],
   emits: ["select-length"],
   setup(props, { emit }) {
     const store = useStore();
@@ -63,12 +64,15 @@ export default {
     };
 
     const selectLength = (length) => {
-      emit('select-length', length);
+      emit("select-length", length);
       isListVisible.value = false;
     };
 
     const handleClickOutside = (event) => {
-      if (settingsContainer.value && !settingsContainer.value.contains(event.target)) {
+      if (
+        settingsContainer.value &&
+        !settingsContainer.value.contains(event.target)
+      ) {
         isListVisible.value = false;
       }
     };
@@ -192,8 +196,8 @@ export default {
 
 @media (max-width: 600px) {
   .list-length-settings__icon {
-  width: 16px;
-  height: 16px;
-}
+    width: 16px;
+    height: 16px;
+  }
 }
 </style>

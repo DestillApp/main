@@ -100,7 +100,7 @@
 
 <script>
 import { ref, computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store/useStore";
 import { useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
 import { useApolloClient } from "@vue/apollo-composable";

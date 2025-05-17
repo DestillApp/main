@@ -241,7 +241,11 @@ export const distillerFormValidation = (form: {
  * @param {Object} form - The change password form data object
  * @returns {Object} Returns an object with isFormValid and isPasswordCorrect properties
  */
-export const changePasswordFormValidation = (form) => {
+export const changePasswordFormValidation = (form: {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}): { isFormValid: boolean; isPasswordCorrect: boolean } => {
   let isFormValid = true;
   let isPasswordCorrect = true;
 
