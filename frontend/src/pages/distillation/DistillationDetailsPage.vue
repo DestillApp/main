@@ -196,10 +196,10 @@ export default defineComponent({
     const distillationDetails = ref<GetDistillationById | null>(null);
     const selectedDistillationId = ref<string | null>(null);
     const selectedPlantId = ref<string | null>(null);
-    const plantName = ref<string | null>(null);
-    const plantPart = ref<string | null>(null);
+    const plantName = ref<string>("");
+    const plantPart = ref<string>("");
     const distillationWeight = ref<number | null>(null);
-    const distillationDate = ref<string | null>(null);
+    const distillationDate = ref<string>("");
 
     // Reactive reference to store the plant ID and plant page number from the route
     const page = ref<number>(Number(route.params.page));
@@ -284,7 +284,7 @@ export default defineComponent({
      * @description Close the delete modal.
      */
     const closeDeleteModal = (): void => {
-      distillationDate.value = null;
+      distillationDate.value = "";
       isModalOpen.value = false;
     };
 
@@ -305,8 +305,8 @@ export default defineComponent({
       selectedDistillationId.value = null;
       selectedPlantId.value = null;
       distillationWeight.value = null;
-      plantName.value = null;
-      plantPart.value = null;
+      plantName.value = "";
+      plantPart.value = "";
       router.push({
         name: "InProgressDistillationsPage",
         params: { page: 1 },
@@ -319,7 +319,7 @@ export default defineComponent({
      * @description Delete the selected distillation.
      * @returns {Promise<void>}
      */
-    const deleteDistillation = async () => {
+    const deleteDistillation = async (): Promise<void> => {
       try {
         const { data } = await apolloClient.mutate({
           mutation: DELETE_DISTILLATION,

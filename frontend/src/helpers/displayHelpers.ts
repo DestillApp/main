@@ -1,11 +1,8 @@
-// Scrolls the window to the top
-// Returns: void
-export const scrollToTop = () => {
+export const scrollToTop = (): void => {
   window.scrollTo(0, 0);
 };
 
-
-export const plantAgeWithSuffix = (age) => {
+export const plantAgeWithSuffix = (age: number): string => {
   if (age === 1) {
     return "miesiąc";
   } else if (

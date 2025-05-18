@@ -34,12 +34,11 @@ import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 
 import { GetPlantById, NormalizedPlantById } from "@/types/forms/plantForm";
+import { DistillationArchivePlant } from "@/types/forms/resultsForm";
 
 interface Props {
   plantId?: string;
-  // distilledPlant?: NormalizedPlantById;
-  //Should be type NormalizedPlantById but in ArchiveDistillationPage values are not
-  //normalized and it cause types problem
+  distilledPlant?: DistillationArchivePlant;
 }
 
 export default defineComponent({
@@ -56,7 +55,9 @@ export default defineComponent({
     const router = useRouter();
 
     const isLoading = ref<boolean>(true);
-    const plantDetails = ref<NormalizedPlantById | null>(null);
+    const plantDetails = ref<
+      DistillationArchivePlant | NormalizedPlantById | null
+    >(null);
 
     const fieldsToNormalize: (keyof GetPlantById)[] = [
       "harvestDate",
@@ -102,7 +103,6 @@ export default defineComponent({
       }
       if (props.distilledPlant) {
         plantDetails.value = props.distilledPlant;
-        // console.log("destilled plant", props.distilledPlant);
         isLoading.value = false;
       }
     });

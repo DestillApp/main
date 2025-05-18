@@ -180,8 +180,8 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, ref, onMounted, Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "@/store/useStore";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -192,8 +192,9 @@ import { mdiChevronDown } from "@mdi/js";
 import { mdiChevronUp } from "@mdi/js";
 import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
 import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
+import type { DistillationArchive } from "@/types/forms/resultsForm";
 
-export default {
+export default defineComponent({
   name: "ArchiveDistillationDetailsPage",
   components: { DeleteItemModal, SvgIcon, PlantDetails },
   setup() {
@@ -209,26 +210,28 @@ export default {
     const router = useRouter();
 
     // Reactive references for distillation data
-    const archiveId = ref(route.params.archiveId);
-    const distillationDetails = ref(null);
-    const selectedDistillationId = ref(null);
-    const plantName = ref(null);
-    const plantPart = ref(null);
-    const distillationWeight = ref(null);
-    const distillationDate = ref(null);
+    const archiveId = ref<string | string[] | undefined>(
+      route.params.archiveId
+    );
+    const distillationDetails = ref<DistillationArchive | null>(null);
+    const selectedDistillationId = ref<string | null>(null);
+    const plantName = ref<string>("");
+    const plantPart = ref<string>("");
+    const distillationWeight = ref<number | null>(null);
+    const distillationDate = ref<string>("");
 
-    // Reactive reference to store the plant ID and plant page number from the route
-    const page = ref(Number(route.params.page));
+    // Reactive reference to store the plant page number from the route
+    const page = ref<number>(Number(route.params.page));
 
     // Reactive reference to track if the delete modal is open
-    const isModalOpen = ref(false);
+    const isModalOpen = ref<boolean>(false);
 
     // Reactive reference to track loading state
-    const isLoading = ref(true);
-    const isPlantOpen = ref(false);
+    const isLoading = ref<boolean>(true);
+    const isPlantOpen = ref<boolean>(false);
 
-    const pathArrowDown = ref(mdiChevronDown);
-    const pathArrowUp = ref(mdiChevronUp);
+    const pathArrowDown = ref<string>(mdiChevronDown);
+    const pathArrowUp = ref<string>(mdiChevronUp);
 
     /**
      * @async
@@ -236,7 +239,7 @@ export default {
      * @description Fetches the archive distillation details by ID from GraphQL API.
      * @returns {Promise<void>}
      */
-    const fetchDistillationDetails = async () => {
+    const fetchDistillationDetails = async (): Promise<void> => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -261,12 +264,8 @@ export default {
       fetchDistillationDetails();
     });
 
-    const openClosePlant = () => {
-      if (isPlantOpen.value) {
-        isPlantOpen.value = false;
-      } else {
-        isPlantOpen.value = true;
-      }
+    const openClosePlant = (): void => {
+      isPlantOpen.value = !isPlantOpen.value;
     };
 
     /**
@@ -277,7 +276,12 @@ export default {
      * @param {String} part - The part of the plant.
      * @param {String} date - Distillation date.
      */
-    const openDeleteModal = (id, name, part, date) => {
+    const openDeleteModal = (
+      id: string,
+      name: string,
+      part: string,
+      date: string
+    ): void => {
       selectedDistillationId.value = id;
       plantName.value = name;
       plantPart.value = part;
@@ -289,11 +293,11 @@ export default {
      * @function closeDeleteModal
      * @description Close the delete modal.
      */
-    const closeDeleteModal = () => {
+    const closeDeleteModal = (): void => {
       selectedDistillationId.value = null;
-      plantName.value = null;
-      plantPart.value = null;
-      distillationDate.value = null;
+      plantName.value = "";
+      plantPart.value = "";
+      distillationDate.value = "";
       isModalOpen.value = false;
     };
 
@@ -303,7 +307,7 @@ export default {
      * @description Delete the selected distillation.
      * @returns {Promise<void>}
      */
-    const deleteDistillation = async () => {
+    const deleteDistillation = async (): Promise<void> => {
       try {
         const { data } = await apolloClient.mutate({
           mutation: DELETE_DISTILLATION_ARCHIVE,
@@ -344,7 +348,7 @@ export default {
       deleteDistillation,
     };
   },
-};
+});
 </script>
 
 <style scoped>
