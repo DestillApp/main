@@ -34,7 +34,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
 import DistillationPlant from "../../components/destillation/DistillationPlant.vue";
 import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
 import DistillationData from "../../components/destillation/DistillationData.vue";
@@ -50,7 +49,7 @@ import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
 import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant.js";
 
 import { useStore } from "@/store/useStore";
-import { ref, computed, onMounted, nextTick } from "vue";
+import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 

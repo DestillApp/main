@@ -5,6 +5,8 @@ import {
 
 import { PlantForm, PlantFormSubmit } from "@/types/forms/plantForm";
 
+import { ResultsForm } from "@/types/forms/resultsForm";
+
 /**
  * Maps a DistillationForm object to a DistillationFormSubmit object.
  * @param form - The DistillationForm object to map.
@@ -52,4 +54,44 @@ export const mapPlantForm = (form: PlantForm): PlantFormSubmit => ({
   plantState: form.plantState,
   dryingTime: form.dryingTime,
   plantAge: form.plantAge,
+});
+
+export const mapResultsForm = (form: ResultsForm): ResultsForm => ({
+  oilAmount: form.oilAmount,
+  hydrosolAmount: form.hydrosolAmount,
+  hydrosolpH: form.hydrosolpH,
+  oilDescription: form.oilDescription,
+  hydrosolDescription: form.hydrosolDescription,
+  distillationData: {
+    weightForDistillation: form.distillationData.weightForDistillation,
+    isPlantSoaked: form.distillationData.isPlantSoaked,
+    soakingTime: form.distillationData.soakingTime,
+    weightAfterSoaking: form.distillationData.weightAfterSoaking,
+    isPlantShredded: form.distillationData.isPlantShredded,
+    distillationType: form.distillationData.distillationType,
+    distillationDate: form.distillationData.distillationDate,
+    distillationApparatus: form.distillationData.distillationApparatus,
+    waterForDistillation: form.distillationData.waterForDistillation,
+    distillationTime: {
+      distillationHours:
+        form.distillationData.distillationTime.distillationHours,
+      distillationMinutes:
+        form.distillationData.distillationTime.distillationMinutes,
+    },
+  },
+  distilledPlant: {
+    plantName: form.distilledPlant.plantName,
+    plantPart: form.distilledPlant.plantPart,
+    plantOrigin: form.distilledPlant.plantOrigin,
+    plantBuyDate: form.distilledPlant.plantBuyDate,
+    plantProducer: form.distilledPlant.plantProducer,
+    countryOfOrigin: form.distilledPlant.countryOfOrigin,
+    harvestDate: form.distilledPlant.harvestDate,
+    harvestTemperature: form.distilledPlant.harvestTemperature,
+    harvestStartTime: form.distilledPlant.harvestStartTime,
+    harvestEndTime: form.distilledPlant.harvestEndTime,
+    plantState: form.distilledPlant.plantState,
+    dryingTime: form.distilledPlant.dryingTime,
+    plantAge: form.distilledPlant.plantAge,
+  },
 });

@@ -484,13 +484,33 @@ export default defineComponent({
     };
 
     // Using the format function
-    const setInteger = (value: string, id: string, storeName: string) => {
-      setIntegerNumber(store, value, id, storeName);
+    const setInteger = (
+      value: string | number,
+      id: string,
+      storeName: string
+    ): void => {
+      const numericValue = typeof value === "string" ? Number(value) : value;
+      setIntegerNumber(
+        store,
+        numericValue >= 0 ? numericValue : null,
+        id,
+        storeName
+      );
     };
 
     // Using the format function
-    const setNumber = (value: string, id: string, storeName: string) => {
-      setNumberFormat(store, value, id, storeName);
+    const setNumber = (
+      value: string | number,
+      id: string,
+      storeName: string
+    ): void => {
+      const numericValue = typeof value === "string" ? Number(value) : value;
+      setNumberFormat(
+        store,
+        numericValue >= 0 ? numericValue : null,
+        id,
+        storeName
+      );
     };
 
     // Watcher to handle changes in the isPlantSoaked state. Updates related fields and dispatches changes to the store.

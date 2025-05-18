@@ -7,9 +7,15 @@
       <!-- Distillation results component -->
       <results-distillation></results-distillation>
       <!-- Results data component -->
-      <results-data :isFormValid="isFormValid"></results-data>
+      <results-data
+        :isFormValid="isFormValid"
+        :wasSubmitted="wasSubmitted"
+      ></results-data>
       <!-- Results descriptions component -->
-      <results-descriptions :isFormValid="isFormValid"></results-descriptions>
+      <results-descriptions
+        :isFormValid="isFormValid"
+        :wasSubmitted="wasSubmitted"
+      ></results-descriptions>
       <!-- Button to submit the results form -->
       <base-button class="results-form__button" type="submit"
         >Zapisz wyniki destylacji</base-button
@@ -18,10 +24,16 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import ResultsData from "@/components/results/ResultsData.vue";
 import ResultsDescriptions from "@/components/results/ResultsDescriptions.vue";
 import ResultsDistillation from "@/components/results/ResultsDistillation.vue";
+import { ResultsForm } from "@/types/forms/resultsForm";
+import {
+  GetDistillationById,
+  DistillationTime,
+} from "@/types/forms/distillationForm";
+import { GetPlantById, NormalizedPlantById } from "@/types/forms/plantForm";
 import { resultsFormValidation } from "@/helpers/formsValidation";
 import { initialResultsForm } from "@/helpers/formsInitialState";
 import { CREATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
@@ -29,12 +41,13 @@ import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
 import { useStore } from "@/store/useStore";
-import { ref, onMounted, computed, nextTick } from "vue";
+import { defineComponent, ref, onMounted, computed, nextTick } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useMutation, useApolloClient } from "@vue/apollo-composable";
-import DOMPurify from "dompurify";
+import { normalizeSelectedFields } from "@/helpers/formsNormalize";
+import { mapResultsForm } from "@/helpers/formsMapping";
 
-export default {
+export default defineComponent({
   name: "AddResultsPage",
   components: {
     ResultsData,
@@ -46,10 +59,13 @@ export default {
     const store = useStore();
 
     // Computed properties to get results form data from Vuex store
-    const resultsForm = computed(() => store.getters["results/resultsForm"]);
+    const resultsForm = computed<ResultsForm>(
+      () => store.getters["results/resultsForm"]
+    );
 
     // Reactive reference to track form validity
-    const isFormValid = ref(null);
+    const isFormValid = ref<boolean>(false);
+    const wasSubmitted = ref<boolean>(false);
 
     // Apollo client instance
     const { resolveClient } = useApolloClient();
@@ -60,55 +76,53 @@ export default {
     const router = useRouter();
 
     // Reactive references for distillation data
-    const distillationId = ref(route.params.distillId);
+    const distillationId = ref<string | string[]>(route.params.distillId);
 
     // Using GraphQL mutation for creating new results
     const { mutate: createDistillationArchive } = useMutation(
       CREATE_DISTILLATION_ARCHIVE
     );
 
+    const fieldsToNormalize: (keyof GetPlantById)[] = [
+      "harvestDate",
+      "harvestStartTime",
+      "harvestEndTime",
+      "countryOfOrigin",
+      "plantBuyDate",
+      "plantProducer",
+    ];
+
     /**
      * @function setDistillationDetails
      * @description Helper function to set distillation details in Vuex state.
      * @param {Object} details - The distillation details object.
      */
-    const setDistillationDetails = (details) => {
-      const distillationDataFields = [
-        {
-          input: "weightForDistillation",
-          value: details.weightForDistillation,
-        },
-        { input: "isPlantSoaked", value: details.isPlantSoaked },
-        { input: "soakingTime", value: details.soakingTime },
-        { input: "weightAfterSoaking", value: details.weightAfterSoaking },
-        { input: "isPlantShredded", value: details.isPlantShredded },
-        { input: "distillationType", value: details.distillationType },
-        { input: "distillationDate", value: details.distillationDate },
-        {
-          input: "distillationApparatus",
-          value: details.distillationApparatus,
-        },
-        { input: "waterForDistillation", value: details.waterForDistillation },
-      ];
+    const setDistillationDetails = (details: GetDistillationById): void => {
+      const distillationKeys = Object.keys(details).filter(
+        (key) =>
+          key !== "_id" &&
+          key !== "__typename" &&
+          key !== "choosedPlant" &&
+          key !== "distillationTime"
+      ) as (keyof GetDistillationById)[];
 
-      const distillationTimeFields = [
-        {
-          input: "distillationHours",
-          value: details.distillationTime.distillationHours,
-        },
-        {
-          input: "distillationMinutes",
-          value: details.distillationTime.distillationMinutes,
-        },
-      ];
+      for (const key of distillationKeys) {
+        store.dispatch("results/setDistillationDataValue", {
+          input: key,
+          value: details[key],
+        });
+      }
 
-      distillationDataFields.forEach(({ input, value }) => {
-        store.dispatch("results/setDistillationDataValue", { input, value });
-      });
+      const timeKeys = Object.keys(details.distillationTime).filter(
+        (key) => key !== "__typename"
+      ) as (keyof DistillationTime)[];
 
-      distillationTimeFields.forEach(({ input, value }) => {
-        store.dispatch("results/setDistillationTime", { input, value });
-      });
+      for (const key of timeKeys) {
+        store.dispatch("results/setDistillationTime", {
+          input: key,
+          value: details.distillationTime[key],
+        });
+      }
     };
 
     /**
@@ -116,26 +130,17 @@ export default {
      * @description Helper function to set plant details in Vuex state.
      * @param {Object} details - The plant details object.
      */
-    const setPlantDetails = (details) => {
-      const plantDataFields = [
-        { input: "plantName", value: details.plantName },
-        { input: "plantPart", value: details.plantPart },
-        { input: "plantOrigin", value: details.plantOrigin },
-        { input: "plantBuyDate", value: details.plantBuyDate },
-        { input: "plantProducer", value: details.plantProducer },
-        { input: "countryOfOrigin", value: details.countryOfOrigin },
-        { input: "harvestDate", value: details.harvestDate },
-        { input: "harvestTemperature", value: details.harvestTemperature },
-        { input: "harvestStartTime", value: details.harvestStartTime },
-        { input: "harvestEndTime", value: details.harvestEndTime },
-        { input: "plantState", value: details.plantState },
-        { input: "dryingTime", value: details.dryingTime },
-        { input: "plantAge", value: details.plantAge },
-      ];
+    const setPlantDetails = (details: NormalizedPlantById): void => {
+      const keys = Object.keys(details).filter(
+        (key) => key !== "_id" && key !== "__typename"
+      ) as (keyof NormalizedPlantById)[];
 
-      plantDataFields.forEach(({ input, value }) => {
-        store.dispatch("results/setPlantDataValue", { input, value });
-      });
+      for (const key of keys) {
+        store.dispatch("results/setPlantDataValue", {
+          input: key,
+          value: details[key],
+        });
+      }
     };
 
     /**
@@ -145,15 +150,16 @@ export default {
      * @param {string} plantId - The ID of the plant to fetch.
      * @returns {Promise<void>}
      */
-    const fetchPlantDetails = async (plantId) => {
+    const fetchPlantDetails = async (plantId: string): Promise<void> => {
       try {
         const { data } = await apolloClient.query({
           query: GET_PLANT_BY_ID,
           variables: { id: plantId, formatDates: true },
         });
-        const plantDetails = data.getPlantById;
-        console.log(plantDetails);
-
+        const plantDetails = normalizeSelectedFields(
+          data.getPlantById,
+          fieldsToNormalize
+        );
         // Save plant details in Vuex state
         setPlantDetails(plantDetails);
       } catch (error) {
@@ -171,14 +177,13 @@ export default {
      * @description Fetches the distillation details by distillation ID from GraphQL API.
      * @returns {Promise<void>}
      */
-    const fetchDistillationDetails = async () => {
+    const fetchDistillationDetails = async (): Promise<void> => {
       try {
         const { data } = await apolloClient.query({
           query: GET_DISTILLATION_BY_ID,
           variables: { id: distillationId.value, formatDates: true },
         });
         const distillationDetails = data.getDistillationById;
-        console.log(distillationDetails);
 
         // Save distillation details in Vuex state
         setDistillationDetails(distillationDetails);
@@ -205,123 +210,23 @@ export default {
      * @returns {Promise<void>} Resolves when the form submission process is complete.
      * @throws {Error} Throws an error if the form submission fails.
      */
-    const submitResultsForm = async () => {
+    const submitResultsForm = async (): Promise<void> => {
       // Validate the form
+      wasSubmitted.value = true;
       isFormValid.value = resultsFormValidation(resultsForm.value);
       if (isFormValid.value) {
         try {
-          const form = resultsForm.value;
+          const resultsFormData = mapResultsForm(resultsForm.value);
 
-          const resultsFormData = {
-            oilAmount: form.oilAmount
-              ? Number(DOMPurify.sanitize(form.oilAmount))
-              : null,
-            hydrosolAmount: form.hydrosolAmount
-              ? Number(DOMPurify.sanitize(form.hydrosolAmount))
-              : null,
-            hydrosolpH: form.hydrosolpH
-              ? Number(DOMPurify.sanitize(form.hydrosolpH))
-              : null,
-            oilDescription: DOMPurify.sanitize(form.oilDescription),
-            hydrosolDescription: DOMPurify.sanitize(form.hydrosolDescription),
-            distillationData: {
-              weightForDistillation: form.distillationData.weightForDistillation
-                ? Number(
-                    DOMPurify.sanitize(
-                      form.distillationData.weightForDistillation
-                    )
-                  )
-                : null,
-              isPlantSoaked: form.distillationData.isPlantSoaked,
-              soakingTime: form.distillationData.soakingTime
-                ? Number(DOMPurify.sanitize(form.distillationData.soakingTime))
-                : null,
-              weightAfterSoaking: form.distillationData.weightAfterSoaking
-                ? Number(
-                    DOMPurify.sanitize(form.distillationData.weightAfterSoaking)
-                  )
-                : null,
-              isPlantShredded: form.distillationData.isPlantShredded,
-              distillationType: DOMPurify.sanitize(
-                form.distillationData.distillationType
-              ),
-              distillationDate: DOMPurify.sanitize(
-                form.distillationData.distillationDate
-              ),
-              distillationApparatus: DOMPurify.sanitize(
-                form.distillationData.distillationApparatus
-              ),
-              waterForDistillation: form.distillationData.waterForDistillation
-                ? Number(
-                    DOMPurify.sanitize(
-                      form.distillationData.waterForDistillation
-                    )
-                  )
-                : null,
-              distillationTime: {
-                distillationHours: form.distillationData.distillationTime
-                  .distillationHours
-                  ? Number(
-                      DOMPurify.sanitize(
-                        form.distillationData.distillationTime.distillationHours
-                      )
-                    )
-                  : null,
-                distillationMinutes: form.distillationData.distillationTime
-                  .distillationMinutes
-                  ? Number(
-                      DOMPurify.sanitize(
-                        form.distillationData.distillationTime
-                          .distillationMinutes
-                      )
-                    )
-                  : null,
-              },
-            },
-            distilledPlant: {
-              plantName: DOMPurify.sanitize(form.distilledPlant.plantName),
-              plantPart: DOMPurify.sanitize(form.distilledPlant.plantPart),
-              plantOrigin: DOMPurify.sanitize(form.distilledPlant.plantOrigin),
-              plantBuyDate: DOMPurify.sanitize(
-                form.distilledPlant.plantBuyDate
-              ),
-              plantProducer: DOMPurify.sanitize(
-                form.distilledPlant.plantProducer
-              ),
-              countryOfOrigin: DOMPurify.sanitize(
-                form.distilledPlant.countryOfOrigin
-              ),
-              harvestDate: DOMPurify.sanitize(form.distilledPlant.harvestDate),
-              harvestTemperature: form.distilledPlant.harvestTemperature
-                ? Number(
-                    DOMPurify.sanitize(form.distilledPlant.harvestTemperature)
-                  )
-                : null,
-              harvestStartTime: DOMPurify.sanitize(
-                form.distilledPlant.harvestStartTime
-              ),
-              harvestEndTime: DOMPurify.sanitize(
-                form.distilledPlant.harvestEndTime
-              ),
-              plantState: DOMPurify.sanitize(form.distilledPlant.plantState),
-              dryingTime: form.distilledPlant.dryingTime
-                ? Number(DOMPurify.sanitize(form.distilledPlant.dryingTime))
-                : null,
-              plantAge: form.distilledPlant.plantAge
-                ? Number(DOMPurify.sanitize(form.distilledPlant.plantAge))
-                : null,
-            },
-          };
-
-          const { data } = await createDistillationArchive({
+          await createDistillationArchive({
             input: resultsFormData,
           });
-          console.log("Created results:", data.createDistillationArchive);
         } catch (error) {
           if (error.message === "Unauthorized") {
             await store.dispatch("auth/logout");
             router.push("/login");
           }
+          wasSubmitted.value = false;
           console.error("Error submitting form", error);
           throw error;
         }
@@ -338,13 +243,12 @@ export default {
      * @returns {Promise<void>} Resolves when the distillation is deleted.
      * @throws {Error} Throws an error if the deletion fails.
      */
-    const removeDistillation = async () => {
+    const removeDistillation = async (): Promise<void> => {
       try {
         const { data } = await apolloClient.mutate({
           mutation: DELETE_DISTILLATION,
           variables: { id: distillationId.value },
         });
-        console.log("Deleted distillation:", data.deleteDistillation);
       } catch (error) {
         if (error.message === "Unauthorized") {
           await store.dispatch("auth/logout");
@@ -355,7 +259,7 @@ export default {
       }
     };
 
-    const saveResults = async () => {
+    const saveResults = async (): Promise<void> => {
       try {
         await submitResultsForm();
         if (!isFormValid.value) {
@@ -397,9 +301,9 @@ export default {
       next();
     });
 
-    return { saveResults, isFormValid };
+    return { saveResults, isFormValid, wasSubmitted };
   },
-};
+});
 </script>
 
 <style scoped>

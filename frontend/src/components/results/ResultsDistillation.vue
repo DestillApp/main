@@ -34,23 +34,26 @@
   </div>
 </template>
 
-<script>
-import { computed } from "vue";
+<script lang="ts">
+import { defineComponent, computed } from "vue";
 import { useStore } from "@/store/useStore";
+import { ResultsForm } from "@/types/forms/resultsForm";
 
-export default {
+export default defineComponent({
   name: "ResultsDistillation",
   setup() {
     const store = useStore();
 
     // Computed property to get the results form data from Vuex store
-    const resultsForm = computed(() => store.getters["results/resultsForm"]);
+    const resultsForm = computed<ResultsForm>(
+      () => store.getters["results/resultsForm"]
+    );
 
     return {
       resultsForm,
     };
   },
-};
+});
 </script>
 
 <style scoped>

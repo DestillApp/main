@@ -133,11 +133,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useStore } from "@/store/useStore";
-import { onMounted, computed } from "vue";
+import { defineComponent, onMounted, computed } from "vue";
 import { initialResultsForm } from "@/helpers/formsInitialState";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
+import { ResultsPlant, ResultsDistillation } from "@/types/forms/resultsForm";
 
 /**
  * @component DistillationPlant
@@ -145,7 +146,12 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
  * It also interacts with Vuex for data persistence and handles the fetching of plants from an Apollo GraphQL server.
  */
 
-export default {
+interface Props {
+  isFormValid: boolean;
+  isEditing?: boolean;
+}
+
+export default defineComponent({
   name: "DistillationPlant",
   components: { BaseTextInput },
   props: ["isFormValid", "isEditing"],
@@ -155,22 +161,28 @@ export default {
     const store = useStore();
 
     // Computed properties to get form data from Vuex store
-    const plantData = computed(() => store.getters["results/distilledPlant"]);
+    const plantData = computed<ResultsPlant>(
+      () => store.getters["results/distilledPlant"]
+    );
 
-    const distillationData = computed(
+    const distillationData = computed<ResultsDistillation>(
       () => store.getters["results/distillationData"]
     );
 
-    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+    const isDarkTheme = computed<boolean>(
+      () => store.getters["settings/isDarkTheme"]
+    );
 
-    const comingFromRoute = computed(() => store.getters.comingFromRoute);
+    const comingFromRoute = computed<boolean>(
+      () => store.getters.comingFromRoute
+    );
 
     /**
      * @function fetchData
      * @description Fetches initial data from local storage via the Vuex store for a specified key.
      * @param {string} key - The key for the specific data to fetch.
      */
-    const fetchPlantData = (key) => {
+    const fetchPlantData = (key: string): void => {
       store.dispatch("results/fetchDistilledPlantFromLocalStorage", key);
     };
 
@@ -179,7 +191,7 @@ export default {
      * @description Fetches initial data from local storage via the Vuex store for a specified key.
      * @param {string} key - The key for the specific data to fetch.
      */
-    const fetchDistillationData = (key) => {
+    const fetchDistillationData = (key: string): void => {
       store.dispatch("results/fetchDistillationDataFromLocalStorage", key);
     };
 
@@ -212,7 +224,7 @@ export default {
       isDarkTheme,
     };
   },
-};
+});
 </script>
 
 <style scoped>

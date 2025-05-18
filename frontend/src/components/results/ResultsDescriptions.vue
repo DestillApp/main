@@ -6,14 +6,14 @@
       classType="results"
       placeholder="Opis olejku eterycznego"
       inputColor="results"
-      :invalidInput="isFormValid === false && !formData.oilDescription"
+      :invalidInput="wasSubmitted && !isFormValid && !formData.oilDescription"
       :storeName="storeName"
       @change:modelValue="setValue"
       label="Właściwości organoleptyczne olejku eterycznego"
       id="oilDescription"
     >
       <template v-slot:message>
-        <span v-if="isFormValid === false && !formData.oilDescription"
+        <span v-if="wasSubmitted && !isFormValid && !formData.oilDescription"
           >Wpisz właściwości organoleptyczne olejku eterycznego</span
         >
       </template>
@@ -25,14 +25,17 @@
       classType="results"
       placeholder="Opis hydrolatu"
       inputColor="results"
-      :invalidInput="isFormValid === false && !formData.hydrosolDescription"
+      :invalidInput="
+        wasSubmitted && !isFormValid && !formData.hydrosolDescription
+      "
       :storeName="storeName"
       @change:modelValue="setValue"
       label="Właściwości organoleptyczne hydrolatu"
       id="hydrosolDescription"
     >
       <template v-slot:message>
-        <span v-if="isFormValid === false && !formData.hydrosolDescription"
+        <span
+          v-if="wasSubmitted && !isFormValid && !formData.hydrosolDescription"
           >Wpisz właściwości organoleptyczne hydrolatu</span
         >
       </template>
@@ -40,31 +43,40 @@
   </div>
 </template>
 
-<script>
-import { computed, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, computed, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import BaseTextArea from "@/ui/BaseTextArea.vue";
+import { ResultsForm } from "@/types/forms/resultsForm";
 
 /**
  * @component ResultsDescriptions
  * @description This component renders text areas for entering descriptions related to distillation results.
  * @see setValue
  */
-export default {
+
+interface Props {
+  isFormValid: boolean;
+  wasSubmitted: boolean;
+}
+
+export default defineComponent({
   name: "ResultsDescriptions",
   components: { BaseTextArea },
-  props: ["isFormValid"],
-  setup() {
+  props: ["isFormValid", "wasSubmitted"],
+  setup(props: Props) {
     // Vuex store
     const store = useStore();
     // Name of the vuex store module
     const storeName = "results";
 
     // Computed properties to get form data from Vuex store
-    const formData = computed(() => store.getters["results/resultsForm"]);
+    const formData = computed<ResultsForm>(
+      () => store.getters["results/resultsForm"]
+    );
 
     // Function to set value in Vuex store
-    const setValue = (value, id) => {
+    const setValue = (value: string, id: string): void => {
       store.dispatch("results/setValue", { input: id, value });
     };
 
@@ -80,7 +92,7 @@ export default {
       storeName,
     };
   },
-};
+});
 </script>
 
 <style scoped>

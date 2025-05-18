@@ -1,5 +1,5 @@
 import { DistillationForm } from "@/types/forms/distillationForm";
-import { PlantForm } from "@/types/forms/plantForm";
+import { NormalizedPlantById, PlantForm } from "@/types/forms/plantForm";
 
 export interface ResultsDistillation
   extends Omit<
@@ -18,4 +18,18 @@ export interface ResultsForm {
   hydrosolDescription: string;
   distillationData: ResultsDistillation;
   distilledPlant: ResultsPlant;
+}
+
+export interface DistillationArchivePlant
+  extends Omit<NormalizedPlantById, "availableWeight" | "plantWeight"> {}
+
+export interface DistillationArchive {
+  _id: string;
+  oilAmount: number;
+  hydrosolAmount: number;
+  hydrosolpH: number;
+  oilDescription: string;
+  hydrosolDescription: string;
+  distillationData: ResultsDistillation;
+  distilledPlant: DistillationArchivePlant;
 }
