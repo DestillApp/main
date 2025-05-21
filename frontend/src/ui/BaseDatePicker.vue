@@ -19,38 +19,46 @@
   </base-modal>
 </template>
 
-<script>
-import { ref, computed } from "vue";
+<script lang="ts">
+import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store/useStore";
 import BaseModal from "./BaseModal.vue";
+import { BaseDatePickerEvents } from "@/types/events";
 
 /**
- * @component BaseDatePicker
- * @description A modal component that contains a card with a Vuetify date picker. The selected date is emitted to the parent component.
- * @props {string} title - The title for the date picker.
- * @props {string} value - The initial value for the date picker.
- * @emits {Date} update:value - Emitted when the selected date changes.
- * @see sendDate
+ * @interface Props
+ * @description Props for BaseDatePicker component.
  */
-export default {
+interface Props {
+  title?: string;
+  value?: string;
+  color?: string;
+}
+
+export default defineComponent({
+  name: "BaseDatePicker",
   components: { BaseModal },
   props: ["title", "value", "color"],
-  setup(props, context) {
+  emits: ["update:value"],
+  setup(props: Props, context) {
+    const emit = context.emit as BaseDatePickerEvents;
     const store = useStore();
-    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+    const isDarkTheme = computed<boolean>(
+      () => store.getters["settings/isDarkTheme"]
+    );
 
     // Reference to the selected date
-    const selectedDate = ref(new Date());
+    const selectedDate = ref<Date>(new Date());
 
     /**
      * Emit the selected date to the parent component.
      * @function sendDate
      */
-    const sendDate = () => {
-      context.emit("update:value", selectedDate.value);
+    const sendDate = (): void => {
+      emit("update:value", selectedDate.value);
     };
 
-    const computedColor = computed(() => {
+    const computedColor = computed<string>(() => {
       switch (props.color) {
         case "plant":
           return "var(--primary-color)";
@@ -63,7 +71,7 @@ export default {
 
     return { selectedDate, sendDate, computedColor, isDarkTheme };
   },
-};
+});
 </script>
 
 <style scoped>

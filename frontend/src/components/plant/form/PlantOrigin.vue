@@ -93,7 +93,7 @@
                 type="text"
                 classType="time"
                 id="start_time"
-                disabled="disabled"
+                :disabled="disabled"
               ></base-text-input>
             </template>
             <template v-slot:append>
@@ -102,7 +102,7 @@
                 type="text"
                 classType="time"
                 id="end_time"
-                disabled="disabled"
+                :disabled="disabled"
               ></base-text-input>
             </template>
           </v-range-slider>
@@ -113,14 +113,14 @@
               type="text"
               classType="time"
               id="start_time"
-              disabled="disabled"
+              :disabled="disabled"
             ></base-text-input>
             <base-text-input
               v-model="formData.harvestEndTime"
               type="text"
               classType="time"
               id="end_time"
-              disabled="disabled"
+              :disabled="disabled"
             ></base-text-input>
           </div>
         </div>
@@ -258,6 +258,7 @@ export default defineComponent({
     const searchQuery = ref<string>("");
     const countryName = ref<string>("");
     const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
+    const disabled = ref<boolean>(true);
 
     // Computed properties to get form data from Vuex store
     const formData = computed<PlantForm>(
@@ -442,6 +443,7 @@ export default defineComponent({
       plantOrigin,
       title,
       origins,
+      disabled,
       setValue,
       setInteger,
       setKeyboardIntegerNumber,

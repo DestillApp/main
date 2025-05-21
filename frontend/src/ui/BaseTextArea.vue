@@ -26,27 +26,27 @@
   </div>
 </template>
 
-<script>
-import { computed } from "vue";
+<script lang="ts">
+import { defineComponent, computed } from "vue";
 import { useStore } from "@/store/useStore";
+import { BaseTextEvents } from "@/types/events";
 
 /**
- * @component BaseTextArea
- * @description A customizable text area component.
- * @props {string} label - The label for the text area field.
- * @props {string} modelValue - The model value bound to the text area field.
- * @props {string} id - The id for the text area field.
- * @props {string} placeholder - The placeholder text for the text area field.
- * @props {boolean} invalidInput - Flag to indicate if the text area is invalid.
- * @props {string} inputColor - The color type for conditional styling (e.g., "results").
- * @emits update:modelValue - Emitted when the text area value changes.
- * @emits set:keyboard - Emitted when a keyboard event occurs.
- * @emits change:modelValue - Emitted when the text area value changes and loses focus.
- * @see updateValue
- * @see setKeyboard
- * @see changeValue
+ * @interface Props
+ * @description Props for BaseTextArea component.
  */
-export default {
+interface Props {
+  label?: string;
+  modelValue?: string;
+  id?: string;
+  placeholder?: string;
+  invalidInput?: boolean;
+  inputColor?: string;
+  storeName?: string;
+}
+
+export default defineComponent({
+  name: "BaseTextArea",
   props: [
     "label",
     "modelValue",
@@ -57,49 +57,41 @@ export default {
     "storeName",
   ],
   emits: ["update:modelValue", "change:modelValue", "set:keyboard"],
-
-  setup(props, context) {
+  setup(props: Props, context) {
+    const emit = context.emit as BaseTextEvents;
     const store = useStore();
-    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+
+    const isDarkTheme = computed<boolean>(
+      () => store.getters["settings/isDarkTheme"]
+    );
 
     /**
      * Updates the model value when text area changes
-     * @function updateValue
      */
-    const updateValue = (e) => {
-      context.emit(
-        "update:modelValue",
-        e.target.value,
-        props.id,
-        props.storeName
-      );
+    const updateValue = (e: Event): void => {
+      const target = e.target as HTMLTextAreaElement;
+      emit("update:modelValue", target.value, props.id, props.storeName);
     };
 
     /**
      * Emits keyboard events
-     * @function setKeyboard
      */
-    const setKeyboard = (e) => {
-      context.emit("set:keyboard", e);
+    const setKeyboard = (e: Event): void => {
+      emit("set:keyboard", e);
     };
 
     /**
      * Emits value change events when text area loses focus
-     * @function changeValue
      */
-    const changeValue = (e) => {
-      context.emit(
-        "change:modelValue",
-        e.target.value,
-        props.id,
-        props.storeName
-      );
+    const changeValue = (e: Event): void => {
+      const target = e.target as HTMLTextAreaElement;
+      emit("change:modelValue", target.value, props.id, props.storeName);
     };
 
     // Computed property to determine if text area is for results
-    const isResultsTextArea = computed(() => {
-      return props.inputColor === "results";
-    });
+    const isResultsTextArea = computed<boolean>(
+      () => props.inputColor === "results"
+    );
 
     return {
       updateValue,
@@ -109,7 +101,7 @@ export default {
       isDarkTheme,
     };
   },
-};
+});
 </script>
 
 <style scoped>

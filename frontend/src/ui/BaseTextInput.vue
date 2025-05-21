@@ -37,27 +37,25 @@
   </div>
 </template>
 
-<script>
-import { computed } from "vue";
+<script lang="ts">
+import { defineComponent, computed } from "vue";
 import { useStore } from "@/store/useStore";
-/**
- * @component BaseTextInput
- * @description A customizable text input component.
- * @props {string} label - The label for the input field.
- * @props {string} modelValue - The model value bound to the input field.
- * @props {string} id - The id for the input field.
- * @props {boolean} disabled - Flag to indicate if the input is disabled.
- * @props {string} placeholder - The placeholder text for the input field.
- * @props {string} classType - The class type for conditional styling (e.g., "number" or "time").
- * @props {boolean} invalidInput - Flag to indicate if the input is invalid.
- * @emits update:modelValue - Emitted when the input value changes.
- * @emits set:keyboard - Emitted when a keyboard event occurs.
- * @emits change:modelValue - Emitted when the input value changes and loses focus.
- * @see updateValue
- * @see setKeyboard
- * @see changeValue
- */
-export default {
+import { BaseTextEvents } from "@/types/events";
+
+interface Props {
+  label?: string;
+  modelValue?: string | number | null;
+  id?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  classType?: string;
+  inputColor?: string;
+  invalidInput?: boolean;
+  storeName?: string;
+}
+
+export default defineComponent({
+  name: "BaseTextInput",
   props: [
     "label",
     "modelValue",
@@ -70,73 +68,49 @@ export default {
     "storeName",
   ],
   emits: ["update:modelValue", "change:modelValue", "set:keyboard"],
-  setup(props, context) {
+  setup(props: Props, context) {
+    const emit = context.emit as BaseTextEvents;
     const store = useStore();
 
-    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+    const isDarkTheme = computed<boolean>(
+      () => store.getters["settings/isDarkTheme"]
+    );
+
     /**
      * Updates the model value when input changes
-     * @function updateValue
      */
-    const updateValue = (e) => {
-      context.emit(
-        "update:modelValue",
-        e.target.value,
-        props.id,
-        props.storeName
-      );
+    const updateValue = (e: Event): void => {
+      const target = e.target as HTMLInputElement;
+      emit("update:modelValue", target.value, props.id, props.storeName);
     };
 
     /**
      * Emits keyboard events
-     * @function setKeyboard
      */
-    const setKeyboard = (e) => {
-      context.emit("set:keyboard", e);
+    const setKeyboard = (e: Event): void => {
+      emit("set:keyboard", e);
     };
 
     /**
      * Emits value change events when input loses focus
-     * @function changeValue
      */
-    const changeValue = (e) => {
-      context.emit(
-        "change:modelValue",
-        e.target.value,
-        props.id,
-        props.storeName
-      );
+    const changeValue = (e: Event): void => {
+      const target = e.target as HTMLInputElement;
+      emit("change:modelValue", target.value, props.id, props.storeName);
     };
 
-    // Computed property to determine if input is of type number
-    const isNumberInput = computed(() => {
-      return props.classType === "number";
-    });
-
-    // Computed property to determine if input is of type time
-    const isTimeInput = computed(() => {
-      return props.classType === "time";
-    });
-
-    // Computed property to determine if input is for oilAmount
-    const isResultsInput = computed(() => {
-      return props.classType === "results";
-    });
-
-    // Computed property to determine if input is for plant
-    const isPlantInput = computed(() => {
-      return props.inputColor === "plant";
-    });
-
-    // Computed property to determine if input is for distillation
-    const isDistillationInput = computed(() => {
-      return props.inputColor === "distillation";
-    });
-
-    // Computed property to determine if input is for distillation
-    const isResultsInputColor = computed(() => {
-      return props.inputColor === "results";
-    });
+    const isNumberInput = computed<boolean>(() => props.classType === "number");
+    const isTimeInput = computed<boolean>(() => props.classType === "time");
+    const isResultsInput = computed<boolean>(
+      () => props.classType === "results"
+    );
+    const isPlantInput = computed<boolean>(() => props.inputColor === "plant");
+    const isDistillationInput = computed<boolean>(
+      () => props.inputColor === "distillation"
+    );
+    const isResultsInputColor = computed<boolean>(
+      () => props.inputColor === "results"
+    );
 
     return {
       isDarkTheme,
@@ -151,7 +125,7 @@ export default {
       isResultsInputColor,
     };
   },
-};
+});
 </script>
 
 <style scoped>

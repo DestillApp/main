@@ -6,7 +6,7 @@
       <base-text-input
         :label="label"
         id="label"
-        disabled="disabled"
+        :disabled="disabled"
         placeholder="wybierz datę"
         v-model="formatedDate"
       >
@@ -37,80 +37,56 @@
   </div>
 </template>
 
-<script>
-import { ref, computed, watch, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, ref, computed, watch, onMounted } from "vue";
 import BaseTextInput from "./BaseTextInput.vue";
 import BaseDatePicker from "./BaseDatePicker.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiCalendarRange } from "@mdi/js";
+import { BaseInputDatePickerEvents } from "@/types/events";
 
 /**
- * @component DatePickerContainer
- * @description This component renders a date picker inside a container with a text input and an SVG icon.
- * It handles the visibility of the date picker and emits the selected date to the parent component.
- * @props {string} label - The label for the text input.
- * @props {string} title - The title for the date picker.
- * @props {string} id - The id for the date picker.
- * @props {string} value - The initial value for the date.
- * @props {boolean} invalidInput - Flag to indicate if the input is invalid.
- * @emits {string} date:value - Emitted when the selected date changes.
- * @see changeVisibility
- * @see closeModal
- * @see formatedDate
- * @see updateDate
+ * @interface Props
+ * @description Props for BaseInputDatePicker component.
  */
-export default {
+interface Props {
+  label?: string;
+  title?: string;
+  id?: string;
+  value?: string;
+  invalidInput?: boolean;
+  color?: string;
+}
+
+export default defineComponent({
   components: { BaseTextInput, BaseDatePicker, SvgIcon },
   props: ["label", "title", "id", "value", "invalidInput", "color"],
-  setup(props, context) {
-    // Reference to indicate if the input is disabled
-    const disabled = ref(true);
+  setup(props: Props, context) {
+    const emit = context.emit as BaseInputDatePickerEvents;
+    const disabled = ref<boolean>(true);
+    const path = ref<string>(mdiCalendarRange);
+    const isOpen = ref<boolean>(false);
+    const date = ref<string>("");
 
-    // Reference for the SVG icon path
-    const path = ref(mdiCalendarRange);
-
-    // Reference to indicate if the date picker is open
-    const isOpen = ref(false);
-
-    // Reference to store the selected date
-    const date = ref("");
-
-    /**
-     * Toggles the visibility of the date picker
-     * @function changeVisibility
-     * @returns {void}
-     */
-    const changeVisibility = () => {
+    const changeVisibility = (): void => {
       isOpen.value = !isOpen.value;
-      console.log(props.invalidInput);
     };
 
-    /**
-     * Closes the date picker modal
-     * @function closeModal
-     * @returns {void}
-     */
-    const closeModal = () => {
+    const closeModal = (): void => {
       isOpen.value = false;
     };
 
-    // Watch for changes in props.value
     watch(
       () => props.value,
       (newValue) => {
         if (newValue !== "") {
-          date.value = newValue;
+          date.value = newValue as string;
         }
       },
-      { immediate: true } // Ensure the watcher runs immediately on component creation
+      { immediate: true }
     );
 
-    /**
-     * Computed property to format the selected date
-     * @function formatedDate
-     * @returns {string|undefined} Formatted date as "DD-MM-YYYY" or undefined if date is empty
-     */
-    const formatedDate = computed(() => {
+    const formatedDate = computed<string | undefined>(() => {
       if (date.value === "") {
         return;
       } else {
@@ -122,43 +98,24 @@ export default {
       }
     });
 
-    /**
-     * Updates the date ref with the selected date from the date picker
-     * @function updateDate
-     * @param {string} selectedDate - The date selected in the date picker
-     * @returns {void}
-     */
-    const updateDate = (selectedDate) => {
+    const updateDate = (selectedDate: string): void => {
       date.value = selectedDate;
     };
 
-    //Lifecycle hook to initialize date ref if props.value is not empty
     onMounted(() => {
       if (props.value !== "") {
-        date.value = props.value;
+        date.value = props.value as string;
       }
     });
 
-    // Watcher to emit the updated date to the parent component whenever formatedDate changes
     watch(formatedDate, () => {
-      context.emit("date:value", date.value, props.id);
+      emit("date:value", date.value, props.id);
     });
 
-        const distillationColor = computed(() => {
-      if (props.color === "distillation") {
-        return true;
-      } else {
-        return false;
-      }
-    });
-
-    const plantColor = computed(() => {
-      if (props.color === "plant") {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    const distillationColor = computed<boolean>(
+      () => props.color === "distillation"
+    );
+    const plantColor = computed<boolean>(() => props.color === "plant");
 
     return {
       disabled,
@@ -170,10 +127,10 @@ export default {
       closeModal,
       updateDate,
       distillationColor,
-      plantColor
+      plantColor,
     };
   },
-};
+});
 </script>
 
 <style scoped>
@@ -222,7 +179,7 @@ export default {
 @media (max-width: 600px) {
   .date-picker__input {
     width: 150px;
-margin-right: 0px;
+    margin-right: 0px;
   }
 
   .date-picker__icon {

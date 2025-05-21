@@ -23,7 +23,6 @@
           'search-item__icon--results': !inputValue && isResultsInput,
           'search-item__icon--plant': isPlantInput,
           'search-item__icon--distillation': isDistillationInput,
-          'search-item__icon--results': isResultsInput,
         },
       ]"
       type="mdi"
@@ -43,28 +42,39 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMagnify, mdiClose } from "@mdi/js";
-import { ref, computed, onMounted } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
+import { BaseSearchEvents } from "@/types/events";
 
-export default {
+/**
+ * @interface Props
+ * @description Props for BaseSearchItem component.
+ */
+interface Props {
+  label?: string;
+  inputColor?: string;
+}
+
+export default defineComponent({
   name: "BaseSearchItem",
   components: { BaseTextInput, SvgIcon },
   props: ["label", "inputColor"],
   emits: ["search", "clear"],
-  setup(props, { emit }) {
+  setup(props: Props, context) {
+    const emit = context.emit as BaseSearchEvents;
     const store = useStore();
 
-    const inputValue = ref("");
-    const isSearchEmitted = ref(false);
+    const inputValue = ref<string>("");
+    const isSearchEmitted = ref<boolean>(false);
 
     // Computed property to get searchQuery from Vuex store
-    const searchQuery = computed(() => store.getters.searchQuery);
+    const searchQuery = computed<string>(() => store.getters.searchQuery);
 
-    const changeSearchQuery = () => {
+    const changeSearchQuery = (): void => {
       if (isSearchEmitted.value) {
         isSearchEmitted.value = false;
       }
@@ -73,7 +83,7 @@ export default {
       }
     };
 
-    const emitSearchQuery = () => {
+    const emitSearchQuery = (): void => {
       if (inputValue.value) {
         store.dispatch("updateSearchQuery", inputValue.value);
         emit("search");
@@ -81,14 +91,14 @@ export default {
       }
     };
 
-    const clearSearchQuery = () => {
+    const clearSearchQuery = (): void => {
       inputValue.value = "";
       store.dispatch("updateSearchQuery", "");
       isSearchEmitted.value = false;
       emit("clear");
     };
 
-    const handleKeyPress = (event) => {
+    const handleKeyPress = (event: KeyboardEvent): void => {
       if (event.key === "Enter" && !isSearchEmitted.value) {
         emitSearchQuery();
       }
@@ -98,19 +108,17 @@ export default {
     };
 
     // Computed property to determine if input is for plant
-    const isPlantInput = computed(() => {
-      return props.inputColor === "plant";
-    });
+    const isPlantInput = computed<boolean>(() => props.inputColor === "plant");
 
     // Computed property to determine if input is for distillation
-    const isDistillationInput = computed(() => {
-      return props.inputColor === "distillation";
-    });
+    const isDistillationInput = computed<boolean>(
+      () => props.inputColor === "distillation"
+    );
 
-    // Computed property to determine if input is for distillation
-    const isResultsInput = computed(() => {
-      return props.inputColor === "results";
-    });
+    // Computed property to determine if input is for results
+    const isResultsInput = computed<boolean>(
+      () => props.inputColor === "results"
+    );
 
     onMounted(() => {
       store.dispatch("fetchSearchQueryFromLocalStorage");
@@ -135,7 +143,7 @@ export default {
       mdiClose,
     };
   },
-};
+});
 </script>
 
 <style scoped>

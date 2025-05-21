@@ -11,8 +11,9 @@
   </teleport>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
+import { CloseModal } from "@/types/events";
 
 /**
  * @component BaseModal
@@ -23,12 +24,9 @@ import { defineComponent } from "vue";
 export default defineComponent({
   emits: ["close-modal"],
   setup(_, context) {
-    /**
-     * Closes the modal when the backdrop is clicked.
-     * @function closeModal
-     */
+    const emit = context.emit as CloseModal;
     const closeModal = () => {
-      context.emit("close-modal");
+      emit("close-modal");
     };
 
     return { closeModal };

@@ -19,7 +19,7 @@
           :value="inputValue"
           :disabled="disabled"
           :placeholder="
-            id === 'distillationApparatus' && results.length === 0
+            id === 'distillationApparatus' && results?.length === 0
               ? 'brak zapisanych destylatorów'
               : placeholder
           "
@@ -36,7 +36,7 @@
           }"
           :style="{
             cursor:
-              id === 'distillationApparatus' && results.length === 0
+              id === 'distillationApparatus' && results?.length === 0
                 ? 'not-allowed'
                 : 'pointer',
           }"
@@ -91,7 +91,7 @@
         </li>
       </ul>
       <ul
-        v-if="results.length && modelValue !== '' && id === 'countryOfOrigin'"
+        v-if="results?.length && modelValue !== '' && id === 'countryOfOrigin'"
         class="autocomplete-input__list"
         :class="{
           'autocomplete-input__list--plant': plantColor,
@@ -109,7 +109,7 @@
         </li>
       </ul>
       <ul
-        v-if="results.length && modelValue !== '' && id === 'choosedPlant'"
+        v-if="results?.length && modelValue !== '' && id === 'choosedPlant'"
         class="autocomplete-input__list"
         :class="{
           'autocomplete-input__list--plant': plantColor,
@@ -156,9 +156,10 @@
   </div>
 </template>
 
-<script>
-import { ref, computed, watch } from "vue";
+<script lang="ts">
+import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "@/store/useStore";
+import { InputEvents } from "@/types/events";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiArrowDownBoldBox } from "@mdi/js";
 
@@ -179,7 +180,21 @@ import { mdiArrowDownBoldBox } from "@mdi/js";
  * @see chooseItem
  * @see handleBlur
  */
-export default {
+
+interface Props {
+  label?: string;
+  modelValue?: string | number;
+  id?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  classType?: string;
+  color?: string;
+  invalidInput?: boolean;
+  results?: any[];
+  toChoose?: boolean;
+}
+
+export default defineComponent({
   components: { SvgIcon },
   props: [
     "label",
@@ -194,20 +209,23 @@ export default {
     "toChoose",
   ],
   emits: ["update:modelValue", "choose:item", "update:onBlur", "open:list"],
-  setup(props, context) {
+  setup(props: Props, context) {
+    const emit = context.emit as InputEvents;
     const store = useStore();
 
-    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
-    const disableBlur = ref(false);
-    const choose = ref(props.toChoose || false);
-    const isOpen = ref(false);
-    const inputValue = ref(props.modelValue);
-    const path = ref(mdiArrowDownBoldBox);
+    const isDarkTheme = computed<boolean>(
+      () => store.getters["settings/isDarkTheme"]
+    );
+    const disableBlur = ref<boolean>(false);
+    const choose = ref<boolean>(props.toChoose || false);
+    const isOpen = ref<boolean>(false);
+    const inputValue = ref<string | number>(props.modelValue ?? "");
+    const path = ref<string>(mdiArrowDownBoldBox);
 
     watch(
       () => props.modelValue,
       (newValue) => {
-        inputValue.value = newValue;
+        inputValue.value = newValue ?? "";
       }
     );
 
@@ -216,20 +234,20 @@ export default {
      * @description Updates the model value when input changes
      * @returns {void}
      */
-    const updateValue = (e) => {
-      context.emit("update:modelValue", e.target.value, props.id);
+    const updateValue = (e: Event): void => {
+      const target = e.target as HTMLInputElement;
+      emit("update:modelValue", target.value, props.id);
     };
 
     /**
      * @function chooseItem
      * @description Updates the model value after click on the list item. It temporarily disables the blur event to prevent unintended triggers when the user clicks on an item. After emitting the chosen item, blur is re-enabled after a short delay.
-     * @param {Event} e - The click event triggered when the user selects an item from the list.
      * @emits choose:item - Emits the selected item value and id to the parent component.
      * @returns {void}
      */
-    const chooseItem = (result) => {
+    const chooseItem = (result: any): void => {
       disableBlur.value = true;
-      context.emit("choose:item", result, props.id);
+      emit("choose:item", result, props.id);
       setTimeout(() => {
         disableBlur.value = false; // Re-enable blur after a short delay
       }, 500);
@@ -244,14 +262,14 @@ export default {
      * @emits update:onBlur - Emits the blur event to notify the parent component that the input has lost focus.
      * @returns {void}
      */
-    const handleBlur = () => {
+    const handleBlur = (): void => {
       if (!disableBlur.value) {
-        context.emit("update:onBlur");
+        emit("update:onBlur");
       }
     };
 
-    const openList = () => {
-      if (props.id === "distillationApparatus" && props.results.length === 0) {
+    const openList = (): void => {
+      if (props.id === "distillationApparatus" && props.results?.length === 0) {
         return;
       }
       if (!isOpen.value) {
@@ -261,7 +279,7 @@ export default {
       }
     };
 
-    const distillationColor = computed(() => {
+    const distillationColor = computed<boolean>(() => {
       if (props.color === "distillation") {
         return true;
       } else {
@@ -269,7 +287,7 @@ export default {
       }
     });
 
-    const plantColor = computed(() => {
+    const plantColor = computed<boolean>(() => {
       if (props.color === "plant") {
         return true;
       } else {
@@ -291,7 +309,7 @@ export default {
       inputValue,
     };
   },
-};
+});
 </script>
 
 <style scoped>

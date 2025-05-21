@@ -26,29 +26,37 @@
   </div>
 </template>
 
-<script>
-import { ref, watch, computed } from "vue";
+<script lang="ts">
+import { defineComponent, ref, watch, computed } from "vue";
 import { useStore } from "@/store/useStore";
+import { BaseRadioInputEvents } from "@/types/events";
 
 /**
- * @component BaseRadioGroup
- * @description A radio group component that allows selecting one option from a list of options.
- * @props {Array} options - The array of options for the radio group.
- * @props {string} modelValue - The selected value of the radio group.
- * @props {string} title - The title for the radio group.
- * @props {string} name - The name attribute for the radio buttons.
- * @props {string} color - The color for the radio buttons.
- * @emits update:modelValue - Emitted when the selected option changes.
- * @emits selectOption - Emitted when an option is selected.
+ * @interface Props
+ * @description Props for BaseRadioInput component.
  */
-export default {
+interface Props {
+  options: string[];
+  modelValue: string;
+  title: string;
+  name?: string;
+  color?: string;
+}
+
+export default defineComponent({
+  name: "BaseRadioInput",
   props: ["options", "modelValue", "title", "name", "color"],
-  setup(props, context) {
+  emits: ["update:modelValue", "selectOption"],
+  setup(props: Props, context) {
+    const emit = context.emit as BaseRadioInputEvents;
     const store = useStore();
-    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+
+    const isDarkTheme = computed<boolean>(
+      () => store.getters["settings/isDarkTheme"]
+    );
 
     // Reference to store the selected option
-    const selectOption = ref(props.modelValue);
+    const selectOption = ref<string>(props.modelValue);
 
     // Watcher to update selectOption when modelValue changes
     watch(
@@ -60,13 +68,13 @@ export default {
 
     // Watcher to emit events when selectOption changes
     watch(selectOption, (newOption) => {
-      context.emit("update:modelValue", newOption);
-      context.emit("selectOption", newOption);
+      emit("update:modelValue", newOption);
+      emit("selectOption", newOption);
     });
 
     return { selectOption, isDarkTheme };
   },
-};
+});
 </script>
 
 <style scoped>
