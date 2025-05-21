@@ -5,22 +5,58 @@
       <h3 class="tablet-menu__title">Moje konto</h3>
       <ul class="tablet-menu__list">
         <li>
-          <router-link to="/my-account/distillations-in-progress/1" class="tablet-menu__link" :class="{ 'tablet-menu__link--active': $route.path.includes('/my-account/distillations-in-progress') }" @click="toggleMenu">
+          <router-link
+            to="/my-account/distillations-in-progress/1"
+            class="tablet-menu__link"
+            :class="{
+              'tablet-menu__link--active': $route.path.includes(
+                '/my-account/distillations-in-progress'
+              ),
+            }"
+            @click="toggleMenu"
+          >
             Destylacje w toku
           </router-link>
         </li>
         <li>
-          <router-link to="/my-account/plant-list/1" class="tablet-menu__link" :class="{ 'tablet-menu__link--active': $route.path.includes('/my-account/plant-list') }" @click="toggleMenu">
+          <router-link
+            to="/my-account/plant-list/1"
+            class="tablet-menu__link"
+            :class="{
+              'tablet-menu__link--active': $route.path.includes(
+                '/my-account/plant-list'
+              ),
+            }"
+            @click="toggleMenu"
+          >
             Magazyn surowców
           </router-link>
         </li>
         <li>
-          <router-link to="/my-account/distillation-archives/1" class="tablet-menu__link" :class="{ 'tablet-menu__link--active': $route.path.includes('/my-account/distillation-archives') }" @click="toggleMenu">
+          <router-link
+            to="/my-account/distillation-archives/1"
+            class="tablet-menu__link"
+            :class="{
+              'tablet-menu__link--active': $route.path.includes(
+                '/my-account/distillation-archives'
+              ),
+            }"
+            @click="toggleMenu"
+          >
             Archiwum destylacji
           </router-link>
         </li>
         <li>
-          <router-link to="/my-account/my-data" class="tablet-menu__link" :class="{ 'tablet-menu__link--active': $route.path.includes('/my-account/my-data') }" @click="toggleMenu">
+          <router-link
+            to="/my-account/my-data"
+            class="tablet-menu__link"
+            :class="{
+              'tablet-menu__link--active': $route.path.includes(
+                '/my-account/my-data'
+              ),
+            }"
+            @click="toggleMenu"
+          >
             Moje dane
           </router-link>
         </li>
@@ -29,14 +65,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
+import { ToggleMenu } from "@/types/events";
+
 /**
  * @component TabletAccountMenu
  * @description This component renders a side menu for tablet view, including navigation links and a logout button.
  */
-export default {
+export default defineComponent({
   name: "TabletAccountMenu",
-  setup(props, { emit }) {
+  setup(props, context) {
+    const emit = context.emit as ToggleMenu;
 
     const toggleMenu = () => {
       emit("toggle-menu");
@@ -44,7 +84,7 @@ export default {
 
     return { toggleMenu };
   },
-};
+});
 </script>
 
 <style scoped>

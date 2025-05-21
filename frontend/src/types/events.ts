@@ -10,3 +10,7 @@ export interface CloseModal {
 export interface AskModalEvents extends CloseModal {
   (e: "handle-yes"): void;
 }
+
+export interface ToggleMenu {
+  (e: "toggle-menu"): void;
+}

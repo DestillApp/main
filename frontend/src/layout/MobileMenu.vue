@@ -71,44 +71,52 @@
   </div>
 </template>
 
-<script>
-import { ref, computed, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRouter, useRoute } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
+import { ToggleMenu } from "@/types/events";
 
 /**
  * @component MobileMenu
  * @description This component renders a side menu for mobile view, including navigation links and a logout button.
  */
-export default {
+
+interface Props {
+  isOpen: boolean;
+}
+
+export default defineComponent({
   name: "MobileMenu",
   components: { BaseButton },
   props: ["isOpen"],
-  setup(props, { emit }) {
+  setup(props: Props, context) {
     // Vuex store instance
     const store = useStore();
+
+    const emit = context.emit as ToggleMenu;
 
     // useRouter and useRoute hooks
     const router = useRouter();
     const route = useRoute();
 
     // Checking user authentication and loading state in vuex store
-    const isAuthenticated = computed(
+    const isAuthenticated = computed<boolean>(
       () => store.getters["auth/isAuthenticated"]
     );
-    const isLoadingAuthStatus = computed(
+    const isLoadingAuthStatus = computed<boolean>(
       () => store.getters["auth/isLoadingAuthStatus"]
     );
 
     // Reactive reference for "Moje konto" section
-    const isMyAccount = ref(false);
+    const isMyAccount = ref<boolean>(false);
 
-    const toggleMenu = () => {
+    const toggleMenu = (): void => {
       emit("toggle-menu");
     };
 
-    const toggleMyAccount = () => {
+    const toggleMyAccount = (): void => {
       isMyAccount.value = !isMyAccount.value;
     };
 
@@ -120,7 +128,7 @@ export default {
     });
 
     // Handling user logout
-    const handleLogout = async () => {
+    const handleLogout = async (): Promise<void> => {
       await store.dispatch("auth/logout");
       router.push("/login");
       emit("toggle-menu");
@@ -135,7 +143,7 @@ export default {
       toggleMyAccount,
     };
   },
-};
+});
 </script>
 
 <style scoped>

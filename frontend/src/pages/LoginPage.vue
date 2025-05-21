@@ -47,20 +47,18 @@
   </base-card>
 </template>
 
-<script>
-import { ref } from "vue";
+<script lang="ts">
+import { defineComponent, ref, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "@/store/useStore";
 import { scrollToTop } from "../helpers/displayHelpers.js";
-import DOMPurify from "dompurify";
 
-/**
- * @component LoginForm
- * @description This component renders a login form and handles user authentication.
- * @see loginFormValidation
- * @see loginUser
- */
-export default {
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
+export default defineComponent({
   name: "LoginForm",
   setup() {
     // Router object for navigation
@@ -70,10 +68,10 @@ export default {
     const store = useStore();
 
     // Reactive reference to track form validity
-    const isLoginFormValid = ref(null);
+    const isLoginFormValid = ref<boolean | null>(null);
 
     // Reactive reference to store login form data
-    const loginForm = ref({
+    const loginForm = ref<LoginForm>({
       email: "",
       password: "",
     });
@@ -83,7 +81,7 @@ export default {
      * @async
      * @function loginFormValidation
      */
-    const loginFormValidation = async () => {
+    const loginFormValidation = async (): Promise<void> => {
       if (loginForm.value.email === "" || loginForm.value.password === "") {
         isLoginFormValid.value = false;
       } else {
@@ -98,21 +96,17 @@ export default {
      * @returns {Promise<void>} Resolves when the login process is complete.
      * @throws {Error} Throws an error if the login fails.
      */
-    const loginUser = async () => {
+    const loginUser = async (): Promise<void> => {
       // Validate the form
       await loginFormValidation();
       if (isLoginFormValid.value) {
         try {
           const form = loginForm.value;
 
-          //Sanitize input data from the form
-          const sanitizedEmail = DOMPurify.sanitize(form.email);
-          const sanitizedPassword = DOMPurify.sanitize(form.password);
-
           // Send the GraphQL mutation to login the user
           const isAuthenticated = await store.dispatch("auth/login", {
-            email: sanitizedEmail,
-            password: sanitizedPassword,
+            email: form.email,
+            password: form.password,
           });
 
           //Redirecting
@@ -127,7 +121,7 @@ export default {
             } else {
               const redirectPath =
                 router.currentRoute.value.query.redirect || "/my-account";
-              router.push(redirectPath);
+              router.push(redirectPath as string);
             }
           } else if (isAuthenticated === "Invalid credentials") {
             isLoginFormValid.value = false;
@@ -142,7 +136,7 @@ export default {
 
     return { loginForm, isLoginFormValid, scrollToTop, loginUser };
   },
-};
+});
 </script>
 
 <style scoped>

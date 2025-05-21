@@ -78,6 +78,7 @@
     </nav>
     <!-- Mobile menu component -->
     <mobile-menu
+      :isOpen="isMenuOpen"
       v-if="isMenuOpen && isMobileView"
       @toggle-menu="toggleMenu"
     ></mobile-menu>
@@ -89,8 +90,14 @@
   </header>
 </template>
 
-<script>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+<script lang="ts">
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
 import { useStore } from "@/store/useStore";
 import { useRouter, useRoute } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -103,7 +110,7 @@ import { mdiAccount, mdiMenu, mdiLogout } from "@mdi/js";
  * @component TheHeader
  * @description This component renders the header section of the application, including navigation links and a login button.
  */
-export default {
+export default defineComponent({
   name: "TheHeader",
   components: { BaseButton, SvgIcon, MobileMenu, TabletAccountMenu },
   setup() {
@@ -118,34 +125,34 @@ export default {
     const store = useStore();
 
     //Checking user authentication and loading state in vuex store
-    const isAuthenticated = computed(
+    const isAuthenticated = computed<boolean>(
       () => store.getters["auth/isAuthenticated"]
     );
-    const isLoadingAuthStatus = computed(
+    const isLoadingAuthStatus = computed<boolean>(
       () => store.getters["auth/isLoadingAuthStatus"]
     );
 
     // Reactive reference for mobile view
-    const isMobileView = ref(window.innerWidth < 600);
+    const isMobileView = ref<boolean>(window.innerWidth < 600);
 
     // Reactive reference for tablet view
-    const isTabletView = ref(
+    const isTabletView = ref<boolean>(
       window.innerWidth >= 600 && window.innerWidth <= 1024
     );
 
     // Reactive reference for menu open state
-    const isMenuOpen = ref(false);
+    const isMenuOpen = ref<boolean>(false);
 
     // Reactive reference for tablet menu open state
-    const isTabletMenuOpen = ref(false);
+    const isTabletMenuOpen = ref<boolean>(false);
 
     // Computed property to check if the current path starts with /my-account
-    const isMyAccountActive = computed(() =>
+    const isMyAccountActive = computed<boolean>(() =>
       route.path.startsWith("/my-account")
     );
 
     // Function to handle window resize
-    const handleResize = () => {
+    const handleResize = (): void => {
       isMobileView.value = window.innerWidth < 600;
       isTabletView.value =
         window.innerWidth >= 600 && window.innerWidth <= 1024;
@@ -162,18 +169,18 @@ export default {
     });
 
     //Handling user logout
-    const handleLogout = async () => {
+    const handleLogout = async (): Promise<void> => {
       await store.dispatch("auth/logout");
       router.push("/login");
     };
 
     // Function to toggle menu
-    const toggleMenu = () => {
+    const toggleMenu = (): void => {
       isMenuOpen.value = !isMenuOpen.value;
     };
 
     // Function to toggle tablet menu
-    const toggleTabletMenu = () => {
+    const toggleTabletMenu = (): void => {
       isTabletMenuOpen.value = !isTabletMenuOpen.value;
     };
 
@@ -193,7 +200,7 @@ export default {
       toggleTabletMenu,
     };
   },
-};
+});
 </script>
 
 <style scoped>

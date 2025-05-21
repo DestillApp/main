@@ -98,8 +98,8 @@
   </base-card>
 </template>
 
-<script>
-import { ref, computed } from "vue";
+<script lang="ts">
+import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
@@ -115,7 +115,13 @@ import { registrationFormValidation } from "@/helpers/formsValidation";
  * @description This component renders a registration form and handles user registration.
  * @see submitRegistrationForm
  */
-export default {
+
+interface RegistrationForm {
+  username: string;
+  email: string;
+  password: string;
+}
+export default defineComponent({
   name: "RegistrationForm",
 
   setup() {
@@ -128,25 +134,25 @@ export default {
 
     const router = useRouter();
 
-    const registrationForm = ref({
+    const registrationForm = ref<RegistrationForm>({
       username: "",
       email: "",
       password: "",
     });
 
     // Reactive reference to track form validity
-    const isFormValid = ref(true);
-    const isPasswordCorrect = ref(true);
+    const isFormValid = ref<boolean>(true);
+    const isPasswordCorrect = ref<boolean>(true);
 
-    const emailExists = ref(false);
-    const usernameExists = ref(false);
+    const emailExists = ref<boolean>(false);
+    const usernameExists = ref<boolean>(false);
 
-    const confirmPassword = ref("");
+    const confirmPassword = ref<string>("");
 
     const { mutate: registerUser } = useMutation(REGISTER_USER);
 
     // Computed property to check if passwords match
-    const isPasswordMatch = computed(() => {
+    const isPasswordMatch = computed<boolean | string>(() => {
       if (confirmPassword.value === "") {
         return "";
       }
@@ -165,15 +171,12 @@ export default {
      * @returns {Promise<void>} Resolves when the check is complete.
      * @throws {Error} Throws an error if the check fails.
      */
-    const checkUsername = async () => {
+    const checkUsername = async (): Promise<void> => {
       try {
-        const sanitizedUsername = DOMPurify.sanitize(
-          registrationForm.value.username
-        );
         const { data } = await apolloClient.query({
           query: CHECK_USERNAME_EXISTENCE,
           variables: {
-            username: sanitizedUsername,
+            username: registrationForm.value.username,
           },
         });
 
@@ -188,14 +191,14 @@ export default {
       }
     };
 
-    const resetUsernameExists = () => {
+    const resetUsernameExists = (): void => {
       usernameExists.value = false;
     };
 
     /**
      * Function to check if the password is correct on input change.
      */
-    const checkPassword = () => {
+    const checkPassword = (): void => {
       const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
       isPasswordCorrect.value = passwordRegex.test(
         registrationForm.value.password
@@ -210,38 +213,32 @@ export default {
      * @returns {Promise<void>} Resolves when the form submission process is complete.
      * @throws {Error} Throws an error if the form submission fails.
      */
-    const submitRegistrationForm = async () => {
+    const submitRegistrationForm = async (): Promise<void> => {
       try {
         const form = registrationForm.value;
 
-        // Sanitize input data from the form
-        const sanitizedUsername = DOMPurify.sanitize(form.username);
-        const sanitizedEmail = DOMPurify.sanitize(form.email);
-        const sanitizedPassword = DOMPurify.sanitize(form.password);
-
         // Create an object with sanitized form data
         const registrationFormData = {
-          username: sanitizedUsername,
-          email: sanitizedEmail,
-          password: sanitizedPassword,
+          username: form.username,
+          email: form.email,
+          password: form.password,
         };
 
         // Send the GraphQL mutation to register the user
-        const { data } = await registerUser({
+        const result = await registerUser({
           userInput: {
             username: registrationFormData.username,
             email: registrationFormData.email,
             password: registrationFormData.password,
           },
         });
-        console.log("Created user:", data.registerUser);
 
-        // Dispatch the setInitialSettings action with the userId
-        await store.dispatch(
-          "settings/setInitialSettings",
-          data.registerUser._id
-        );
-
+        if (result) {
+          await store.dispatch(
+            "settings/setInitialSettings",
+            result.data.registerUser._id
+          );
+        }
         router.push({ name: "LoginPage" });
       } catch (error) {
         console.error("Error submitting form", error.message);
@@ -251,7 +248,7 @@ export default {
       }
     };
 
-    const resetEmailExists = () => {
+    const resetEmailExists = (): void => {
       emailExists.value = false;
     };
 
@@ -262,7 +259,7 @@ export default {
      * @returns {Promise<void>} Resolves when the form validation and submission process is complete.
      * @throws {Error} Throws an error if the form validation or submission fails.
      */
-    const saveRegistration = async () => {
+    const saveRegistration = async (): Promise<void> => {
       const validationResults = registrationFormValidation(
         {
           ...registrationForm.value,
@@ -297,7 +294,7 @@ export default {
       resetEmailExists,
     };
   },
-};
+});
 </script>
 
 <style scoped>

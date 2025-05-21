@@ -1,9 +1,12 @@
+import { PlantForm } from "@/types/forms/plantForm";
+import { DistillationForm } from "@/types/forms/distillationForm";
+import { ResultsForm } from "@/types/forms/resultsForm";
+
 /**
  * @function plantFormValidation
  * @description Function to validate the plant form data
  */
-export const plantFormValidation = (form) => {
-  console.log("form", form.plantOrigin);
+export const plantFormValidation = (form: PlantForm): boolean => {
   let isFormValid = true;
   // Initial form validation for required fields
   if (
@@ -59,8 +62,7 @@ export const plantFormValidation = (form) => {
  * @function distillationFormValidation
  * @description Function to validate the distillation form data
  */
-export const distillationFormValidation = (form) => {
-  console.log("form", form);
+export const distillationFormValidation = (form: DistillationForm): boolean => {
   let isFormValid = true;
 
   if (
@@ -98,7 +100,7 @@ export const distillationFormValidation = (form) => {
  * @param {Object} form - The results form data object
  * @returns {boolean} Returns true if the form is valid, otherwise false
  */
-export const resultsFormValidation = (form) => {
+export const resultsFormValidation = (form: ResultsForm): boolean => {
   let isFormValid = true;
 
   // Validate required fields
@@ -107,16 +109,12 @@ export const resultsFormValidation = (form) => {
     form.hydrosolAmount === null ||
     form.hydrosolpH === null ||
     form.oilDescription === "" ||
-    form.hydrosolDescription === ""
+    form.hydrosolDescription === "" ||
+    form.hydrosolpH < 0 ||
+    form.hydrosolpH > 14
   ) {
     isFormValid = false;
   }
-
-  // Additional validation for pH value
-  if (form.hydrosolpH < 0 || form.hydrosolpH > 14) {
-    isFormValid = false;
-  }
-
   return isFormValid;
 };
 
@@ -126,7 +124,9 @@ export const resultsFormValidation = (form) => {
  * @param {Object} form - The edit archive distillation form data object
  * @returns {boolean} Returns true if the form is valid, otherwise false
  */
-export const editArchiveDistillationFormValidation = (form) => {
+export const editArchiveDistillationFormValidation = (
+  form: ResultsForm
+): boolean => {
   let isFormValid = true;
 
   // Validate required fields for distillation data
@@ -154,13 +154,10 @@ export const editArchiveDistillationFormValidation = (form) => {
     form.hydrosolAmount === null ||
     form.hydrosolpH === null ||
     form.oilDescription === "" ||
-    form.hydrosolDescription === ""
+    form.hydrosolDescription === "" ||
+    form.hydrosolpH < 0 ||
+    form.hydrosolpH > 14
   ) {
-    isFormValid = false;
-  }
-
-  // Additional validation for pH value
-  if (form.hydrosolpH < 0 || form.hydrosolpH > 14) {
     isFormValid = false;
   }
 
@@ -173,10 +170,18 @@ export const editArchiveDistillationFormValidation = (form) => {
  * @param {Object} form - The registration form data object
  * @returns {boolean} Returns true if the form is valid, otherwise false
  */
-export const registrationFormValidation = (form, username) => {
+export const registrationFormValidation = (
+  form: {
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  },
+  username: boolean
+): { isFormValid: boolean; isPasswordCorrect: boolean } => {
   let isFormValid = true;
   let isPasswordCorrect = true;
-  console.log("username", username);
+
   // Initial form validation for required fields
   if (
     form.username === "" ||
@@ -184,12 +189,10 @@ export const registrationFormValidation = (form, username) => {
     form.password === "" ||
     form.confirmPassword === ""
   ) {
-    console.log("empty false");
     isFormValid = false;
   }
 
   if (username) {
-    console.log("username, false");
     isFormValid = false;
   }
 
@@ -202,7 +205,6 @@ export const registrationFormValidation = (form, username) => {
 
   // Check if passwords match
   if (form.password !== form.confirmPassword) {
-    console.log("passwords false");
     isFormValid = false;
   }
 
