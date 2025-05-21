@@ -61,7 +61,7 @@ import { plantFormValidation } from "@/helpers/formsValidation";
 import { mapPlantForm } from "@/helpers/formsMapping";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 
-import { UPDATE_PLANT } from "@/graphql/mutations/plant.js";
+import { UPDATE_PLANT } from "@/graphql/mutations/plant";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
 
 import { useStore } from "@/store/useStore";

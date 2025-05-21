@@ -57,8 +57,8 @@ import { mapDistillationForm } from "@/helpers/formsMapping";
 import store from "src/store/index";
 
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
-import { UPDATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
-import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant.js";
+import { UPDATE_DISTILLATION } from "@/graphql/mutations/distillation";
+import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
 import {
   GetDistillationById,

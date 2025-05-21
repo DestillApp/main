@@ -204,8 +204,8 @@ import {
 } from "@/types/forms/distillationForm";
 import { BasicPlant } from "@/types/forms/plantForm";
 
-import { GET_PLANTS } from "@/graphql/queries/plant.js";
-import { GET_BASIC_PLANT_BY_ID } from "@/graphql/queries/plant.js";
+import { GET_PLANTS } from "@/graphql/queries/plant";
+import { GET_BASIC_PLANT_BY_ID } from "@/graphql/queries/plant";
 
 /**
  * @component DistillationPlant

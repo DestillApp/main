@@ -1,6 +1,6 @@
 import { apolloClient } from "@/main";
-import { VERIFY_AUTH } from "@/graphql/queries/auth.js";
-import { LOGIN, LOGOUT, CHANGE_PASSWORD } from "@/graphql/mutations/auth.js";
+import { VERIFY_AUTH } from "@/graphql/queries/auth";
+import { LOGIN, LOGOUT, CHANGE_PASSWORD } from "@/graphql/mutations/auth";
 
 /**
  * Auth module actions for handling data fetching.
@@ -84,7 +84,10 @@ export default {
         variables: { input: { oldPassword, newPassword } },
       });
 
-      console.log("Password changed successfully:", response.data.changePassword);
+      console.log(
+        "Password changed successfully:",
+        response.data.changePassword
+      );
       return true;
     } catch (error) {
       console.error("Failed to change password:", error.message);

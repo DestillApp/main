@@ -36,7 +36,7 @@ import {
 import { GetPlantById, NormalizedPlantById } from "@/types/forms/plantForm";
 import { resultsFormValidation } from "@/helpers/formsValidation";
 import { initialResultsForm } from "@/helpers/formsInitialState";
-import { CREATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
+import { CREATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";

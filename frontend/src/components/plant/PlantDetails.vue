@@ -29,8 +29,8 @@ import { defineComponent, ref, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
-import { GET_PLANT_BY_ID } from "@/graphql/queries/plant.js";
-import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
+import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
+import { plantAgeWithSuffix } from "@/helpers/displayHelpers";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 
 import { GetPlantById, NormalizedPlantById } from "@/types/forms/plantForm";

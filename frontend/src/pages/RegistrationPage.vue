@@ -105,8 +105,8 @@ import { useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
 import { useApolloClient } from "@vue/apollo-composable";
 import DOMPurify from "dompurify";
-import { scrollToTop } from "../helpers/displayHelpers.js";
-import { REGISTER_USER } from "@/graphql/mutations/auth.js";
+import { scrollToTop } from "../helpers/displayHelpers";
+import { REGISTER_USER } from "@/graphql/mutations/auth";
 import { CHECK_USERNAME_EXISTENCE } from "@/graphql/queries/auth";
 import { registrationFormValidation } from "@/helpers/formsValidation";
 

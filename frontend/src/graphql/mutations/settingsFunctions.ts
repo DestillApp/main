@@ -1,4 +1,7 @@
-import { UPDATE_LIST_SORTING, UPDATE_LIST_SETTINGS } from "@/graphql/mutations/settings.js";
+import {
+  UPDATE_LIST_SORTING,
+  UPDATE_LIST_SETTINGS,
+} from "@/graphql/mutations/settings";
 
 export const updateListSorting = async (apolloClient, key, value) => {
   try {
@@ -21,7 +24,6 @@ export const updateListSorting = async (apolloClient, key, value) => {
     return false;
   }
 };
-
 
 export const updateListSettings = async (apolloClient, key, value) => {
   try {

@@ -127,8 +127,8 @@ import BaseButton from "@/ui/BaseButton.vue";
 
 import { GetPlantById, NormalizedPlantById } from "@/types/forms/plantForm";
 
-import { GET_PLANT_BY_ID } from "@/graphql/queries/plant.js";
-import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
+import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
+import { DELETE_PLANT } from "@/graphql/mutations/plant";
 
 /**
  * @component PlantDetailsPage

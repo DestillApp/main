@@ -42,7 +42,7 @@ import { initialPlantForm } from "@/helpers/formsInitialState";
 import { plantFormValidation } from "@/helpers/formsValidation";
 import { mapPlantForm } from "@/helpers/formsMapping";
 
-import { CREATE_PLANT } from "@/graphql/mutations/plant.js";
+import { CREATE_PLANT } from "@/graphql/mutations/plant";
 
 import { useStore } from "@/store/useStore";
 import { defineComponent, computed, ref, onMounted, nextTick } from "vue";

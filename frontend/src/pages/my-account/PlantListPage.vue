@@ -129,12 +129,12 @@ import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 
-import { GET_PLANTS } from "@/graphql/queries/plant.js";
+import { GET_PLANTS } from "@/graphql/queries/plant";
 import {
   updateListSorting,
   updateListSettings,
 } from "@/graphql/mutations/settingsFunctions.js";
-import { DELETE_PLANT } from "@/graphql/mutations/plant.js";
+import { DELETE_PLANT } from "@/graphql/mutations/plant";
 
 /**
  * @component PlantListPage

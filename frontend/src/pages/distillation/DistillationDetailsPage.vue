@@ -172,7 +172,7 @@ import { mdiChevronUp } from "@mdi/js";
 
 import { GetDistillationById } from "@/types/forms/distillationForm";
 
-import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
+import { GET_DISTILLATION_BY_ID } from "@/graphql/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 

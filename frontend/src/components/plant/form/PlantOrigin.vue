@@ -211,7 +211,7 @@ import {
   setKeyboardIntegerNumber,
 } from "@/helpers/formatHelpers";
 import { PlantForm } from "@/types/forms/plantForm";
-import { GET_COUNTRY_NAMES } from "@/graphql/queries/country.js";
+import { GET_COUNTRY_NAMES } from "@/graphql/queries/country";
 
 /**
  * @component PlantOrigin

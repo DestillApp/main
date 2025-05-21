@@ -45,8 +45,8 @@ import { initialDistillationForm } from "@/helpers/formsInitialState";
 import { mapDistillationForm } from "@/helpers/formsMapping";
 import store from "@/store/index";
 
-import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation.js";
-import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant.js";
+import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation";
+import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
 import { useStore } from "@/store/useStore";
 import { defineComponent, ref, computed, onMounted, nextTick } from "vue";

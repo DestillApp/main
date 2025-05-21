@@ -145,8 +145,8 @@ import { useStore } from "@/store/useStore";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
-import { GET_DISTILLATION_ARCHIVES } from "@/graphql/queries/results.js";
-import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results.js";
+import { GET_DISTILLATION_ARCHIVES } from "@/graphql/queries/results";
+import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import {
   updateListSorting,
   updateListSettings,
