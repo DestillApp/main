@@ -1,4 +1,4 @@
-import { PlantForm } from "@/types/forms/plantForm.js";
+import { PlantForm } from "@/types/forms/plantForm";
 import plantMutations from "../plant/mutations";
 import plantActions from "../plant/actions";
 import plantGetters from "../plant/getters";

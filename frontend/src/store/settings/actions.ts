@@ -1,3 +1,4 @@
+import type { SettingsForm, Distiller } from "./index";
 import { apolloClient } from "@/main";
 import {
   CREATE_SETTINGS,
@@ -10,6 +11,16 @@ import { GET_USER_SETTINGS } from "@/graphql/queries/settings";
  * Settings module actions for handling settings form updates.
  * @module settingsActions
  */
+
+interface State {
+  settingsForm: SettingsForm;
+}
+interface Context {
+  state: State;
+  commit: (mutation: string, payload?: any) => void;
+  dispatch: (action: string, payload?: any) => void;
+}
+
 export default {
   /**
    * @function setValue
@@ -19,7 +30,13 @@ export default {
    * @param {string} payload.input - The input field to set.
    * @param {any} payload.value - The value to set.
    */
-  setValue(context, { input, value }) {
+  setValue(
+    context: Context,
+    {
+      input,
+      value,
+    }: { input: string; value: string | number | boolean | Array<any> }
+  ): void {
     context.commit("changeValue", { input, value });
   },
 
@@ -27,7 +44,7 @@ export default {
    * @function setInitialSettings
    * @description Creates initial settings in the database.
    */
-  async setInitialSettings(context, userId) {
+  async setInitialSettings(context: Context, userId: string): Promise<void> {
     try {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_SETTINGS,
@@ -43,7 +60,7 @@ export default {
    * @function fetchSettings
    * @description Fetches user settings from the database.
    */
-  async fetchSettings(context) {
+  async fetchSettings(context: Context): Promise<void | string> {
     try {
       const { data } = await apolloClient.query({
         query: GET_USER_SETTINGS,
@@ -90,12 +107,12 @@ export default {
         input: "isDarkTheme",
         value: isDarkTheme,
       });
-        } catch (error) {
-          if (error.message === "Unauthorized") {
-            return "Unauthorized";
-          }
-          console.error("Error fetching settings:", error);
+    } catch (error) {
+      if (error.message === "Unauthorized") {
+        return "Unauthorized";
       }
+      console.error("Error fetching settings:", error);
+    }
   },
 
   /**
@@ -105,14 +122,17 @@ export default {
    * @param {Object} payload - The payload containing the key.
    * @param {string} payload.key - The key to fetch from local storage.
    */
-  fetchLocalStorageData(context, { key }) {
+  fetchLocalStorageData(
+    context: Context,
+    { key }: { key: keyof SettingsForm }
+  ): void {
     try {
-      const value = JSON.parse(localStorage.getItem(key));
-      if (value === null) {
+      const rawValue = localStorage.getItem(key as string);
+      if (rawValue === null) {
         return;
-      } else {
-        context.commit("changeValue", { input: key, value });
       }
+      const value = JSON.parse(rawValue);
+      context.commit("changeValue", { input: key, value });
     } catch (error) {
       console.log("Error fetching data from local storage:", error);
     }
@@ -124,7 +144,10 @@ export default {
    * @param {Object} context - The Vuex context.
    * @param {Object} distiller - The distiller object to add.
    */
-  async addDistiller(context, distiller) {
+  async addDistiller(
+    context: Context,
+    distiller: Distiller
+  ): Promise<void | string> {
     try {
       const { data } = await apolloClient.mutate({
         mutation: ADD_DISTILLER,
@@ -145,7 +168,10 @@ export default {
    * @param {Object} context - The Vuex context.
    * @param {string} id - The ID of the distiller to delete.
    */
-  async deleteDistillerById(context, id) {
+  async deleteDistillerById(
+    context: Context,
+    id: string
+  ): Promise<void | string> {
     try {
       const { data } = await apolloClient.mutate({
         mutation: DELETE_DISTILLER,

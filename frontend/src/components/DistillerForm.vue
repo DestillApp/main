@@ -71,7 +71,7 @@ import BaseModal from "@/ui/BaseModal.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import { CloseModal } from "@/types/events";
-import { setKeyboardIntegerNumber } from "src/helpers/formatHelpers";
+import { setKeyboardIntegerNumber } from "@/helpers/formatHelpers";
 import { distillerFormValidation } from "@/helpers/formsValidation";
 
 export default defineComponent({

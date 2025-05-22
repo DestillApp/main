@@ -1,7 +1,13 @@
+import type { SettingsForm } from "./index";
 /**
  * Settings module mutations for updating the state.
  * @module settingsMutations
  */
+
+interface State {
+  settingsForm: SettingsForm;
+}
+
 export default {
   /**
    * @function changeValue
@@ -11,9 +17,12 @@ export default {
    * @param {string} payload.input - The name of the input field to be updated.
    * @param {any} payload.value - The new value for the input field.
    */
-  changeValue(state, { input, value }) {
+  changeValue<K extends keyof SettingsForm>(
+    state: State,
+    { input, value }: { input: K; value: SettingsForm[K] }
+  ): void {
     state.settingsForm[input] = value;
-    localStorage.setItem(input, JSON.stringify(value));
+    localStorage.setItem(input as string, JSON.stringify(value));
   },
 
   /**
@@ -22,7 +31,7 @@ export default {
    * @param {Object} state - The current state object.
    * @param {string} id - The ID of the distiller to remove.
    */
-  removeDistillerById(state, id) {
+  removeDistillerById(state: State, id: string): void {
     state.settingsForm.distillerList = state.settingsForm.distillerList.filter(
       (distiller) => distiller.id !== id
     );

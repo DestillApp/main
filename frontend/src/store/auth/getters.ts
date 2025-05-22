@@ -1,26 +1,27 @@
+import type { AuthState } from "./index";
+
 /**
  * User authentication getters for getting the user authentication state.
  * @module authGetters
  */
-
 export default {
   /**
    * @function isAuthenticated
    * @description Gets the user authentication data from the state.
-   * @param {Object} state - The Vuex state.
-   * @returns {Object} The user authentication data.
+   * @param {AuthState} state - The Vuex state.
+   * @returns {boolean} The user authentication data.
    */
-  isAuthenticated(state) {
+  isAuthenticated(state: AuthState): boolean {
     return state.isAuthenticated;
   },
 
   /**
    * @function isLoadingAuthStatus
    * @description Gets the loading status of the user authentication.
-   * @param {Object} state - The Vuex state.
+   * @param {AuthState} state - The Vuex state.
    * @returns {boolean} The loading status of the user authentication.
    */
-  isLoadingAuthStatus(state) {
+  isLoadingAuthStatus(state: AuthState): boolean {
     return state.isLoadingAuthStatus;
   },
 };

@@ -1,3 +1,4 @@
+import type { AuthState } from "./index";
 import { apolloClient } from "@/main";
 import { VERIFY_AUTH } from "@/graphql/queries/auth";
 import { LOGIN, LOGOUT, CHANGE_PASSWORD } from "@/graphql/mutations/auth";
@@ -6,9 +7,15 @@ import { LOGIN, LOGOUT, CHANGE_PASSWORD } from "@/graphql/mutations/auth";
  * Auth module actions for handling data fetching.
  * @module authActions
  */
+
+interface Context {
+  state: AuthState;
+  commit: (mutation: string, value: any) => void;
+  dispatch: (action: string, payload?: any) => void;
+}
+
 export default {
-  async fetchUserAuthenticationStatus(context) {
-    console.log("userAuthQuery");
+  async fetchUserAuthenticationStatus(context: Context): boolean {
     try {
       const { data } = await apolloClient.query({
         query: VERIFY_AUTH,
@@ -26,7 +33,10 @@ export default {
     }
   },
 
-  async login({ commit }, { email, password }) {
+  async login(
+    context: Context,
+    { email, password }: { email: string; password: string }
+  ): Promise<boolean | string> {
     try {
       const response = await apolloClient.mutate({
         mutation: LOGIN,
@@ -34,10 +44,9 @@ export default {
       });
 
       const token = response.data.login; // assuming the backend returns a token
-      console.log("Login successful, token:", token);
 
       if (token) {
-        commit("changeUserAuthenticationStatus", true);
+        context.commit("changeUserAuthenticationStatus", true);
         return true;
       }
     } catch (error) {
@@ -49,7 +58,7 @@ export default {
     }
   },
 
-  async logout(context) {
+  async logout(context: Context): Promise<void> {
     try {
       await apolloClient.mutate({ mutation: LOGOUT });
       context.commit("changeUserAuthenticationStatus", false);
@@ -73,11 +82,14 @@ export default {
     }
   },
 
-  setLoadingAuthStatus(context, value) {
+  setLoadingAuthStatus(context: Context, value: boolean): void {
     context.commit("changeLoadingAuthStatus", value);
   },
 
-  async changePassword(context, { oldPassword, newPassword }) {
+  async changePassword(
+    context: Context,
+    { oldPassword, newPassword }: { oldPassword: string; newPassword: string }
+  ): Promise<boolean | string> {
     try {
       const response = await apolloClient.mutate({
         mutation: CHANGE_PASSWORD,

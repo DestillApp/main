@@ -9,8 +9,8 @@ import type { RootStateOnly } from "@/types/store/index";
 import plantModule from "./plant/index";
 import authModule from "./auth/index";
 import distillationModule from "./distillation/index";
-import resultsModule from "./results/index.js";
-import settingsModule from "./settings/index.js";
+import resultsModule from "./results/index";
+import settingsModule from "./settings/index";
 
 /**
  * Creates the Vuex store with modules.

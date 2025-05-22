@@ -1,17 +1,23 @@
+import type { SettingsForm, Distiller } from "./index";
+
 /**
  * Settings module getters for getting the settings form state.
  * @module settingsGetters
  */
+interface State {
+  settingsForm: SettingsForm;
+}
+
 export default {
-  settingsForm(state) {
+  settingsForm(state: State): SettingsForm {
     return state.settingsForm;
   },
 
-  distillerList(state) {
+  distillerList(state: State): Distiller[] {
     return state.settingsForm.distillerList;
   },
 
-  isDarkTheme(state) {
+  isDarkTheme(state: State): boolean {
     return state.settingsForm.isDarkTheme;
-  }
+  },
 };

@@ -1,6 +1,14 @@
-import authMutations from "../auth/mutations.js";
-import authActions from "../auth/actions.js";
-import authGetters from "../auth/getters.js";
+import authMutations from "./mutations";
+import authActions from "./actions";
+import authGetters from "./getters";
+
+/**
+ * State interface for the auth module.
+ */
+export interface AuthState {
+  isAuthenticated: boolean;
+  isLoadingAuthStatus: boolean;
+}
 
 /**
  * User authentication module Vuex store.
@@ -12,9 +20,9 @@ export default {
   /**
    * State object representing the user authentication.
    * @function state
-   * @returns {Object} The initial state object.
+   * @returns {AuthState} The initial state object.
    */
-  state() {
+  state(): AuthState {
     return {
       isAuthenticated: false,
       isLoadingAuthStatus: true,
