@@ -1,9 +1,41 @@
 import { initialDistillationForm } from "@/helpers/formsInitialState";
+import type {
+  DistillationForm,
+  FormChoosedPlant,
+  DistillationTime,
+} from "@/types/forms/distillationForm";
 
 /**
  * Destillation module mutations for updating the state.
  * @module distillationMutations
  */
+
+interface State {
+  distillationForm: DistillationForm;
+}
+
+type DistillationFormKey = keyof DistillationForm;
+
+type ChangeValuePayload<K extends DistillationFormKey> = {
+  input: K;
+  value: DistillationForm[K];
+};
+
+type ChangeValuePayloadNumber<K extends DistillationFormKey> = {
+  input: K;
+  value: number;
+};
+
+type ChangeChoosedPlant<K extends keyof FormChoosedPlant> = {
+  key: K;
+  value: FormChoosedPlant[K];
+};
+
+type ChangeDistillationTime<K extends keyof DistillationTime> = {
+  key: K;
+  value: DistillationTime[K];
+};
+
 export default {
   /**
    * Mutation to change the value of a field in the plant form.
@@ -13,9 +45,12 @@ export default {
    * @param {string} payload.input - The name of the input field to be updated.
    * @param {any} payload.value - The new value for the input field.
    */
-  changeValue(state, { input, value }) {
+  changeValue<K extends keyof DistillationForm>(
+    state: State,
+    { input, value }: ChangeValuePayload<K>
+  ): void {
     state.distillationForm[input] = value;
-    localStorage.setItem(input, JSON.stringify(value));
+    localStorage.setItem(input as string, JSON.stringify(value));
   },
 
   /**
@@ -26,7 +61,10 @@ export default {
    * @param {string} payload.key - The name of the key in the choosedPlant object to be updated.
    * @param {any} payload.value - The new value for the key field.
    */
-  changeChoosedPlant(state, { key, value }) {
+  changeChoosedPlant<K extends keyof FormChoosedPlant>(
+    state: State,
+    { key, value }: ChangeChoosedPlant<K>
+  ): void {
     state.distillationForm.choosedPlant[key] = value;
     localStorage.setItem(key, JSON.stringify(value));
   },
@@ -39,12 +77,16 @@ export default {
    * @param {string} payload.key - The name of the key in the distillationTime object to be updated.
    * @param {any} payload.value - The new value for the key field.
    */
-  changeDistillationTime(state, { key, value }) {
+  changeDistillationTime<K extends keyof DistillationTime>(
+    state: State,
+    { key, value }: ChangeDistillationTime<K>
+  ): void {
     if (!value || isNaN(value)) {
       state.distillationForm.distillationTime[key] = null;
       localStorage.setItem(key, JSON.stringify(null));
     } else {
-      const integerNumber = parseInt(value);
+      const stringValue = String(value);
+      const integerNumber = parseInt(stringValue, 10);
       state.distillationForm.distillationTime[key] = integerNumber;
       localStorage.setItem(key, JSON.stringify(integerNumber));
     }
@@ -58,8 +100,12 @@ export default {
    * @param {string} payload.input - The name of the input field to be updated.
    * @param {number} payload.value - The new integer value for the input field.
    */
-  changeIntegerNumber(state, { input, value }) {
-    const integerNumber = parseInt(value);
+  changeIntegerNumber(
+    state: State,
+    { input, value }: { input: "soakingTime"; value: number }
+  ): void {
+    const stringValue = String(value);
+    const integerNumber = parseInt(stringValue, 10);
     state.distillationForm[input] = integerNumber;
     localStorage.setItem(input, JSON.stringify(integerNumber));
   },
@@ -72,8 +118,15 @@ export default {
    * @param {string} payload.input - The name of the input field to be updated.
    * @param {number} payload.value - The new number value for the input field.
    */
-  changeNumberFormat(state, { input, value }) {
-    const formatedNumber = parseFloat(parseFloat(value).toFixed(1));
+  changeNumberFormat(
+    state: State,
+    {
+      input,
+      value,
+    }: { input: "weightForDistillation" | "weightAfterSoaking"; value: number }
+  ): void {
+    // const formatedNumber = parseFloat(parseFloat(value).toFixed(1));
+    const formatedNumber = Number(value.toFixed(1));
     state.distillationForm[input] = formatedNumber;
     localStorage.setItem(input, JSON.stringify(formatedNumber));
   },
@@ -83,10 +136,9 @@ export default {
    * @description Mutation to reset the distillationForm and remove distillationForm from localStorage.
    * @param {Object} state - The current state object.
    */
-  resetDistillationForm(state) {
+  resetDistillationForm(state: State) {
     state.distillationForm = JSON.parse(
       JSON.stringify(initialDistillationForm)
     );
-    console.log("from vuex", state.distillationForm);
   },
 };

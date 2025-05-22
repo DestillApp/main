@@ -1,7 +1,7 @@
-import { DistillationForm } from "@/types/forms/distillationForm.js";
+import { DistillationForm } from "@/types/forms/distillationForm";
 import distillationMutations from "./mutations";
-import distillationActions from "./actions.js";
-import distillationGetters from "./getters.js";
+import distillationActions from "./actions";
+import distillationGetters from "./getters";
 
 /**distillationLength
  * Plant module Vuex store.

@@ -1,7 +1,7 @@
 import { PlantForm } from "@/types/forms/plantForm.js";
-import plantMutations from "../plant/mutations.js";
-import plantActions from "../plant/actions.js";
-import plantGetters from "../plant/getters.js";
+import plantMutations from "../plant/mutations";
+import plantActions from "../plant/actions";
+import plantGetters from "../plant/getters";
 
 /**
  * Plant module Vuex store.
