@@ -519,7 +519,7 @@ export default defineComponent({
       (newValue, oldValue) => {
         // If the old value is false, update the soaked state in the store
         if (oldValue === false) {
-          store.dispatch("plant/setValue", {
+          store.dispatch("distillation/setValue", {
             input: "isPlantSoaked",
             value: newValue,
           });
@@ -530,15 +530,15 @@ export default defineComponent({
         if (newValue === false) {
           // Clear soaking-related fields if the previous state was true
           if (oldValue === true) {
-            store.dispatch("plant/setValue", {
+            store.dispatch("distillation/setValue", {
               input: "soakingTime",
               value: null,
             });
-            store.dispatch("plant/setValue", {
+            store.dispatch("distillation/setValue", {
               input: "weightAfterSoaking",
               value: null,
             });
-            store.dispatch("plant/setValue", {
+            store.dispatch("distillation/setValue", {
               input: "isPlantSoaked",
               value: newValue,
             });
@@ -553,7 +553,7 @@ export default defineComponent({
       (newValue, oldValue) => {
         // If the old value is false, update the soaked state in the store
         if (oldValue !== newValue) {
-          store.dispatch("plant/setValue", {
+          store.dispatch("distillation/setValue", {
             input: "isPlantShredded",
             value: newValue,
           });

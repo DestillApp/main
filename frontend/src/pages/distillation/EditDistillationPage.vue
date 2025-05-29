@@ -54,7 +54,7 @@ import DistillationData from "../../components/destillation/DistillationData.vue
 import { distillationFormValidation } from "@/helpers/formsValidation";
 import { initialDistillationForm } from "@/helpers/formsInitialState";
 import { mapDistillationForm } from "@/helpers/formsMapping";
-import store from "src/store/index";
+import store from "@/store/index";
 
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { UPDATE_DISTILLATION } from "@/graphql/mutations/distillation";
