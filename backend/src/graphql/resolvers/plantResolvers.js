@@ -117,6 +117,7 @@ const plantResolver = {
         if (!plant) {
           throw new Error("Plant not found");
         }
+        console.log("plant", plant);
 
         // Format specific date fields
         if (formatDates) {
@@ -127,7 +128,6 @@ const plantResolver = {
             plant.harvestDate = formatDate(plant.harvestDate);
           }
         }
-
         return plant;
       } catch (error) {
         if (error instanceof AuthenticationError) {

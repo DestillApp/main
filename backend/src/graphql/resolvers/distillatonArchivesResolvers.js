@@ -8,7 +8,7 @@
 const DistillationArchives = require("../../database/distillationArchives");
 
 const { filterData } = require("../../util/dataformating");
-const { formatDate, formatDateToString } = require("../../util/dateformater");
+const { formatDate, formatDateToString, parseDDMMYYYYtoDate } = require("../../util/dateformater");
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
@@ -175,7 +175,10 @@ const distillationArchivesResolvers = {
       const sanitizedDate = DOMPurify.sanitize(
         distillationArchiveInput.distillationData.distillationDate
       );
-      const validDate = new Date(sanitizedDate);
+
+      console.log("Sanitized date:", sanitizedDate);
+      const validDate = parseDDMMYYYYtoDate(sanitizedDate);
+      console.log("Valid date:", validDate);
 
       // Sanitizing the input data
       const sanitizedData = {
@@ -232,14 +235,8 @@ const distillationArchivesResolvers = {
           distillationType: DOMPurify.sanitize(
             distillationArchiveInput.distillationData.distillationType
           ),
-          distillationDate: distillationArchiveInput.distillationData
-            .distillationDate
-            ? formatDateToString(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData.distillationDate
-                )
-              )
-            : "",
+          distillationDate: parseDDMMYYYYtoDate(distillationArchiveInput.distillationData
+            .distillationDate),
           distillationApparatus: DOMPurify.sanitize(
             distillationArchiveInput.distillationData.distillationApparatus
           ),
@@ -282,26 +279,14 @@ const distillationArchivesResolvers = {
           plantOrigin: DOMPurify.sanitize(
             distillationArchiveInput.distilledPlant.plantOrigin
           ),
-          plantBuyDate: distillationArchiveInput.distilledPlant.plantBuyDate
-            ? formatDateToString(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.plantBuyDate
-                )
-              )
-            : "",
+          plantBuyDate: distillationArchiveInput.distilledPlant.plantBuyDate ? parseDDMMYYYYtoDate(distillationArchiveInput.distilledPlant.plantBuyDate) : "",
           plantProducer: DOMPurify.sanitize(
             distillationArchiveInput.distilledPlant.plantProducer
           ),
           countryOfOrigin: DOMPurify.sanitize(
             distillationArchiveInput.distilledPlant.countryOfOrigin
           ),
-          harvestDate: distillationArchiveInput.distilledPlant.harvestDate
-            ? formatDateToString(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.harvestDate
-                )
-              )
-            : "",
+          harvestDate: distillationArchiveInput.distilledPlant.harvestDate ? parseDDMMYYYYtoDate(distillationArchiveInput.distilledPlant.harvestDate) : "",
           harvestTemperature: distillationArchiveInput.distilledPlant
             .harvestTemperature
             ? Number(
@@ -334,13 +319,15 @@ const distillationArchivesResolvers = {
               )
             : null,
         },
-        date: validDate.toISOString(),
+        date: validDate,
         userId: user.id,
         createdAt: Date.now(),
       };
 
       // Filtering out null or empty string values
       const filteredData = filterData(sanitizedData);
+
+      console.log(filterData, "filtered data");
 
       try {
         // Creating a new DistillationArchives instance
@@ -378,7 +365,7 @@ const distillationArchivesResolvers = {
       const sanitizedDate = DOMPurify.sanitize(
         distillationArchiveInput.distillationData.distillationDate
       );
-      const validDate = new Date(sanitizedDate);
+      const validDate = parseDDMMYYYYtoDate(sanitizedDate);
 
       // Sanitizing and filtering the nested input object
       const sanitizedDistillationTime = distillationArchiveInput
@@ -543,7 +530,7 @@ const distillationArchivesResolvers = {
               )
             : null,
         },
-        date: validDate.toISOString(),
+        date: validDate,
         userId: user.id,
       };
 

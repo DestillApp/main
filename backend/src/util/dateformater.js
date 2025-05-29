@@ -10,4 +10,9 @@ const formatDateToString = (dateString) => {
   return date.toString();
 };
 
-module.exports = { formatDate, formatDateToString };
+const parseDDMMYYYYtoDate = (dateString) =>  {
+  const [day, month, year] = dateString.split("-");
+  return new Date(`${year}-${month}-${day}`).toISOString();
+}
+
+module.exports = { formatDate, formatDateToString, parseDDMMYYYYtoDate };
