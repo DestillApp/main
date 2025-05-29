@@ -137,8 +137,16 @@
   </div>
 </template>
 
-<script>
-import { ref, reactive, computed, onBeforeMount, onMounted, watch } from "vue";
+<script lang="ts">
+import {
+  defineComponent,
+  ref,
+  reactive,
+  computed,
+  onBeforeMount,
+  onMounted,
+  watch,
+} from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "@/store/useStore";
@@ -153,8 +161,9 @@ import {
 } from "@/graphql/mutations/settingsFunctions.js";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
+import type { DistillationArchive } from "@/types/forms/resultsForm";
 
-export default {
+export default defineComponent({
   name: "DistillationArchivesPage",
   components: {
     DeleteItemModal,
@@ -175,56 +184,57 @@ export default {
     const router = useRouter();
 
     // Reactive references for distillation archives data
-    const distillationArchivesList = ref([]);
-    const selectedArchiveId = ref(null);
-    const selectedPlantId = ref(null);
-    const plantName = ref(null);
-    const plantPart = ref(null);
-    const distillationWeight = ref(null);
-    const distillationDate = ref(null);
+    const distillationArchivesList = ref<DistillationArchive[]>([]);
+    const selectedArchiveId = ref<string>("");
+    const selectedPlantId = ref<string>("");
+    const plantName = ref<string>("");
+    const plantPart = ref<string>("");
+    const distillationWeight = ref<number | null>(null);
+    const distillationDate = ref<string>("");
 
     // Reactive reference to track if the delete modal is open
-    const isModalOpen = ref(false);
+    const isModalOpen = ref<boolean>(false);
 
     // Reactive references for pagination
-    const archivesAmount = ref(null);
-    const page = ref(Number(route.params.page) || 1);
-    const archivesPerPage = computed(
+    const archivesAmount = ref<number | null>(null);
+    const page = ref<number>(Number(route.params.page) || 1);
+    const archivesPerPage = computed<number>(
       () =>
         store.getters["settings/settingsForm"].distillationArchivesListLength
     );
 
     // Reactive reference for loading state
-    const isLoading = ref(true);
+    const isLoading = ref<boolean>(true);
 
     // Reactive reference for searching state
-    const isSearching = computed(() => {
+    const isSearching = computed<boolean>(() => {
       return searchQuery.value ? true : false;
     });
 
     // Computed property for pagination length
-    const paginationLength = computed(() => {
-      return Math.ceil(archivesAmount.value / archivesPerPage.value);
+    const paginationLength = computed<number>(() => {
+      return Math.ceil((archivesAmount.value ?? 0) / archivesPerPage.value);
     });
 
     // Computed property to get searchQuery from Vuex store
-    const searchQuery = computed(() => store.getters.searchQuery);
+    const searchQuery = computed<string>(() => store.getters.searchQuery);
 
-    const options = reactive({
+    const options = reactive<Record<string, string>>({
       plantName: "nazwy rośliny alfabetycznie",
       createdAt: "daty dodania destylacji",
       youngDate: "najnowszej daty destylacji",
       oldDate: "najstarszej daty destylacji",
     });
 
-    const sortingOption = computed(() => {
+    const sortingOption = computed<string>(() => {
       const sortingValue =
         store.getters["settings/settingsForm"].archiveDistillationListSorting;
       return options[sortingValue] || "";
     });
 
-    const sorting = ref(
-      store.getters["settings/settingsForm"].archiveDistillationListSorting
+    const sorting = computed<string>(
+      () =>
+        store.getters["settings/settingsForm"].archiveDistillationListSorting
     );
 
     /**
@@ -233,7 +243,10 @@ export default {
      * @description Fetch the list of distillation archives from the GraphQL server.
      * @returns {Promise<void>}
      */
-    const fetchDistillationArchivesList = async (name, sorting) => {
+    const fetchDistillationArchivesList = async (
+      name: string,
+      sortingValue: string
+    ): Promise<void> => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -250,13 +263,12 @@ export default {
               "distilledPlant.plantPart",
             ],
             name: name,
-            sorting: sorting,
+            sorting: sorting.value,
             formatDates: true,
             page: page.value,
             limit: archivesPerPage.value,
           },
         });
-        console.log("Fetched data:", data);
         archivesAmount.value = data.getDistillationArchives.length;
 
         const start = (page.value - 1) * archivesPerPage.value;
@@ -283,9 +295,8 @@ export default {
     /**
      * @function handleSearch
      * @description Handle the search query emitted from the BaseSearchItem component.
-     * @param {String} query - The search query.
      */
-    const handleSearch = async () => {
+    const handleSearch = async (): Promise<void> => {
       await fetchDistillationArchivesList(searchQuery.value, sorting.value);
     };
 
@@ -294,10 +305,12 @@ export default {
      * @description Handle the selection of list length.
      * @param {Number} length - The selected length.
      */
-    const handleSelectLength = async (length) => {
+    const handleSelectLength = async (
+      length: number
+    ): Promise<void | undefined> => {
       const isUpdating = await updateListSettings(
         apolloClient,
-        "distillationListLength",
+        "distillationArchivesListLength",
         length
       );
       if (isUpdating === "Unauthorized") {
@@ -306,7 +319,6 @@ export default {
         return;
       }
       if (isUpdating === true) {
-        console.log("Updated distillation list length");
         store.dispatch("settings/setValue", {
           input: "distillationArchivesListLength",
           value: length,
@@ -321,7 +333,10 @@ export default {
      * @param {String} sortingKey - The sorting key.
      * @param {String} sortingValue - The sorting value.
      */
-    const updateSorting = async (sortingKey, sortingValue) => {
+    const updateSorting = async (
+      sortingKey: string,
+      sortingValue: string
+    ): Promise<void | undefined> => {
       const update = await updateListSorting(
         apolloClient,
         "archiveDistillationListSorting",
@@ -345,12 +360,14 @@ export default {
      * @description Handle the sorting of the items list.
      * @param {String} option - The sorting option.
      */
-    const handleSorting = async (option) => {
+    const handleSorting = async (option: string): Promise<void> => {
       const sortingKey = Object.keys(options).find(
         (key) => options[key] === option
       );
-      await updateSorting(sortingKey, sortingKey);
-      page.value = 1;
+      if (sortingKey) {
+        await updateSorting(sortingKey, sortingKey);
+        page.value = 1;
+      }
     };
 
     onBeforeMount(() => {
@@ -388,7 +405,14 @@ export default {
      * @param {String} dWeight - The weight of the distillation.
      * @param {String} date - Distillation date.
      */
-    const openDeleteModal = (id, plantId, name, part, dWeight, date) => {
+    const openDeleteModal = (
+      id: string,
+      plantId: string,
+      name: string,
+      part: string,
+      dWeight: number,
+      date: string
+    ): void => {
       selectedArchiveId.value = id;
       selectedPlantId.value = plantId;
       plantName.value = name;
@@ -402,17 +426,17 @@ export default {
      * @function closeDeleteModal
      * @description Close the delete modal.
      */
-    const closeDeleteModal = () => {
-      distillationDate.value = null;
+    const closeDeleteModal = (): void => {
+      distillationDate.value = "";
       isModalOpen.value = false;
     };
 
     /**
      * @function
-     * @description Remove the deleted plant from the plant list.
-     * @param {String} id - The ID of the deleted plant.
+     * @description Remove the deleted archive from the list.
+     * @param {String} id - The ID of the deleted archive.
      */
-    const deleteDistillationFromList = (id) => {
+    const deleteDistillationFromList = (id: string): void => {
       distillationArchivesList.value = distillationArchivesList.value.filter(
         (archive) => archive._id !== id
       );
@@ -424,7 +448,7 @@ export default {
      * @description Delete the selected distillation archive from the list.
      * @returns {Promise<void>}
      */
-    const deleteDistillationArchive = async () => {
+    const deleteDistillationArchive = async (): Promise<void> => {
       try {
         const { data } = await apolloClient.mutate({
           mutation: DELETE_DISTILLATION_ARCHIVE,
@@ -487,7 +511,7 @@ export default {
       handleSearch,
     };
   },
-};
+});
 </script>
 
 <style scoped>

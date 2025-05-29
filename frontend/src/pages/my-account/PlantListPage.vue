@@ -23,7 +23,7 @@
       <list-sorting
         v-if="plantList.length >= 1 || isSearching"
         class="plant-list__sorting"
-        :options="options"
+        :options="Object.values(options)"
         :sorting="sortingOption"
         @choose:sorting="handleSorting"
       ></list-sorting>
@@ -105,7 +105,7 @@
     </div>
     <!-- Pagination for navigating plant list -->
     <v-pagination
-      v-if="!isLoading && plantsAmount > plantsPerPage"
+      v-if="!isLoading && (plantsAmount ?? 0) > plantsPerPage"
       v-model="page"
       :length="paginationLength"
       rounded="circle"
@@ -116,8 +116,16 @@
   </div>
 </template>
 
-<script>
-import { ref, reactive, onBeforeMount, onMounted, watch, computed } from "vue";
+<script lang="ts">
+import {
+  defineComponent,
+  ref,
+  reactive,
+  onBeforeMount,
+  onMounted,
+  watch,
+  computed,
+} from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "@/store/useStore";
@@ -135,7 +143,7 @@ import {
   updateListSettings,
 } from "@/graphql/mutations/settingsFunctions.js";
 import { DELETE_PLANT } from "@/graphql/mutations/plant";
-
+import type { BasicPlant } from "@/types/forms/plantForm";
 /**
  * @component PlantListPage
  * @description This component displays a paginated list of plants and allows deletion of plants.
@@ -143,7 +151,7 @@ import { DELETE_PLANT } from "@/graphql/mutations/plant";
  * @see deletePlant
  */
 
-export default {
+export default defineComponent({
   name: "PlantListPage",
   components: {
     DeleteItemModal,
@@ -166,51 +174,53 @@ export default {
     const router = useRouter();
 
     // Reactive references for plant data
-    const plantList = ref([]);
-    const selectedPlantId = ref(null);
-    const plantName = ref(null);
-    const plantPart = ref(null);
+    const plantList = ref<BasicPlant[]>([]);
+    const selectedPlantId = ref<string>("");
+    const plantName = ref<string>("");
+    const plantPart = ref<string>("");
 
     // Reactive reference to track if the delete modal is open
-    const isModalOpen = ref(false);
+    const isModalOpen = ref<boolean>(false);
 
     // Reactive references for pagination
-    const plantsAmount = ref(null);
-    const page = ref(Number(route.params.page));
-    const plantsPerPage = computed(
+    const plantsAmount = ref<number | null>(null);
+    const page = ref<number>(Number(route.params.page));
+    const plantsPerPage = computed<number>(
       () => store.getters["settings/settingsForm"].plantListLength
     );
 
     // Reactive reference for loading state
-    const isLoading = ref(true);
+    const isLoading = ref<boolean>(true);
 
     // Reactive reference for searching state
-    const isSearching = computed(() => {
+    const isSearching = computed<boolean>(() => {
       return searchQuery.value ? true : false;
     });
 
     // Computed property for pagination length
-    const paginationLength = computed(() => {
-      return Math.ceil(plantsAmount.value / plantsPerPage.value);
+    const paginationLength = computed<number | undefined>(() => {
+      if (plantsAmount.value) {
+        return Math.ceil(plantsAmount.value / plantsPerPage.value);
+      }
     });
 
     // Computed property to get searchQuery from Vuex store
-    const searchQuery = computed(() => store.getters.searchQuery);
+    const searchQuery = computed<string>(() => store.getters.searchQuery);
 
-    const options = reactive({
+    const options = reactive<Record<string, string>>({
       plantName: "nazwy rośliny alfabetycznie",
       createdAt: "daty dodania",
       oldDate: "najstarszej daty zbioru i zakupu",
       youngDate: "najnowszej daty zbioru i zakupu",
     });
 
-    const sortingOption = computed(() => {
+    const sortingOption = computed<string>(() => {
       const sortingValue =
         store.getters["settings/settingsForm"].plantListSorting;
       return options[sortingValue] || "";
     });
 
-    const sorting = computed(
+    const sorting = computed<string>(
       () => store.getters["settings/settingsForm"].plantListSorting
     );
 
@@ -220,7 +230,10 @@ export default {
      * @description Fetch the list of plants from the GraphQL server.
      * @returns {Promise<void>}
      */
-    const fetchPlantList = async (name, sorting) => {
+    const fetchPlantList = async (
+      name: string,
+      sorting: string
+    ): Promise<void> => {
       try {
         isLoading.value = true;
         const { data } = await apolloClient.query({
@@ -273,7 +286,9 @@ export default {
      * @description Handle the selection of list length.
      * @param {Number} length - The selected length.
      */
-    const handleSelectLength = async (length) => {
+    const handleSelectLength = async (
+      length: number
+    ): Promise<void | undefined> => {
       const isUpdating = await updateListSettings(
         apolloClient,
         "plantListLength",
@@ -299,12 +314,14 @@ export default {
      * @description Handle the sorting of the items list.
      * @param {String} option - The sorting option.
      */
-    const handleSorting = async (option) => {
+    const handleSorting = async (option: string): Promise<void> => {
       const sortingKey = Object.keys(options).find(
         (key) => options[key] === option
       );
-      await updateSorting(sortingKey, sortingKey);
-      page.value = 1;
+      if (sortingKey) {
+        await updateSorting(sortingKey, sortingKey);
+        page.value = 1;
+      }
     };
 
     /**
@@ -313,7 +330,10 @@ export default {
      * @param {String} sortingKey - The sorting key.
      * @param {String} sortingValue - The sorting value.
      */
-    const updateSorting = async (sortingKey, sortingValue) => {
+    const updateSorting = async (
+      sortingKey: string,
+      sortingValue: string
+    ): Promise<void | undefined> => {
       const update = await updateListSorting(
         apolloClient,
         "plantListSorting",
@@ -361,7 +381,7 @@ export default {
      * @param {String} name - The name of the plant.
      * @param {String} part - The part of the plant.
      */
-    const openDeleteModal = (id, name, part) => {
+    const openDeleteModal = (id: string, name: string, part: string): void => {
       selectedPlantId.value = id;
       plantName.value = name;
       plantPart.value = part;
@@ -372,10 +392,10 @@ export default {
      * @function closeDeleteModal
      * @description Close the delete modal.
      */
-    const closeDeleteModal = () => {
-      selectedPlantId.value = null;
-      plantName.value = null;
-      plantPart.value = null;
+    const closeDeleteModal = (): void => {
+      selectedPlantId.value = "";
+      plantName.value = "";
+      plantPart.value = "";
       isModalOpen.value = false;
     };
 
@@ -385,7 +405,7 @@ export default {
      * @description Delete the selected plant from the list.
      * @returns {Promise<void>}
      */
-    const deletePlant = async () => {
+    const deletePlant = async (): Promise<void> => {
       try {
         const { data } = await apolloClient.mutate({
           mutation: DELETE_PLANT,
@@ -420,7 +440,7 @@ export default {
      * @description Remove the deleted plant from the plant list.
      * @param {String} id - The ID of the deleted plant.
      */
-    const deletePlantFromList = (id) => {
+    const deletePlantFromList = (id: string): void => {
       plantList.value = plantList.value.filter((plant) => plant._id !== id);
     };
 
@@ -455,7 +475,7 @@ export default {
       handleSearch,
     };
   },
-};
+});
 </script>
 
 <style scoped>

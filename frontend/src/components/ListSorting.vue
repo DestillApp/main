@@ -49,30 +49,32 @@ import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store/useStore";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
+import type { ListSortingEvents } from "@/types/events";
 
-// interface Props {
-//   options: ;
-//   sorting: string;
-// }
+/**
+ * @interface Props
+ * @description Props for ListSorting component.
+ */
+interface Props {
+  options: string[];
+  sorting: string;
+}
 
 export default defineComponent({
   name: "ListSorting",
   components: { SvgIcon },
   props: ["options", "sorting"],
   emits: ["choose:sorting"],
-  setup(props, { emit }) {
+  setup(props: Props, { emit }) {
+    const emitTyped = emit as ListSortingEvents;
     const store = useStore();
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
 
-    console.log("SORTING", props.sorting);
-    console.log("OPTIONS", props.options);
     const isOpen = ref<boolean>(false);
     const selectedOption = ref<string>(props.sorting);
-    const sortingContainer = ref(null);
-
-    console.log("sorting container", sortingContainer);
+    const sortingContainer = ref<HTMLElement | null>(null);
 
     const toggleList = (): void => {
       isOpen.value = !isOpen.value;
@@ -83,16 +85,16 @@ export default defineComponent({
       }
     };
 
-    const selectOption = (option): void => {
+    const selectOption = (option: string): void => {
       selectedOption.value = option;
       isOpen.value = false;
-      emit("choose:sorting", option);
+      emitTyped("choose:sorting", option);
     };
 
-    const handleClickOutside = (event): void => {
+    const handleClickOutside = (event: MouseEvent): void => {
       if (
         sortingContainer.value &&
-        !sortingContainer.value.contains(event.target)
+        !sortingContainer.value.contains(event.target as Node)
       ) {
         isOpen.value = false;
       }

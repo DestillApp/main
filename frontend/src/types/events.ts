@@ -55,3 +55,11 @@ export interface BaseTextEvents {
   ): void;
   (e: "set:keyboard", event: Event): void;
 }
+
+export interface ListLengthSettingsEvents {
+  (e: "select-length", length: number): void;
+}
+
+export interface ListSortingEvents {
+  (e: "choose:sorting", option: string): void;
+}

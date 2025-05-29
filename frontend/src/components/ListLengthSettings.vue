@@ -36,25 +36,39 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiCog } from "@mdi/js";
-import { ref, computed } from "vue";
+import { ref, computed, defineComponent } from "vue";
 import { useStore } from "@/store/useStore";
+import type { ListLengthSettingsEvents } from "@/types/events";
 
-export default {
+/**
+ * @interface Props
+ * @description Props for ListLengthSettings component.
+ */
+interface Props {
+  title: string;
+  listColor: "plant" | "distillation" | "results";
+  chosenLength: number;
+}
+
+export default defineComponent({
   name: "ListLengthSettings",
   components: { SvgIcon },
   props: ["title", "listColor", "chosenLength"],
   emits: ["select-length"],
-  setup(props, { emit }) {
+  setup(props: Props, { emit }) {
+    const emitTyped = emit as ListLengthSettingsEvents;
     const store = useStore();
-    const isDarkTheme = computed(() => store.getters["settings/isDarkTheme"]);
+    const isDarkTheme = computed<boolean>(
+      () => store.getters["settings/isDarkTheme"]
+    );
 
-    const isListVisible = ref(false);
-    const settingsContainer = ref(null);
+    const isListVisible = ref<boolean>(false);
+    const settingsContainer = ref<HTMLElement | null>(null);
 
-    const toggleList = () => {
+    const toggleList = (): void => {
       isListVisible.value = !isListVisible.value;
       if (isListVisible.value) {
         document.addEventListener("click", handleClickOutside);
@@ -63,31 +77,27 @@ export default {
       }
     };
 
-    const selectLength = (length) => {
-      emit("select-length", length);
+    const selectLength = (length: number): void => {
+      emitTyped("select-length", length);
       isListVisible.value = false;
     };
 
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent): void => {
       if (
         settingsContainer.value &&
-        !settingsContainer.value.contains(event.target)
+        !settingsContainer.value.contains(event.target as Node)
       ) {
         isListVisible.value = false;
       }
     };
 
-    const isPlantColor = computed(() => {
-      return props.listColor === "plant";
-    });
-
-    const isDistillationColor = computed(() => {
-      return props.listColor === "distillation";
-    });
-
-    const isResultsColor = computed(() => {
-      return props.listColor === "results";
-    });
+    const isPlantColor = computed<boolean>(() => props.listColor === "plant");
+    const isDistillationColor = computed<boolean>(
+      () => props.listColor === "distillation"
+    );
+    const isResultsColor = computed<boolean>(
+      () => props.listColor === "results"
+    );
 
     const lengths = [10, 20, 30];
 
@@ -104,7 +114,7 @@ export default {
       isDarkTheme,
     };
   },
-};
+});
 </script>
 
 <style scoped>

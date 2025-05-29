@@ -46,23 +46,32 @@
         </li>
       </ul>
     </nav>
-    <base-card :class="{ 'my-account__card--isList': isList }" class="my-account__card">
+    <base-card
+      :class="{ 'my-account__card--isList': isList }"
+      class="my-account__card"
+    >
       <router-view></router-view>
     </base-card>
   </div>
 </template>
 
-<script>
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+<script lang="ts">
+import {
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+  defineComponent,
+} from "vue";
 import { useRoute } from "vue-router";
 
-export default {
+export default defineComponent({
   setup() {
     // Reactive reference for tablet view
-    const isTabletView = ref(window.innerWidth <= 1024);
+    const isTabletView = ref<boolean>(window.innerWidth <= 1024);
 
     // Function to handle window resize
-    const handleResize = () => {
+    const handleResize = (): void => {
       isTabletView.value = window.innerWidth <= 1024;
     };
 
@@ -80,10 +89,12 @@ export default {
     const route = useRoute();
 
     // Computed property to check if the current path includes specific routes
-    const isList = computed(() =>
-      ["/my-account/plant-list", "/my-account/distillation-archives", "/my-account/distillations-in-progress"].some(path =>
-        route.path.includes(path)
-      )
+    const isList = computed<boolean>(() =>
+      [
+        "/my-account/plant-list",
+        "/my-account/distillation-archives",
+        "/my-account/distillations-in-progress",
+      ].some((path) => route.path.includes(path))
     );
 
     return {
@@ -91,7 +102,7 @@ export default {
       isList,
     };
   },
-};
+});
 </script>
 
 <style scoped>
@@ -153,5 +164,4 @@ export default {
     margin-left: 10vw;
   }
 }
-
 </style>
