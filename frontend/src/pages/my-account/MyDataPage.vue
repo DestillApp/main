@@ -63,7 +63,7 @@
       v-if="isDeleteModalOpen"
       @close-delete-modal="closeDeleteModal"
       @delete-item="deleteDistiller"
-      :distiller="true"
+      :distiller="selectedDistillerId"
     ></delete-item-modal>
     <!-- Password change form modal -->
     <password-change-form
@@ -73,7 +73,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, onMounted, computed, onBeforeMount, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRouter } from "vue-router";
@@ -84,6 +84,7 @@ import BaseButton from "@/ui/BaseButton.vue";
 import DistillerForm from "@/components/DistillerForm.vue";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import PasswordChangeForm from "@/components/PasswordChangeForm.vue";
+import type { Distiller } from "@/store/settings/index";
 
 export default {
   components: {
@@ -100,21 +101,23 @@ export default {
     // Router object for navigation
     const router = useRouter();
 
-    const username = ref("");
-    const email = ref("");
-    const distillers = computed(() => store.getters["settings/distillerList"]);
+    const username = ref<string>("");
+    const email = ref<string>("");
+    const distillers = computed<Distiller[]>(
+      () => store.getters["settings/distillerList"]
+    );
 
-    const isDeleteModalOpen = ref(false);
-    const selectedDistillerId = ref(null);
+    const isDeleteModalOpen = ref<boolean>(false);
+    const selectedDistillerId = ref<string>("");
 
-    const isDistillerFormOpen = ref(false);
-    const isPasswordChangeFormOpen = ref(false);
-    const isDarkTheme = ref(false);
-    const isDarkThemeStored = computed(
+    const isDistillerFormOpen = ref<boolean>(false);
+    const isPasswordChangeFormOpen = ref<boolean>(false);
+    const isDarkTheme = ref<boolean>(false);
+    const isDarkThemeStored = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
 
-    const fetchUserDetails = async () => {
+    const fetchUserDetails = async (): Promise<void> => {
       try {
         const { data } = await apolloClient.query({
           query: GET_USER_DETAILS,
@@ -131,25 +134,25 @@ export default {
       }
     };
 
-    const openDistillerForm = () => {
+    const openDistillerForm = (): void => {
       isDistillerFormOpen.value = true;
     };
 
-    const closeDistillerForm = () => {
+    const closeDistillerForm = (): void => {
       isDistillerFormOpen.value = false;
     };
 
-    const openDeleteModal = (id) => {
+    const openDeleteModal = (id: string): void => {
       selectedDistillerId.value = id;
       isDeleteModalOpen.value = true;
     };
 
-    const closeDeleteModal = () => {
+    const closeDeleteModal = (): void => {
       isDeleteModalOpen.value = false;
-      selectedDistillerId.value = null;
+      selectedDistillerId.value = "";
     };
 
-    const deleteDistiller = async () => {
+    const deleteDistiller = async (): Promise<void> => {
       try {
         const deleteDistiller = await store.dispatch(
           "settings/deleteDistillerById",
@@ -167,11 +170,11 @@ export default {
       }
     };
 
-    const openPasswordChangeForm = () => {
+    const openPasswordChangeForm = (): void => {
       isPasswordChangeFormOpen.value = true;
     };
 
-    const closePasswordChangeForm = () => {
+    const closePasswordChangeForm = (): void => {
       isPasswordChangeFormOpen.value = false;
     };
 
@@ -211,6 +214,7 @@ export default {
       username,
       email,
       distillers,
+      selectedDistillerId,
       isDistillerFormOpen,
       isDeleteModalOpen,
       isPasswordChangeFormOpen,
