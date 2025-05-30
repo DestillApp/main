@@ -12,7 +12,8 @@ const { formatDate, formatDateToString, parseDDMMYYYYtoDate } = require("../../u
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
-const { AuthenticationError } = require("@apollo/server/errors");
+const { requireAuth } = require("../../util/authChecking");
+
 
 const distillationArchivesResolvers = {
   Query: {
@@ -23,9 +24,7 @@ const distillationArchivesResolvers = {
      * @returns {Promise<Array>} Array of distillation archives.
      */
     getDistillationArchives: async (_, { fields, name, sorting, formatDates }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       try {
         // Build a projection object based on the fields argument
@@ -109,9 +108,7 @@ const distillationArchivesResolvers = {
       { id, formatDistillDate },
       { user }
     ) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
       try {
         const archive = await DistillationArchives.findOne({
           _id: id,
@@ -168,9 +165,7 @@ const distillationArchivesResolvers = {
       { distillationArchiveInput },
       { user }
     ) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       const sanitizedDate = DOMPurify.sanitize(
         distillationArchiveInput.distillationData.distillationDate
@@ -358,9 +353,7 @@ const distillationArchivesResolvers = {
       { id, distillationArchiveInput },
       { user }
     ) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       const sanitizedDate = DOMPurify.sanitize(
         distillationArchiveInput.distillationData.distillationDate
@@ -554,9 +547,7 @@ const distillationArchivesResolvers = {
     },
 
     deleteDistillationArchive: async (_, { id }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       try {
         await DistillationArchives.findOneAndDelete({

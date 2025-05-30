@@ -9,7 +9,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../database/user");
 const DOMPurify = require("../../util/sanitizer");
-const { AuthenticationError, UserInputError } = require("@apollo/server/errors");
+const { requireAuth } = require("../../util/authChecking");
+const { GraphQLError } = require("graphql");
+const { UserInputError } = require("@apollo/server/errors");
 
 /**
  * @function generateToken
@@ -40,43 +42,37 @@ const userResolver = {
      * @returns {Object} An object indicating whether the user is authenticated.
      */
     verifyAuth: (parent, args, context) => {
-      console.log("verifyAuth called");
       const token = context.req.cookies.authToken;
-      console.log("Token:", token);
       if (!token) {
-        console.log("No token found");
         return { isAuthenticated: false };
       }
       try {
         jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Token is valid");
         return { isAuthenticated: true };
       } catch (err) {
-        console.log("Token verification failed:", err);
         return { isAuthenticated: false };
       }
     },
 
-        /**
+    /**
      * @function checkUsernameExistence
      * @description Checks if the username exists in the database.
      * @param {Object} _ - Unused.
      * @param {String} username - The username to check.
      * @returns {Promise<Boolean>} True if the username exists, false otherwise.
      */
-        checkUsernameExistence: async (_, { username }) => {
-          try {
-            const sanitizedUsername = DOMPurify.sanitize(username);
-            const user = await User.findOne({ username: sanitizedUsername });
-            console.log("USER", user)
-            return !!user; // Return true if user exists, false otherwise
-          } catch (error) {
-            console.error("Error checking username existence:", error);
-            throw new Error("Failed to check username existence");
-          }
-        },
+    checkUsernameExistence: async (_, { username }) => {
+      try {
+        const sanitizedUsername = DOMPurify.sanitize(username);
+        const user = await User.findOne({ username: sanitizedUsername });
+        return !!user; // Return true if user exists, false otherwise
+      } catch (error) {
+        console.error("Error checking username existence:", error);
+        throw new Error("Failed to check username existence");
+      }
+    },
 
-            /**
+    /**
      * @function getUserDetails
      * @description Fetches the username and email of the authenticated user.
      * @param {Object} _ - Unused.
@@ -85,9 +81,7 @@ const userResolver = {
      * @returns {Promise<Object>} An object containing the username and email.
      */
     getUserDetails: async (_, __, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+      requireAuth(user);
 
       try {
         const userDetails = await User.findById(user.id, "username email");
@@ -96,11 +90,13 @@ const userResolver = {
         }
         return userDetails;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         console.error("Error fetching user details:", error);
-        throw new Error("Failed to fetch user details");
+        throw new GraphQLError("Failed to fetch user details", {
+          extensions: { code: "INTERNAL_SERVER_ERROR" },
+        });
       }
     },
   },
@@ -126,8 +122,8 @@ const userResolver = {
         // Check if the email or username already exists in the database
         const existingEmail = await User.findOne({ email: sanitizedEmail });
         if (existingEmail) {
-          throw new UserInputError("Email already exists", {
-            invalidArgs: { email: sanitizedEmail },
+          throw new GraphQLError("Email already exists", {
+            extensions: { code: "BAD_USER_INPUT", invalidArgs: { email: sanitizedEmail } },
           });
         }
 
@@ -144,10 +140,12 @@ const userResolver = {
         return result;
       } catch (err) {
         console.error("Error during user registration:", err);
-        if (err instanceof UserInputError) {
+        if (err instanceof GraphQLError) {
           throw err;
         }
-        throw new Error("Failed to create user");
+        throw new GraphQLError("Failed to create user", {
+          extensions: { code: "INTERNAL_SERVER_ERROR" },
+        });
       }
     },
 
@@ -169,14 +167,14 @@ const userResolver = {
       try {
         // Find user by email
         const user = await User.findOne({ email: sanitizedEmail });
-        if (!user) {
-          throw new AuthenticationError("Invalid credentials");
-        }
+        requireAuth(user);
 
         // Check if the password matches
         const isMatch = await bcrypt.compare(sanitizedPassword, user.password);
         if (!isMatch) {
-          throw new AuthenticationError("Invalid credentials");
+          throw new GraphQLError("Invalid credentials", {
+            extensions: { code: "UNAUTHENTICATED" },
+          });
         }
 
         // Generate and return a JWT token
@@ -194,10 +192,12 @@ const userResolver = {
         return token;
       } catch (err) {
         console.error("Error during login:", err);
-        if (err instanceof AuthenticationError) {
+        if (err instanceof GraphQLError) {
           throw err;
         }
-        throw new Error("Failed to login");
+        throw new GraphQLError("Failed to login", {
+          extensions: { code: "INTERNAL_SERVER_ERROR" },
+        });
       }
     },
 
@@ -225,9 +225,7 @@ const userResolver = {
      * @returns {Promise<Boolean>} True if the password was changed successfully, false otherwise.
      */
     changePassword: async (_, { input }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+      requireAuth(user);
 
       const { oldPassword, newPassword } = input;
 
@@ -239,13 +237,20 @@ const userResolver = {
         // Find user by ID
         const foundUser = await User.findById(user.id);
         if (!foundUser) {
-          throw new Error("User not found");
+          throw new GraphQLError("User not found", {
+            extensions: { code: "NOT_FOUND" },
+          });
         }
 
         // Check if the old password matches
-        const isMatch = await bcrypt.compare(sanitizedOldPassword, foundUser.password);
+        const isMatch = await bcrypt.compare(
+          sanitizedOldPassword,
+          foundUser.password
+        );
         if (!isMatch) {
-          throw new AuthenticationError("Invalid old password");
+          throw new GraphQLError("Invalid old password", {
+            extensions: { code: "UNAUTHENTICATED" },
+          });
         }
 
         // Hash the new password
@@ -257,11 +262,12 @@ const userResolver = {
 
         return true;
       } catch (err) {
-        console.error("Error during password change:", err);
-        if (err instanceof AuthenticationError) {
+        if (err instanceof GraphQLError) {
           throw err;
         }
-        throw new Error("Failed to change password");
+        throw new GraphQLError("Failed to change password", {
+          extensions: { code: "INTERNAL_SERVER_ERROR" },
+        });
       }
     },
   },

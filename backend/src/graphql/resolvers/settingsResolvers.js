@@ -8,7 +8,8 @@
 const UserSettings = require("../../database/settings");
 
 // Importing required modules
-const { AuthenticationError } = require("@apollo/server/errors");
+const { requireAuth } = require("../../util/authChecking");
+
 
 const settingsResolvers = {
   Query: {
@@ -22,9 +23,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The user settings.
      */
     getUserSettings: async (_, __, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       try {
         const userSettings = await UserSettings.findOne({ userId: user.id });
@@ -91,9 +90,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     updateListSettings: async (_, { input }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       const { settingKey, settingValue } = input;
 
@@ -131,9 +128,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     updateListSorting: async (_, { input }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       const { settingKey, settingValue } = input;
 
@@ -171,9 +166,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     addDistiller: async (_, { userId, distiller }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       try {
         // Find the user settings and add the new distiller
@@ -209,9 +202,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     deleteDistiller: async (_, { userId, distillerId }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       try {
         // Find the user settings and remove the distiller by its ID
@@ -247,9 +238,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     updateDarkTheme: async (_, { isDarkTheme }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       try {
         // Find the user settings and update the isDarkTheme setting

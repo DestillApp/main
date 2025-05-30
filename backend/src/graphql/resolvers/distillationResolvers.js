@@ -11,14 +11,12 @@ const Distillation = require("../../database/distillation");
 const DOMPurify = require("../../util/sanitizer");
 const { formatDate, formatDateToString } = require("../../util/dateformater");
 const { filterData } = require("../../util/dataformating");
-const { AuthenticationError } = require("@apollo/server/errors");
+const { requireAuth } = require("../../util/authChecking");
 
 const distillationResolvers = {
   Query: {
     getDistillations: async (_, { fields, name, sorting }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       try {
         // Build a projection object based on the fields argument
@@ -78,9 +76,7 @@ const distillationResolvers = {
     },
 
     getDistillationById: async (_, { id, formatDates }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       try {
         const distillation = await Distillation.findOne({
@@ -120,9 +116,7 @@ const distillationResolvers = {
      * @returns {Promise<Object>} The created distillation.
      */
     createDistillation: async (_, { distillationInput }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       const sanitizedDate = DOMPurify.sanitize(
         distillationInput.distillationDate
@@ -240,9 +234,7 @@ const distillationResolvers = {
      * @returns {Promise<Object>} The updated distillation.
      */
     updateDistillation: async (_, { id, distillationInput }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       const sanitizedDate = DOMPurify.sanitize(
         distillationInput.distillationDate
@@ -357,9 +349,7 @@ const distillationResolvers = {
     },
 
     deleteDistillation: async (_, { id }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+ requireAuth(user);
 
       try {
         await Distillation.findOneAndDelete({ _id: id, userId: user.id });

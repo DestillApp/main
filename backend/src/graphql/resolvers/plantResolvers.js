@@ -10,7 +10,7 @@ const Plant = require("../../database/plant");
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
 const { formatDate } = require("../../util/dateformater");
-const { AuthenticationError } = require("@apollo/server/errors");
+const { requireAuth } = require("../../util/authChecking");
 
 // Utility function to filter data
 function filterPlantData(data) {
@@ -34,20 +34,18 @@ const plantResolver = {
     /**
      * @async
      * @function getPlants
- * @param {Object} _ - Unused parameter.
- * @param {Object} args - An object containing query arguments.
- * @param {Array<string>} args.fields - Fields to include in the result.
- * @param {boolean} args.formatDates - Whether to format date fields.
- * @param {string} args.name - Name of the plant to filter by.
- * @param {string} args.sorting - Sorting criteria.
- * @param {Object} context - Context object containing the request user.
- * @param {Object} context.user - The authenticated user.
- * @returns {Promise<Array<Object>>} A promise resolving to a list of plants.
- */
+     * @param {Object} _ - Unused parameter.
+     * @param {Object} args - An object containing query arguments.
+     * @param {Array<string>} args.fields - Fields to include in the result.
+     * @param {boolean} args.formatDates - Whether to format date fields.
+     * @param {string} args.name - Name of the plant to filter by.
+     * @param {string} args.sorting - Sorting criteria.
+     * @param {Object} context - Context object containing the request user.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Array<Object>>} A promise resolving to a list of plants.
+     */
     getPlants: async (_, { fields, formatDates, name, sorting }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+      requireAuth(user);
 
       try {
         // Build a projection object based on the fields argument
@@ -76,8 +74,8 @@ const plantResolver = {
 
         // Fetch plants with the specified fields from database
         const plants = sort
-        ? await Plant.find(filter, projection).sort(sort)
-        : await Plant.find(filter, projection);
+          ? await Plant.find(filter, projection).sort(sort)
+          : await Plant.find(filter, projection);
 
         // Format date fields before returning the result
         return plants.map((plant) => {
@@ -108,9 +106,7 @@ const plantResolver = {
     },
 
     getPlantById: async (_, { id, formatDates }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+      requireAuth(user);
 
       try {
         const plant = await Plant.findOne({ _id: id, userId: user.id });
@@ -149,9 +145,7 @@ const plantResolver = {
      * @returns {Promise<Object>} The created plant.
      */
     createPlant: async (_, { plantInput }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+      requireAuth(user);
 
       // Sanitizing the input data
       const sanitizedData = {
@@ -205,9 +199,7 @@ const plantResolver = {
 
     // Update an existing plant
     updatePlant: async (_, { id, plantInput }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+      requireAuth(user);
 
       // Sanitizing the input data
       const sanitizedData = {
@@ -261,9 +253,7 @@ const plantResolver = {
     },
 
     deletePlant: async (_, { id }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+      requireAuth(user);
 
       try {
         await Plant.findOneAndDelete({ _id: id, userId: user.id });
@@ -278,9 +268,7 @@ const plantResolver = {
     },
 
     updateAvailableWeight: async (_, { input }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+      requireAuth(user);
 
       try {
         const sanitizedId = DOMPurify.sanitize(input.id);
@@ -306,9 +294,7 @@ const plantResolver = {
     },
 
     changeAvailableWeight: async (_, { input }, { user }) => {
-      if (!user) {
-        throw new AuthenticationError("Unauthorized");
-      }
+      requireAuth(user);
 
       try {
         const sanitizedId = DOMPurify.sanitize(input.id);
