@@ -3,8 +3,7 @@
  * @description Defines the GraphQL schema for the Plant type.
  */
 
-// Importing gql from apollo-server-express
-const { gql } = require("apollo-server-express");
+const gql = require("graphql-tag");
 
 const plantSchema = gql`
   type Plant {

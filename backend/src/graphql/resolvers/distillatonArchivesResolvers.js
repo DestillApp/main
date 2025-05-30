@@ -12,7 +12,7 @@ const { formatDate, formatDateToString, parseDDMMYYYYtoDate } = require("../../u
 
 // Importing required modules
 const DOMPurify = require("../../util/sanitizer");
-const { AuthenticationError } = require("apollo-server-express");
+const { AuthenticationError } = require("@apollo/server/errors");
 
 const distillationArchivesResolvers = {
   Query: {

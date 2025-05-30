@@ -11,7 +11,7 @@ const Distillation = require("../../database/distillation");
 const DOMPurify = require("../../util/sanitizer");
 const { formatDate, formatDateToString } = require("../../util/dateformater");
 const { filterData } = require("../../util/dataformating");
-const { AuthenticationError } = require("apollo-server-express");
+const { AuthenticationError } = require("@apollo/server/errors");
 
 const distillationResolvers = {
   Query: {

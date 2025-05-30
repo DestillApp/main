@@ -8,7 +8,7 @@
 const UserSettings = require("../../database/settings");
 
 // Importing required modules
-const { AuthenticationError } = require("apollo-server-express");
+const { AuthenticationError } = require("@apollo/server/errors");
 
 const settingsResolvers = {
   Query: {

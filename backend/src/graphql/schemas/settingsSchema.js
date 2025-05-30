@@ -3,8 +3,7 @@
  * @description Defines the GraphQL schema for the User Settings type.
  */
 
-// Importing gql from apollo-server-express
-const { gql } = require("apollo-server-express");
+const gql = require("graphql-tag");
 
 const settingsSchema = gql`
   type ListSettings {

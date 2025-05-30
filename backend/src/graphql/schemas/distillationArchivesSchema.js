@@ -3,8 +3,7 @@
  * @description Defines the GraphQL schema for the Distillation Archives type.
  */
 
-// Importing gql from apollo-server-express
-const { gql } = require("apollo-server-express");
+const gql = require("graphql-tag");
 
 const distillationArchivesSchema = gql`
   type DistilledPlant {

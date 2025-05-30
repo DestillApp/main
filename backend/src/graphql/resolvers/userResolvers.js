@@ -9,7 +9,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../database/user");
 const DOMPurify = require("../../util/sanitizer");
-const { AuthenticationError, UserInputError } = require("apollo-server-express");
+const { AuthenticationError, UserInputError } = require("@apollo/server/errors");
 
 /**
  * @function generateToken
