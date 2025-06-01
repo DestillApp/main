@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "@/store/useStore";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
@@ -60,7 +60,7 @@ interface Props {
   sorting: string;
 }
 
-export default defineComponent({
+export default {
   name: "ListSorting",
   components: { SvgIcon },
   props: ["options", "sorting"],
@@ -111,7 +111,7 @@ export default defineComponent({
       isDarkTheme,
     };
   },
-});
+};
 </script>
 
 <style scoped>

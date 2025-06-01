@@ -159,7 +159,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -176,7 +176,7 @@ import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
-export default defineComponent({
+export default {
   name: "DistillationDetailsPage",
   components: { DeleteItemModal, BaseButton, SvgIcon, PlantDetails },
   setup() {
@@ -385,7 +385,7 @@ export default defineComponent({
       handleYes,
     };
   },
-});
+};
 </script>
 
 <style scoped>

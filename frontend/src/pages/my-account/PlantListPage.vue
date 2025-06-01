@@ -117,15 +117,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  reactive,
-  onBeforeMount,
-  onMounted,
-  watch,
-  computed,
-} from "vue";
+import { ref, reactive, onBeforeMount, onMounted, watch, computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "@/store/useStore";
@@ -152,7 +144,7 @@ import type { BasicPlant } from "@/types/forms/plantForm";
  * @see deletePlant
  */
 
-export default defineComponent({
+export default {
   name: "PlantListPage",
   components: {
     DeleteItemModal,
@@ -468,7 +460,7 @@ export default defineComponent({
       handleSearch,
     };
   },
-});
+};
 </script>
 
 <style scoped>

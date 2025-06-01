@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
 import { DeleteItemModalEvents } from "@/types/events";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -66,7 +66,7 @@ interface Props {
   distiller?: string;
 }
 
-export default defineComponent({
+export default {
   name: "DeleteItemModal",
   components: { BaseModal, BaseButton },
   props: ["plantName", "plantPart", "distillationDate", "distiller"],
@@ -97,7 +97,7 @@ export default defineComponent({
 
     return { nameOfPlant, deleteItem, closeDeleteModal };
   },
-});
+};
 </script>
 
 <style scoped>

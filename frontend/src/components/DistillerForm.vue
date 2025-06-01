@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRouter } from "vue-router";
 import BaseModal from "@/ui/BaseModal.vue";
@@ -74,7 +74,7 @@ import { CloseModal } from "@/types/events";
 import { setKeyboardIntegerNumber } from "@/helpers/formatHelpers";
 import { distillerFormValidation } from "@/helpers/formsValidation";
 
-export default defineComponent({
+export default {
   components: {
     BaseModal,
     BaseTextInput,
@@ -156,7 +156,7 @@ export default defineComponent({
       setKeyboardIntegerNumber,
     };
   },
-});
+};
 </script>
 
 <style scoped>

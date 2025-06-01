@@ -143,15 +143,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  reactive,
-  computed,
-  onBeforeMount,
-  onMounted,
-  watch,
-} from "vue";
+import { ref, reactive, computed, onBeforeMount, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "@/store/useStore";
@@ -174,7 +166,7 @@ import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 import type { GetDistillationById } from "@/types/forms/distillationForm";
 
-export default defineComponent({
+export default {
   name: "InProgressDistillationsPage",
   components: {
     DeleteItemModal,
@@ -541,7 +533,7 @@ export default defineComponent({
       handleSelectLength,
     };
   },
-});
+};
 </script>
 
 <style scoped>

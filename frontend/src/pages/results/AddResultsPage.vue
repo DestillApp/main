@@ -42,13 +42,13 @@ import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
 import { useStore } from "@/store/useStore";
-import { defineComponent, ref, onMounted, computed, nextTick } from "vue";
+import { ref, onMounted, computed, nextTick } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useMutation, useApolloClient } from "@vue/apollo-composable";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 import { mapResultsForm } from "@/helpers/formsMapping";
 
-export default defineComponent({
+export default {
   name: "AddResultsPage",
   components: {
     ResultsData,
@@ -288,7 +288,7 @@ export default defineComponent({
 
     return { saveResults, isFormValid, wasSubmitted };
   },
-});
+};
 </script>
 
 <style scoped>

@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
 import { AskModalEvents } from "@/types/events";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -44,7 +44,7 @@ interface Props {
   distillationWeight: number;
 }
 
-export default defineComponent({
+export default {
   name: "ASKModal",
   components: { BaseModal, BaseButton },
   props: ["plantName", "plantPart", "distillationWeight"],
@@ -72,7 +72,7 @@ export default defineComponent({
 
     return { nameOfPlant, handleYes, closeModal };
   },
-});
+};
 </script>
 
 <style scoped>

@@ -80,7 +80,7 @@ import { handleUserError } from "@/helpers/errorHandling";
 import store from "@/store/index";
 
 import { useStore } from "@/store/useStore";
-import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { useApolloClient, useMutation } from "@vue/apollo-composable";
 import { useRoute, onBeforeRouteLeave, useRouter } from "vue-router";
 import { mapResultsForm } from "@/helpers/formsMapping";
@@ -96,7 +96,7 @@ interface ResultsValues
     "_id" | "distilledPlant" | "distillationData"
   > {}
 
-export default defineComponent({
+export default {
   name: "EditArchiveDistillationPage",
   components: {
     ResultsPlant,
@@ -336,7 +336,7 @@ export default defineComponent({
       comingFromRoute,
     };
   },
-});
+};
 </script>
 
 <style scoped>

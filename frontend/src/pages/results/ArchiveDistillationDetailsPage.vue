@@ -181,7 +181,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, Ref } from "vue";
+import { ref, onMounted, Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "@/store/useStore";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -195,7 +195,7 @@ import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import { handleUserError } from "@/helpers/errorHandling";
 import type { DistillationArchive } from "@/types/forms/resultsForm";
 
-export default defineComponent({
+export default {
   name: "ArchiveDistillationDetailsPage",
   components: { DeleteItemModal, SvgIcon, PlantDetails },
   setup() {
@@ -341,7 +341,7 @@ export default defineComponent({
       deleteDistillation,
     };
   },
-});
+};
 </script>
 
 <style scoped>

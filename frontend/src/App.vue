@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, computed, watch } from "vue";
+import { onBeforeMount, computed, watch } from "vue";
 import { useStore } from "@/store/useStore";
 import TheHeader from "./layout/TheHeader.vue";
 
@@ -14,7 +14,7 @@ import TheHeader from "./layout/TheHeader.vue";
  * @component App
  * @description The root component of the application layout, including the header, footer, and router view.
  */
-export default defineComponent({
+export default {
   name: "App",
   components: {
     TheHeader,
@@ -45,7 +45,7 @@ export default defineComponent({
       isDarkTheme,
     };
   },
-});
+};
 </script>
 
 <style>

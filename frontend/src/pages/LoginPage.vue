@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from "vue";
+import { ref, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "@/store/useStore";
 import { scrollToTop } from "../helpers/displayHelpers.js";
@@ -58,7 +58,7 @@ interface LoginForm {
   password: string;
 }
 
-export default defineComponent({
+export default {
   name: "LoginForm",
   setup() {
     // Router object for navigation
@@ -136,7 +136,7 @@ export default defineComponent({
 
     return { loginForm, isLoginFormValid, scrollToTop, loginUser };
   },
-});
+};
 </script>
 
 <style scoped>

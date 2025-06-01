@@ -35,11 +35,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { computed } from "vue";
 import { useStore } from "@/store/useStore";
 import { ResultsForm } from "@/types/forms/resultsForm";
 
-export default defineComponent({
+export default {
   name: "ResultsDistillation",
   setup() {
     const store = useStore();
@@ -53,7 +53,7 @@ export default defineComponent({
       resultsForm,
     };
   },
-});
+};
 </script>
 
 <style scoped>

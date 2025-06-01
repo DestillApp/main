@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from "vue";
+import { ref, watch, computed } from "vue";
 import { useStore } from "@/store/useStore";
 import { BaseRadioInputEvents } from "@/types/events";
 
@@ -43,7 +43,7 @@ interface Props {
   color?: string;
 }
 
-export default defineComponent({
+export default {
   name: "BaseRadioInput",
   props: ["options", "modelValue", "title", "name", "color"],
   emits: ["update:modelValue", "selectOption"],
@@ -74,7 +74,7 @@ export default defineComponent({
 
     return { selectOption, isDarkTheme };
   },
-});
+};
 </script>
 
 <style scoped>

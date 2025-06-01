@@ -115,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -139,7 +139,7 @@ import { DELETE_PLANT } from "@/graphql/mutations/plant";
  * @see closeDeleteModal
  * @see deletePlant
  */
-export default defineComponent({
+export default {
   name: "PlantDetailsPage",
   components: { DeleteItemModal, BaseButton },
   setup() {
@@ -254,7 +254,7 @@ export default defineComponent({
       deletePlant,
     };
   },
-});
+};
 </script>
 
 <style scoped>

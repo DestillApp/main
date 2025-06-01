@@ -135,7 +135,7 @@
 
 <script lang="ts">
 import { useStore } from "@/store/useStore";
-import { defineComponent, onMounted, computed } from "vue";
+import { onMounted, computed } from "vue";
 import { initialResultsForm } from "@/helpers/formsInitialState";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import { ResultsPlant, ResultsDistillation } from "@/types/forms/resultsForm";
@@ -151,7 +151,7 @@ interface Props {
   isEditing?: boolean;
 }
 
-export default defineComponent({
+export default {
   name: "DistillationPlant",
   components: { BaseTextInput },
   props: ["isFormValid", "isEditing"],
@@ -224,7 +224,7 @@ export default defineComponent({
       isDarkTheme,
     };
   },
-});
+};
 </script>
 
 <style scoped>

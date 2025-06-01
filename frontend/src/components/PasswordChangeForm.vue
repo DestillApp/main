@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
 import { useStore } from "@/store/useStore";
 import BaseModal from "@/ui/BaseModal.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
@@ -84,7 +84,7 @@ import BaseButton from "@/ui/BaseButton.vue";
 import { CloseModal } from "@/types/events";
 import { changePasswordFormValidation } from "@/helpers/formsValidation";
 
-export default defineComponent({
+export default {
   components: {
     BaseModal,
     BaseTextInput,
@@ -162,7 +162,7 @@ export default defineComponent({
       isOldPasswordCorrect,
     };
   },
-});
+};
 </script>
 
 <style scoped>

@@ -183,7 +183,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, computed, watch, ref } from "vue";
+import { onMounted, computed, watch, ref } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -195,7 +195,7 @@ import {
   setKeyboardIntegerNumber,
   setKeyboardFormatedNumber,
 } from "@/helpers/formatHelpers";
-import { handleUserError} from "@/helpers/errorHandling";
+import { handleUserError } from "@/helpers/errorHandling";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 import {
@@ -230,7 +230,7 @@ interface Props {
   isEditing?: boolean;
 }
 
-export default defineComponent({
+export default {
   name: "DistillationPlant",
   components: { BaseTextInput, BaseAutocompleteInput },
   props: ["isFormValid", "wasSubmitted", "isEditing"],
@@ -570,7 +570,7 @@ export default defineComponent({
       isDarkTheme,
     };
   },
-});
+};
 </script>
 
 <style scoped>

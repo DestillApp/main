@@ -46,7 +46,7 @@
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMagnify, mdiClose } from "@mdi/js";
-import { defineComponent, ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import { BaseSearchEvents } from "@/types/events";
 
@@ -59,7 +59,7 @@ interface Props {
   inputColor?: string;
 }
 
-export default defineComponent({
+export default {
   name: "BaseSearchItem",
   components: { BaseTextInput, SvgIcon },
   props: ["label", "inputColor"],
@@ -143,7 +143,7 @@ export default defineComponent({
       mdiClose,
     };
   },
-});
+};
 </script>
 
 <style scoped>

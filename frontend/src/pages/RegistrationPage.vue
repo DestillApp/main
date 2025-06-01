@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
@@ -121,7 +121,7 @@ interface RegistrationForm {
   email: string;
   password: string;
 }
-export default defineComponent({
+export default {
   name: "RegistrationForm",
 
   setup() {
@@ -294,7 +294,7 @@ export default defineComponent({
       resetEmailExists,
     };
   },
-});
+};
 </script>
 
 <style scoped>

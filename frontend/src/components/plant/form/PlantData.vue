@@ -138,14 +138,7 @@
 
 <script lang="ts">
 import { useStore } from "@/store/useStore";
-import {
-  defineComponent,
-  ref,
-  reactive,
-  computed,
-  watch,
-  onMounted,
-} from "vue";
+import { ref, reactive, computed, watch, onMounted } from "vue";
 import {
   setIntegerNumber,
   setNumberFormat,
@@ -178,7 +171,7 @@ interface Props {
   wasSubmitted: boolean;
 }
 
-export default defineComponent({
+export default {
   name: "PlantData",
   components: { BaseTextInput },
   props: ["isFormValid", "isResetting", "isEditing", "wasSubmitted"],
@@ -285,7 +278,7 @@ export default defineComponent({
       setKeyboardFormatedNumber,
     };
   },
-});
+};
 </script>
 
 <style scoped>

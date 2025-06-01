@@ -194,14 +194,7 @@
 
 <script lang="ts">
 import { useStore } from "@/store/useStore";
-import {
-  defineComponent,
-  ref,
-  reactive,
-  computed,
-  watch,
-  onMounted,
-} from "vue";
+import { ref, reactive, computed, watch, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
@@ -233,7 +226,7 @@ interface Props {
   wasSubmitted: boolean;
 }
 
-export default defineComponent({
+export default {
   name: "PlantOrigin",
   components: { BaseInputDatePicker, BaseTextInput, BaseAutocompleteInput },
   props: ["isFormValid", "isResetting", "wasSubmitted"],
@@ -455,7 +448,7 @@ export default defineComponent({
       countryName,
     };
   },
-});
+};
 </script>
 
 <style scoped>

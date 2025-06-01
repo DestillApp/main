@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import BaseTextArea from "@/ui/BaseTextArea.vue";
 import { ResultsForm } from "@/types/forms/resultsForm";
@@ -60,7 +60,7 @@ interface Props {
   wasSubmitted: boolean;
 }
 
-export default defineComponent({
+export default {
   name: "ResultsDescriptions",
   components: { BaseTextArea },
   props: ["isFormValid", "wasSubmitted"],
@@ -92,7 +92,7 @@ export default defineComponent({
       storeName,
     };
   },
-});
+};
 </script>
 
 <style scoped>

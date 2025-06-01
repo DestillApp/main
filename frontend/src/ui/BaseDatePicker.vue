@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "@/store/useStore";
 import BaseModal from "./BaseModal.vue";
 import { BaseDatePickerEvents } from "@/types/events";
@@ -35,7 +35,7 @@ interface Props {
   color?: string;
 }
 
-export default defineComponent({
+export default {
   name: "BaseDatePicker",
   components: { BaseModal },
   props: ["title", "value", "color"],
@@ -71,7 +71,7 @@ export default defineComponent({
 
     return { selectedDate, sendDate, computedColor, isDarkTheme };
   },
-});
+};
 </script>
 
 <style scoped>

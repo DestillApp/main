@@ -98,7 +98,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import {} from "vue";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import { useStore } from "@/store/useStore";
 import { computed, onMounted } from "vue";
@@ -125,7 +125,7 @@ interface Props {
   isEditing?: boolean;
 }
 
-export default defineComponent({
+export default {
   name: "DistillationData",
   components: { BaseTextInput },
   props: ["isFormValid", "wasSubmitted", "isEditing"],
@@ -215,7 +215,7 @@ export default defineComponent({
       saveTime,
     };
   },
-});
+};
 </script>
 
 <style scoped>

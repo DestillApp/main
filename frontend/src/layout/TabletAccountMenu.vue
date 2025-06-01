@@ -66,14 +66,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import {} from "vue";
 import { ToggleMenu } from "@/types/events";
 
 /**
  * @component TabletAccountMenu
  * @description This component renders a side menu for tablet view, including navigation links and a logout button.
  */
-export default defineComponent({
+export default {
   name: "TabletAccountMenu",
   setup(props, context) {
     const emit = context.emit as ToggleMenu;
@@ -84,7 +84,7 @@ export default defineComponent({
 
     return { toggleMenu };
   },
-});
+};
 </script>
 
 <style scoped>

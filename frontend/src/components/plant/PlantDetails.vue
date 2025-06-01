@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -42,7 +42,7 @@ interface Props {
   distilledPlant?: DistillationArchivePlant;
 }
 
-export default defineComponent({
+export default {
   name: "PlantDetails",
   props: ["plantId", "distilledPlant"],
   setup(props: Props) {
@@ -106,7 +106,7 @@ export default defineComponent({
 
     return { isLoading, plantDetails, plantAgeWithSuffix };
   },
-});
+};
 </script>
 
 <style scoped>

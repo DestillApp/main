@@ -91,13 +91,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-} from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRouter, useRoute } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -110,7 +104,7 @@ import { mdiAccount, mdiMenu, mdiLogout } from "@mdi/js";
  * @component TheHeader
  * @description This component renders the header section of the application, including navigation links and a login button.
  */
-export default defineComponent({
+export default {
   name: "TheHeader",
   components: { BaseButton, SvgIcon, MobileMenu, TabletAccountMenu },
   setup() {
@@ -200,7 +194,7 @@ export default defineComponent({
       toggleTabletMenu,
     };
   },
-});
+};
 </script>
 
 <style scoped>

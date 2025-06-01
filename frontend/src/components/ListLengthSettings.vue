@@ -39,7 +39,7 @@
 <script lang="ts">
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiCog } from "@mdi/js";
-import { ref, computed, defineComponent } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "@/store/useStore";
 import type { ListLengthSettingsEvents } from "@/types/events";
 
@@ -53,7 +53,7 @@ interface Props {
   chosenLength: number;
 }
 
-export default defineComponent({
+export default {
   name: "ListLengthSettings",
   components: { SvgIcon },
   props: ["title", "listColor", "chosenLength"],
@@ -114,7 +114,7 @@ export default defineComponent({
       isDarkTheme,
     };
   },
-});
+};
 </script>
 
 <style scoped>

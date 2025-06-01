@@ -56,16 +56,10 @@
 </template>
 
 <script lang="ts">
-import {
-  ref,
-  onMounted,
-  onBeforeUnmount,
-  computed,
-  defineComponent,
-} from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRoute } from "vue-router";
 
-export default defineComponent({
+export default {
   setup() {
     // Reactive reference for tablet view
     const isTabletView = ref<boolean>(window.innerWidth <= 1024);
@@ -102,7 +96,7 @@ export default defineComponent({
       isList,
     };
   },
-});
+};
 </script>
 
 <style scoped>

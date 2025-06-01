@@ -7,14 +7,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { computed } from "vue";
 import { useStore } from "@/store/useStore";
 
 /**
  * @component BaseCard
  * @description A custom card component that provides a styled container for its content. The content is passed through a slot.
  */
-export default defineComponent({
+export default {
   setup() {
     const store = useStore();
     const isDarkTheme = computed<boolean>(
@@ -25,7 +25,7 @@ export default defineComponent({
       isDarkTheme,
     };
   },
-});
+};
 </script>
 
 <style scoped>

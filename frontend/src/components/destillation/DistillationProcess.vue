@@ -79,14 +79,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed,
-  ref,
-  onMounted,
-  onBeforeMount,
-  watch,
-} from "vue";
+import { computed, ref, onMounted, onBeforeMount, watch } from "vue";
 import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
 
@@ -124,7 +117,7 @@ interface Props {
   isEditing?: boolean;
 }
 
-export default defineComponent({
+export default {
   name: "DistillationProcess",
   components: { BaseAutocompleteInput, BaseInputDatePicker },
   props: ["isFormValid", "wasSubmitted", "isEditing"],
@@ -302,7 +295,7 @@ export default defineComponent({
       setDistillationApparatus,
     };
   },
-});
+};
 </script>
 
 <style scoped>

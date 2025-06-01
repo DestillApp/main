@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import {} from "vue";
 import { CloseModal } from "@/types/events";
 
 /**
@@ -21,7 +21,7 @@ import { CloseModal } from "@/types/events";
  * @see closeModal
  * @emits close-modal
  */
-export default defineComponent({
+export default {
   emits: ["close-modal"],
   setup(_, context) {
     const emit = context.emit as CloseModal;
@@ -31,7 +31,7 @@ export default defineComponent({
 
     return { closeModal };
   },
-});
+};
 </script>
 
 <style scoped>

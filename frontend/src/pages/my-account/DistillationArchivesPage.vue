@@ -138,15 +138,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  reactive,
-  computed,
-  onBeforeMount,
-  onMounted,
-  watch,
-} from "vue";
+import { ref, reactive, computed, onBeforeMount, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "@/store/useStore";
@@ -164,7 +156,7 @@ import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import type { DistillationArchive } from "@/types/forms/resultsForm";
 
-export default defineComponent({
+export default {
   name: "DistillationArchivesPage",
   components: {
     DeleteItemModal,
@@ -504,7 +496,7 @@ export default defineComponent({
       handleSearch,
     };
   },
-});
+};
 </script>
 
 <style scoped>

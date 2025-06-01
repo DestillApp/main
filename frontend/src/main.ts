@@ -4,7 +4,7 @@
  */
 import { createApp, provide, h } from "vue";
 import "./assets/styles/global.css";
-import router from "./router.js";
+import router from "./router";
 import store from "./store/index.js";
 import {
   ApolloClient,

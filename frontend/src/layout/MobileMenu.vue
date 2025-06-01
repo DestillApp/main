@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import { useRouter, useRoute } from "vue-router";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -87,7 +87,7 @@ interface Props {
   isOpen: boolean;
 }
 
-export default defineComponent({
+export default {
   name: "MobileMenu",
   components: { BaseButton },
   props: ["isOpen"],
@@ -143,7 +143,7 @@ export default defineComponent({
       toggleMyAccount,
     };
   },
-});
+};
 </script>
 
 <style scoped>

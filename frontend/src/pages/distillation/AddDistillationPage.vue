@@ -50,7 +50,7 @@ import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 
 import { useStore } from "@/store/useStore";
-import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 
@@ -58,7 +58,7 @@ import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
  * @module AddDistillationPage
  * @description This component renders a destillation form and handles sending destillation data.
  */
-export default defineComponent({
+export default {
   name: "AddDistillationPage",
   components: { DistillationPlant, DistillationProcess, DistillationData },
 
@@ -234,7 +234,7 @@ export default defineComponent({
       wasSubmitted,
     };
   },
-});
+};
 </script>
 
 <style scoped>

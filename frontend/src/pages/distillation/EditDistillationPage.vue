@@ -67,7 +67,7 @@ import {
 } from "@/types/forms/distillationForm";
 
 import { useStore } from "@/store/useStore";
-import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -82,7 +82,7 @@ interface DistillationValues
  * @module AddDistillationPage
  * @description This component renders a destillation form and handles sending destillation data.
  */
-export default defineComponent({
+export default {
   name: "EditDistillationPage",
   components: { DistillationPlant, DistillationProcess, DistillationData },
 
@@ -311,7 +311,7 @@ export default defineComponent({
       isEditing,
     };
   },
-});
+};
 </script>
 
 <style scoped>

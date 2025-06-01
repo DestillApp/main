@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import BaseTextInput from "./BaseTextInput.vue";
 import BaseDatePicker from "./BaseDatePicker.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
@@ -58,7 +58,7 @@ interface Props {
   color?: string;
 }
 
-export default defineComponent({
+export default {
   components: { BaseTextInput, BaseDatePicker, SvgIcon },
   props: ["label", "title", "id", "value", "invalidInput", "color"],
   setup(props: Props, context) {
@@ -130,7 +130,7 @@ export default defineComponent({
       plantColor,
     };
   },
-});
+};
 </script>
 
 <style scoped>
