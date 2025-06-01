@@ -160,7 +160,6 @@
 
 <script lang="ts">
 import { ref, onMounted } from "vue";
-import { useStore } from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
@@ -183,9 +182,6 @@ export default {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
 
-    // Vuex store instance
-    const store = useStore();
-
     // Route object to access route params
     const route = useRoute();
     // Router object for navigation
@@ -201,7 +197,6 @@ export default {
     const distillationWeight = ref<number | null>(null);
     const distillationDate = ref<string>("");
 
-    // Reactive reference to store the plant ID and plant page number from the route
     const page = ref<number>(Number(route.params.page));
 
     // Reactive reference to track if the delete modal is open

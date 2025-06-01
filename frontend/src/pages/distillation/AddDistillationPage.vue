@@ -44,7 +44,7 @@ import { distillationFormValidation } from "@/helpers/formsValidation";
 import { initialDistillationForm } from "@/helpers/formsInitialState";
 import { mapDistillationForm } from "@/helpers/formsMapping";
 import { handleUserError } from "@/helpers/errorHandling";
-import store from "@/store/index";
+import { comingFromRouteGuard } from "@/helpers/routerGuards";
 
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
@@ -52,7 +52,12 @@ import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 import { useStore } from "@/store/useStore";
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
-import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
+import {
+  onBeforeRouteLeave,
+  useRouter,
+  useRoute,
+  RouteLocationNormalizedLoaded,
+} from "vue-router";
 
 /**
  * @module AddDistillationPage
@@ -61,18 +66,7 @@ import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 export default {
   name: "AddDistillationPage",
   components: { DistillationPlant, DistillationProcess, DistillationData },
-
-  // Navigation guard that handles the logic before navigating to this route
-  beforeRouteEnter(to, from, next) {
-    //check if the route comes from another named route, then update the store
-    if (from && from.name) {
-      store.dispatch("setComingFromRoute", true);
-    } else {
-      store.dispatch("setComingFromRoute", false);
-    }
-    next();
-  },
-
+  beforeRouteEnter: comingFromRouteGuard,
   setup() {
     // Vuex store instance
     const store = useStore();

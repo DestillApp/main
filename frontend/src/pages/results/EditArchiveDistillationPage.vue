@@ -77,7 +77,7 @@ import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
 import { UPDATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 import { handleUserError } from "@/helpers/errorHandling";
-import store from "@/store/index";
+import { comingFromRouteGuard } from "@/helpers/routerGuards";
 
 import { useStore } from "@/store/useStore";
 import { ref, computed, onMounted, nextTick } from "vue";
@@ -105,18 +105,7 @@ export default {
     ResultsData,
     ResultsDescriptions,
   },
-
-  // Navigation guard that handles the logic before navigating to this route
-  beforeRouteEnter(to, from, next) {
-    //check if the route comes from another named route, then update the store
-    if (from && from.name) {
-      store.dispatch("setComingFromRoute", true);
-    } else {
-      store.dispatch("setComingFromRoute", false);
-    }
-    next();
-  },
-
+  beforeRouteEnter: comingFromRouteGuard,
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();

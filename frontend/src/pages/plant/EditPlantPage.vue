@@ -61,12 +61,12 @@ import { plantFormValidation } from "@/helpers/formsValidation";
 import { mapPlantForm } from "@/helpers/formsMapping";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 import { handleUserError } from "@/helpers/errorHandling";
+import { comingFromRouteGuard } from "@/helpers/routerGuards";
 
 import { UPDATE_PLANT } from "@/graphql/mutations/plant";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
 
 import { useStore } from "@/store/useStore";
-import store from "@/store/index";
 import { computed, ref, onMounted, nextTick } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -84,18 +84,7 @@ import { useMutation } from "@vue/apollo-composable";
 export default {
   name: "EditPlantPage",
   components: { PlantIdentification, PlantOrigin, PlantData },
-
-  //Navigation guard that handles the logic before navigating to this route
-  beforeRouteEnter(to, from, next) {
-    //check if the route comes from another named route, then update the store
-    if (from && from.name) {
-      store.dispatch("setComingFromRoute", true);
-    } else {
-      store.dispatch("setComingFromRoute", false);
-    }
-    next();
-  },
-
+  beforeRouteEnter: comingFromRouteGuard,
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
