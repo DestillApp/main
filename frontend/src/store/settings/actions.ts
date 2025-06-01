@@ -107,7 +107,7 @@ export default {
         input: "isDarkTheme",
         value: isDarkTheme,
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error.message === "Unauthorized") {
         return "Unauthorized";
       }
@@ -154,7 +154,7 @@ export default {
         variables: { distiller },
       });
       console.log("Distiller added:", data.addDistiller);
-    } catch (error) {
+    } catch (error: any) {
       if (error.message === "Unauthorized") {
         return "Unauthorized";
       }
@@ -179,7 +179,7 @@ export default {
       });
       context.commit("removeDistillerById", id);
       console.log("Distiller deleted:", data.deleteDistiller);
-    } catch (error) {
+    } catch (error: any) {
       if (error.message === "Unauthorized") {
         return "Unauthorized";
       }

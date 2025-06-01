@@ -185,7 +185,7 @@ export default defineComponent({
         } else {
           usernameExists.value = false;
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error checking username existence", error.message);
         usernameExists.value = false;
       }
@@ -240,7 +240,7 @@ export default defineComponent({
           );
         }
         router.push({ name: "LoginPage" });
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error submitting form", error.message);
         if (error.message == "Email already exists") {
           emailExists.value = true;

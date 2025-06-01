@@ -60,6 +60,7 @@ import { initialPlantForm } from "@/helpers/formsInitialState";
 import { plantFormValidation } from "@/helpers/formsValidation";
 import { mapPlantForm } from "@/helpers/formsMapping";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
+import { handleUserError } from "@/helpers/errorHandling";
 
 import { UPDATE_PLANT } from "@/graphql/mutations/plant";
 import { GET_PLANT_BY_ID } from "@/graphql/queries/plant";
@@ -164,12 +165,8 @@ export default defineComponent({
           data.getPlantById,
           fieldsToNormalize
         );
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get plant details:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         plantDetails.value = null;
       } finally {
         // Once the process is complete, set loading to false
@@ -229,16 +226,10 @@ export default defineComponent({
             id: plantId.value,
             plantInput: plantFormData,
           });
-        } catch (error) {
-          if (error.message === "Unauthorized") {
-            await store.dispatch("auth/logout");
-            router.push("/login");
-          }
-          console.error("Error submitting form", error);
+        } catch (error: any) {
+          await handleUserError(error);
         }
       } else {
-        console.log(isFormValid.value);
-        console.log("invalid form!");
         return;
       }
     };

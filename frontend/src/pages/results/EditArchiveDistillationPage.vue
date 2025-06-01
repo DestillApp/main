@@ -76,6 +76,7 @@ import { initialResultsForm } from "@/helpers/formsInitialState";
 import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
 import { UPDATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
+import { handleUserError } from "@/helpers/errorHandling";
 import store from "@/store/index";
 
 import { useStore } from "@/store/useStore";
@@ -182,12 +183,8 @@ export default defineComponent({
         };
 
         console.log("distillation details", distillationDetails.value);
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get archive distillation details:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         distillationDetails.value = null;
       } finally {
         // Once the process is complete, set loading to false
@@ -278,18 +275,11 @@ export default defineComponent({
             id: archiveId.value,
             input: distillationArchiveFormData,
           });
-        } catch (error) {
-          if (error.message === "Unauthorized") {
-            await store.dispatch("auth/logout");
-            router.push("/login");
-          }
+        } catch (error: any) {
+          await handleUserError(error);
           wasSubmitted.value = false;
-          console.log("error", isFormValid.value);
-          console.error("Error editing form", error);
         }
       } else {
-        console.log(isFormValid.value);
-        console.log("invalid form!");
         return;
       }
     };

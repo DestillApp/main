@@ -43,6 +43,7 @@ import { DistillationForm } from "@/types/forms/distillationForm";
 import { distillationFormValidation } from "@/helpers/formsValidation";
 import { initialDistillationForm } from "@/helpers/formsInitialState";
 import { mapDistillationForm } from "@/helpers/formsMapping";
+import { handleUserError } from "@/helpers/errorHandling";
 import store from "@/store/index";
 
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation";
@@ -127,20 +128,11 @@ export default defineComponent({
           if (result?.data) {
             distillId.value = result.data.createDistillation._id;
           }
-        } catch (error) {
-          if (error instanceof Error) {
-            if (error.message === "Unauthorized") {
-              await store.dispatch("auth/logout");
-              router.push("/login");
-            }
-            console.error("Error submitting form", error);
-          } else {
-            console.error("An unknown error occured", error);
-          }
+        } catch (error: any) {
+          await handleUserError(error);
           wasSubmitted.value = false;
         }
       } else {
-        console.log("invalid form!");
         return;
       }
     };
@@ -160,16 +152,8 @@ export default defineComponent({
             availableWeight: newWeight,
           },
         });
-      } catch (error) {
-        if (error instanceof Error) {
-          if (error.message === "Unauthorized") {
-            await store.dispatch("auth/logout");
-            router.push("/login");
-          }
-          console.error("Error changing form available weight:", error.message);
-        } else {
-          console.error("An unknown error occurred:", error);
-        }
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 

@@ -162,6 +162,7 @@ import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
+import { handleUserError } from "@/helpers/errorHandling";
 
 import {
   updateListSorting,
@@ -285,12 +286,8 @@ export default defineComponent({
         const end = page.value * distillationsPerPage.value;
 
         distillationsList.value = data.getDistillations.slice(start, end);
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get plant list:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         distillationsAmount.value = null;
         distillationsList.value = [];
       } finally {
@@ -473,12 +470,8 @@ export default defineComponent({
           }
         }
         closeDeleteModal();
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to delete plant:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 
@@ -502,12 +495,8 @@ export default defineComponent({
             },
           },
         });
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to update awailable weight:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 

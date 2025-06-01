@@ -85,6 +85,7 @@ import DistillerForm from "@/components/DistillerForm.vue";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import PasswordChangeForm from "@/components/PasswordChangeForm.vue";
 import type { Distiller } from "@/store/settings/index";
+import { handleUserError } from "@/helpers/errorHandling";
 
 export default {
   components: {
@@ -125,12 +126,8 @@ export default {
         });
         username.value = data.getUserDetails.username;
         email.value = data.getUserDetails.email;
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to fetch user details:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 
@@ -189,12 +186,8 @@ export default {
           input: "isDarkTheme",
           value: isDarkTheme.value,
         });
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to update theme:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     });
 

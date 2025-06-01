@@ -142,6 +142,7 @@ import {
   updateListSorting,
   updateListSettings,
 } from "@/graphql/mutations/settingsFunctions.js";
+import { handleUserError } from "@/helpers/errorHandling";
 import { DELETE_PLANT } from "@/graphql/mutations/plant";
 import type { BasicPlant } from "@/types/forms/plantForm";
 /**
@@ -259,12 +260,8 @@ export default defineComponent({
         const end = page.value * plantsPerPage.value;
 
         plantList.value = data.getPlants.slice(start, end);
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get plant list:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         plantsAmount.value = null;
         plantList.value = [];
       } finally {
@@ -426,12 +423,8 @@ export default defineComponent({
           }
         }
         closeDeleteModal();
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to delete plant:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 

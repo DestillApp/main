@@ -41,6 +41,7 @@ import { PlantForm } from "@/types/forms/plantForm";
 import { initialPlantForm } from "@/helpers/formsInitialState";
 import { plantFormValidation } from "@/helpers/formsValidation";
 import { mapPlantForm } from "@/helpers/formsMapping";
+import { handleUserError } from "@/helpers/errorHandling";
 
 import { CREATE_PLANT } from "@/graphql/mutations/plant";
 
@@ -115,16 +116,11 @@ export default defineComponent({
           if (result?.data) {
             plantId.value = result.data.createPlant._id;
           }
-        } catch (error) {
-          if (error.message === "Unauthorized") {
-            await store.dispatch("auth/logout");
-            router.push("/login");
-          }
-          console.error("Error submitting form", error);
+        } catch (error: any) {
+          await handleUserError(error);
           wasSubmitted.value = false;
         }
       } else {
-        console.log("invalid form!");
         return;
       }
     };

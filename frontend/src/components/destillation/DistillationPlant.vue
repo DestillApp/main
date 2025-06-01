@@ -195,6 +195,7 @@ import {
   setKeyboardIntegerNumber,
   setKeyboardFormatedNumber,
 } from "@/helpers/formatHelpers";
+import { handleUserError} from "@/helpers/errorHandling";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 import {
@@ -422,17 +423,8 @@ export default defineComponent({
           },
         });
         plants.value = data.getPlants;
-      } catch (error) {
-        // Narrow the type of error to check its properties
-        if (error instanceof Error) {
-          if (error.message === "Unauthorized") {
-            await store.dispatch("auth/logout");
-            router.push("/login");
-          }
-          console.error("Failed to get plant list:", error.message);
-        } else {
-          console.error("An unknown error occurred:", error);
-        }
+      } catch (error: any) {
+        await handleUserError(error);
         plants.value = [];
       }
     };

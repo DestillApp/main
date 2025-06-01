@@ -89,7 +89,7 @@
             v-if="plantDetails.plantOrigin === 'kupno'"
           >
             wiek przy zakupie: {{ plantDetails.plantAge }}
-            {{ plantAgeWithSuffix(plantDetails.plantAge) }}
+            {{ plantAgeWithSuffix(plantDetails.plantAge ?? 0) }}
           </div>
           <div class="plant-details__data">
             stan: {{ plantDetails.plantState }}
@@ -121,6 +121,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
+import { handleUserError } from "@/helpers/errorHandling";
 
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
@@ -189,12 +190,8 @@ export default defineComponent({
           data.getPlantById,
           fieldsToNormalize
         );
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get plant details:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         plantDetails.value = null;
       } finally {
         isLoading.value = false;
@@ -240,12 +237,8 @@ export default defineComponent({
           router.push({ name: "PlantListPage", params: { page: 1 } });
         }
         closeDeleteModal();
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to delete plant:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 

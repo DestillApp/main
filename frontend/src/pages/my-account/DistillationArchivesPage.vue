@@ -23,7 +23,7 @@
       <list-sorting
         v-if="distillationArchivesList.length >= 1 || isSearching"
         class="distillation-archives__sorting"
-        :options="options"
+        :options="Object.values(options)"
         :sorting="sortingOption"
         @choose:sorting="handleSorting"
       ></list-sorting>
@@ -44,7 +44,7 @@
       <!-- Iterate through distillationArchivesList and display each distillation archive's data -->
       <li
         v-for="archive in distillationArchivesList"
-        :key="archive.id"
+        :key="archive._id"
         class="distillation-archives__item"
       >
         <div class="distillation-archives__item-container">
@@ -80,10 +80,10 @@
               @click="
                 openDeleteModal(
                   archive._id,
-                  archive.distilledPlant.id,
+                  archive.distilledPlant._id,
                   archive.distilledPlant.plantName,
                   archive.distilledPlant.plantPart,
-                  archive.weightForDistillation,
+                  archive.distillationData.weightForDistillation ?? 0,
                   archive.distillationData.distillationDate
                 )
               "
@@ -126,7 +126,7 @@
     </div>
     <!-- Pagination for navigating distillation archives list -->
     <v-pagination
-      v-if="!isLoading && archivesAmount > archivesPerPage"
+      v-if="!isLoading && (archivesAmount ?? 0) > archivesPerPage"
       v-model="page"
       :length="paginationLength"
       rounded="circle"
@@ -153,6 +153,7 @@ import { useStore } from "@/store/useStore";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
+import { handleUserError } from "@/helpers/errorHandling";
 import { GET_DISTILLATION_ARCHIVES } from "@/graphql/queries/results";
 import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import {
@@ -279,12 +280,8 @@ export default defineComponent({
           end
         );
         console.log(distillationArchivesList.value);
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get distillation archives list:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         archivesAmount.value = null;
         distillationArchivesList.value = [];
       } finally {
@@ -470,12 +467,8 @@ export default defineComponent({
           }
         }
         closeDeleteModal();
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to delete distillation archive:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 

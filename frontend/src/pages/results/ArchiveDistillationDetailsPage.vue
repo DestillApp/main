@@ -192,6 +192,7 @@ import { mdiChevronDown } from "@mdi/js";
 import { mdiChevronUp } from "@mdi/js";
 import { GET_ARCHIVE_DISTILLATION_BY_ID } from "@/graphql/queries/results";
 import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
+import { handleUserError } from "@/helpers/errorHandling";
 import type { DistillationArchive } from "@/types/forms/resultsForm";
 
 export default defineComponent({
@@ -248,12 +249,8 @@ export default defineComponent({
         });
         distillationDetails.value = data.getArchiveDistillationById;
         console.log(distillationDetails.value);
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get archive distillation details:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         distillationDetails.value = null;
       } finally {
         isLoading.value = false;
@@ -320,12 +317,8 @@ export default defineComponent({
           name: "DistillationArchivesPage",
           params: { page: page.value },
         });
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to delete distillation:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 

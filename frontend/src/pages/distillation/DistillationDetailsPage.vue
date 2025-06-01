@@ -167,6 +167,7 @@ import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import PlantDetails from "@/components/plant/PlantDetails.vue";
+import { handleUserError } from "@/helpers/errorHandling";
 import { mdiChevronDown } from "@mdi/js";
 import { mdiChevronUp } from "@mdi/js";
 
@@ -229,12 +230,8 @@ export default defineComponent({
           variables: { id: distillationId.value, formatDates: true },
         });
         distillationDetails.value = data.getDistillationById;
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get plant details:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         distillationDetails.value = null;
       } finally {
         isLoading.value = false;
@@ -350,12 +347,8 @@ export default defineComponent({
             },
           },
         });
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to update available weight:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 

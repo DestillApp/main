@@ -36,6 +36,7 @@ import {
 import { GetPlantById, NormalizedPlantById } from "@/types/forms/plantForm";
 import { resultsFormValidation } from "@/helpers/formsValidation";
 import { initialResultsForm } from "@/helpers/formsInitialState";
+import { handleUserError } from "@/helpers/errorHandling";
 import { CREATE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
@@ -162,12 +163,8 @@ export default defineComponent({
         );
         // Save plant details in Vuex state
         setPlantDetails(plantDetails);
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get plant details:", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 
@@ -190,12 +187,8 @@ export default defineComponent({
 
         // Fetch plant details using the plant ID from distillation details
         await fetchPlantDetails(distillationDetails.choosedPlant.id);
-      } catch (error) {
-        console.error("Failed to get distillation details:", error);
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 
@@ -221,13 +214,9 @@ export default defineComponent({
           await createDistillationArchive({
             input: resultsFormData,
           });
-        } catch (error) {
-          if (error.message === "Unauthorized") {
-            await store.dispatch("auth/logout");
-            router.push("/login");
-          }
+        } catch (error: any) {
+          await handleUserError(error);
           wasSubmitted.value = false;
-          console.error("Error submitting form", error);
           throw error;
         }
       } else {
@@ -249,12 +238,8 @@ export default defineComponent({
           mutation: DELETE_DISTILLATION,
           variables: { id: distillationId.value },
         });
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Error deleting distillation:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         throw error;
       }
     };

@@ -55,6 +55,7 @@ import { distillationFormValidation } from "@/helpers/formsValidation";
 import { initialDistillationForm } from "@/helpers/formsInitialState";
 import { mapDistillationForm } from "@/helpers/formsMapping";
 import store from "@/store/index";
+import { handleUserError } from "@/helpers/errorHandling";
 
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { UPDATE_DISTILLATION } from "@/graphql/mutations/distillation";
@@ -133,22 +134,15 @@ export default defineComponent({
     const fetchDistillationDetails = async (): Promise<void> => {
       try {
         isLoading.value = true;
-        // Make a query to fetch plant details by plant ID
         const { data } = await apolloClient.query({
           query: GET_DISTILLATION_BY_ID,
           variables: { id: distillationId.value, formatDates: false },
         });
-        // Store the fetched plant details in the plantDetails reference
         distillationDetails.value = data.getDistillationById;
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Failed to get distillation details:", error);
+      } catch (error: any) {
+        await handleUserError(error);
         distillationDetails.value = null;
       } finally {
-        // Once the process is complete, set loading to false
         isLoading.value = false;
       }
     };
@@ -207,22 +201,16 @@ export default defineComponent({
           const distillationFormData = mapDistillationForm(
             distillationForm.value
           );
-
           // Send the GraphQL mutation to edit the exsisting distillation
           await updateDistillation({
             id: distillationId.value,
             input: distillationFormData,
           });
-        } catch (error) {
-          if (error.message === "Unauthorized") {
-            await store.dispatch("auth/logout");
-            router.push("/login");
-          }
-          console.error("Error editing form", error);
+        } catch (error: any) {
+          await handleUserError(error);
           wasSubmitted.value = true;
         }
       } else {
-        console.log("invalid form!");
         return;
       }
     };
@@ -253,12 +241,8 @@ export default defineComponent({
             availableWeight: newWeight,
           },
         });
-      } catch (error) {
-        if (error.message === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-        }
-        console.error("Error changing form available weight", error);
+      } catch (error: any) {
+        await handleUserError(error);
       }
     };
 
