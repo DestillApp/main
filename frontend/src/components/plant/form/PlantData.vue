@@ -10,7 +10,9 @@
         inputColor="plant"
         :invalidInput="wasSubmitted && !isFormValid && !formData.plantWeight"
         :storeName="storeName"
-        @change:modelValue="setNumber"
+        @change:modelValue="
+          (value, id) => setNumberFormat(store, value, id, storeName)
+        "
         @set:keyboard="setKeyboardFormatedNumber"
         label="Waga surowca"
         id="plantWeight"
@@ -38,7 +40,9 @@
           wasSubmitted && !isFormValid && !formData.availableWeight
         "
         :storeName="storeName"
-        @change:modelValue="setNumber"
+        @change:modelValue="
+          (value, id) => setNumberFormat(store, value, id, storeName)
+        "
         @set:keyboard="setKeyboardFormatedNumber"
         label="Waga surowca na stanie"
         id="availableWeight"
@@ -84,7 +88,9 @@
         inputColor="plant"
         :invalidInput="wasSubmitted && !isFormValid && !formData.dryingTime"
         :storeName="storeName"
-        @update:modelValue="setInteger"
+        @update:modelValue="
+          (value, id) => setIntegerNumber(store, value, id, storeName)
+        "
         @set:keyboard="setKeyboardIntegerNumber"
         label="Czas podsuszania"
         id="dryingTime"
@@ -113,7 +119,9 @@
         inputColor="plant"
         :invalidInput="wasSubmitted && !isFormValid && !formData.plantAge"
         :storeName="storeName"
-        @update:modelValue="setInteger"
+        @update:modelValue="
+          (value, id) => setIntegerNumber(store, value, id, storeName)
+        "
         @set:keyboard="setKeyboardIntegerNumber"
         label="Wiek surowca w miesiącach"
         id="plantAge"
@@ -211,36 +219,6 @@ export default {
       });
     });
 
-    // Using the format function
-    const setInteger = (
-      value: string | number,
-      id: string,
-      storeName: string
-    ): void => {
-      const numericValue = typeof value === "string" ? Number(value) : value;
-      setIntegerNumber(
-        store,
-        numericValue >= 0 ? numericValue : null,
-        id,
-        storeName
-      );
-    };
-
-    // Using the format function
-    const setNumber = (
-      value: string | number,
-      id: string,
-      storeName: string
-    ): void => {
-      const numericValue = typeof value === "string" ? Number(value) : value;
-      setNumberFormat(
-        store,
-        numericValue >= 0 ? numericValue : null,
-        id,
-        storeName
-      );
-    };
-
     // Watcher to handle changes in the plant state. Updates related fields and dispatches changes to the store.
     watch(
       () => plantState.value,
@@ -267,13 +245,14 @@ export default {
     );
 
     return {
+      store,
       storeName,
       formData,
       states,
       title,
       plantAgeWithSuffix,
-      setNumber,
-      setInteger,
+      setNumberFormat,
+      setIntegerNumber,
       setKeyboardIntegerNumber,
       setKeyboardFormatedNumber,
     };

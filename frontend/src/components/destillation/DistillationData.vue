@@ -11,7 +11,9 @@
         wasSubmitted && !isFormValid && !formData.waterForDistillation
       "
       :storeName="storeName"
-      @update:modelValue="setInteger"
+      @update:modelValue="
+        (value, id) => setIntegerNumber(store, value, id, storeName)
+      "
       @set:keyboard="setKeyboardIntegerNumber"
       label="Ilość wody użytej do destylacji"
       id="waterForDistillation"
@@ -114,7 +116,6 @@ import {
  * @description This component handles the distillation data inputs, such as water used and distillation time.
  * It integrates with Vuex to store form data and manage state updates.
  * @see fetchData
- * @see setInteger
  * @see setKeyboardIntegerNumber
  * @see saveTime
  */
@@ -181,21 +182,6 @@ export default {
       });
     });
 
-    // Using the format function to handle integer input for water volume
-    const setInteger = (
-      value: string | number,
-      id: string,
-      storeName: string
-    ): void => {
-      const numericValue = typeof value === "string" ? Number(value) : value;
-      setIntegerNumber(
-        store,
-        numericValue >= 0 ? numericValue : null,
-        id,
-        storeName
-      );
-    };
-
     const saveTime = (value: string | number, key: string): void => {
       const numericValue = typeof value === "string" ? Number(value) : value;
       const isValid = !isNaN(numericValue) && numericValue >= 0;
@@ -208,9 +194,10 @@ export default {
     };
 
     return {
+      store,
       storeName,
       formData,
-      setInteger,
+      setIntegerNumber,
       setKeyboardIntegerNumber,
       saveTime,
     };

@@ -51,7 +51,9 @@
             wasSubmitted && !isFormValid && !formData.harvestTemperature
           "
           :storeName="storeName"
-          @update:modelValue="setInteger"
+          @update:modelValue="
+            (value, id) => setIntegerNumber(store, value, id, storeName)
+          "
           @set:keyboard="setKeyboardIntegerNumber"
           label="Temperatura podczas zbioru"
           id="harvestTemperature"
@@ -339,21 +341,6 @@ export default {
       store.dispatch("plant/setValue", { input, value: currentValue });
     };
 
-    // Using the format function
-    const setInteger = (
-      value: string | number,
-      id: string,
-      storeName: string
-    ): void => {
-      const numericValue = typeof value === "string" ? Number(value) : value;
-      setIntegerNumber(
-        store,
-        numericValue >= 0 ? numericValue : null,
-        id,
-        storeName
-      );
-    };
-
     /**
      * Function to store a date value in the Vuex store
      * @function storeDate
@@ -431,6 +418,7 @@ export default {
     };
 
     return {
+      store,
       storeName,
       formData,
       plantOrigin,
@@ -438,7 +426,7 @@ export default {
       origins,
       disabled,
       setValue,
-      setInteger,
+      setIntegerNumber,
       setKeyboardIntegerNumber,
       storeDate,
       setCountry,

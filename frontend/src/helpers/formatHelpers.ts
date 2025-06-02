@@ -8,17 +8,18 @@ import type { RootState } from "@/types/store/index";
  */
 export const setNumberFormat = (
   store: Store<RootState>,
-  currentValue: number | null,
-  input: string,
+  value: string | number,
+  id: string,
   storeName: string,
   decimals?: number
 ): void => {
-  if (!currentValue || isNaN(currentValue)) {
-    store.dispatch(`${storeName}/setValue`, { input, value: null });
+  const numericValue = typeof value === "string" ? Number(value) : value;
+  if (!numericValue || isNaN(numericValue)) {
+    store.dispatch(`${storeName}/setValue`, { input: id, value: null });
   } else {
     store.dispatch(`${storeName}/setNumberFormat`, {
-      input,
-      value: currentValue,
+      input: id,
+      value: numericValue,
       decimals,
     });
   }
@@ -32,16 +33,17 @@ export const setNumberFormat = (
  */
 export const setIntegerNumber = (
   store: Store<RootState>,
-  currentValue: number | null,
-  input: string,
+  value: string | number,
+  id: string,
   storeName: string
 ): void => {
-  if (!currentValue || isNaN(currentValue)) {
-    store.dispatch(`${storeName}/setValue`, { input, value: null });
+  const numericValue = typeof value === "string" ? Number(value) : value;
+  if (!numericValue || isNaN(numericValue)) {
+    store.dispatch(`${storeName}/setValue`, { input: id, value: null });
   } else {
     store.dispatch(`${storeName}/setIntegerValue`, {
-      input,
-      value: currentValue,
+      input: id,
+      value: numericValue,
     });
   }
 };

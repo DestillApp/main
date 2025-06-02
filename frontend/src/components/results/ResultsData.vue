@@ -11,7 +11,9 @@
         inputColor="results"
         :invalidInput="wasSubmitted && !isFormValid && !formData.oilAmount"
         :storeName="storeName"
-        @change:modelValue="setNumberOne"
+        @change:modelValue="
+          (value, id) => setNumberFormat(store, value, id, storeName, 1)
+        "
         label="Ilość olejku eterycznego"
         id="oilAmount"
         min="0.1"
@@ -38,7 +40,9 @@
             wasSubmitted && !isFormValid && !formData.hydrosolAmount
           "
           :storeName="storeName"
-          @change:modelValue="setNumberOne"
+          @change:modelValue="
+            (value, id) => setNumberFormat(store, value, id, storeName, 1)
+          "
           label="Ilość hydrolatu"
           id="hydrosolAmount"
           min="0.1"
@@ -64,7 +68,9 @@
           inputColor="results"
           :invalidInput="wasSubmitted && !isFormValid && !formData.hydrosolpH"
           :storeName="storeName"
-          @change:modelValue="setNumberTwo"
+          @change:modelValue="
+            (value, id) => setNumberFormat(store, value, id, storeName, 2)
+          "
           label="pH hydrolatu"
           id="hydrosolpH"
           min="0"
@@ -116,40 +122,6 @@ export default {
       () => store.getters["results/resultsForm"]
     );
 
-    // Function to format number input and set value in Vuex store
-    const setNumberOne = (
-      value: string | number,
-      id: string,
-      storeName: string
-    ): void => {
-      let decimals = 1;
-      const numericValue = typeof value === "string" ? Number(value) : value;
-      setNumberFormat(
-        store,
-        numericValue >= 0 ? numericValue : null,
-        id,
-        storeName,
-        decimals
-      );
-    };
-
-    // Function to format number input and set value in Vuex store
-    const setNumberTwo = (
-      value: string | number,
-      id: string,
-      storeName: string
-    ): void => {
-      let decimals = 2;
-      const numericValue = typeof value === "string" ? Number(value) : value;
-      setNumberFormat(
-        store,
-        numericValue >= 0 ? numericValue : null,
-        id,
-        storeName,
-        decimals
-      );
-    };
-
     // Fetch initial data from local storage on component mount
     onMounted(() => {
       const keys = ["oilAmount", "hydrosolAmount", "hydrosolpH"];
@@ -159,9 +131,9 @@ export default {
     });
 
     return {
+      store,
       formData,
-      setNumberOne,
-      setNumberTwo,
+      setNumberFormat,
       storeName,
     };
   },

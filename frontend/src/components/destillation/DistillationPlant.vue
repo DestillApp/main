@@ -71,7 +71,9 @@
         wasSubmitted && !isFormValid && !formData.weightForDistillation
       "
       :storeName="storeName"
-      @change:modelValue="setNumber"
+      @change:modelValue="
+        (value, id) => setNumberFormat(store, value, id, storeName)
+      "
       @set:keyboard="setKeyboardFormatedNumber"
       label="Waga surowca użytego do destylacji"
       id="weightForDistillation"
@@ -120,7 +122,9 @@
               wasSubmitted && !isFormValid && !formData.soakingTime
             "
             :storeName="storeName"
-            @update:modelValue="setInteger"
+            @update:modelValue="
+              (value, id) => setIntegerNumber(store, value, id, storeName)
+            "
             @set:keyboard="setKeyboardIntegerNumber"
             label="Czas namaczania"
             placeholder="h"
@@ -147,7 +151,9 @@
               wasSubmitted && !isFormValid && !formData.weightAfterSoaking
             "
             :storeName="storeName"
-            @change:modelValue="setNumber"
+            @change:modelValue="
+              (value, id) => setNumberFormat(store, value, id, storeName)
+            "
             @set:keyboard="setKeyboardFormatedNumber"
             label="Waga surowca po namoczeniu"
             placeholder="kg"
@@ -475,36 +481,6 @@ export default {
       }
     };
 
-    // Using the format function
-    const setInteger = (
-      value: string | number,
-      id: string,
-      storeName: string
-    ): void => {
-      const numericValue = typeof value === "string" ? Number(value) : value;
-      setIntegerNumber(
-        store,
-        numericValue >= 0 ? numericValue : null,
-        id,
-        storeName
-      );
-    };
-
-    // Using the format function
-    const setNumber = (
-      value: string | number,
-      id: string,
-      storeName: string
-    ): void => {
-      const numericValue = typeof value === "string" ? Number(value) : value;
-      setNumberFormat(
-        store,
-        numericValue >= 0 ? numericValue : null,
-        id,
-        storeName
-      );
-    };
-
     // Watcher to handle changes in the isPlantSoaked state. Updates related fields and dispatches changes to the store.
     watch(
       () => isPlantSoaked.value, // Watch the value of isPlantSoaked
@@ -517,8 +493,6 @@ export default {
           });
         }
 
-        //PROBLEM WITH CLEANING FIELDS!!!
-        // If the new value is false
         if (newValue === false) {
           // Clear soaking-related fields if the previous state was true
           if (oldValue === true) {
@@ -554,6 +528,7 @@ export default {
     );
 
     return {
+      store,
       storeName,
       formData,
       isPlantSoaked,
@@ -563,8 +538,8 @@ export default {
       setPlant,
       onInput,
       onBlur,
-      setNumber,
-      setInteger,
+      setNumberFormat,
+      setIntegerNumber,
       setKeyboardIntegerNumber,
       setKeyboardFormatedNumber,
       isDarkTheme,
