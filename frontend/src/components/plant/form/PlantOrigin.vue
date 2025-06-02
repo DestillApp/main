@@ -48,7 +48,8 @@
           placeholder="°C"
           inputColor="plant"
           :invalidInput="
-            wasSubmitted && !isFormValid && !formData.harvestTemperature
+            (wasSubmitted && !isFormValid && !formData.harvestTemperature) ||
+            !isTemperatureCorrect
           "
           :storeName="storeName"
           @update:modelValue="
@@ -70,6 +71,9 @@
                 wasSubmitted && !isFormValid && !formData.harvestTemperature
               "
               >Wpisz temperaturę zbioru</span
+            >
+            <span v-else-if="!isTemperatureCorrect"
+              >Temperatura musi być w zakresie -15°C do 40°C</span
             >
             <span v-else>&nbsp;</span>
           </template>
@@ -266,6 +270,18 @@ export default {
       () => store.getters["plant/plantOrigin"]
     );
 
+    const isTemperatureCorrect = computed<boolean>(() => {
+      const temperature = formData.value.harvestTemperature;
+      if (
+        (temperature && temperature < -15) ||
+        (temperature && temperature > 40)
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+
     // Watch for changes in the specific formData value (countryOfOrigin)
     watch(
       () => formData.value.countryOfOrigin,
@@ -422,6 +438,7 @@ export default {
       storeName,
       formData,
       plantOrigin,
+      isTemperatureCorrect,
       title,
       origins,
       disabled,

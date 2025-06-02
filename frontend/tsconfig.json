@@ -7,7 +7,6 @@
     "jsx": "preserve",
     "esModuleInterop": true,
     "sourceMap": true,
-    // "noImplicitAny": false,
     "allowJs": true,
     "checkJs": false,
     "noEmit": true,

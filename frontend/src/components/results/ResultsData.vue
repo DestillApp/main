@@ -14,6 +14,7 @@
         @change:modelValue="
           (value, id) => setNumberFormat(store, value, id, storeName, 1)
         "
+        @set:keyboard="preventMinusNumber"
         label="Ilość olejku eterycznego"
         id="oilAmount"
         min="0.1"
@@ -43,6 +44,7 @@
           @change:modelValue="
             (value, id) => setNumberFormat(store, value, id, storeName, 1)
           "
+          @set:keyboard="preventMinusNumber"
           label="Ilość hydrolatu"
           id="hydrosolAmount"
           min="0.1"
@@ -66,11 +68,15 @@
           classType="number"
           placeholder="pH"
           inputColor="results"
-          :invalidInput="wasSubmitted && !isFormValid && !formData.hydrosolpH"
+          :invalidInput="
+            (wasSubmitted && !isFormValid && !formData.hydrosolpH) ||
+            !isPhCorrect
+          "
           :storeName="storeName"
           @change:modelValue="
             (value, id) => setNumberFormat(store, value, id, storeName, 2)
           "
+          @set:keyboard="preventMinusNumber"
           label="pH hydrolatu"
           id="hydrosolpH"
           min="0"
@@ -81,6 +87,7 @@
             <span v-if="wasSubmitted && !isFormValid && !formData.hydrosolpH"
               >Wpisz pH hydrolatu</span
             >
+            <span v-if="!isPhCorrect">pH musi być w zakresie 0-14</span>
           </template>
         </base-text-input>
       </div>
@@ -92,7 +99,7 @@
 import { computed, onMounted } from "vue";
 import { useStore } from "@/store/useStore";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
-import { setNumberFormat } from "@/helpers/formatHelpers";
+import { setNumberFormat, preventMinusNumber } from "@/helpers/formatHelpers";
 import { ResultsForm } from "@/types/forms/resultsForm";
 
 /**
@@ -122,6 +129,15 @@ export default {
       () => store.getters["results/resultsForm"]
     );
 
+    const isPhCorrect = computed<boolean>(() => {
+      const ph = formData.value.hydrosolpH;
+      if ((ph && ph < 0) || (ph && ph > 14)) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+
     // Fetch initial data from local storage on component mount
     onMounted(() => {
       const keys = ["oilAmount", "hydrosolAmount", "hydrosolpH"];
@@ -133,7 +149,9 @@ export default {
     return {
       store,
       formData,
+      isPhCorrect,
       setNumberFormat,
+      preventMinusNumber,
       storeName,
     };
   },

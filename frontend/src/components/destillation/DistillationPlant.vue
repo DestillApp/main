@@ -74,7 +74,7 @@
       @change:modelValue="
         (value, id) => setNumberFormat(store, value, id, storeName)
       "
-      @set:keyboard="setKeyboardFormatedNumber"
+      @set:keyboard="preventMinusNumber"
       label="Waga surowca użytego do destylacji"
       id="weightForDistillation"
       placeholder="kg"
@@ -125,7 +125,7 @@
             @update:modelValue="
               (value, id) => setIntegerNumber(store, value, id, storeName)
             "
-            @set:keyboard="setKeyboardIntegerNumber"
+            @set:keyboard="handleKeyboard"
             label="Czas namaczania"
             placeholder="h"
             id="soakingTime"
@@ -154,7 +154,7 @@
             @change:modelValue="
               (value, id) => setNumberFormat(store, value, id, storeName)
             "
-            @set:keyboard="setKeyboardFormatedNumber"
+            @set:keyboard="preventMinusNumber"
             label="Waga surowca po namoczeniu"
             placeholder="kg"
             id="weightAfterSoaking"
@@ -199,7 +199,7 @@ import {
   setIntegerNumber,
   setNumberFormat,
   setKeyboardIntegerNumber,
-  setKeyboardFormatedNumber,
+  preventMinusNumber,
 } from "@/helpers/formatHelpers";
 import { handleUserError } from "@/helpers/errorHandling";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
@@ -227,7 +227,6 @@ import { GET_BASIC_PLANT_BY_ID } from "@/graphql/queries/plant";
  * @see setNumberFormat
  * @see setIntegerNumber
  * @see setKeyboardIntegerNumber
- * @see setKeyboardFormatedNumber
  */
 
 interface Props {
@@ -309,6 +308,11 @@ export default {
     const comingFromRoute = computed<boolean>(
       () => store.getters.comingFromRoute
     );
+
+    const handleKeyboard = (e: KeyboardEvent) => {
+      setKeyboardIntegerNumber(e);
+      preventMinusNumber(e);
+    };
 
     const getPlantData = async (): Promise<BasicPlant | undefined> => {
       try {
@@ -541,7 +545,8 @@ export default {
       setNumberFormat,
       setIntegerNumber,
       setKeyboardIntegerNumber,
-      setKeyboardFormatedNumber,
+      preventMinusNumber,
+      handleKeyboard,
       isDarkTheme,
     };
   },

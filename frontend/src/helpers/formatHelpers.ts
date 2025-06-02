@@ -59,13 +59,8 @@ export const setKeyboardIntegerNumber = (e: KeyboardEvent): void => {
   }
 };
 
-/**
- * Prevents keyboard input for non-formatted number values.
- * @function setKeyboardFormatedNumber
- * @param {Event} e - The keyboard event.
- */
-export const setKeyboardFormatedNumber = (e: KeyboardEvent): void => {
-  if (e.key === "." || e.key === "-") {
+export const preventMinusNumber = (e: KeyboardEvent): void => {
+  if (e.key === "-") {
     e.preventDefault();
   }
 };

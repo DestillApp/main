@@ -13,7 +13,7 @@
         @change:modelValue="
           (value, id) => setNumberFormat(store, value, id, storeName)
         "
-        @set:keyboard="setKeyboardFormatedNumber"
+        @set:keyboard="preventMinusNumber"
         label="Waga surowca"
         id="plantWeight"
         placeholder="kg"
@@ -43,7 +43,7 @@
         @change:modelValue="
           (value, id) => setNumberFormat(store, value, id, storeName)
         "
-        @set:keyboard="setKeyboardFormatedNumber"
+        @set:keyboard="preventMinusNumber"
         label="Waga surowca na stanie"
         id="availableWeight"
         placeholder="kg"
@@ -91,7 +91,7 @@
         @update:modelValue="
           (value, id) => setIntegerNumber(store, value, id, storeName)
         "
-        @set:keyboard="setKeyboardIntegerNumber"
+        @set:keyboard="handleKeyboard"
         label="Czas podsuszania"
         id="dryingTime"
         placeholder="h"
@@ -122,7 +122,7 @@
         @update:modelValue="
           (value, id) => setIntegerNumber(store, value, id, storeName)
         "
-        @set:keyboard="setKeyboardIntegerNumber"
+        @set:keyboard="handleKeyboard"
         label="Wiek surowca w miesiącach"
         id="plantAge"
         min="1"
@@ -151,7 +151,7 @@ import {
   setIntegerNumber,
   setNumberFormat,
   setKeyboardIntegerNumber,
-  setKeyboardFormatedNumber,
+  preventMinusNumber,
 } from "@/helpers/formatHelpers";
 import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
 import { PlantForm } from "@/types/forms/plantForm";
@@ -163,7 +163,6 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
  * @see setNumberFormat
  * @see setIntegerNumber
  * @see setKeyboardIntegerNumber
- * @see setKeyboardFormatedNumber
  */
 
 enum PlantState {
@@ -205,6 +204,11 @@ export default {
     const plantState = computed<PlantState | "">(
       () => store.getters["plant/plantState"]
     );
+
+    const handleKeyboard = (e: KeyboardEvent) => {
+      setKeyboardIntegerNumber(e);
+      preventMinusNumber(e);
+    };
 
     // Fetch initial data from local storage on component mount
     onMounted(() => {
@@ -253,8 +257,8 @@ export default {
       plantAgeWithSuffix,
       setNumberFormat,
       setIntegerNumber,
-      setKeyboardIntegerNumber,
-      setKeyboardFormatedNumber,
+      preventMinusNumber,
+      handleKeyboard,
     };
   },
 };

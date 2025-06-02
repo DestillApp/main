@@ -14,7 +14,7 @@
       @update:modelValue="
         (value, id) => setIntegerNumber(store, value, id, storeName)
       "
-      @set:keyboard="setKeyboardIntegerNumber"
+      @set:keyboard="handleKeyboard"
       label="Ilość wody użytej do destylacji"
       id="waterForDistillation"
       min="0"
@@ -46,7 +46,7 @@
           !formData.distillationTime.distillationMinutes
         "
         :storeName="storeName"
-        @set:keyboard="setKeyboardIntegerNumber"
+        @set:keyboard="handleKeyboard"
         @update:modelValue="saveTime"
         label="Długość procesu destylacji"
         id="distillationHours"
@@ -67,6 +67,9 @@
           >
             Wpisz długość procesu destylacji
           </span>
+          <span v-if="!isMinutesCorrect">
+            Minuty powinny być w zakresie od 1 do 59
+          </span>
           <span v-else>&nbsp;</span>
         </template>
       </base-text-input>
@@ -78,13 +81,14 @@
         placeholder="min"
         inputColor="distillation"
         :invalidInput="
-          wasSubmitted &&
-          !isFormValid &&
-          !formData.distillationTime.distillationHours &&
-          !formData.distillationTime.distillationMinutes
+          (wasSubmitted &&
+            !isFormValid &&
+            !formData.distillationTime.distillationHours &&
+            !formData.distillationTime.distillationMinutes) ||
+          !isMinutesCorrect
         "
         :storeName="storeName"
-        @set:keyboard="setKeyboardIntegerNumber"
+        @set:keyboard="handleKeyboard"
         @update:modelValue="saveTime"
         id="distillationMinutes"
         min="0"
@@ -109,6 +113,7 @@ import { DistillationForm } from "@/types/forms/distillationForm";
 import {
   setIntegerNumber,
   setKeyboardIntegerNumber,
+  preventMinusNumber,
 } from "@/helpers/formatHelpers";
 
 /**
@@ -145,6 +150,19 @@ export default {
     const storeName = computed<string>(() =>
       props.isEditing ? "results" : "distillation"
     );
+
+    const isMinutesCorrect = computed<boolean>(() => {
+      const minutes = formData.value.distillationTime.distillationMinutes;
+      if (minutes && (minutes < 0 || minutes > 59)) {
+        return false;
+      }
+      return true;
+    });
+
+    const handleKeyboard = (e: KeyboardEvent) => {
+      setKeyboardIntegerNumber(e);
+      preventMinusNumber(e);
+    };
 
     // Fetch initial form data from local storage on component mount
     onMounted(() => {
@@ -197,8 +215,9 @@ export default {
       store,
       storeName,
       formData,
+      isMinutesCorrect,
       setIntegerNumber,
-      setKeyboardIntegerNumber,
+      handleKeyboard,
       saveTime,
     };
   },

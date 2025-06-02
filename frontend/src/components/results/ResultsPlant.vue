@@ -62,6 +62,7 @@
       :disabled="isEditing"
       label="Waga surowca użytego do destylacji"
       id="weightForDistillation"
+      min="0"
     >
       <template v-slot:unit>
         <div>kg</div>
@@ -93,8 +94,11 @@
             classType="number"
             inputColor="plant"
             :disabled="isEditing"
+            @set:keyboard="preventMinusNumber"
             label="Czas namaczania"
             id="soakingTime"
+            min="1"
+            step="1"
           >
             <template v-slot:unit>
               <div>h</div>
@@ -137,6 +141,7 @@
 import { useStore } from "@/store/useStore";
 import { onMounted, computed } from "vue";
 import { initialResultsForm } from "@/helpers/formsInitialState";
+import { preventMinusNumber } from "@/helpers/formatHelpers";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 import { ResultsPlant, ResultsDistillation } from "@/types/forms/resultsForm";
 
@@ -221,6 +226,7 @@ export default {
     return {
       plantData,
       distillationData,
+      preventMinusNumber,
       isDarkTheme,
     };
   },
