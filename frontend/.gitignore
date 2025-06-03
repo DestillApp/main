@@ -23,3 +23,6 @@ pnpm-debug.log*
 *.sw?
 
 .notes
+
+# Sentry Config File
+.env.sentry-build-plugin

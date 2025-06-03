@@ -124,6 +124,17 @@ const app = createApp({
   render: () => h(App),
 });
 
+import * as Sentry from "@sentry/vue";
+Sentry.init({
+  app,
+  dsn: "https://553bd7fe70d33389fa926cd0c7375239@o4509434011910144.ingest.de.sentry.io/4509434022985808",
+  sendDefaultPii: true,
+  integrations: [Sentry.browserTracingIntegration({ router })],
+  // Tracing
+  tracesSampleRate: 1.0,
+  tracePropagationTargets: ["localhost", /^http:\/\/localhost:3000\/graphql/],
+});
+
 // Use Vuetify, router, and store
 app.use(vuetify);
 app.use(router);

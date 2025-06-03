@@ -213,7 +213,7 @@ export default {
       try {
         const availableWeight =
           distillationForm.value.choosedPlant.availableWeight ?? 0;
-        const sanitizedWeightForDistillation =
+        const weightForDistillation =
           distillationForm.value.weightForDistillation ?? 0;
         const initialWeightForDistillation =
           distillationForm.value.initialWeightForDistillation ?? 0;
@@ -221,7 +221,7 @@ export default {
         let newWeight =
           availableWeight +
           initialWeightForDistillation -
-          sanitizedWeightForDistillation;
+          weightForDistillation;
         newWeight = parseFloat(newWeight.toFixed(1));
 
         await updateAvailableWeight({
