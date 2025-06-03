@@ -71,6 +71,7 @@ import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
+import * as Sentry from "@sentry/vue";
 
 interface DistillationValues
   extends Omit<
@@ -248,6 +249,7 @@ export default {
           });
         }
       } catch (error) {
+        Sentry.captureException(error);
         return;
       }
     };
@@ -265,6 +267,7 @@ export default {
           router.push({ name: "AddResultsPage" });
         }
       } catch (error) {
+        Sentry.captureException(error);
         return;
       }
     };

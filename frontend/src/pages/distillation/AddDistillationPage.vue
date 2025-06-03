@@ -58,6 +58,7 @@ import {
   useRoute,
   RouteLocationNormalizedLoaded,
 } from "vue-router";
+import * as Sentry from "@sentry/vue";
 
 /**
  * @module AddDistillationPage
@@ -164,6 +165,7 @@ export default {
           });
         }
       } catch (error) {
+        Sentry.captureException(error);
         return;
       }
     };
@@ -196,6 +198,7 @@ export default {
           });
         }
       } catch (error) {
+        Sentry.captureException(error);
         return;
       }
     };

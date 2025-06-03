@@ -16,7 +16,7 @@ export const updateListSorting = async (apolloClient, key, value) => {
     });
     console.log("UPDATED sorting!");
     return true;
-  } catch (error) {
+  } catch (error: any) {
     if (error.message === "Unauthorized") {
       return "Unauthorized";
     }
@@ -38,7 +38,7 @@ export const updateListSettings = async (apolloClient, key, value) => {
     });
     console.log("UPDATED!");
     return true;
-  } catch (error) {
+  } catch (error: any) {
     if (error.message === "Unauthorized") {
       return "Unauthorized";
     }

@@ -83,6 +83,7 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import { CloseModal } from "@/types/events";
 import { changePasswordFormValidation } from "@/helpers/formsValidation";
+import * as Sentry from "@sentry/vue";
 
 export default {
   components: {
@@ -139,6 +140,7 @@ export default {
             isOldPasswordCorrect.value = false;
           }
         } catch (error) {
+          Sentry.captureException(error);
           console.error("Failed to change password:", error);
         }
       } else {

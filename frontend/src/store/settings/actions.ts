@@ -6,6 +6,7 @@ import {
   ADD_DISTILLER,
 } from "@/graphql/mutations/settings";
 import { GET_USER_SETTINGS } from "@/graphql/queries/settings";
+import * as Sentry from "@sentry/vue";
 
 /**
  * Settings module actions for handling settings form updates.
@@ -52,6 +53,7 @@ export default {
       });
       console.log("Initial settings created:", data.createSettings);
     } catch (error) {
+      Sentry.captureException(error);
       console.error("Error creating settings:", error);
     }
   },
@@ -108,6 +110,7 @@ export default {
         value: isDarkTheme,
       });
     } catch (error: any) {
+      Sentry.captureException(error);
       if (error.message === "Unauthorized") {
         return "Unauthorized";
       }
@@ -134,6 +137,7 @@ export default {
       const value = JSON.parse(rawValue);
       context.commit("changeValue", { input: key, value });
     } catch (error) {
+      Sentry.captureException(error);
       console.log("Error fetching data from local storage:", error);
     }
   },
@@ -155,6 +159,7 @@ export default {
       });
       console.log("Distiller added:", data.addDistiller);
     } catch (error: any) {
+      Sentry.captureException(error);
       if (error.message === "Unauthorized") {
         return "Unauthorized";
       }
@@ -180,6 +185,7 @@ export default {
       context.commit("removeDistillerById", id);
       console.log("Distiller deleted:", data.deleteDistiller);
     } catch (error: any) {
+      Sentry.captureException(error);
       if (error.message === "Unauthorized") {
         return "Unauthorized";
       }

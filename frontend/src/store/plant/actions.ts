@@ -1,4 +1,5 @@
 import type { PlantForm } from "@/types/forms/plantForm";
+import * as Sentry from "@sentry/vue";
 
 /**
  * Plant module actions for handling data fetching, local storage management, and form value setting.
@@ -31,7 +32,7 @@ export default {
       const value = JSON.parse(rawValue);
       context.commit("changeValue", { input: key, value });
     } catch (error) {
-      console.log("error", error);
+      Sentry.captureException(error);
       return;
     }
   },
@@ -42,7 +43,10 @@ export default {
    * @param {Context} context - The Vuex context.
    * @param {{ input: string; value: any }} payload - The payload containing the input and value.
    */
-  setValue(context: Context, { input, value }: { input: string; value: any }): void {
+  setValue(
+    context: Context,
+    { input, value }: { input: string; value: any }
+  ): void {
     context.commit("changeValue", { input, value });
   },
 
@@ -53,7 +57,10 @@ export default {
    * @param {Context} context - The Vuex context.
    * @param {{ input: string; value: number }} payload - The payload containing the input and value.
    */
-  setIntegerValue(context: Context, { input, value }: { input: string; value: number }): void {
+  setIntegerValue(
+    context: Context,
+    { input, value }: { input: string; value: number }
+  ): void {
     context.commit("changeIntegerNumber", { input, value });
   },
 
@@ -91,7 +98,10 @@ export default {
    * @param {Context} context - The Vuex context.
    * @param {{ input: string; value: number }} payload - The payload containing the input and value.
    */
-  setNumberFormat(context: Context, { input, value }: { input: string; value: number }): void {
+  setNumberFormat(
+    context: Context,
+    { input, value }: { input: string; value: number }
+  ): void {
     context.commit("changeNumberFormat", { input, value });
   },
 

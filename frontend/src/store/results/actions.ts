@@ -1,4 +1,9 @@
-import type { ResultsForm, ResultsDistillation, ResultsPlant } from "@/types/forms/resultsForm";
+import type {
+  ResultsForm,
+  ResultsDistillation,
+  ResultsPlant,
+} from "@/types/forms/resultsForm";
+import * as Sentry from "@sentry/vue";
 
 /**
  * Results module actions for handling data fetching, local storage management, and form value setting.
@@ -31,7 +36,7 @@ export default {
       const value = JSON.parse(rawValue);
       context.commit("changeValue", { input: key, value });
     } catch (error) {
-      console.log("error", error);
+      Sentry.captureException(error);
       return;
     }
   },
@@ -51,7 +56,7 @@ export default {
       const value = JSON.parse(rawValue);
       context.commit("changeDistillationDataValue", { input: key, value });
     } catch (error) {
-      console.log("error", error);
+      Sentry.captureException(error);
       return;
     }
   },
@@ -71,7 +76,7 @@ export default {
       const value = JSON.parse(rawValue);
       context.commit("changePlantDataValue", { input: key, value });
     } catch (error) {
-      console.log("error", error);
+      Sentry.captureException(error);
       return;
     }
   },
@@ -91,7 +96,7 @@ export default {
       const value = JSON.parse(rawValue);
       context.commit("changeDistillationTimeValue", { input: key, value });
     } catch (error) {
-      console.log("error", error);
+      Sentry.captureException(error);
       return;
     }
   },
@@ -102,7 +107,10 @@ export default {
    * @param {Context} context - The Vuex context.
    * @param {{ input: string; value: any }} payload - The payload containing the input and value.
    */
-  setValue(context: Context, { input, value }: { input: string; value: any }): void {
+  setValue(
+    context: Context,
+    { input, value }: { input: string; value: any }
+  ): void {
     context.commit("changeValue", { input, value });
   },
 
@@ -127,7 +135,11 @@ export default {
    */
   setNumberFormat(
     context: Context,
-    { input, value, decimals }: { input: string; value: number; decimals?: number }
+    {
+      input,
+      value,
+      decimals,
+    }: { input: string; value: number; decimals?: number }
   ): void {
     context.commit("changeNumberFormat", { input, value, decimals });
   },

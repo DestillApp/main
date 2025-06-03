@@ -109,6 +109,7 @@ import { scrollToTop } from "../helpers/displayHelpers";
 import { REGISTER_USER } from "@/graphql/mutations/auth";
 import { CHECK_USERNAME_EXISTENCE } from "@/graphql/queries/auth";
 import { registrationFormValidation } from "@/helpers/formsValidation";
+import * as Sentry from "@sentry/vue";
 
 /**
  * @component RegistrationForm
@@ -186,6 +187,7 @@ export default {
           usernameExists.value = false;
         }
       } catch (error: any) {
+        Sentry.captureException(error);
         console.error("Error checking username existence", error.message);
         usernameExists.value = false;
       }
@@ -241,6 +243,7 @@ export default {
         }
         router.push({ name: "LoginPage" });
       } catch (error: any) {
+        Sentry.captureException(error);
         console.error("Error submitting form", error.message);
         if (error.message == "Email already exists") {
           emailExists.value = true;

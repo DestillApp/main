@@ -73,6 +73,7 @@ import BaseButton from "@/ui/BaseButton.vue";
 import { CloseModal } from "@/types/events";
 import { setKeyboardIntegerNumber } from "@/helpers/formatHelpers";
 import { distillerFormValidation } from "@/helpers/formsValidation";
+import * as Sentry from "@sentry/vue";
 
 export default {
   components: {
@@ -134,6 +135,7 @@ export default {
           }
           closeModal();
         } catch (error) {
+          Sentry.captureException(error);
           console.error("Failed to add distiller:", error);
         }
       } else {

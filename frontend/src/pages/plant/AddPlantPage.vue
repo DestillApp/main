@@ -49,6 +49,7 @@ import { useStore } from "@/store/useStore";
 import { computed, ref, onMounted, nextTick } from "vue";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { useMutation } from "@vue/apollo-composable";
+import * as Sentry from "@sentry/vue";
 
 /**
  * @component AddPlantPage
@@ -140,6 +141,7 @@ export default {
           router.push({ name: "PlantListPage", params: { page: 1 } });
         }
       } catch (error) {
+        Sentry.captureException(error);
         return;
       }
     };
@@ -164,6 +166,7 @@ export default {
           });
         }
       } catch (error) {
+        Sentry.captureException(error);
         return;
       }
     };

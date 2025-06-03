@@ -4,6 +4,7 @@
  */
 import { createRouter, createWebHistory } from "vue-router";
 import store from "@/store/index.js";
+import * as Sentry from "@sentry/vue";
 
 // Regularly imported pages
 import MainPage from "./pages/MainPage.vue";
@@ -184,6 +185,7 @@ router.beforeEach(async (to, from, next) => {
       next();
     }
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Error in navigation guard:", error);
     next(false);
   }

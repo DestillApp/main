@@ -52,6 +52,7 @@ import { ref, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "@/store/useStore";
 import { scrollToTop } from "../helpers/displayHelpers.js";
+import * as Sentry from "@sentry/vue";
 
 interface LoginForm {
   email: string;
@@ -127,6 +128,7 @@ export default {
             isLoginFormValid.value = false;
           }
         } catch (error) {
+          Sentry.captureException(error);
           console.error("Error occured while logging in", error);
         }
       } else {

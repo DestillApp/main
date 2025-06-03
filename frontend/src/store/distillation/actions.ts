@@ -1,4 +1,5 @@
 import type { DistillationForm } from "@/types/forms/distillationForm";
+import * as Sentry from "@sentry/vue";
 
 /**
  * Destillation module actions for handling data fetching, local storage management, and form value setting.
@@ -39,7 +40,7 @@ export default {
         context.commit("changeChoosedPlant", { key: key, value });
       }
     } catch (error) {
-      console.log("error", error);
+      Sentry.captureException(error);
       return;
     }
   },
@@ -59,7 +60,7 @@ export default {
       const value = JSON.parse(rawValue);
       context.commit("changeDistillationTime", { key: key, value });
     } catch (error) {
-      console.log("error", error);
+      Sentry.captureException(error);
       return;
     }
   },

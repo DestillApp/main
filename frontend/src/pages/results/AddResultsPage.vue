@@ -47,6 +47,7 @@ import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useMutation, useApolloClient } from "@vue/apollo-composable";
 import { normalizeSelectedFields } from "@/helpers/formsNormalize";
 import { mapResultsForm } from "@/helpers/formsMapping";
+import * as Sentry from "@sentry/vue";
 
 export default {
   name: "AddResultsPage",
@@ -257,6 +258,7 @@ export default {
           });
         }
       } catch (error) {
+        Sentry.captureException(error);
         console.error("Error in saveResults:", error);
       }
     };

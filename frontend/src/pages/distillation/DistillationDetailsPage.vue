@@ -174,6 +174,7 @@ import { GetDistillationById } from "@/types/forms/distillationForm";
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
+import * as Sentry from "@sentry/vue";
 
 export default {
   name: "DistillationDetailsPage",
@@ -321,6 +322,7 @@ export default {
         }
         closeDeleteModal();
       } catch (error) {
+        Sentry.captureException(error);
         console.error("Failed to delete distillation:", error);
       }
     };

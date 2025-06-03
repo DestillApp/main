@@ -2,6 +2,7 @@ import type { AuthState } from "./index";
 import { apolloClient } from "@/main";
 import { VERIFY_AUTH } from "@/graphql/queries/auth";
 import { LOGIN, LOGOUT, CHANGE_PASSWORD } from "@/graphql/mutations/auth";
+import * as Sentry from "@sentry/vue";
 
 /**
  * Auth module actions for handling data fetching.
@@ -15,7 +16,7 @@ interface Context {
 }
 
 export default {
-  async fetchUserAuthenticationStatus(context: Context): boolean {
+  async fetchUserAuthenticationStatus(context: Context): Promise<boolean> {
     try {
       const { data } = await apolloClient.query({
         query: VERIFY_AUTH,
@@ -27,6 +28,7 @@ export default {
       console.log("GraphQL result:", data);
       return data.verifyAuth.isAuthenticated;
     } catch (error) {
+      Sentry.captureException(error);
       context.commit("changeUserAuthenticationStatus", false);
       console.error("GraphQL error:", error);
       return false;
@@ -36,7 +38,7 @@ export default {
   async login(
     context: Context,
     { email, password }: { email: string; password: string }
-  ): Promise<boolean | string> {
+  ): Promise<boolean | string | undefined> {
     try {
       const response = await apolloClient.mutate({
         mutation: LOGIN,
@@ -49,8 +51,8 @@ export default {
         context.commit("changeUserAuthenticationStatus", true);
         return true;
       }
-    } catch (error) {
-      console.error("Login failed", error);
+    } catch (error: any) {
+      Sentry.captureException(error);
       if (error.message === "Invalid credentials") {
         return "Invalid credentials";
       }
@@ -78,6 +80,7 @@ export default {
 
       localStorage.removeItem("isDarkTheme");
     } catch (error) {
+      Sentry.captureException(error);
       console.error("Logout failed", error);
     }
   },
@@ -101,7 +104,8 @@ export default {
         response.data.changePassword
       );
       return true;
-    } catch (error) {
+    } catch (error: any) {
+      Sentry.captureException(error);
       console.error("Failed to change password:", error.message);
       if (error.message === "Invalid old password") {
         return "Invalid old password";

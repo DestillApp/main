@@ -203,6 +203,7 @@ import {
 } from "@/helpers/formatHelpers";
 import { handleUserError } from "@/helpers/errorHandling";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
+import * as Sentry from "@sentry/vue";
 
 import {
   ChoosedPlant,
@@ -323,6 +324,7 @@ export default {
 
         return data.getPlantById;
       } catch (error) {
+        Sentry.captureException(error);
         console.error("Failed to get plant details:", error);
       }
     };

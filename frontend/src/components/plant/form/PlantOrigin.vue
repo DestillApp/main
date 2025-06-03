@@ -211,6 +211,7 @@ import {
 } from "@/helpers/formatHelpers";
 import { PlantForm } from "@/types/forms/plantForm";
 import { GET_COUNTRY_NAMES } from "@/graphql/queries/country";
+import * as Sentry from "@sentry/vue";
 
 /**
  * @component PlantOrigin
@@ -390,6 +391,7 @@ export default {
         });
         countryNames.value = data.getCountryNames.slice(0, 10);
       } catch (error) {
+        Sentry.captureException(error);
         console.error("Failed to get country names:", error);
         countryNames.value = [];
       }

@@ -84,6 +84,7 @@ import { ref, computed, onMounted, nextTick } from "vue";
 import { useApolloClient, useMutation } from "@vue/apollo-composable";
 import { useRoute, onBeforeRouteLeave, useRouter } from "vue-router";
 import { mapResultsForm } from "@/helpers/formsMapping";
+import * as Sentry from "@sentry/vue";
 
 /**
  * @module EditArchiveDistillationPage
@@ -285,6 +286,7 @@ export default {
           });
         }
       } catch (error) {
+        Sentry.captureException(error);
         console.error("Error editing distillation archive:", error);
       }
     };

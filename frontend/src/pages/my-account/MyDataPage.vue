@@ -86,6 +86,7 @@ import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import PasswordChangeForm from "@/components/PasswordChangeForm.vue";
 import type { Distiller } from "@/store/settings/index";
 import { handleUserError } from "@/helpers/errorHandling";
+import * as Sentry from "@sentry/vue";
 
 export default {
   components: {
@@ -163,6 +164,7 @@ export default {
           closeDeleteModal();
         }
       } catch (error) {
+        Sentry.captureException(error);
         console.error("Failed to delete distiller:", error);
       }
     };
