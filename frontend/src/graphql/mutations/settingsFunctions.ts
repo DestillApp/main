@@ -2,8 +2,13 @@ import {
   UPDATE_LIST_SORTING,
   UPDATE_LIST_SETTINGS,
 } from "@/graphql/mutations/settings";
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client/core";
 
-export const updateListSorting = async (apolloClient, key, value) => {
+export const updateListSorting = async (
+  apolloClient: ApolloClient<NormalizedCacheObject>,
+  key: string,
+  value: string
+): Promise<boolean | string> => {
   try {
     await apolloClient.mutate({
       mutation: UPDATE_LIST_SORTING,
@@ -14,7 +19,6 @@ export const updateListSorting = async (apolloClient, key, value) => {
         },
       },
     });
-    console.log("UPDATED sorting!");
     return true;
   } catch (error: any) {
     if (error.message === "Unauthorized") {
@@ -25,7 +29,11 @@ export const updateListSorting = async (apolloClient, key, value) => {
   }
 };
 
-export const updateListSettings = async (apolloClient, key, value) => {
+export const updateListSettings = async (
+  apolloClient: ApolloClient<NormalizedCacheObject>,
+  key: string,
+  value: number
+): Promise<boolean | string> => {
   try {
     await apolloClient.mutate({
       mutation: UPDATE_LIST_SETTINGS,
@@ -36,7 +44,6 @@ export const updateListSettings = async (apolloClient, key, value) => {
         },
       },
     });
-    console.log("UPDATED!");
     return true;
   } catch (error: any) {
     if (error.message === "Unauthorized") {
