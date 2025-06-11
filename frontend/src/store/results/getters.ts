@@ -9,14 +9,18 @@ import type {
  * @module resultsGetters
  */
 
+/**
+ * Represents the state for the results module.
+ * @interface
+ * @property {ResultsForm} resultsForm - The results form state.
+ */
 interface State {
   resultsForm: ResultsForm;
 }
 
 export default {
   /**
-   * @function resultsForm
-   * @description Gets the results form data from the state.
+   * Gets the results form data from the state.
    * @param {State} state - The Vuex state.
    * @returns {ResultsForm} The results form data.
    */
@@ -25,8 +29,7 @@ export default {
   },
 
   /**
-   * @function distillationData
-   * @description Gets the distillation data from the results form data.
+   * Gets the distillation data from the results form data.
    * @param {State} state - The Vuex state.
    * @returns {ResultsDistillation} The distillation data.
    */
@@ -35,8 +38,7 @@ export default {
   },
 
   /**
-   * @function distilledPlant
-   * @description Gets the distilled plant from the results form data.
+   * Gets the distilled plant from the results form data.
    * @param {State} state - The Vuex state.
    * @returns {ResultsPlant} The distilled plant data.
    */
@@ -45,8 +47,7 @@ export default {
   },
 
   /**
-   * @function distillationDate
-   * @description Gets the distillation date from the distillation data.
+   * Gets the distillation date from the distillation data.
    * @param {State} state - The Vuex state.
    * @returns {string} The distillation date.
    */

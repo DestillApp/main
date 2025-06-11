@@ -13,9 +13,22 @@ import * as Sentry from "@sentry/vue";
  * @module settingsActions
  */
 
+/**
+ * Represents the state for the settings module.
+ * @interface
+ * @property {SettingsForm} settingsForm - The settings form state.
+ */
 interface State {
   settingsForm: SettingsForm;
 }
+
+/**
+ * Vuex action context for the settings module.
+ * @interface
+ * @property {State} state - The Vuex state object.
+ * @property {(mutation: string, payload?: any) => void} commit - Commits a mutation.
+ * @property {(action: string, payload?: any) => void} dispatch - Dispatches an action.
+ */
 interface Context {
   state: State;
   commit: (mutation: string, payload?: any) => void;
@@ -24,12 +37,10 @@ interface Context {
 
 export default {
   /**
-   * @function setValue
-   * @description Sets a value in the state.
-   * @param {Object} context - The Vuex context.
-   * @param {Object} payload - The payload containing the input and value.
-   * @param {string} payload.input - The input field to set.
-   * @param {any} payload.value - The value to set.
+   * Sets a value in the state.
+   * @param {Context} context - The Vuex context.
+   * @param {{ input: string; value: string | number | boolean | Array<any> }} payload - The payload containing the input and value.
+   * @returns {void}
    */
   setValue(
     context: Context,
@@ -42,8 +53,10 @@ export default {
   },
 
   /**
-   * @function setInitialSettings
-   * @description Creates initial settings in the database.
+   * Creates initial settings in the database.
+   * @param {Context} context - The Vuex context.
+   * @param {string} userId - The user ID for which to create settings.
+   * @returns {Promise<void>}
    */
   async setInitialSettings(context: Context, userId: string): Promise<void> {
     try {
@@ -59,8 +72,9 @@ export default {
   },
 
   /**
-   * @function fetchSettings
-   * @description Fetches user settings from the database.
+   * Fetches user settings from the database.
+   * @param {Context} context - The Vuex context.
+   * @returns {Promise<void | string>}
    */
   async fetchSettings(context: Context): Promise<void | string> {
     try {
@@ -119,11 +133,10 @@ export default {
   },
 
   /**
-   * @function fetchLocalStorageData
-   * @description Fetches data from local storage and commits it to the state.
-   * @param {Object} context - The Vuex context.
-   * @param {Object} payload - The payload containing the key.
-   * @param {string} payload.key - The key to fetch from local storage.
+   * Fetches data from local storage and commits it to the state.
+   * @param {Context} context - The Vuex context.
+   * @param {{ key: keyof SettingsForm }} payload - The payload containing the key.
+   * @returns {void}
    */
   fetchLocalStorageData(
     context: Context,
@@ -143,10 +156,10 @@ export default {
   },
 
   /**
-   * @function addDistiller
-   * @description Adds a distiller to the distillerList.
-   * @param {Object} context - The Vuex context.
-   * @param {Object} distiller - The distiller object to add.
+   * Adds a distiller to the distillerList.
+   * @param {Context} context - The Vuex context.
+   * @param {Distiller} distiller - The distiller object to add.
+   * @returns {Promise<void | string>}
    */
   async addDistiller(
     context: Context,
@@ -168,10 +181,10 @@ export default {
   },
 
   /**
-   * @function deleteDistillerById
-   * @description Deletes a distiller from the distillerList by its ID.
-   * @param {Object} context - The Vuex context.
+   * Deletes a distiller from the distillerList by its ID.
+   * @param {Context} context - The Vuex context.
    * @param {string} id - The ID of the distiller to delete.
+   * @returns {Promise<void | string>}
    */
   async deleteDistillerById(
     context: Context,

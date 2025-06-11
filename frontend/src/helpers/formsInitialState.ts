@@ -1,7 +1,11 @@
-import { PlantForm } from "@/types/forms/plantForm";
-import { DistillationForm } from "@/types/forms/distillationForm";
-import { ResultsForm } from "@/types/forms/resultsForm";
+import type { PlantForm } from "@/types/forms/plantForm";
+import type { DistillationForm } from "@/types/forms/distillationForm";
+import type { ResultsForm } from "@/types/forms/resultsForm";
 
+/**
+ * The initial state for the plant form.
+ * @type {PlantForm}
+ */
 export const initialPlantForm: PlantForm = {
   plantName: "",
   plantPart: "",
@@ -21,6 +25,10 @@ export const initialPlantForm: PlantForm = {
   plantAge: null,
 };
 
+/**
+ * The initial state for the distillation form.
+ * @type {DistillationForm}
+ */
 export const initialDistillationForm: DistillationForm = {
   choosedPlant: {
     id: null,
@@ -46,6 +54,10 @@ export const initialDistillationForm: DistillationForm = {
   },
 };
 
+/**
+ * The initial state for the results form.
+ * @type {ResultsForm}
+ */
 export const initialResultsForm: ResultsForm = {
   oilAmount: null,
   hydrosolAmount: null,

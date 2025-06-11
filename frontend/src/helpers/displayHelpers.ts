@@ -1,7 +1,16 @@
+/**
+ * Scrolls the window to the top of the page.
+ * @returns {void}
+ */
 export const scrollToTop = (): void => {
   window.scrollTo(0, 0);
 };
 
+/**
+ * Returns the correct Polish suffix for the word "month" based on the given age.
+ * @param {number} age - The number of months.
+ * @returns {string} The correct suffix: "miesiąc", "miesiące", or "miesięcy".
+ */
 export const plantAgeWithSuffix = (age: number): string => {
   if (age === 1) {
     return "miesiąc";

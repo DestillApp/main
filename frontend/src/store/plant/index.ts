@@ -13,7 +13,7 @@ export default {
   /**
    * State object representing the plant form data.
    * @function state
-   * @returns {Object} The initial state object.
+   * @returns {{ plantForm: PlantForm }} The initial state object.
    */
   state(): { plantForm: PlantForm } {
     return {
@@ -37,11 +37,16 @@ export default {
       },
     };
   },
-
-  // Mutations for updating the state.
+  /**
+   * Mutations for updating the plant state.
+   */
   mutations: plantMutations,
-  // Actions for performing asynchronous tasks.
+  /**
+   * Actions for performing asynchronous tasks in the plant module.
+   */
   actions: plantActions,
-  // Getters for accessing state data.
+  /**
+   * Getters for accessing plant state data.
+   */
   getters: plantGetters,
 };

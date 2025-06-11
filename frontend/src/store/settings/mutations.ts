@@ -4,18 +4,21 @@ import type { SettingsForm } from "./index";
  * @module settingsMutations
  */
 
+/**
+ * Represents the state for the settings module.
+ * @interface
+ * @property {SettingsForm} settingsForm - The settings form state.
+ */
 interface State {
   settingsForm: SettingsForm;
 }
 
 export default {
   /**
-   * @function changeValue
-   * @description Mutation to change the value of a field in the settings form.
-   * @param {Object} state - The current state object.
-   * @param {Object} payload - Payload containing the input field name and its new value.
-   * @param {string} payload.input - The name of the input field to be updated.
-   * @param {any} payload.value - The new value for the input field.
+   * Mutation to change the value of a field in the settings form.
+   * @param {State} state - The current state object.
+   * @param {{ input: K; value: SettingsForm[K] }} payload - Payload containing the input field name and its new value.
+   * @returns {void}
    */
   changeValue<K extends keyof SettingsForm>(
     state: State,
@@ -26,10 +29,10 @@ export default {
   },
 
   /**
-   * @function removeDistillerById
-   * @description Mutation to remove a distiller from the distillerList by its ID.
-   * @param {Object} state - The current state object.
+   * Mutation to remove a distiller from the distillerList by its ID.
+   * @param {State} state - The current state object.
    * @param {string} id - The ID of the distiller to remove.
+   * @returns {void}
    */
   removeDistillerById(state: State, id: string): void {
     state.settingsForm.distillerList = state.settingsForm.distillerList.filter(

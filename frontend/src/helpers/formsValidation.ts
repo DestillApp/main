@@ -1,10 +1,11 @@
-import { PlantForm } from "@/types/forms/plantForm";
-import { DistillationForm } from "@/types/forms/distillationForm";
-import { ResultsForm } from "@/types/forms/resultsForm";
+import type { PlantForm } from "@/types/forms/plantForm";
+import type { DistillationForm } from "@/types/forms/distillationForm";
+import type { ResultsForm } from "@/types/forms/resultsForm";
 
 /**
- * @function plantFormValidation
- * @description Function to validate the plant form data
+ * Validates the plant form data.
+ * @param {PlantForm} form - The plant form data object.
+ * @returns {boolean} Returns true if the form is valid, otherwise false.
  */
 export const plantFormValidation = (form: PlantForm): boolean => {
   let isFormValid = true;
@@ -59,8 +60,9 @@ export const plantFormValidation = (form: PlantForm): boolean => {
 };
 
 /**
- * @function distillationFormValidation
- * @description Function to validate the distillation form data
+ * Validates the distillation form data.
+ * @param {DistillationForm} form - The distillation form data object.
+ * @returns {boolean} Returns true if the form is valid, otherwise false.
  */
 export const distillationFormValidation = (form: DistillationForm): boolean => {
   let isFormValid = true;
@@ -100,10 +102,9 @@ export const distillationFormValidation = (form: DistillationForm): boolean => {
 };
 
 /**
- * @function resultsFormValidation
- * @description Function to validate the results form data
- * @param {Object} form - The results form data object
- * @returns {boolean} Returns true if the form is valid, otherwise false
+ * Validates the results form data.
+ * @param {ResultsForm} form - The results form data object.
+ * @returns {boolean} Returns true if the form is valid, otherwise false.
  */
 export const resultsFormValidation = (form: ResultsForm): boolean => {
   let isFormValid = true;
@@ -124,10 +125,9 @@ export const resultsFormValidation = (form: ResultsForm): boolean => {
 };
 
 /**
- * @function editArchiveDistillationFormValidation
- * @description Function to validate the edit archive distillation form data
- * @param {Object} form - The edit archive distillation form data object
- * @returns {boolean} Returns true if the form is valid, otherwise false
+ * Validates the edit archive distillation form data.
+ * @param {ResultsForm} form - The edit archive distillation form data object.
+ * @returns {boolean} Returns true if the form is valid, otherwise false.
  */
 export const editArchiveDistillationFormValidation = (
   form: ResultsForm
@@ -170,10 +170,10 @@ export const editArchiveDistillationFormValidation = (
 };
 
 /**
- * @function registrationFormValidation
- * @description Function to validate the registration form data
- * @param {Object} form - The registration form data object
- * @returns {boolean} Returns true if the form is valid, otherwise false
+ * Validates the registration form data.
+ * @param {{ username: string; email: string; password: string; confirmPassword: string }} form - The registration form data object.
+ * @param {boolean} username - Indicates if the username is already taken.
+ * @returns {{ isFormValid: boolean; isPasswordCorrect: boolean }} Returns an object with isFormValid and isPasswordCorrect properties.
  */
 export const registrationFormValidation = (
   form: {
@@ -217,10 +217,9 @@ export const registrationFormValidation = (
 };
 
 /**
- * @function distillerFormValidation
- * @description Function to validate the distiller form data
- * @param {Object} form - The distiller form data object
- * @returns {boolean} Returns true if the form is valid, otherwise false
+ * Validates the distiller form data.
+ * @param {{ material: string; capacity: number; heating: string }} form - The distiller form data object.
+ * @returns {boolean} Returns true if the form is valid, otherwise false.
  */
 export const distillerFormValidation = (form: {
   material: string;
@@ -243,10 +242,9 @@ export const distillerFormValidation = (form: {
 };
 
 /**
- * @function changePasswordFormValidation
- * @description Function to validate the change password form data
- * @param {Object} form - The change password form data object
- * @returns {Object} Returns an object with isFormValid and isPasswordCorrect properties
+ * Validates the change password form data.
+ * @param {{ oldPassword: string; newPassword: string; confirmNewPassword: string }} form - The change password form data object.
+ * @returns {{ isFormValid: boolean; isPasswordCorrect: boolean }} Returns an object with isFormValid and isPasswordCorrect properties.
  */
 export const changePasswordFormValidation = (form: {
   oldPassword: string;

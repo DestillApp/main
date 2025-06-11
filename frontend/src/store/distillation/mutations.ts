@@ -10,27 +10,56 @@ import type {
  * @module distillationMutations
  */
 
+/**
+ * Represents the state for the distillation module.
+ * @interface
+ * @property {DistillationForm} distillationForm - The distillation form state.
+ */
 interface State {
   distillationForm: DistillationForm;
 }
 
 type DistillationFormKey = keyof DistillationForm;
 
+/**
+ * Payload for changing a value in the distillation form.
+ * @template K
+ * @property {K} input - The key of the field to change.
+ * @property {DistillationForm[K]} value - The new value for the field.
+ */
 type ChangeValuePayload<K extends DistillationFormKey> = {
   input: K;
   value: DistillationForm[K];
 };
 
+/**
+ * Payload for changing a numeric value in the distillation form.
+ * @template K
+ * @property {K} input - The key of the field to change.
+ * @property {number} value - The new numeric value for the field.
+ */
 type ChangeValuePayloadNumber<K extends DistillationFormKey> = {
   input: K;
   value: number;
 };
 
+/**
+ * Payload for changing a value in the choosedPlant object.
+ * @template K
+ * @property {K} key - The key of the choosedPlant field to change.
+ * @property {FormChoosedPlant[K]} value - The new value for the field.
+ */
 type ChangeChoosedPlant<K extends keyof FormChoosedPlant> = {
   key: K;
   value: FormChoosedPlant[K];
 };
 
+/**
+ * Payload for changing a value in the distillationTime object.
+ * @template K
+ * @property {K} key - The key of the distillationTime field to change.
+ * @property {DistillationTime[K]} value - The new value for the field.
+ */
 type ChangeDistillationTime<K extends keyof DistillationTime> = {
   key: K;
   value: DistillationTime[K];
@@ -38,12 +67,10 @@ type ChangeDistillationTime<K extends keyof DistillationTime> = {
 
 export default {
   /**
-   * Mutation to change the value of a field in the plant form.
-   * @function changeValue
-   * @param {Object} state - The current state object.
-   * @param {Object} payload - Payload containing the input field name and its new value.
-   * @param {string} payload.input - The name of the input field to be updated.
-   * @param {any} payload.value - The new value for the input field.
+   * Mutation to change the value of a field in the distillation form.
+   * @param {State} state - The current state object.
+   * @param {ChangeValuePayload<K>} payload - Payload containing the input field name and its new value.
+   * @returns {void}
    */
   changeValue<K extends keyof DistillationForm>(
     state: State,
@@ -54,12 +81,10 @@ export default {
   },
 
   /**
-   * Mutation to change the value of a field in the plant form choosedPlant.
-   * @function changeValue
-   * @param {Object} state - The current state object.
-   * @param {Object} payload - Payload containing the input field name and its new value.
-   * @param {string} payload.key - The name of the key in the choosedPlant object to be updated.
-   * @param {any} payload.value - The new value for the key field.
+   * Mutation to change the value of a field in the distillation form choosedPlant.
+   * @param {State} state - The current state object.
+   * @param {ChangeChoosedPlant<K>} payload - Payload containing the key in the choosedPlant object and its new value.
+   * @returns {void}
    */
   changeChoosedPlant<K extends keyof FormChoosedPlant>(
     state: State,
@@ -70,12 +95,10 @@ export default {
   },
 
   /**
-   * Mutation to change the value of a field in the in distillation time object.
-   * @function changeDistillationTime
-   * @param {Object} state - The current state object.
-   * @param {Object} payload - Payload containing the input field name and its new value.
-   * @param {string} payload.key - The name of the key in the distillationTime object to be updated.
-   * @param {any} payload.value - The new value for the key field.
+   * Mutation to change the value of a field in the distillation time object.
+   * @param {State} state - The current state object.
+   * @param {ChangeDistillationTime<K>} payload - Payload containing the key in the distillationTime object and its new value.
+   * @returns {void}
    */
   changeDistillationTime<K extends keyof DistillationTime>(
     state: State,
@@ -93,12 +116,10 @@ export default {
   },
 
   /**
-   * @function changeIntegerNumber
-   * @description Mutation to change a value to an integer value in the distillation form.
-   * @param {Object} state - The current state object.
-   * @param {Object} payload - Payload containing the input field name and its new integer value.
-   * @param {string} payload.input - The name of the input field to be updated.
-   * @param {number} payload.value - The new integer value for the input field.
+   * Mutation to change a value to an integer value in the distillation form.
+   * @param {State} state - The current state object.
+   * @param {{ input: "soakingTime"; value: number }} payload - Payload containing the input field name and its new integer value.
+   * @returns {void}
    */
   changeIntegerNumber(
     state: State,
@@ -111,12 +132,10 @@ export default {
   },
 
   /**
-   * Mutation to change the format of a number value in the plant form.
-   * @function changeNumberFormat
-   * @param {Object} state - The current state object.
-   * @param {Object} payload - Payload containing the input field name and its new formatted number value.
-   * @param {string} payload.input - The name of the input field to be updated.
-   * @param {number} payload.value - The new number value for the input field.
+   * Mutation to change the format of a number value in the distillation form.
+   * @param {State} state - The current state object.
+   * @param {{ input: "weightForDistillation" | "weightAfterSoaking"; value: number }} payload - Payload containing the input field name and its new formatted number value.
+   * @returns {void}
    */
   changeNumberFormat(
     state: State,
@@ -125,18 +144,17 @@ export default {
       value,
     }: { input: "weightForDistillation" | "weightAfterSoaking"; value: number }
   ): void {
-    // const formatedNumber = parseFloat(parseFloat(value).toFixed(1));
     const formatedNumber = Number(value.toFixed(1));
     state.distillationForm[input] = formatedNumber;
     localStorage.setItem(input, JSON.stringify(formatedNumber));
   },
 
   /**
-   * @function resetDistillationForm
-   * @description Mutation to reset the distillationForm and remove distillationForm from localStorage.
-   * @param {Object} state - The current state object.
+   * Mutation to reset the distillationForm and remove distillationForm from localStorage.
+   * @param {State} state - The current state object.
+   * @returns {void}
    */
-  resetDistillationForm(state: State) {
+  resetDistillationForm(state: State): void {
     state.distillationForm = JSON.parse(
       JSON.stringify(initialDistillationForm)
     );

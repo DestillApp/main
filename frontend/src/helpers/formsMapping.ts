@@ -1,16 +1,16 @@
-import {
+import type {
   DistillationForm,
   DistillationFormSubmit,
 } from "@/types/forms/distillationForm";
 
-import { PlantForm, PlantFormSubmit } from "@/types/forms/plantForm";
+import type { PlantForm, PlantFormSubmit } from "@/types/forms/plantForm";
 
-import { ResultsForm } from "@/types/forms/resultsForm";
+import type { ResultsForm } from "@/types/forms/resultsForm";
 
 /**
  * Maps a DistillationForm object to a DistillationFormSubmit object.
- * @param form - The DistillationForm object to map.
- * @returns The mapped DistillationFormSubmit object.
+ * @param {DistillationForm} form - The DistillationForm object to map.
+ * @returns {DistillationFormSubmit} The mapped DistillationFormSubmit object.
  */
 export const mapDistillationForm = (
   form: DistillationForm
@@ -38,6 +38,11 @@ export const mapDistillationForm = (
   },
 });
 
+/**
+ * Maps a PlantForm object to a PlantFormSubmit object.
+ * @param {PlantForm} form - The PlantForm object to map.
+ * @returns {PlantFormSubmit} The mapped PlantFormSubmit object.
+ */
 export const mapPlantForm = (form: PlantForm): PlantFormSubmit => ({
   plantName: form.plantName,
   plantPart: form.plantPart,
@@ -56,6 +61,11 @@ export const mapPlantForm = (form: PlantForm): PlantFormSubmit => ({
   plantAge: form.plantAge,
 });
 
+/**
+ * Maps a ResultsForm object to a ResultsForm object (deep copy).
+ * @param {ResultsForm} form - The ResultsForm object to map.
+ * @returns {ResultsForm} The mapped ResultsForm object.
+ */
 export const mapResultsForm = (form: ResultsForm): ResultsForm => ({
   oilAmount: form.oilAmount,
   hydrosolAmount: form.hydrosolAmount,

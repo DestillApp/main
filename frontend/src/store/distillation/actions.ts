@@ -6,10 +6,22 @@ import * as Sentry from "@sentry/vue";
  * @module distillationActions
  */
 
+/**
+ * Represents the state for the distillation module.
+ * @interface
+ * @property {DistillationForm} distillationForm - The distillation form state.
+ */
 interface State {
   distillationForm: DistillationForm;
 }
 
+/**
+ * Vuex action context for the distillation module.
+ * @interface
+ * @property {State} state - The Vuex state object.
+ * @property {(mutation: string, payload?: any) => void} commit - Commits a mutation.
+ * @property {(action: string, payload?: any) => void} dispatch - Dispatches an action.
+ */
 interface Context {
   state: State;
   commit: (mutation: string, payload?: any) => void;
@@ -18,10 +30,10 @@ interface Context {
 
 export default {
   /**
-   * @function fetchLocalStorageData
-   * @description Fetches data from local storage and commits it to the state.
+   * Fetches data from local storage and commits it to the state.
    * @param {Context} context - The Vuex context.
-   * @param {FetchLocalStorageDataPayload} param1 - The payload with key and isPlant.
+   * @param {{ key: string; isPlant: boolean }} param1 - The payload with key and isPlant.
+   * @returns {void}
    */
   fetchLocalStorageData(
     context: Context,
@@ -46,10 +58,10 @@ export default {
   },
 
   /**
-   * @function fetchTimeFromLocalStorageData
-   * @description Fetches time data from local storage and commits it to the state.
+   * Fetches time data from local storage and commits it to the state.
    * @param {Context} context - The Vuex context.
    * @param {string} key - The key to fetch from local storage.
+   * @returns {void}
    */
   fetchTimeFromLocalStorageData(context: Context, key: string): void {
     try {
@@ -66,9 +78,10 @@ export default {
   },
 
   /**
-   * @function setValue
-   * @description Sets a value in the state.
+   * Sets a value in the state.
    * @param {Context} context - The Vuex context.
+   * @param {{ input: string; value: any }} param1 - The payload with input and value.
+   * @returns {void}
    */
   setValue(
     context: Context,
@@ -78,10 +91,10 @@ export default {
   },
 
   /**
-   * @function setChoosedPlant
-   * @description Sets a value in the state.
+   * Sets a value in the choosed plant state.
    * @param {Context} context - The Vuex context.
-   * @param {SetChoosedPlantPayload} param1 - The payload containing the key and value.
+   * @param {{ key: string; value: any }} param1 - The payload containing the key and value.
+   * @returns {void}
    */
   setChoosedPlant(
     context: Context,
@@ -91,10 +104,10 @@ export default {
   },
 
   /**
-   * @function setDistillationTime
-   * @description Sets a value in the state.
+   * Sets a value in the distillation time state.
    * @param {Context} context - The Vuex context.
-   * @param {SetDistillationTimePayload} param1 - The payload containing the key and value.
+   * @param {{ key: string; value: number | null }} param1 - The payload containing the key and value.
+   * @returns {void}
    */
   setDistillationTime(
     context: Context,
@@ -104,10 +117,10 @@ export default {
   },
 
   /**
-   * @function setIntegerValue
-   * @description Sets an integer value in the state.
+   * Sets an integer value in the state.
    * @param {Context} context - The Vuex context.
-   * @param {SetIntegerValuePayload} param1 - The payload containing the input and value.
+   * @param {{ input: string; value: number }} param1 - The payload containing the input and value.
+   * @returns {void}
    */
   setIntegerValue(
     context: Context,
@@ -117,10 +130,10 @@ export default {
   },
 
   /**
-   * @function setNumberFormat
-   * @description Sets the number format in the state.
+   * Sets the number format in the state.
    * @param {Context} context - The Vuex context.
-   * @param {SetNumberFormatPayload} param1 - The payload containing the input and value.
+   * @param {{ input: string; value: number }} param1 - The payload containing the input and value.
+   * @returns {void}
    */
   setNumberFormat(
     context: Context,
@@ -130,9 +143,9 @@ export default {
   },
 
   /**
-   * @function setDistillationForm
-   * @description Sets the distillationForm in the state and localStorage.
+   * Sets the distillationForm in the state and localStorage.
    * @param {Context} context - The Vuex context.
+   * @returns {void}
    */
   setDistillationForm(context: Context): void {
     context.commit("resetDistillationForm");

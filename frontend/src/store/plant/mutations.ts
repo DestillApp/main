@@ -10,17 +10,34 @@ import type { PlantForm } from "@/types/forms/plantForm";
  * @module plantMutations
  */
 
+/**
+ * Represents the state for the plant module.
+ * @interface
+ * @property {PlantForm} plantForm - The plant form state.
+ */
 interface State {
   plantForm: PlantForm;
 }
 
 type PlantFormKey = keyof PlantForm;
 
+/**
+ * Payload for changing a value in the plant form.
+ * @template K
+ * @property {K} input - The key of the field to change.
+ * @property {PlantForm[K]} value - The new value for the field.
+ */
 type ChangeValuePayload<K extends PlantFormKey> = {
   input: K;
   value: PlantForm[K];
 };
 
+/**
+ * Payload for changing a numeric value in the plant form.
+ * @template K
+ * @property {K} input - The key of the field to change.
+ * @property {number} value - The new numeric value for the field.
+ */
 type ChangeValuePayloadNumber<K extends PlantFormKey> = {
   input: K;
   value: number;
@@ -28,12 +45,10 @@ type ChangeValuePayloadNumber<K extends PlantFormKey> = {
 
 export default {
   /**
-   * @function changeValue
-   * @description Mutation to change the value of a field in the plant form.
-   * @param {Object} state - The current state object.
-   * @param {Object} payload - Payload containing the input field name and its new value.
-   * @param {string} payload.input - The name of the input field to be updated.
-   * @param {any} payload.value - The new value for the input field.
+   * Mutation to change the value of a field in the plant form.
+   * @param {State} state - The current state object.
+   * @param {ChangeValuePayload<K>} payload - Payload containing the input field name and its new value.
+   * @returns {void}
    */
   changeValue<K extends keyof PlantForm>(
     state: State,
@@ -43,14 +58,11 @@ export default {
     localStorage.setItem(input as string, JSON.stringify(value));
   },
 
-  // Functions used in plant origin
   /**
-   * @function changeIntegerNumber
-   * @description Mutation to change a value to an integer value in the plant form.
-   * @param {Object} state - The current state object.
-   * @param {Object} payload - Payload containing the input field name and its new integer value.
-   * @param {string} payload.input - The name of the input field to be updated.
-   * @param {number} payload.value - The new integer value for the input field.
+   * Mutation to change a value to an integer value in the plant form.
+   * @param {State} state - The current state object.
+   * @param {{ input: "dryingTime" | "plantAge" | "harvestTemperature"; value: number }} payload - Payload containing the input field name and its new integer value.
+   * @returns {void}
    */
   changeIntegerNumber(
     state: State,
@@ -68,9 +80,9 @@ export default {
   },
 
   /**
-   * @function changeStartTimeFormat
-   * @description Mutation to change the format of the start time for harvesting.
-   * @param {Object} state - The current state object.
+   * Mutation to change the format of the start time for harvesting.
+   * @param {State} state - The current state object.
+   * @returns {void}
    */
   changeStartTimeFormat(state: State): void {
     const startTime = setTimeFromMinutesAmount(state.plantForm.harvestRange[0]);
@@ -79,9 +91,9 @@ export default {
   },
 
   /**
-   * @function changeEndTimeFormat
-   * @description Mutation to change the format of the end time for harvesting.
-   * @param {Object} state - The current state object.
+   * Mutation to change the format of the end time for harvesting.
+   * @param {State} state - The current state object.
+   * @returns {void}
    */
   changeEndTimeFormat(state: State): void {
     const endTime = setTimeFromMinutesAmount(state.plantForm.harvestRange[1]);
@@ -90,9 +102,9 @@ export default {
   },
 
   /**
-   * @function changeHarvestRange
-   * @description Mutation to change the harvest range by formatting the harvestStartTime and harvestEndTime.
-   * @param {Object} state - The current state object.
+   * Mutation to change the harvest range by formatting the harvestStartTime and harvestEndTime.
+   * @param {State} state - The current state object.
+   * @returns {void}
    */
   changeHarvestRange(state: State): void {
     if (state.plantForm.harvestStartTime || state.plantForm.harvestEndTime) {
@@ -108,14 +120,11 @@ export default {
     }
   },
 
-  // Functions used in plant data
   /**
-   * @function changeNumberFormat
-   * @description Mutation to change the format of a number value in the plant form.
-   * @param {Object} state - The current state object.
-   * @param {Object} payload - Payload containing the input field name and its new formatted number value.
-   * @param {string} payload.input - The name of the input field to be updated.
-   * @param {number} payload.value - The new number value for the input field.
+   * Mutation to change the format of a number value in the plant form.
+   * @param {State} state - The current state object.
+   * @param {{ input: "plantWeight" | "availableWeight"; value: number }} payload - Payload containing the input field name and its new number value.
+   * @returns {void}
    */
   changeNumberFormat(
     state: State,
@@ -130,9 +139,9 @@ export default {
   },
 
   /**
-   * @function resetPlantForm
-   * @description Mutation to reset the plantForm and remove plantForm from localStorage.
-   * @param {Object} state - The current state object.
+   * Mutation to reset the plantForm and remove plantForm from localStorage.
+   * @param {State} state - The current state object.
+   * @returns {void}
    */
   resetPlantForm(state: State): void {
     state.plantForm = { ...initialPlantForm };

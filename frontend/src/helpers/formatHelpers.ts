@@ -1,10 +1,14 @@
 import type { Store } from "vuex";
 import type { RootState } from "@/types/store/index";
+
 /**
  * Formats the number input and dispatches the formatted value to the store.
- * @function setNumberFormat
- * @param {number} currentValue - The current value of the input.
- * @param {string} input - The input identifier.
+ * @param {Store<RootState>} store - The Vuex store instance.
+ * @param {string | number} value - The value to be formatted and set.
+ * @param {string} id - The input identifier.
+ * @param {string} storeName - The Vuex module name.
+ * @param {number} [decimals] - Optional number of decimal places.
+ * @returns {void}
  */
 export const setNumberFormat = (
   store: Store<RootState>,
@@ -27,9 +31,11 @@ export const setNumberFormat = (
 
 /**
  * Formats the number input to an integer and dispatches the value to the store.
- * @function setIntegerNumber
- * @param {number} currentValue - The current value of the input.
- * @param {string} input - The input identifier.
+ * @param {Store<RootState>} store - The Vuex store instance.
+ * @param {string | number} value - The value to be formatted and set.
+ * @param {string} id - The input identifier.
+ * @param {string} storeName - The Vuex module name.
+ * @returns {void}
  */
 export const setIntegerNumber = (
   store: Store<RootState>,
@@ -49,9 +55,9 @@ export const setIntegerNumber = (
 };
 
 /**
- * Prevents keyboard input for non-integer values.
- * @function setKeyboardIntegerNumber
- * @param {Event} e - The keyboard event.
+ * Prevents keyboard input for non-integer values (e.g., dot or comma).
+ * @param {KeyboardEvent} e - The keyboard event.
+ * @returns {void}
  */
 export const setKeyboardIntegerNumber = (e: KeyboardEvent): void => {
   if (e.key === "." || e.key === ",") {
@@ -59,6 +65,11 @@ export const setKeyboardIntegerNumber = (e: KeyboardEvent): void => {
   }
 };
 
+/**
+ * Prevents keyboard input for minus sign.
+ * @param {KeyboardEvent} e - The keyboard event.
+ * @returns {void}
+ */
 export const preventMinusNumber = (e: KeyboardEvent): void => {
   if (e.key === "-") {
     e.preventDefault();

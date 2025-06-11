@@ -6,10 +6,22 @@ import * as Sentry from "@sentry/vue";
  * @module plantActions
  */
 
+/**
+ * Represents the state for the plant module.
+ * @interface
+ * @property {PlantForm} plantForm - The plant form state.
+ */
 interface State {
   plantForm: PlantForm;
 }
 
+/**
+ * Vuex action context for the plant module.
+ * @interface
+ * @property {State} state - The Vuex state object.
+ * @property {(mutation: string, payload?: any) => void} commit - Commits a mutation.
+ * @property {(action: string, payload?: any) => void} dispatch - Dispatches an action.
+ */
 interface Context {
   state: State;
   commit: (mutation: string, payload?: any) => void;
@@ -18,10 +30,10 @@ interface Context {
 
 export default {
   /**
-   * @function fetchLocalStorageData
-   * @description Fetches data from local storage and commits it to the state.
+   * Fetches data from local storage and commits it to the state.
    * @param {Context} context - The Vuex context.
    * @param {string} key - The key to fetch from local storage.
+   * @returns {void}
    */
   fetchLocalStorageData(context: Context, key: string): void {
     try {
@@ -38,10 +50,10 @@ export default {
   },
 
   /**
-   * @function setValue
-   * @description Sets a value in the state.
+   * Sets a value in the state.
    * @param {Context} context - The Vuex context.
    * @param {{ input: string; value: any }} payload - The payload containing the input and value.
+   * @returns {void}
    */
   setValue(
     context: Context,
@@ -50,12 +62,11 @@ export default {
     context.commit("changeValue", { input, value });
   },
 
-  // Functions used in plant origin
   /**
-   * @function setIntegerValue
-   * @description Sets an integer value in the state.
+   * Sets an integer value in the state.
    * @param {Context} context - The Vuex context.
    * @param {{ input: string; value: number }} payload - The payload containing the input and value.
+   * @returns {void}
    */
   setIntegerValue(
     context: Context,
@@ -65,38 +76,37 @@ export default {
   },
 
   /**
-   * @function setStartTime
-   * @description Commits the start time format change.
+   * Commits the start time format change.
    * @param {Context} context - The Vuex context.
+   * @returns {void}
    */
   setStartTime(context: Context): void {
     context.commit("changeStartTimeFormat");
   },
 
   /**
-   * @function setEndTime
-   * @description Commits the end time format change.
+   * Commits the end time format change.
    * @param {Context} context - The Vuex context.
+   * @returns {void}
    */
   setEndTime(context: Context): void {
     context.commit("changeEndTimeFormat");
   },
 
   /**
-   * @function setHarvestRange
-   * @description Commits the harvest range change.
+   * Commits the harvest range change.
    * @param {Context} context - The Vuex context.
+   * @returns {void}
    */
   setHarvestRange(context: Context): void {
     context.commit("changeHarvestRange");
   },
 
-  // Functions used in plant data
   /**
-   * @function setNumberFormat
-   * @description Sets the number format in the state.
+   * Sets the number format in the state.
    * @param {Context} context - The Vuex context.
    * @param {{ input: string; value: number }} payload - The payload containing the input and value.
+   * @returns {void}
    */
   setNumberFormat(
     context: Context,
@@ -106,9 +116,9 @@ export default {
   },
 
   /**
-   * @function setPlantForm
-   * @description Sets the plantForm in the state and localStorage.
+   * Sets the plantForm in the state and localStorage.
    * @param {Context} context - The Vuex context.
+   * @returns {void}
    */
   setPlantForm(context: Context): void {
     context.commit("resetPlantForm");

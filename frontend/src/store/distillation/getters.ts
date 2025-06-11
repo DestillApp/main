@@ -5,14 +5,18 @@ import type { DistillationForm } from "@/types/forms/distillationForm";
  * @module distillationGetters
  */
 
+/**
+ * Represents the state for the distillation module.
+ * @interface
+ * @property {DistillationForm} distillationForm - The distillation form state.
+ */
 interface State {
   distillationForm: DistillationForm;
 }
 
 export default {
   /**
-   * @function distillationForm
-   * @description Gets the distillation form data from the state.
+   * Gets the distillation form data from the state.
    * @param {State} state - The Vuex state.
    * @returns {DistillationForm} The distillation form data.
    */
@@ -21,8 +25,7 @@ export default {
   },
 
   /**
-   * @function isPlantShredded
-   * @description Gets the shredded status of the plant from the distillation form data.
+   * Gets the shredded status of the plant from the distillation form data.
    * @param {State} state - The Vuex state.
    * @returns {boolean} Whether the plant is shredded.
    */
@@ -31,8 +34,7 @@ export default {
   },
 
   /**
-   * @function isPlantSoaked
-   * @description Gets the soaked status of the plant from the distillation form data.
+   * Gets the soaked status of the plant from the distillation form data.
    * @param {State} state - The Vuex state.
    * @returns {boolean} Whether the plant is soaked.
    */
@@ -41,8 +43,7 @@ export default {
   },
 
   /**
-   * @function distillationDate
-   * @description Gets the distillation date from the distillation form data.
+   * Gets the distillation date from the distillation form data.
    * @param {State} state - The Vuex state.
    * @returns {string} Distillation date.
    */

@@ -9,6 +9,13 @@ import * as Sentry from "@sentry/vue";
  * @module authActions
  */
 
+/**
+ * Vuex action context for the auth module.
+ * @interface
+ * @property {AuthState} state - The Vuex state object.
+ * @property {(mutation: string, value: any) => void} commit - Commits a mutation.
+ * @property {(action: string, payload?: any) => void} dispatch - Dispatches an action.
+ */
 interface Context {
   state: AuthState;
   commit: (mutation: string, value: any) => void;
@@ -16,6 +23,11 @@ interface Context {
 }
 
 export default {
+  /**
+   * Fetches the user's authentication status from the backend.
+   * @param {Context} context - The Vuex action context.
+   * @returns {Promise<boolean>} Resolves to true if authenticated, otherwise false.
+   */
   async fetchUserAuthenticationStatus(context: Context): Promise<boolean> {
     try {
       const { data } = await apolloClient.query({
@@ -25,7 +37,6 @@ export default {
         "changeUserAuthenticationStatus",
         data.verifyAuth.isAuthenticated
       );
-      console.log("GraphQL result:", data);
       return data.verifyAuth.isAuthenticated;
     } catch (error) {
       Sentry.captureException(error);
@@ -35,6 +46,12 @@ export default {
     }
   },
 
+  /**
+   * Logs in the user with the provided credentials.
+   * @param {Context} context - The Vuex action context.
+   * @param {{ email: string; password: string }} param1 - The user's email and password.
+   * @returns {Promise<boolean | string | undefined>} Resolves to true if successful, "Invalid credentials" if failed, or throws an error.
+   */
   async login(
     context: Context,
     { email, password }: { email: string; password: string }
@@ -60,6 +77,11 @@ export default {
     }
   },
 
+  /**
+   * Logs out the user and clears relevant local storage.
+   * @param {Context} context - The Vuex action context.
+   * @returns {Promise<void>} Resolves when logout is complete.
+   */
   async logout(context: Context): Promise<void> {
     try {
       await apolloClient.mutate({ mutation: LOGOUT });
@@ -85,10 +107,22 @@ export default {
     }
   },
 
+  /**
+   * Sets the loading status for authentication actions.
+   * @param {Context} context - The Vuex action context.
+   * @param {boolean} value - The loading status value.
+   * @returns {void}
+   */
   setLoadingAuthStatus(context: Context, value: boolean): void {
     context.commit("changeLoadingAuthStatus", value);
   },
 
+  /**
+   * Changes the user's password.
+   * @param {Context} context - The Vuex action context.
+   * @param {{ oldPassword: string; newPassword: string }} param1 - The old and new passwords.
+   * @returns {Promise<boolean | string>} Resolves to true if successful, "Invalid old password" if failed, or throws an error.
+   */
   async changePassword(
     context: Context,
     { oldPassword, newPassword }: { oldPassword: string; newPassword: string }

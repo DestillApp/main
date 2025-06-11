@@ -3,7 +3,10 @@ import authActions from "./actions";
 import authGetters from "./getters";
 
 /**
- * State interface for the auth module.
+ * Represents the authentication state in Vuex.
+ * @interface
+ * @property {boolean} isAuthenticated - Indicates whether the user is authenticated.
+ * @property {boolean} isLoadingAuthStatus - Determines if authentication status is being loaded.
  */
 export interface AuthState {
   isAuthenticated: boolean;
@@ -11,16 +14,16 @@ export interface AuthState {
 }
 
 /**
- * User authentication module Vuex store.
+ * Vuex auth module for managing authentication state, mutations, actions, and getters.
  * @module authStore
  */
 export default {
   namespaced: true,
 
   /**
-   * State object representing the user authentication.
-   * @function state
-   * @returns {AuthState} The initial state object.
+   * Returns the initial state for the auth module.
+   * @function
+   * @returns {AuthState} The initial authentication state.
    */
   state(): AuthState {
     return {
@@ -29,10 +32,12 @@ export default {
     };
   },
 
-  // Mutations for updating the state.
+  /** Mutations for updating the authentication state. */
   mutations: authMutations,
-  // Actions for performing asynchronous tasks.
+
+  /** Actions for performing asynchronous authentication tasks. */
   actions: authActions,
-  // Getters for accessing state data.
+
+  /** Getters for accessing authentication state data. */
   getters: authGetters,
 };

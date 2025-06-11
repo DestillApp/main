@@ -14,7 +14,7 @@ import settingsModule from "./settings/index";
 
 /**
  * Creates the Vuex store with modules.
- * @returns {object} The Vuex store instance.
+ * @returns {Store<RootStateOnly>} The Vuex store instance.
  */
 const store = createStore({
   modules: {
@@ -29,22 +29,51 @@ const store = createStore({
     searchQuery: "",
   }),
   mutations: {
-    changeComingFromRoute(state, value: boolean) {
+    /**
+     * Mutation to change the comingFromRoute state.
+     * @param {RootStateOnly} state - The root state object.
+     * @param {boolean} value - The new value for comingFromRoute.
+     * @returns {void}
+     */
+    changeComingFromRoute(state, value: boolean): void {
       state.comingFromRoute = value;
     },
-    setSearchQuery(state, value: string) {
+    /**
+     * Mutation to set the search query.
+     * @param {RootStateOnly} state - The root state object.
+     * @param {string} value - The new search query.
+     * @returns {void}
+     */
+    setSearchQuery(state, value: string): void {
       state.searchQuery = value;
       localStorage.setItem("searchQuery", value);
     },
   },
   actions: {
-    setComingFromRoute(context, value: boolean) {
+    /**
+     * Action to set comingFromRoute.
+     * @param {object} context - The Vuex context.
+     * @param {boolean} value - The new value for comingFromRoute.
+     * @returns {void}
+     */
+    setComingFromRoute(context, value: boolean): void {
       context.commit("changeComingFromRoute", value);
     },
-    updateSearchQuery(context, value: string) {
+    /**
+     * Action to update the search query.
+     * @param {object} context - The Vuex context.
+     * @param {string} value - The new search query.
+     * @returns {void}
+     */
+    updateSearchQuery(context, value: string): void {
       context.commit("setSearchQuery", value);
     },
-    fetchSearchQueryFromLocalStorage(context) {
+    /**
+     * Action to fetch the search query from local storage and commit it to the state.
+     * @param {object} context - The Vuex context.
+     * @returns {void}
+     */
+    fetchSearchQueryFromLocalStorage(context): void {
       const value = localStorage.getItem("searchQuery");
       if (value) {
         context.commit("setSearchQuery", value);
@@ -54,8 +83,18 @@ const store = createStore({
     },
   },
   getters: {
-    comingFromRoute: (state) => state.comingFromRoute,
-    searchQuery: (state) => state.searchQuery,
+    /**
+     * Gets the comingFromRoute state.
+     * @param {RootStateOnly} state - The root state object.
+     * @returns {boolean} The comingFromRoute value.
+     */
+    comingFromRoute: (state: RootStateOnly): boolean => state.comingFromRoute,
+    /**
+     * Gets the search query.
+     * @param {RootStateOnly} state - The root state object.
+     * @returns {string} The search query.
+     */
+    searchQuery: (state: RootStateOnly): string => state.searchQuery,
   },
 });
 

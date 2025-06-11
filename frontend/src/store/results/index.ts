@@ -13,7 +13,7 @@ export default {
   /**
    * State object representing the results form data.
    * @function state
-   * @returns {Object} The initial state object.
+   * @returns {{ resultsForm: ResultsForm } } The initial state object.
    */
   state(): { resultsForm: ResultsForm } {
     return {
@@ -56,11 +56,16 @@ export default {
       },
     };
   },
-
-  // Mutations for updating the state.
+  /**
+   * Mutations for updating the results state.
+   */
   mutations: resultsMutations,
-  // Actions for performing asynchronous tasks.
+  /**
+   * Actions for performing asynchronous tasks in the results module.
+   */
   actions: resultsActions,
-  // Getters for accessing state data.
+  /**
+   * Getters for accessing results state data.
+   */
   getters: resultsGetters,
 };
