@@ -2,6 +2,7 @@
  * Entry point of the Vue application.
  * @module main
  */
+
 import { createApp, provide, h } from "vue";
 import "./assets/styles/global.css";
 import router from "./router";
@@ -24,14 +25,21 @@ import BaseModal from "./ui/BaseModal.vue";
 import DeleteItemModal from "./components/plant/DeleteItemModal.vue";
 import AskModal from "./components/AskModal.vue";
 
-// Apollo for graphql
-// HTTP connection to the API
+/**
+ * HTTP connection to the GraphQL API.
+ * @constant
+ * @type {import("@apollo/client/core").HttpLink}
+ */
 const httpLink = createHttpLink({
   uri: "http://localhost:3000/graphql",
   credentials: "include",
 });
 
-// Middleware to add token to headers
+/**
+ * Middleware to add authentication token to headers.
+ * @constant
+ * @type {import("@apollo/client/link/context").ApolloLink}
+ */
 const authLink = setContext((_, { headers }) => {
   // Get the authentication token from cookies
   const token = Cookies.get("authToken");
@@ -45,6 +53,11 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+/**
+ * Apollo Client instance for GraphQL queries and mutations.
+ * @constant
+ * @type {ApolloClient<any>}
+ */
 const apolloClient = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({
@@ -106,6 +119,11 @@ import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import { en, pl } from "vuetify/locale";
 
+/**
+ * Vuetify instance with localization and components.
+ * @constant
+ * @type {ReturnType<typeof createVuetify>}
+ */
 const vuetify = createVuetify({
   components,
   directives,
@@ -116,7 +134,11 @@ const vuetify = createVuetify({
   },
 });
 
-// Create the Vue application
+/**
+ * Vue application instance.
+ * @constant
+ * @type {import("vue").App}
+ */
 const app = createApp({
   setup() {
     provide(DefaultApolloClient, apolloClient);
@@ -125,6 +147,9 @@ const app = createApp({
 });
 
 import * as Sentry from "@sentry/vue";
+/**
+ * Initializes Sentry error tracking for the Vue application.
+ */
 Sentry.init({
   app,
   dsn: "https://553bd7fe70d33389fa926cd0c7375239@o4509434011910144.ingest.de.sentry.io/4509434022985808",
@@ -149,7 +174,10 @@ app.component("base-modal", BaseModal);
 app.component("delete-item-modal", DeleteItemModal);
 app.component("ask-modal", AskModal);
 
-// Mount the Vue application to the DOM
+/**
+ * Mounts the Vue application to the DOM.
+ * @returns {void}
+ */
 app.mount("#app");
 
 export { apolloClient };
