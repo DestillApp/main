@@ -2,7 +2,7 @@ import { gql } from "@apollo/client/core";
 
 /**
  * GraphQL mutation to create a new distillation archive.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const CREATE_DISTILLATION_ARCHIVE = gql`
@@ -50,11 +50,14 @@ export const CREATE_DISTILLATION_ARCHIVE = gql`
 
 /**
  * GraphQL mutation to update an existing distillation archive.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const UPDATE_DISTILLATION_ARCHIVE = gql`
-  mutation updateDistillationArchive($id: ID!, $input: DistillationArchiveInput!) {
+  mutation updateDistillationArchive(
+    $id: ID!
+    $input: DistillationArchiveInput!
+  ) {
     updateDistillationArchive(id: $id, distillationArchiveInput: $input) {
       _id
       oilAmount
@@ -98,7 +101,7 @@ export const UPDATE_DISTILLATION_ARCHIVE = gql`
 
 /**
  * GraphQL mutation to delete a distillation archive by ID.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const DELETE_DISTILLATION_ARCHIVE = gql`

@@ -6,6 +6,7 @@
     "strict": true,
     "jsx": "preserve",
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "sourceMap": true,
     "allowJs": true,
     "checkJs": false,
@@ -17,6 +18,7 @@
     "types": ["vite/client"]
   },
   "include": [
+    "src",
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",

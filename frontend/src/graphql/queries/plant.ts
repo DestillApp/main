@@ -2,7 +2,7 @@ import { gql } from "@apollo/client/core";
 
 /**
  * GraphQL query to fetch all plants or all plants with the same name.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const GET_PLANTS = gql`
@@ -30,7 +30,7 @@ export const GET_PLANTS = gql`
 
 /**
  * GraphQL query to get plant details by ID with optional date formatting.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const GET_PLANT_BY_ID = gql`
@@ -58,7 +58,7 @@ export const GET_PLANT_BY_ID = gql`
 
 /**
  * GraphQL query to get basic plant details by ID with optional date formatting.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const GET_BASIC_PLANT_BY_ID = gql`

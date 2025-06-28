@@ -2,7 +2,7 @@ import { gql } from "@apollo/client/core";
 
 /**
  * GraphQL query to verify if the user is authenticated.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const VERIFY_AUTH = gql`
@@ -15,7 +15,7 @@ export const VERIFY_AUTH = gql`
 
 /**
  * GraphQL query to check if a username exists.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const CHECK_USERNAME_EXISTENCE = gql`
@@ -26,7 +26,7 @@ export const CHECK_USERNAME_EXISTENCE = gql`
 
 /**
  * GraphQL query to get user details.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const GET_USER_DETAILS = gql`

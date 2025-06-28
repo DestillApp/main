@@ -2,7 +2,7 @@ import { gql } from "@apollo/client/core";
 
 /**
  * GraphQL mutation to create a new plant.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const CREATE_PLANT = gql`
@@ -30,7 +30,7 @@ export const CREATE_PLANT = gql`
 
 /**
  * GraphQL mutation to update an existing plant.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const UPDATE_PLANT = gql`
@@ -58,7 +58,7 @@ export const UPDATE_PLANT = gql`
 
 /**
  * GraphQL mutation to delete a plant by ID.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const DELETE_PLANT = gql`
@@ -69,7 +69,7 @@ export const DELETE_PLANT = gql`
 
 /**
  * GraphQL mutation to update available weight of a plant after adding distillation to the database.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const UPDATE_AVAILABLE_WEIGHT = gql`
@@ -83,7 +83,7 @@ export const UPDATE_AVAILABLE_WEIGHT = gql`
 
 /**
  * GraphQL mutation to change available weight of a plant.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const CHANGE_AVAILABLE_WEIGHT = gql`

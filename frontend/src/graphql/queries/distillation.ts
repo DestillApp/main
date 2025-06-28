@@ -2,7 +2,7 @@ import { gql } from "@apollo/client/core";
 
 /**
  * GraphQL query to fetch all distillations or distillations with the same name.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const GET_DISTILLATIONS = gql`
@@ -23,7 +23,7 @@ export const GET_DISTILLATIONS = gql`
 
 /**
  * GraphQL query to get distillation details by ID with optional date formatting.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const GET_DISTILLATION_BY_ID = gql`

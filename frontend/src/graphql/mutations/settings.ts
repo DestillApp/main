@@ -2,7 +2,7 @@ import { gql } from "@apollo/client/core";
 
 /**
  * GraphQL mutation to create initial user settings.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const CREATE_SETTINGS = gql`
@@ -32,7 +32,7 @@ export const CREATE_SETTINGS = gql`
 
 /**
  * GraphQL mutation to update list settings.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const UPDATE_LIST_SETTINGS = gql`
@@ -51,7 +51,7 @@ export const UPDATE_LIST_SETTINGS = gql`
 
 /**
  * GraphQL mutation to update list sorting settings.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const UPDATE_LIST_SORTING = gql`
@@ -70,7 +70,7 @@ export const UPDATE_LIST_SORTING = gql`
 
 /**
  * GraphQL mutation to add a distiller to the user's distiller list.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const ADD_DISTILLER = gql`
@@ -89,7 +89,7 @@ export const ADD_DISTILLER = gql`
 
 /**
  * GraphQL mutation to delete a distiller from the user's distiller list.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const DELETE_DISTILLER = gql`
@@ -109,7 +109,7 @@ export const DELETE_DISTILLER = gql`
 
 /**
  * GraphQL mutation to update the dark theme setting.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const UPDATE_DARK_THEME = gql`

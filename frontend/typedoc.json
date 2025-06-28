@@ -1,0 +1,12 @@
+{
+  "entryPoints": ["src"],
+  "entryPointStrategy": "expand",
+  "out": "docs/typedoc",
+  "tsconfig": "tsconfig.json",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "exclude": ["**/*.test.ts", "**/node_modules/**", "**/dist/**"],
+  "plugin": ["typedoc-plugin-markdown"]
+}

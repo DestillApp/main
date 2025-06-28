@@ -27,7 +27,7 @@ import AskModal from "./components/AskModal.vue";
 
 /**
  * HTTP connection to the GraphQL API.
- * @constant
+ *
  * @type {import("@apollo/client/core").HttpLink}
  */
 const httpLink = createHttpLink({
@@ -37,7 +37,7 @@ const httpLink = createHttpLink({
 
 /**
  * Middleware to add authentication token to headers.
- * @constant
+ *
  * @type {import("@apollo/client/link/context").ApolloLink}
  */
 const authLink = setContext((_, { headers }) => {
@@ -55,7 +55,7 @@ const authLink = setContext((_, { headers }) => {
 
 /**
  * Apollo Client instance for GraphQL queries and mutations.
- * @constant
+ *
  * @type {ApolloClient<any>}
  */
 const apolloClient = new ApolloClient({
@@ -121,7 +121,7 @@ import { en, pl } from "vuetify/locale";
 
 /**
  * Vuetify instance with localization and components.
- * @constant
+ *
  * @type {ReturnType<typeof createVuetify>}
  */
 const vuetify = createVuetify({
@@ -136,7 +136,7 @@ const vuetify = createVuetify({
 
 /**
  * Vue application instance.
- * @constant
+ *
  * @type {import("vue").App}
  */
 const app = createApp({

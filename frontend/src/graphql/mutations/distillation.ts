@@ -2,7 +2,7 @@ import { gql } from "@apollo/client/core";
 
 /**
  * GraphQL mutation to create a new distillation.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const CREATE_DISTILLATION = gql`
@@ -36,7 +36,7 @@ export const CREATE_DISTILLATION = gql`
 
 /**
  * GraphQL mutation to update an existing distillation.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const UPDATE_DISTILLATION = gql`
@@ -70,7 +70,7 @@ export const UPDATE_DISTILLATION = gql`
 
 /**
  * GraphQL mutation to delete a distillation by ID.
- * @constant
+ *
  * @type {import("@apollo/client/core").DocumentNode}
  */
 export const DELETE_DISTILLATION = gql`
