@@ -1,6 +1,10 @@
 import { gql } from "@apollo/client/core";
 
-// GraphQL query to fetch the all plants or all the plants with the same name.
+/**
+ * GraphQL query to fetch all plants or all plants with the same name.
+ * @constant
+ * @type {import("@apollo/client/core").DocumentNode}
+ */
 export const GET_PLANTS = gql`
   query GetPlants(
     $fields: [String]!
@@ -24,7 +28,11 @@ export const GET_PLANTS = gql`
   }
 `;
 
-// GraphQL query to get plant details by ID with formating date boolean
+/**
+ * GraphQL query to get plant details by ID with optional date formatting.
+ * @constant
+ * @type {import("@apollo/client/core").DocumentNode}
+ */
 export const GET_PLANT_BY_ID = gql`
   query GetPlantById($id: ID!, $formatDates: Boolean!) {
     getPlantById(id: $id, formatDates: $formatDates) {
@@ -48,7 +56,11 @@ export const GET_PLANT_BY_ID = gql`
   }
 `;
 
-// GraphQL query to get plant details by ID with formating date boolean
+/**
+ * GraphQL query to get basic plant details by ID with optional date formatting.
+ * @constant
+ * @type {import("@apollo/client/core").DocumentNode}
+ */
 export const GET_BASIC_PLANT_BY_ID = gql`
   query GetPlantById($id: ID!, $formatDates: Boolean!) {
     getPlantById(id: $id, formatDates: $formatDates) {

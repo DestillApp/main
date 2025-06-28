@@ -151,7 +151,7 @@ import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import {
   updateListSorting,
   updateListSettings,
-} from "@/graphql/mutations/settingsFunctions.js";
+} from "@/helpers/settingsFunctions";
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import type { DistillationArchive } from "@/types/forms/resultsForm";

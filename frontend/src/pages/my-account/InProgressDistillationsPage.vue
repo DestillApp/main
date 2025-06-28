@@ -159,7 +159,7 @@ import { handleUserError } from "@/helpers/errorHandling";
 import {
   updateListSorting,
   updateListSettings,
-} from "@/graphql/mutations/settingsFunctions.js";
+} from "@/helpers/settingsFunctions";
 
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";

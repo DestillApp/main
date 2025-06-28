@@ -133,7 +133,7 @@ import { GET_PLANTS } from "@/graphql/queries/plant";
 import {
   updateListSorting,
   updateListSettings,
-} from "@/graphql/mutations/settingsFunctions.js";
+} from "@/helpers/settingsFunctions";
 import { handleUserError } from "@/helpers/errorHandling";
 import { DELETE_PLANT } from "@/graphql/mutations/plant";
 import type { BasicPlant } from "@/types/forms/plantForm";

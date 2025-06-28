@@ -4,6 +4,13 @@ import {
 } from "@/graphql/mutations/settings";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client/core";
 
+/**
+ * Updates the list sorting setting for the user.
+ * @param {ApolloClient<NormalizedCacheObject>} apolloClient - The Apollo Client instance.
+ * @param {string} key - The sorting setting key to update.
+ * @param {string} value - The new sorting value.
+ * @returns {Promise<boolean | string>} Returns true if successful, "Unauthorized" if unauthorized, or false on error.
+ */
 export const updateListSorting = async (
   apolloClient: ApolloClient<NormalizedCacheObject>,
   key: string,
@@ -29,6 +36,13 @@ export const updateListSorting = async (
   }
 };
 
+/**
+ * Updates the list length setting for the user.
+ * @param {ApolloClient<NormalizedCacheObject>} apolloClient - The Apollo Client instance.
+ * @param {string} key - The list length setting key to update.
+ * @param {number} value - The new list length value.
+ * @returns {Promise<boolean | string>} Returns true if successful, "Unauthorized" if unauthorized, or false on error.
+ */
 export const updateListSettings = async (
   apolloClient: ApolloClient<NormalizedCacheObject>,
   key: string,

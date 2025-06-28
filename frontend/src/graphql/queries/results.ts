@@ -1,6 +1,10 @@
 import { gql } from "@apollo/client/core";
 
-// GraphQL query to fetch the all archived distillations or all archived distillation with the same name.
+/**
+ * GraphQL query to fetch all archived distillations or all archived distillations with the same name.
+ * @constant
+ * @type {import("@apollo/client/core").DocumentNode}
+ */
 export const GET_DISTILLATION_ARCHIVES = gql`
   query GetDistillationArchives($fields: [String]!, $name: String, $sorting: String, $formatDates: Boolean!) {
     getDistillationArchives(fields: $fields, name: $name, sorting: $sorting, formatDates: $formatDates) {
@@ -19,7 +23,11 @@ export const GET_DISTILLATION_ARCHIVES = gql`
   }
 `;
 
-// GraphQL query to fetch archive distillation details by ID
+/**
+ * GraphQL query to fetch archive distillation details by ID.
+ * @constant
+ * @type {import("@apollo/client/core").DocumentNode}
+ */
 export const GET_ARCHIVE_DISTILLATION_BY_ID = gql`
   query GetArchiveDistillationById($id: ID!, $formatDistillDate: Boolean!) {
     getArchiveDistillationById(id: $id, formatDistillDate: $formatDistillDate) {
