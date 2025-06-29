@@ -49,15 +49,18 @@
       >
         <div class="distillation__container">
           <div class="distillation__data">
+            <!-- Distillation type -->
             <div class="distillation__type">
               <p class="distillation__type-state">typ destylacji:</p>
               {{ distillation.distillationType }}
             </div>
+            <!-- Distillation date -->
             <div class="distillation__date">
               <p class="distillation__date-state">data destylacji:</p>
               {{ distillation.distillationDate }}
             </div>
           </div>
+          <!-- Plant identification -->
           <div class="distillation__plant-identification">
             <div class="distillation__plant-name">
               {{ distillation.choosedPlant.name }}
@@ -67,6 +70,7 @@
             </div>
           </div>
           <div class="distillation__buttons">
+            <!-- Button to view distillation details -->
             <router-link
               :to="{
                 name: 'DistillationDetailsPage',
@@ -76,6 +80,7 @@
             >
               <button>Zobacz szczegóły</button>
             </router-link>
+            <!-- Button to delete distillation -->
             <button
               @click="
                 openDeleteModal(
@@ -93,6 +98,7 @@
             </button>
           </div>
         </div>
+        <!-- Button to add distillation results -->
         <router-link
           :to="{
             name: 'AddResultsPage',
@@ -114,6 +120,7 @@
       @close-delete-modal="closeDeleteModal"
       @delete-item="deleteDistillation"
     ></delete-item-modal>
+    <!-- Modal for restoring plant weight after deletion -->
     <ask-modal
       v-if="isAskModalOpen"
       :plantName="plantName"
@@ -147,7 +154,6 @@ import { ref, reactive, computed, onBeforeMount, onMounted, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "@/store/useStore";
-
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
@@ -155,16 +161,30 @@ import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
 import { handleUserError } from "@/helpers/errorHandling";
-
 import {
   updateListSorting,
   updateListSettings,
 } from "@/helpers/settingsFunctions";
-
 import { GET_DISTILLATIONS } from "@/graphql/queries/distillation";
 import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 import type { GetDistillationById } from "@/types/forms/distillationForm";
+
+/**
+ * @component InProgressDistillationsPage
+ * @description Displays a paginated, searchable, and sortable list of in-progress distillations. Allows deletion of distillations and manages list settings.
+ * @see fetchDistillationList
+ * @see handleSearch
+ * @see handleSelectLength
+ * @see updateSorting
+ * @see handleSorting
+ * @see openDeleteModal
+ * @see closeDeleteModal
+ * @see deleteDistillation
+ * @see closeAskModal
+ * @see addPlantWeight
+ * @see handleYes
+ */
 
 export default {
   name: "InProgressDistillationsPage",
@@ -183,7 +203,7 @@ export default {
     // Vuex store instance
     const store = useStore();
 
-    // Route object to access route params
+    // Route and router objects
     const route = useRoute();
     const router = useRouter();
 
@@ -196,20 +216,23 @@ export default {
     const distillationWeight = ref<number | null>(null);
     const distillationDate = ref<string>("");
 
-    // Reactive reference to track if the delete modal is open
+    // Modal open state refs
     const isModalOpen = ref<boolean>(false);
     const isAskModalOpen = ref<boolean>(false);
 
+    // Pagination state refs
     const distillationsAmount = ref<number | null>(null);
     const page = ref<number>(Number(route.params.page));
+    // Computed property for number of distillations per page from settings
     const distillationsPerPage = computed<number>(
       () => store.getters["settings/settingsForm"].distillationListLength
     );
 
-    // Reactive reference for loading state
+    // Loading state ref
     const isLoading = ref<boolean>(true);
 
-    // Reactive reference for searching state
+    // Computed property for searching state
+    const searchQuery = computed<string>(() => store.getters.searchQuery);
     const isSearching = computed<boolean>(() => {
       return searchQuery.value ? true : false;
     });
@@ -221,9 +244,7 @@ export default {
       );
     });
 
-    // Computed property to get searchQuery from Vuex store
-    const searchQuery = computed<string>(() => store.getters.searchQuery);
-
+    // Sorting options
     const options = reactive<Record<string, string>>({
       plantName: "nazwy rośliny alfabetycznie",
       createdAt: "daty dodania destylacji",
@@ -231,20 +252,24 @@ export default {
       oldDate: "najstarszej daty destylacji",
     });
 
+    // Computed property for current sorting option label
     const sortingOption = computed<string>(() => {
       const sortingValue =
         store.getters["settings/settingsForm"].distillationListSorting;
       return options[sortingValue] || "";
     });
 
+    // Computed property for current sorting key
     const sorting = computed<string>(
       () => store.getters["settings/settingsForm"].distillationListSorting
     );
 
     /**
+     * Fetch the list of distillations from the GraphQL server.
      * @async
      * @function fetchDistillationList
-     * @description Fetch the list of distillations from the GraphQL server.
+     * @param {string} name - Search query for plant name.
+     * @param {string} sorting - Sorting key.
      * @returns {Promise<void>}
      */
     const fetchDistillationList = async (
@@ -287,14 +312,18 @@ export default {
       }
     };
 
+    /**
+     * Handle the search query emitted from the BaseSearchItem component.
+     * @function handleSearch
+     */
     const handleSearch = async (): Promise<void> => {
       await fetchDistillationList(searchQuery.value, sorting.value);
     };
 
     /**
+     * Handle the selection of list length.
      * @function handleSelectLength
-     * @description Handle the selection of list length.
-     * @param {Number} length - The selected length.
+     * @param {number} length - The selected length.
      */
     const handleSelectLength = async (
       length: number
@@ -310,7 +339,6 @@ export default {
         return;
       }
       if (isUpdating === true) {
-        console.log("Updated distillation list length");
         store.dispatch("settings/setValue", {
           input: "distillationListLength",
           value: length,
@@ -320,10 +348,10 @@ export default {
     };
 
     /**
+     * Update the sorting option and fetch the distillation list.
      * @function updateSorting
-     * @description Update the sorting option and fetch the distillation list.
-     * @param {String} sortingKey - The sorting key.
-     * @param {String} sortingValue - The sorting value.
+     * @param {string} sortingKey - The sorting key.
+     * @param {string} sortingValue - The sorting value.
      */
     const updateSorting = async (
       sortingKey: string,
@@ -348,9 +376,9 @@ export default {
     };
 
     /**
+     * Handle the sorting of the items list.
      * @function handleSorting
-     * @description Handle the sorting of the items list.
-     * @param {String} option - The sorting option.
+     * @param {string} option - The sorting option.
      */
     const handleSorting = async (option: string): Promise<void> => {
       const sortingKey = Object.keys(options).find(
@@ -362,6 +390,7 @@ export default {
       }
     };
 
+    // Fetch settings and search query from local storage before mount
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "distillationListLength",
@@ -377,7 +406,7 @@ export default {
       await fetchDistillationList(searchQuery.value, sorting.value);
     });
 
-    // Watch for changes in the page number and refetch plant list.
+    // Watch for changes in the page number and refetch distillation list.
     watch(page, async (newPage) => {
       router.push({
         name: "InProgressDistillationsPage",
@@ -388,12 +417,14 @@ export default {
     });
 
     /**
+     * Open the delete modal for a specific distillation.
      * @function openDeleteModal
-     * @description Open the delete modal for a specific plant.
-     * @param {String} id - The ID of the plant to delete.
-     * @param {String} name - The name of the plant.
-     * @param {String} part - The part of the plant.
-     * @param {String} date - Distillation date.
+     * @param {string} id - The ID of the distillation to delete.
+     * @param {string} plantId - The ID of the plant.
+     * @param {string} name - The name of the plant.
+     * @param {string} part - The part of the plant.
+     * @param {number} dWeight - The weight of the distillation.
+     * @param {string} date - Distillation date.
      */
     const openDeleteModal = (
       id: string,
@@ -413,8 +444,8 @@ export default {
     };
 
     /**
+     * Close the delete modal.
      * @function closeDeleteModal
-     * @description Close the delete modal.
      */
     const closeDeleteModal = (): void => {
       distillationDate.value = "";
@@ -422,9 +453,9 @@ export default {
     };
 
     /**
-     * @function
-     * @description Remove the deleted plant from the plant list.
-     * @param {String} id - The ID of the deleted plant.
+     * Remove the deleted distillation from the list.
+     * @function deleteDistillationFromList
+     * @param {string} id - The ID of the deleted distillation.
      */
     const deleteDistillationFromList = (id: string): void => {
       distillationsList.value = distillationsList.value.filter(
@@ -432,14 +463,15 @@ export default {
       );
     };
 
+    // Open the ask modal for restoring plant weight
     const openAskModal = (): void => {
       isAskModalOpen.value = true;
     };
 
     /**
+     * Delete the selected distillation from the list.
      * @async
      * @function deleteDistillation
-     * @description Delete the selected distillation from the list.
      * @returns {Promise<void>}
      */
     const deleteDistillation = async (): Promise<void> => {
@@ -467,6 +499,7 @@ export default {
       }
     };
 
+    // Close the ask modal and reset related state
     const closeAskModal = (): void => {
       isAskModalOpen.value = false;
       selectedDistillationId.value = "";
@@ -476,6 +509,12 @@ export default {
       plantPart.value = "";
     };
 
+    /**
+     * Add the distillation weight back to the plant's available weight.
+     * @async
+     * @function addPlantWeight
+     * @returns {Promise<void>}
+     */
     const addPlantWeight = async (): Promise<void> => {
       try {
         await apolloClient.mutate({
@@ -492,6 +531,12 @@ export default {
       }
     };
 
+    /**
+     * Handles confirmation of adding plant weight back after deletion.
+     * @async
+     * @function handleYes
+     * @returns {Promise<void>}
+     */
     const handleYes = async (): Promise<void> => {
       await addPlantWeight();
       closeAskModal();

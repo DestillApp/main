@@ -24,6 +24,7 @@
         </div>
         <!-- Edit and delete buttons for the plant -->
         <div class="plant-details__buttons">
+          <!-- Button to edit the plant -->
           <router-link
             :to="{ name: 'EditPlantPage', params: { page: page, id: plantId } }"
             ><button class="plant-details__button-edit">
@@ -163,6 +164,7 @@ export default {
     // Reactive reference to track loading state
     const isLoading = ref<boolean>(true);
 
+    // List of fields to normalize from the fetched plant details
     const fieldsToNormalize: (keyof GetPlantById)[] = [
       "harvestDate",
       "harvestStartTime",
@@ -173,9 +175,9 @@ export default {
     ];
 
     /**
+     * Fetches the plant details by plant ID from GraphQL API.
      * @async
      * @function fetchPlantDetails
-     * @description Fetches the plant details by plant ID from GraphQL API.
      * @returns {Promise<void>}
      */
     const fetchPlantDetails = async (): Promise<void> => {
@@ -204,25 +206,25 @@ export default {
     });
 
     /**
+     * Opens the delete confirmation modal.
      * @function openDeleteModal
-     * @description Opens the delete confirmation modal.
      */
     const openDeleteModal = (): void => {
       isModalOpen.value = true;
     };
 
     /**
+     * Closes the delete confirmation modal.
      * @function closeDeleteModal
-     * @description Closes the delete confirmation modal.
      */
     const closeDeleteModal = (): void => {
       isModalOpen.value = false;
     };
 
     /**
+     * Deletes the plant by ID and navigates back to the plant list.
      * @async
      * @function deletePlant
-     * @description Deletes the plant by ID and navigates back to the plant list.
      * @returns {Promise<void>}
      */
     const deletePlant = async (): Promise<void> => {

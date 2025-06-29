@@ -1,12 +1,15 @@
 <template>
   <div>
     <h3>Moje dane</h3>
+    <!-- User info section -->
     <div class="my-data__user-info">
       <p>nazwa użytkownika: {{ username }}</p>
       <p>adres e-mail: {{ email }}</p>
     </div>
+    <!-- Distillers section -->
     <div class="my-data__distillers">
       <h4 class="my-data__distillers-title">Moje destylatory:</h4>
+      <!-- List of distillers -->
       <ul v-if="distillers.length > 0" class="my-data__distiller-list">
         <li
           v-for="distiller in distillers"
@@ -20,6 +23,7 @@
               <p>Pojemność: {{ distiller.capacity }} l</p>
               <p>Ogrzewanie: {{ distiller.heating }}</p>
             </div>
+            <!-- Button to delete distiller -->
             <button
               @click="openDeleteModal(distiller.id)"
               class="my-data__distiller-delete"
@@ -29,6 +33,7 @@
           </div>
         </li>
       </ul>
+      <!-- Message if no distillers -->
       <p v-else class="my-data__distiller-none">
         Brak zapisanych destylatorów.
       </p>
@@ -36,17 +41,21 @@
         >Dodaj nowy destylator</base-button
       >
     </div>
+    <!-- Settings section -->
     <div class="my-data__settings">
       <h4 class="my-data__settings-title">Ustawienia:</h4>
       <div class="my-data__settings-theme">
+        <!-- Theme switch info -->
         <p v-if="isDarkTheme">Motyw ciemny aplikacji włączony</p>
         <p v-if="!isDarkTheme">Motyw ciemny aplikacji wyłączony</p>
+        <!-- Theme switch -->
         <v-switch
           v-model="isDarkTheme"
           hide-details
           color="var(--secondary-color)"
         ></v-switch>
       </div>
+      <!-- Button to open password change form -->
       <base-button
         class="my-data__settings-button"
         @click="openPasswordChangeForm"
@@ -88,6 +97,19 @@ import type { Distiller } from "@/store/settings/index";
 import { handleUserError } from "@/helpers/errorHandling";
 import * as Sentry from "@sentry/vue";
 
+/**
+ * @component MyDataPage
+ * @description Displays user data, list of distillers, theme settings, and allows managing distillers and password. Handles fetching user info, theme switching, and modal dialogs.
+ * @see fetchUserDetails
+ * @see openDistillerForm
+ * @see closeDistillerForm
+ * @see openDeleteModal
+ * @see closeDeleteModal
+ * @see deleteDistiller
+ * @see openPasswordChangeForm
+ * @see closePasswordChangeForm
+ */
+
 export default {
   components: {
     BaseButton,
@@ -103,22 +125,34 @@ export default {
     // Router object for navigation
     const router = useRouter();
 
+    // User info refs
     const username = ref<string>("");
     const email = ref<string>("");
+
+    // Computed property for distillers list from Vuex store
     const distillers = computed<Distiller[]>(
       () => store.getters["settings/distillerList"]
     );
 
+    // Modal state refs
     const isDeleteModalOpen = ref<boolean>(false);
     const selectedDistillerId = ref<string>("");
 
     const isDistillerFormOpen = ref<boolean>(false);
     const isPasswordChangeFormOpen = ref<boolean>(false);
+
+    // Theme state refs
     const isDarkTheme = ref<boolean>(false);
     const isDarkThemeStored = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
 
+    /**
+     * Fetches user details (username and email) from the server.
+     * @async
+     * @function fetchUserDetails
+     * @returns {Promise<void>}
+     */
     const fetchUserDetails = async (): Promise<void> => {
       try {
         const { data } = await apolloClient.query({
@@ -132,24 +166,47 @@ export default {
       }
     };
 
+    /**
+     * Opens the distiller form modal.
+     * @function openDistillerForm
+     */
     const openDistillerForm = (): void => {
       isDistillerFormOpen.value = true;
     };
 
+    /**
+     * Closes the distiller form modal.
+     * @function closeDistillerForm
+     */
     const closeDistillerForm = (): void => {
       isDistillerFormOpen.value = false;
     };
 
+    /**
+     * Opens the delete distiller modal for a given distiller id.
+     * @function openDeleteModal
+     * @param {string} id - The distiller id to delete.
+     */
     const openDeleteModal = (id: string): void => {
       selectedDistillerId.value = id;
       isDeleteModalOpen.value = true;
     };
 
+    /**
+     * Closes the delete distiller modal.
+     * @function closeDeleteModal
+     */
     const closeDeleteModal = (): void => {
       isDeleteModalOpen.value = false;
       selectedDistillerId.value = "";
     };
 
+    /**
+     * Deletes the selected distiller by id.
+     * @async
+     * @function deleteDistiller
+     * @returns {Promise<void>}
+     */
     const deleteDistiller = async (): Promise<void> => {
       try {
         const deleteDistiller = await store.dispatch(
@@ -169,14 +226,23 @@ export default {
       }
     };
 
+    /**
+     * Opens the password change form modal.
+     * @function openPasswordChangeForm
+     */
     const openPasswordChangeForm = (): void => {
       isPasswordChangeFormOpen.value = true;
     };
 
+    /**
+     * Closes the password change form modal.
+     * @function closePasswordChangeForm
+     */
     const closePasswordChangeForm = (): void => {
       isPasswordChangeFormOpen.value = false;
     };
 
+    // Watcher for theme changes, updates backend and store
     watch(isDarkTheme, async (newValue) => {
       try {
         await apolloClient.mutate({
@@ -193,12 +259,14 @@ export default {
       }
     });
 
+    // Fetch distiller list from local storage before mount
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "distillerList",
       });
     });
 
+    // Fetch user details and theme state on mount
     onMounted(() => {
       fetchUserDetails();
       isDarkTheme.value = isDarkThemeStored.value;

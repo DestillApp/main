@@ -20,6 +20,7 @@
         id="password"
         autocomplete="current-password"
       >
+        <!-- Error message for invalid login -->
         <template v-slot:message>
           <span v-if="isLoginFormValid === false"
             >Niepoprawny adres e-mail i/lub hasło.</span
@@ -54,6 +55,17 @@ import { useStore } from "@/store/useStore";
 import { scrollToTop } from "../helpers/displayHelpers.js";
 import * as Sentry from "@sentry/vue";
 
+/**
+ * @component LoginForm
+ * @description Login page component that handles user authentication and redirects after login.
+ * @see loginFormValidation
+ * @see loginUser
+ */
+
+/**
+ * Interface for login form data.
+ * @interface
+ */
 interface LoginForm {
   email: string;
   password: string;
@@ -78,9 +90,10 @@ export default {
     });
 
     /**
-     * Function to validate the login form data
+     * Validates the login form data.
      * @async
      * @function loginFormValidation
+     * @returns {Promise<void>}
      */
     const loginFormValidation = async (): Promise<void> => {
       if (loginForm.value.email === "" || loginForm.value.password === "") {
@@ -91,26 +104,23 @@ export default {
     };
 
     /**
-     * Function to handle the submission of the login form.
+     * Handles the submission of the login form and user authentication.
      * @async
      * @function loginUser
      * @returns {Promise<void>} Resolves when the login process is complete.
      * @throws {Error} Throws an error if the login fails.
      */
     const loginUser = async (): Promise<void> => {
-      // Validate the form
       await loginFormValidation();
       if (isLoginFormValid.value) {
         try {
           const form = loginForm.value;
 
-          // Send the GraphQL mutation to login the user
           const isAuthenticated = await store.dispatch("auth/login", {
             email: form.email,
             password: form.password,
           });
 
-          //Redirecting
           if (isAuthenticated === true) {
             const fetchSettingsResult = await store.dispatch(
               "settings/fetchSettings"

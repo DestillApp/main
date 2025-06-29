@@ -1,5 +1,6 @@
 <template>
-    <h1 class="main-page__title">Witaj!</h1>
+  <!-- Main page title -->
+  <h1 class="main-page__title">Witaj!</h1>
 </template>
 
 <style scoped>

@@ -12,7 +12,7 @@
     <!-- Display distillation details once data is loaded and no longer loading -->
     <div v-if="distillationDetails && !isLoading" class="archive-distillation">
       <div class="archive-distillation__container-one">
-        <!-- Display used weight of plant-->
+        <!-- Display used weight of plant -->
         <div class="archive-distillation__plant">
           <p class="archive-distillation__plant-used">użyta ilość surowca:</p>
           <span
@@ -31,7 +31,9 @@
           <div>{{ distillationDetails.distilledPlant.plantName }}</div>
           <div>{{ distillationDetails.distilledPlant.plantPart }}</div>
         </div>
+        <!-- Edit and delete buttons for the distillation -->
         <div class="archive-distillation__buttons">
+          <!-- Button to edit the distillation -->
           <router-link
             :to="{
               name: 'EditArchiveDistillationPage',
@@ -57,7 +59,7 @@
           >
             Usuń
           </button>
-          <!-- Modal for deleting the plant -->
+          <!-- Modal for deleting the distillation -->
           <delete-item-modal
             v-if="isModalOpen"
             :plantName="plantName"
@@ -74,6 +76,7 @@
           <h5 class="archive-distillation__plant-title">
             przygotowanie surowca
           </h5>
+          <!-- Plant soaking info -->
           <div v-if="distillationDetails.distillationData.isPlantSoaked">
             <div class="archive-distillation__plant-data">
               surowiec namaczany
@@ -87,12 +90,14 @@
               {{ distillationDetails.distillationData.weightAfterSoaking }} kg
             </div>
           </div>
+          <!-- Plant not soaked info -->
           <div
             class="archive-distillation__plant-data"
             v-if="!distillationDetails.distillationData.isPlantSoaked"
           >
             surowiec nienamaczany
           </div>
+          <!-- Plant shredded info -->
           <div
             class="archive-distillation__plant-data"
             v-if="!distillationDetails.distillationData.isPlantShredded"
@@ -105,6 +110,7 @@
           >
             surowiec rozdrobniony
           </div>
+          <!-- Button to show/hide more plant details -->
           <div class="archive-distillation__plant-details">
             <button
               v-if="!isPlantOpen"
@@ -132,6 +138,7 @@
                 size="18"
               ></svg-icon>
             </button>
+            <!-- Plant details component -->
             <plant-details
               v-if="isPlantOpen"
               class="archive-distillation__plant-details-component"
@@ -195,6 +202,15 @@ import { DELETE_DISTILLATION_ARCHIVE } from "@/graphql/mutations/results";
 import { handleUserError } from "@/helpers/errorHandling";
 import type { DistillationArchive } from "@/types/forms/resultsForm";
 
+/**
+ * @component ArchiveDistillationDetailsPage
+ * @description Displays details of a distillation archive, allows editing, deleting, and viewing plant details.
+ * @see fetchDistillationDetails
+ * @see openClosePlant
+ * @see openDeleteModal
+ * @see closeDeleteModal
+ * @see deleteDistillation
+ */
 export default {
   name: "ArchiveDistillationDetailsPage",
   components: { DeleteItemModal, SvgIcon, PlantDetails },
@@ -210,34 +226,41 @@ export default {
     // Router object for navigation
     const router = useRouter();
 
-    // Reactive references for distillation data
+    // Archive distillation id from route
     const archiveId = ref<string | string[] | undefined>(
       route.params.archiveId
     );
+    // Distillation details object
     const distillationDetails = ref<DistillationArchive | null>(null);
+    // Selected distillation id for deletion
     const selectedDistillationId = ref<string | null>(null);
+    // Plant name for modal
     const plantName = ref<string>("");
+    // Plant part for modal
     const plantPart = ref<string>("");
+    // Distillation weight for modal (not always used)
     const distillationWeight = ref<number | null>(null);
+    // Distillation date for modal
     const distillationDate = ref<string>("");
 
-    // Reactive reference to store the plant page number from the route
+    // Page number from route
     const page = ref<number>(Number(route.params.page));
 
-    // Reactive reference to track if the delete modal is open
+    // Modal open state
     const isModalOpen = ref<boolean>(false);
-
-    // Reactive reference to track loading state
+    // Loading state
     const isLoading = ref<boolean>(true);
+    // Plant details open/close state
     const isPlantOpen = ref<boolean>(false);
 
+    // Icon paths for toggling plant details
     const pathArrowDown = ref<string>(mdiChevronDown);
     const pathArrowUp = ref<string>(mdiChevronUp);
 
     /**
+     * Fetches the archive distillation details by ID from GraphQL API.
      * @async
      * @function fetchDistillationDetails
-     * @description Fetches the archive distillation details by ID from GraphQL API.
      * @returns {Promise<void>}
      */
     const fetchDistillationDetails = async (): Promise<void> => {
@@ -248,7 +271,6 @@ export default {
           variables: { id: archiveId.value, formatDistillDate: true },
         });
         distillationDetails.value = data.getArchiveDistillationById;
-        console.log(distillationDetails.value);
       } catch (error: any) {
         await handleUserError(error);
         distillationDetails.value = null;
@@ -257,18 +279,23 @@ export default {
       }
     };
 
+    // Fetch distillation details on mount
     onMounted(() => {
       fetchDistillationDetails();
     });
 
+    /**
+     * Toggles the plant details open/close state.
+     * @function openClosePlant
+     */
     const openClosePlant = (): void => {
       isPlantOpen.value = !isPlantOpen.value;
     };
 
     /**
+     * Opens the delete modal for a specific distillation.
      * @function openDeleteModal
-     * @description Open the delete modal for a specific plant.
-     * @param {String} id - The ID of the plant to delete.
+     * @param {String} id - The ID of the distillation to delete.
      * @param {String} name - The name of the plant.
      * @param {String} part - The part of the plant.
      * @param {String} date - Distillation date.
@@ -287,8 +314,8 @@ export default {
     };
 
     /**
+     * Closes the delete modal.
      * @function closeDeleteModal
-     * @description Close the delete modal.
      */
     const closeDeleteModal = (): void => {
       selectedDistillationId.value = null;
@@ -299,9 +326,9 @@ export default {
     };
 
     /**
+     * Deletes the selected distillation archive and navigates to the archives page.
      * @async
      * @function deleteDistillation
-     * @description Delete the selected distillation.
      * @returns {Promise<void>}
      */
     const deleteDistillation = async (): Promise<void> => {
@@ -310,8 +337,6 @@ export default {
           mutation: DELETE_DISTILLATION_ARCHIVE,
           variables: { id: selectedDistillationId.value },
         });
-
-        console.log(data.deleteDistillationArchive);
         closeDeleteModal();
         router.push({
           name: "DistillationArchivesPage",

@@ -49,15 +49,18 @@
       >
         <div class="distillation-archives__item-container">
           <div class="distillation-archives__data">
+            <!-- Distillation type -->
             <div class="distillation-archives__type">
               <p class="distillation-archives__type-state">typ destylacji:</p>
               {{ archive.distillationData.distillationType }}
             </div>
+            <!-- Distillation date -->
             <div class="distillation-archives__date">
               <p class="distillation-archives__date-state">data destylacji:</p>
               {{ archive.distillationData.distillationDate }}
             </div>
           </div>
+          <!-- Plant identification -->
           <div class="distillation-archives__plant-identification">
             <div class="distillation-archives__plant-name">
               {{ archive.distilledPlant.plantName }}
@@ -67,6 +70,7 @@
             </div>
           </div>
           <div class="distillation-archives__buttons">
+            <!-- Button to view archive details -->
             <router-link
               :to="{
                 name: 'ArchiveDistillationDetailsPage',
@@ -76,6 +80,7 @@
             >
               <button>Zobacz szczegóły</button>
             </router-link>
+            <!-- Button to delete archive -->
             <button
               @click="
                 openDeleteModal(
@@ -94,9 +99,11 @@
           </div>
         </div>
         <div class="distillation-archives__results">
+          <!-- Oil amount -->
           <div class="distillation-archives__oil-amount">
             ilość olejku eterycznego: {{ archive.oilAmount }} ml
           </div>
+          <!-- Hydrosol amount -->
           <div class="distillation-archives__hydrosol-amount">
             ilość hydrolatu: {{ archive.hydrosolAmount }} l
           </div>
@@ -156,6 +163,19 @@ import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import type { DistillationArchive } from "@/types/forms/resultsForm";
 
+/**
+ * @component DistillationArchivesPage
+ * @description Displays a paginated, searchable, and sortable list of distillation archives. Allows deletion of archives and manages list settings.
+ * @see fetchDistillationArchivesList
+ * @see handleSearch
+ * @see handleSelectLength
+ * @see updateSorting
+ * @see handleSorting
+ * @see openDeleteModal
+ * @see closeDeleteModal
+ * @see deleteDistillationArchive
+ */
+
 export default {
   name: "DistillationArchivesPage",
   components: {
@@ -172,7 +192,7 @@ export default {
     // Vuex store instance
     const store = useStore();
 
-    // Route object to access route params
+    // Route and router objects
     const route = useRoute();
     const router = useRouter();
 
@@ -185,21 +205,23 @@ export default {
     const distillationWeight = ref<number | null>(null);
     const distillationDate = ref<string>("");
 
-    // Reactive reference to track if the delete modal is open
+    // Modal open state ref
     const isModalOpen = ref<boolean>(false);
 
-    // Reactive references for pagination
+    // Pagination state refs
     const archivesAmount = ref<number | null>(null);
     const page = ref<number>(Number(route.params.page) || 1);
+    // Computed property for number of archives per page from settings
     const archivesPerPage = computed<number>(
       () =>
         store.getters["settings/settingsForm"].distillationArchivesListLength
     );
 
-    // Reactive reference for loading state
+    // Loading state ref
     const isLoading = ref<boolean>(true);
 
-    // Reactive reference for searching state
+    // Computed property for searching state
+    const searchQuery = computed<string>(() => store.getters.searchQuery);
     const isSearching = computed<boolean>(() => {
       return searchQuery.value ? true : false;
     });
@@ -209,9 +231,7 @@ export default {
       return Math.ceil((archivesAmount.value ?? 0) / archivesPerPage.value);
     });
 
-    // Computed property to get searchQuery from Vuex store
-    const searchQuery = computed<string>(() => store.getters.searchQuery);
-
+    // Sorting options
     const options = reactive<Record<string, string>>({
       plantName: "nazwy rośliny alfabetycznie",
       createdAt: "daty dodania destylacji",
@@ -219,21 +239,25 @@ export default {
       oldDate: "najstarszej daty destylacji",
     });
 
+    // Computed property for current sorting option label
     const sortingOption = computed<string>(() => {
       const sortingValue =
         store.getters["settings/settingsForm"].archiveDistillationListSorting;
       return options[sortingValue] || "";
     });
 
+    // Computed property for current sorting key
     const sorting = computed<string>(
       () =>
         store.getters["settings/settingsForm"].archiveDistillationListSorting
     );
 
     /**
+     * Fetch the list of distillation archives from the GraphQL server.
      * @async
      * @function fetchDistillationArchivesList
-     * @description Fetch the list of distillation archives from the GraphQL server.
+     * @param {string} name - Search query for plant name.
+     * @param {string} sortingValue - Sorting key.
      * @returns {Promise<void>}
      */
     const fetchDistillationArchivesList = async (
@@ -271,7 +295,6 @@ export default {
           start,
           end
         );
-        console.log(distillationArchivesList.value);
       } catch (error: any) {
         await handleUserError(error);
         archivesAmount.value = null;
@@ -282,17 +305,17 @@ export default {
     };
 
     /**
+     * Handle the search query emitted from the BaseSearchItem component.
      * @function handleSearch
-     * @description Handle the search query emitted from the BaseSearchItem component.
      */
     const handleSearch = async (): Promise<void> => {
       await fetchDistillationArchivesList(searchQuery.value, sorting.value);
     };
 
     /**
+     * Handle the selection of list length.
      * @function handleSelectLength
-     * @description Handle the selection of list length.
-     * @param {Number} length - The selected length.
+     * @param {number} length - The selected length.
      */
     const handleSelectLength = async (
       length: number
@@ -317,10 +340,10 @@ export default {
     };
 
     /**
+     * Update the sorting option and fetch the distillation archives list.
      * @function updateSorting
-     * @description Update the sorting option and fetch the distillation archives list.
-     * @param {String} sortingKey - The sorting key.
-     * @param {String} sortingValue - The sorting value.
+     * @param {string} sortingKey - The sorting key.
+     * @param {string} sortingValue - The sorting value.
      */
     const updateSorting = async (
       sortingKey: string,
@@ -345,9 +368,9 @@ export default {
     };
 
     /**
+     * Handle the sorting of the items list.
      * @function handleSorting
-     * @description Handle the sorting of the items list.
-     * @param {String} option - The sorting option.
+     * @param {string} option - The sorting option.
      */
     const handleSorting = async (option: string): Promise<void> => {
       const sortingKey = Object.keys(options).find(
@@ -359,6 +382,7 @@ export default {
       }
     };
 
+    // Fetch settings and search query from local storage before mount
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "distillationArchivesListLength",
@@ -385,14 +409,14 @@ export default {
     });
 
     /**
+     * Open the delete modal for a specific distillation archive.
      * @function openDeleteModal
-     * @description Open the delete modal for a specific distillation archive.
-     * @param {String} id - The ID of the distillation archive to delete.
-     * @param {String} plantId - The ID of the plant.
-     * @param {String} name - The name of the plant.
-     * @param {String} part - The part of the plant.
-     * @param {String} dWeight - The weight of the distillation.
-     * @param {String} date - Distillation date.
+     * @param {string} id - The ID of the distillation archive to delete.
+     * @param {string} plantId - The ID of the plant.
+     * @param {string} name - The name of the plant.
+     * @param {string} part - The part of the plant.
+     * @param {number} dWeight - The weight of the distillation.
+     * @param {string} date - Distillation date.
      */
     const openDeleteModal = (
       id: string,
@@ -412,8 +436,8 @@ export default {
     };
 
     /**
+     * Close the delete modal.
      * @function closeDeleteModal
-     * @description Close the delete modal.
      */
     const closeDeleteModal = (): void => {
       distillationDate.value = "";
@@ -421,9 +445,9 @@ export default {
     };
 
     /**
-     * @function
-     * @description Remove the deleted archive from the list.
-     * @param {String} id - The ID of the deleted archive.
+     * Remove the deleted archive from the list.
+     * @function deleteDistillationFromList
+     * @param {string} id - The ID of the deleted archive.
      */
     const deleteDistillationFromList = (id: string): void => {
       distillationArchivesList.value = distillationArchivesList.value.filter(
@@ -432,9 +456,9 @@ export default {
     };
 
     /**
+     * Delete the selected distillation archive from the list.
      * @async
      * @function deleteDistillationArchive
-     * @description Delete the selected distillation archive from the list.
      * @returns {Promise<void>}
      */
     const deleteDistillationArchive = async (): Promise<void> => {

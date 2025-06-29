@@ -75,8 +75,9 @@ import * as Sentry from "@sentry/vue";
 
 /**
  * @component EditPlantPage
- * @description This component renders a plant form and handles sending plant data.
- * @see plantFormValidation
+ * @description This component renders a plant form and handles editing and saving plant data.
+ * @see fetchPlantDetails
+ * @see setValue
  * @see submitPlantForm
  * @see editPlant
  * @see editPlantAndDistill
@@ -89,9 +90,11 @@ export default {
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
+
     // Vuex store instance
     const store = useStore();
-    //Computed property to get the value from Vuex store
+
+    // Computed property to get the value from Vuex store
     const comingFromRoute = computed<boolean>(
       () => store.getters.comingFromRoute
     );
@@ -116,15 +119,17 @@ export default {
     const isFormValid = ref<boolean>(false);
     // Reactive reference for loading state
     const isLoading = ref<boolean>(true);
-    //Reactive reference to track when component is resetting
+    // Reactive reference to track when component is resetting
     const isResetting = ref<boolean>(false);
-    //Reactive reference to pass that this is a edit form
+    // Reactive reference to pass that this is a edit form
     const isEditing = ref<boolean>(true);
+    // Reactive reference to track if the form was submitted
     const wasSubmitted = ref<boolean>(false);
 
-    // Using GraphQL mutation for creating a new plant
+    // Using GraphQL mutation for updating a plant
     const { mutate: updatePlant } = useMutation(UPDATE_PLANT);
 
+    // List of fields to normalize from the fetched plant details
     const fieldsToNormalize: (keyof GetPlantById)[] = [
       "harvestDate",
       "harvestStartTime",
@@ -135,22 +140,19 @@ export default {
     ];
 
     /**
+     * Fetches the plant details by plant ID from GraphQL API.
      * @async
      * @function fetchPlantDetails
-     * @description Fetches the plant details by plant ID from GraphQL API.
      * @returns {Promise<void>}
      */
     const fetchPlantDetails = async (): Promise<void> => {
       try {
-        // Set loading to true while fetching the data
         isLoading.value = true;
-        // Make a query to fetch plant details by plant ID
         const { data } = await apolloClient.query({
           query: GET_PLANT_BY_ID,
           variables: { id: plantId.value, formatDates: false },
           fetchPolicy: "network-only",
         });
-        // Store the fetched plant details in the plantDetails reference
         plantDetails.value = normalizeSelectedFields(
           data.getPlantById,
           fieldsToNormalize
@@ -159,14 +161,13 @@ export default {
         await handleUserError(error);
         plantDetails.value = null;
       } finally {
-        // Once the process is complete, set loading to false
         isLoading.value = false;
       }
     };
 
     /**
+     * Dispatches Vuex action to set a specific plant form field value.
      * @function setValue
-     * @description Dispatches Vuex action to set a specific plant form field value.
      * @param {String} input - The form field to be updated.
      * @param {*} value - The new value for the form field.
      */
@@ -179,9 +180,7 @@ export default {
 
     // Lifecycle hook to reset form validity, fetch Plant details by id and set plant details in vuex store and local storage on component mount
     onMounted(async () => {
-      // Reset form validity on mount
       isFormValid.value = false;
-      // If user comes from another route, fetch plant details and set plant form fields in vuex state basen on the fetched plant details
       if (comingFromRoute.value) {
         await fetchPlantDetails();
         if (plantDetails.value) {
@@ -191,27 +190,23 @@ export default {
         }
         store.dispatch("plant/setHarvestRange");
       } else {
-        // If not coming from another route, set loading to false
         isLoading.value = false;
       }
     });
 
     /**
+     * Handles the submission of the plant form, validates, and sends data to the backend.
      * @async
      * @function submitPlantForm
-     * @description Function to handle the submission of the plant form.
-     * @returns {Promise<void>} Resolves when the form submission process is complete.
+     * @returns {Promise<void>}
      * @throws {Error} Throws an error if the form submission fails.
      */
     const submitPlantForm = async (): Promise<void> => {
-      // Validate the form
       isFormValid.value = plantFormValidation(plantForm.value);
 
       if (isFormValid.value) {
         try {
           const plantFormData = mapPlantForm(plantForm.value);
-
-          // Send the GraphQL mutation to edit the exsisting plant
           await updatePlant({
             id: plantId.value,
             plantInput: plantFormData,
@@ -225,17 +220,17 @@ export default {
     };
 
     /**
+     * Edits an existing plant and navigates back to the plant list.
+     * @async
      * @function editPlant
-     * @description Function to edit an existing plant and navigate back to the plant list.
+     * @returns {Promise<void>}
      */
     const editPlant = async (): Promise<void> => {
       try {
-        // Submit the plant form
         await submitPlantForm();
         if (!isFormValid.value) {
           return;
         } else {
-          // If valid, navigate back to the plant list page
           router.push({ name: "PlantListPage", params: { page: page.value } });
         }
       } catch (error) {
@@ -245,17 +240,17 @@ export default {
     };
 
     /**
+     * Edits an existing plant and navigates to the add distillation page.
+     * @async
      * @function editPlantAndDistill
-     * @description Function to edit an existing plant and navigate to the add distillation page.
+     * @returns {Promise<void>}
      */
     const editPlantAndDistill = async (): Promise<void> => {
       try {
-        // Submit the plant form
         await submitPlantForm();
         if (!isFormValid.value) {
           return;
         } else {
-          // If valid, navigate back to the add distillation page
           router.push({
             name: "AddDistillationPage",
             params: { id: plantId.value },
@@ -267,15 +262,12 @@ export default {
       }
     };
 
-    //Navigation guard that reset the form data in vuex state and local storage before navigating away from the route.
+    // Navigation guard that resets the form data in vuex state and local storage before navigating away from the route.
     onBeforeRouteLeave(async (to, from, next) => {
       if (to.path !== from.path) {
         isResetting.value = true;
-        // Dispatch Vuex action to reset the form in store
         store.dispatch("plant/setPlantForm");
-        // Wait for the next tick to ensure state updates are complete
         await nextTick();
-        // Removing plant form value from local storage by its key
         for (const key in initialPlantForm) {
           localStorage.removeItem(key);
         }

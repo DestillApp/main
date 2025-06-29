@@ -24,6 +24,7 @@
           <div>{{ distillationDetails.choosedPlant.part }}</div>
         </div>
         <div class="distillation__buttons">
+          <!-- Edit button for distillation -->
           <router-link
             :to="{
               name: 'EditDistillationPage',
@@ -62,6 +63,7 @@
             @close-delete-modal="closeDeleteModal"
             @delete-item="deleteDistillation"
           ></delete-item-modal>
+          <!-- Modal for restoring plant weight after deletion -->
           <ask-modal
             v-if="isAskModalOpen"
             :plantName="plantName"
@@ -75,6 +77,7 @@
       <div class="distillation__container--two">
         <div class="distillation__plant-info">
           <h5 class="distillation__plant-title">przygotowanie surowca</h5>
+          <!-- Soaking info -->
           <div v-if="distillationDetails.isPlantSoaked">
             <div class="distillation__plant-data">surowiec namaczany</div>
             <div class="distillation__plant-data">
@@ -88,6 +91,7 @@
           <div v-if="!distillationDetails.isPlantSoaked">
             <div class="distillation__plant-data">surowiec nie namaczany</div>
           </div>
+          <!-- Shredding info -->
           <div v-if="distillationDetails.isPlantShredded">
             <div class="distillation__plant-data">surowiec rozdrobniony</div>
           </div>
@@ -96,6 +100,7 @@
               surowiec nie rozdrobniony
             </div>
           </div>
+          <!-- Toggle plant details button -->
           <button
             v-if="!isPlantOpen"
             @click="openClosePlant"
@@ -122,6 +127,7 @@
               size="18"
             ></svg-icon>
           </button>
+          <!-- Plant details component, shown when expanded -->
           <plant-details
             v-if="isPlantOpen"
             class="distillation__plant-details-component"
@@ -142,6 +148,7 @@
           </div>
         </div>
       </div>
+      <!-- Button to add distillation results -->
       <router-link
         :to="{
           name: 'AddResultsPage',
@@ -176,6 +183,20 @@ import { DELETE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { CHANGE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
 import * as Sentry from "@sentry/vue";
 
+/**
+ * @component DistillationDetailsPage
+ * @description Displays details of a distillation, allows editing, deleting, and restoring plant weight. Handles fetching, deletion, and restoration logic.
+ * @see fetchDistillationDetails
+ * @see openDeleteModal
+ * @see closeDeleteModal
+ * @see openAskModal
+ * @see closeAskModal
+ * @see deleteDistillation
+ * @see addPlantWeight
+ * @see handleYes
+ * @see openClosePlant
+ */
+
 export default {
   name: "DistillationDetailsPage",
   components: { DeleteItemModal, BaseButton, SvgIcon, PlantDetails },
@@ -198,23 +219,26 @@ export default {
     const distillationWeight = ref<number | null>(null);
     const distillationDate = ref<string>("");
 
+    // Current page number from route
     const page = ref<number>(Number(route.params.page));
 
-    // Reactive reference to track if the delete modal is open
+    // Modal open state refs
     const isModalOpen = ref<boolean>(false);
     const isAskModalOpen = ref<boolean>(false);
 
-    // Reactive reference to track loading state
+    // Loading state ref
     const isLoading = ref<boolean>(true);
+    // Plant details open/close state
     const isPlantOpen = ref<boolean>(false);
 
+    // Arrow icon refs
     const pathArrowDown = ref<string>(mdiChevronDown);
     const pathArrowUp = ref<string>(mdiChevronUp);
 
     /**
+     * Fetches the distillation details by ID from GraphQL API.
      * @async
      * @function fetchDistillationDetails
-     * @description Fetches the plant details by plant ID from GraphQL API.
      * @returns {Promise<void>}
      */
     const fetchDistillationDetails = async (): Promise<void> => {
@@ -234,25 +258,28 @@ export default {
       }
     };
 
+    // Fetch distillation details on mount
     onMounted(() => {
       fetchDistillationDetails();
     });
 
+    /**
+     * Toggles the plant details section open/close.
+     * @function openClosePlant
+     */
     const openClosePlant = (): void => {
-      if (isPlantOpen.value) {
-        isPlantOpen.value = false;
-      } else {
-        isPlantOpen.value = true;
-      }
+      isPlantOpen.value = !isPlantOpen.value;
     };
 
     /**
+     * Opens the delete modal for a specific distillation.
      * @function openDeleteModal
-     * @description Open the delete modal for a specific plant.
-     * @param {String} id - The ID of the plant to delete.
-     * @param {String} name - The name of the plant.
-     * @param {String} part - The part of the plant.
-     * @param {String} date - Distillation date.
+     * @param {string} id - The distillation ID.
+     * @param {string} plantId - The plant ID.
+     * @param {string} name - The plant name.
+     * @param {string} part - The plant part.
+     * @param {number} dWeight - The distillation weight.
+     * @param {string} date - The distillation date.
      */
     const openDeleteModal = (
       id: string,
@@ -272,8 +299,8 @@ export default {
     };
 
     /**
+     * Closes the delete modal.
      * @function closeDeleteModal
-     * @description Close the delete modal.
      */
     const closeDeleteModal = (): void => {
       distillationDate.value = "";
@@ -281,16 +308,16 @@ export default {
     };
 
     /**
+     * Opens the ask modal.
      * @function openAskModal
-     * @description Open the ask modal.
      */
     const openAskModal = (): void => {
       isAskModalOpen.value = true;
     };
 
     /**
+     * Closes the ask modal and resets related state.
      * @function closeAskModal
-     * @description Close the ask modal.
      */
     const closeAskModal = () => {
       isAskModalOpen.value = false;
@@ -306,9 +333,9 @@ export default {
     };
 
     /**
+     * Deletes the selected distillation.
      * @async
      * @function deleteDistillation
-     * @description Delete the selected distillation.
      * @returns {Promise<void>}
      */
     const deleteDistillation = async (): Promise<void> => {
@@ -328,9 +355,9 @@ export default {
     };
 
     /**
+     * Adds the distillation weight back to the plant's available weight.
      * @async
      * @function addPlantWeight
-     * @description Add the distillation weight back to the plant's available weight.
      * @returns {Promise<void>}
      */
     const addPlantWeight = async (): Promise<void> => {
@@ -350,9 +377,9 @@ export default {
     };
 
     /**
+     * Handles confirmation of adding plant weight back after deletion.
      * @async
      * @function handleYes
-     * @description Handle the confirmation of adding plant weight.
      * @returns {Promise<void>}
      */
     const handleYes = async (): Promise<void> => {

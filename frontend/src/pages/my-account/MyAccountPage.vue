@@ -1,8 +1,10 @@
 <template>
   <div class="my-account">
+    <!-- Navigation sidebar for account sections (hidden on tablet view) -->
     <nav v-if="!isTabletView" class="my-account__nav">
       <h3 class="my-account__title">Moje konto</h3>
       <ul class="my-account__list">
+        <!-- Link to in-progress distillations -->
         <li>
           <router-link
             to="/my-account/distillations-in-progress/1"
@@ -15,6 +17,7 @@
             >Destylacje w toku</router-link
           >
         </li>
+        <!-- Link to plant storage -->
         <li>
           <router-link
             to="/my-account/plant-list/1"
@@ -27,6 +30,7 @@
             >Magazyn surowców</router-link
           >
         </li>
+        <!-- Link to distillation archives -->
         <li>
           <router-link
             to="/my-account/distillation-archives/1"
@@ -39,6 +43,7 @@
             >Archiwum destylacji</router-link
           >
         </li>
+        <!-- Link to user data -->
         <li>
           <router-link to="/my-account/my-data" class="my-account__link"
             >Moje dane</router-link
@@ -46,10 +51,12 @@
         </li>
       </ul>
     </nav>
+    <!-- Main content card, adjusts style if displaying a list -->
     <base-card
       :class="{ 'my-account__card--isList': isList }"
       class="my-account__card"
     >
+      <!-- Router view for nested account pages -->
       <router-view></router-view>
     </base-card>
   </div>
@@ -59,22 +66,31 @@
 import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRoute } from "vue-router";
 
+/**
+ * @component MyAccountPage
+ * @description Main account page layout with navigation sidebar and dynamic content area. Handles responsive navigation and highlights active sections.
+ * @see handleResize
+ */
+
 export default {
   setup() {
-    // Reactive reference for tablet view
+    // Reactive reference for tablet view state
     const isTabletView = ref<boolean>(window.innerWidth <= 1024);
 
-    // Function to handle window resize
+    /**
+     * Handles window resize event to update tablet view state.
+     * @function handleResize
+     */
     const handleResize = (): void => {
       isTabletView.value = window.innerWidth <= 1024;
     };
 
-    // Add event listener for window resize
+    // Add event listener for window resize on mount
     onMounted(() => {
       window.addEventListener("resize", handleResize);
     });
 
-    // Remove event listener for window resize
+    // Remove event listener for window resize on unmount
     onBeforeUnmount(() => {
       window.removeEventListener("resize", handleResize);
     });
@@ -82,7 +98,7 @@ export default {
     // Use route to get the current path
     const route = useRoute();
 
-    // Computed property to check if the current path includes specific routes
+    // Computed property to check if the current path is a list view
     const isList = computed<boolean>(() =>
       [
         "/my-account/plant-list",

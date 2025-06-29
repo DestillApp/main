@@ -9,7 +9,7 @@
       :width="6"
       indeterminate
     ></v-progress-circular>
-    <!-- Distillation form -->
+    <!-- Distillation form for editing -->
     <form
       v-if="!isLoading"
       @submit.prevent="editDistillation"
@@ -56,16 +56,13 @@ import { initialDistillationForm } from "@/helpers/formsInitialState";
 import { mapDistillationForm } from "@/helpers/formsMapping";
 import { comingFromRouteGuard } from "@/helpers/routerGuards";
 import { handleUserError } from "@/helpers/errorHandling";
-
 import { GET_DISTILLATION_BY_ID } from "@/graphql/queries/distillation";
 import { UPDATE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
-
 import {
   GetDistillationById,
   DistillationForm,
 } from "@/types/forms/distillationForm";
-
 import { useStore } from "@/store/useStore";
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
@@ -73,16 +70,26 @@ import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import * as Sentry from "@sentry/vue";
 
+/**
+ * @component EditDistillationPage
+ * @description This component renders a distillation form for editing an existing distillation, handles fetching, updating, and saving distillation data, and manages available plant weight.
+ * @see fetchDistillationDetails
+ * @see editDistillationForm
+ * @see changeAvailableWeight
+ * @see editDistillation
+ * @see editDistillationAddResults
+ */
+
+/**
+ * Interface for distillation values used in form mapping.
+ * @interface
+ */
 interface DistillationValues
   extends Omit<
     GetDistillationById,
     "_id" | "choosedPlant" | "distillationTime"
   > {}
 
-/**
- * @module AddDistillationPage
- * @description This component renders a destillation form and handles sending destillation data.
- */
 export default {
   name: "EditDistillationPage",
   components: { DistillationPlant, DistillationProcess, DistillationData },
@@ -90,37 +97,46 @@ export default {
   setup() {
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
+
     // Vuex store instance
     const store = useStore();
-    //Computed property to get the value from Vuex store
+
+    // Computed property for navigation state
     const comingFromRoute = computed<boolean>(
       () => store.getters.comingFromRoute
     );
 
-    // Router object for navigation
+    // Router and route objects
     const router = useRouter();
     const route = useRoute();
 
-    // Reactive reference to store the plant ID and page number from the route
+    // Reactive reference for distillation ID and page number from route
     const distillationId = ref<string | string[]>(route.params.distillId);
     const page = ref<number>(Number(route.params.page));
 
-    // Computed property to get plant form data from Vuex store
+    // Computed property for distillation form data from Vuex store
     const distillationForm = computed<DistillationForm>(
       () => store.getters["distillation/distillationForm"]
     );
 
-    // Reactive reference to store fetched distillation details
+    // Reactive reference for fetched distillation details
     const distillationDetails = ref<GetDistillationById | null>(null);
 
-    // Reactive reference to track form validity
+    // Reactive reference for form validity
     const isFormValid = ref<boolean>(false);
+    // Reactive reference for submission state
     const wasSubmitted = ref<boolean>(false);
     // Reactive reference for loading state
     const isLoading = ref<boolean>(true);
-    //Reactive reference to pass that this is a edit form
+    // Reactive reference to indicate edit mode
     const isEditing = ref<boolean>(true);
 
+    /**
+     * Fetches distillation details by ID from GraphQL API.
+     * @async
+     * @function fetchDistillationDetails
+     * @returns {Promise<void>}
+     */
     const fetchDistillationDetails = async (): Promise<void> => {
       try {
         isLoading.value = true;
@@ -137,7 +153,7 @@ export default {
       }
     };
 
-    // Lifecycle hook to reset form validity on component mount
+    // Lifecycle hook to reset form validity and fetch details on mount
     onMounted(async () => {
       isFormValid.value = false;
       if (comingFromRoute.value) {
@@ -149,7 +165,6 @@ export default {
               key !== "choosedPlant" &&
               key !== "distillationTime"
           ) as (keyof DistillationValues)[];
-
           for (const key of keys) {
             store.dispatch("distillation/setValue", {
               input: key,
@@ -167,23 +182,21 @@ export default {
           });
         }
       } else {
-        // If not coming from another route, set loading to false
         isLoading.value = false;
       }
     });
 
-    // Using GraphQL mutation for creating a new plant
+    // GraphQL mutation for updating distillation
     const { mutate: updateDistillation } = useMutation(UPDATE_DISTILLATION);
 
     /**
+     * Handles the submission of the distillation form for editing.
      * @async
-     * @function edittDistillationForm
-     * @description Function to handle the submission of the distillation form.
-     * @returns {Promise<void>} Resolves when the form submission process is complete.
+     * @function editDistillationForm
+     * @returns {Promise<void>}
      * @throws {Error} Throws an error if the form submission fails.
      */
     const editDistillationForm = async (): Promise<void> => {
-      // Validate the form
       wasSubmitted.value = true;
       isFormValid.value = distillationFormValidation(distillationForm.value);
       if (isFormValid.value) {
@@ -191,7 +204,6 @@ export default {
           const distillationFormData = mapDistillationForm(
             distillationForm.value
           );
-          // Send the GraphQL mutation to edit the exsisting distillation
           await updateDistillation({
             id: distillationId.value,
             input: distillationFormData,
@@ -205,11 +217,17 @@ export default {
       }
     };
 
-    // Using GraphQL mutation for updating the available weight
+    // GraphQL mutation for updating available plant weight
     const { mutate: updateAvailableWeight } = useMutation(
       UPDATE_AVAILABLE_WEIGHT
     );
 
+    /**
+     * Updates the available weight for the selected plant after editing distillation.
+     * @async
+     * @function changeAvailableWeight
+     * @returns {Promise<void>}
+     */
     const changeAvailableWeight = async (): Promise<void> => {
       try {
         const availableWeight =
@@ -236,6 +254,12 @@ export default {
       }
     };
 
+    /**
+     * Submits the edit form, updates available weight, and navigates to the in-progress distillations page.
+     * @async
+     * @function editDistillation
+     * @returns {Promise<void>}
+     */
     const editDistillation = async (): Promise<void> => {
       try {
         await editDistillationForm();
@@ -254,16 +278,19 @@ export default {
       }
     };
 
+    /**
+     * Submits the edit form, updates available weight, and navigates to the add results page.
+     * @async
+     * @function editDistillationAddResults
+     * @returns {Promise<void>}
+     */
     const editDistillationAddResults = async (): Promise<void> => {
       try {
-        // Submit the distillation form
         await editDistillationForm();
         if (!isFormValid.value) {
           return;
         } else {
-          //change amount of available weight for distilled plant
           await changeAvailableWeight();
-          // If valid, navigate to the add distillation page
           router.push({ name: "AddResultsPage" });
         }
       } catch (error) {
@@ -272,14 +299,11 @@ export default {
       }
     };
 
-    //Navigation guard that reset the form data in vuex state and local storage before navigating away from the route.
+    // Navigation guard to reset form data in Vuex and local storage before leaving the route
     onBeforeRouteLeave(async (to, from, next) => {
       if (to.path !== from.path) {
-        // Dispatch Vuex action to reset the form in store
         store.dispatch("distillation/setDistillationForm");
-        // Wait for the next tick to ensure state updates are complete
         await nextTick();
-        // // Removing distillation form value from local storage by its key
         for (const key in initialDistillationForm) {
           localStorage.removeItem(key);
         }

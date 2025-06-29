@@ -42,24 +42,29 @@
       <li v-for="plant in plantList" :key="plant._id" class="plant-list__item">
         <div class="plant-list__container">
           <div class="plant-list__data">
+            <!-- Plant available weight -->
             <div class="plant-list__weight">
               <p class="plant-list__weight-state">na stanie:</p>
               {{ plant.availableWeight }} kg
             </div>
+            <!-- Plant harvest date -->
             <div class="plant-list__date" v-if="plant.harvestDate !== null">
               <p class="plant-list__date-state">zbiór:</p>
               {{ plant.harvestDate }}
             </div>
+            <!-- Plant buy date -->
             <div class="plant-list__date" v-if="plant.plantBuyDate !== null">
               <p class="plant-list__date-state">kupno:</p>
               {{ plant.plantBuyDate }}
             </div>
           </div>
+          <!-- Plant identification -->
           <div class="plant-list__identification">
             <div class="plant-list__name">{{ plant.plantName }}</div>
             <div class="plant-list__part">{{ plant.plantPart }}</div>
           </div>
           <div class="plant-list__buttons">
+            <!-- Button to view plant details -->
             <router-link
               :to="{
                 name: 'PlantDetailsPage',
@@ -69,6 +74,7 @@
             >
               <button>Zobacz szczegóły</button>
             </router-link>
+            <!-- Button to delete plant -->
             <button
               @click="
                 openDeleteModal(plant._id, plant.plantName, plant.plantPart)
@@ -79,6 +85,7 @@
             </button>
           </div>
         </div>
+        <!-- Button to add distillation for this plant -->
         <router-link
           :to="{ name: 'AddDistillationPage', params: { id: plant._id } }"
           class="plant-list__distill"
@@ -121,14 +128,12 @@ import { ref, reactive, onBeforeMount, onMounted, watch, computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "@/store/useStore";
-
 import DeleteItemModal from "@/components/plant/DeleteItemModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 import BaseSearchItem from "@/ui/BaseSearchItem.vue";
 import ListLengthSettings from "@/components/ListLengthSettings.vue";
 import ListSorting from "@/components/ListSorting.vue";
 import { scrollToTop } from "@/helpers/displayHelpers";
-
 import { GET_PLANTS } from "@/graphql/queries/plant";
 import {
   updateListSorting,
@@ -137,11 +142,19 @@ import {
 import { handleUserError } from "@/helpers/errorHandling";
 import { DELETE_PLANT } from "@/graphql/mutations/plant";
 import type { BasicPlant } from "@/types/forms/plantForm";
+
 /**
  * @component PlantListPage
- * @description This component displays a paginated list of plants and allows deletion of plants.
+ * @description This component displays a paginated, searchable, and sortable list of plants. Allows deletion of plants and manages list settings.
  * @see fetchPlantList
+ * @see handleSearch
+ * @see handleSelectLength
+ * @see handleSorting
+ * @see updateSorting
+ * @see openDeleteModal
+ * @see closeDeleteModal
  * @see deletePlant
+ * @see deletePlantFromList
  */
 
 export default {
@@ -172,20 +185,22 @@ export default {
     const plantName = ref<string>("");
     const plantPart = ref<string>("");
 
-    // Reactive reference to track if the delete modal is open
+    // Modal open state ref
     const isModalOpen = ref<boolean>(false);
 
-    // Reactive references for pagination
+    // Pagination state refs
     const plantsAmount = ref<number | null>(null);
     const page = ref<number>(Number(route.params.page));
+    // Computed property for number of plants per page from settings
     const plantsPerPage = computed<number>(
       () => store.getters["settings/settingsForm"].plantListLength
     );
 
-    // Reactive reference for loading state
+    // Loading state ref
     const isLoading = ref<boolean>(true);
 
-    // Reactive reference for searching state
+    // Computed property for searching state
+    const searchQuery = computed<string>(() => store.getters.searchQuery);
     const isSearching = computed<boolean>(() => {
       return searchQuery.value ? true : false;
     });
@@ -197,9 +212,7 @@ export default {
       }
     });
 
-    // Computed property to get searchQuery from Vuex store
-    const searchQuery = computed<string>(() => store.getters.searchQuery);
-
+    // Sorting options
     const options = reactive<Record<string, string>>({
       plantName: "nazwy rośliny alfabetycznie",
       createdAt: "daty dodania",
@@ -207,20 +220,24 @@ export default {
       youngDate: "najnowszej daty zbioru i zakupu",
     });
 
+    // Computed property for current sorting option label
     const sortingOption = computed<string>(() => {
       const sortingValue =
         store.getters["settings/settingsForm"].plantListSorting;
       return options[sortingValue] || "";
     });
 
+    // Computed property for current sorting key
     const sorting = computed<string>(
       () => store.getters["settings/settingsForm"].plantListSorting
     );
 
     /**
+     * Fetch the list of plants from the GraphQL server.
      * @async
      * @function fetchPlantList
-     * @description Fetch the list of plants from the GraphQL server.
+     * @param {string} name - Search query for plant name.
+     * @param {string} sorting - Sorting key.
      * @returns {Promise<void>}
      */
     const fetchPlantList = async (
@@ -262,18 +279,17 @@ export default {
     };
 
     /**
+     * Handle the search query emitted from the BaseSearchItem component.
      * @function handleSearch
-     * @description Handle the search query emitted from the BaseSearchItem component.
-     * @param {String} query - The search query.
      */
-    const handleSearch = async () => {
+    const handleSearch = async (): Promise<void> => {
       await fetchPlantList(searchQuery.value, sorting.value);
     };
 
     /**
+     * Handle the selection of list length.
      * @function handleSelectLength
-     * @description Handle the selection of list length.
-     * @param {Number} length - The selected length.
+     * @param {number} length - The selected length.
      */
     const handleSelectLength = async (
       length: number
@@ -289,7 +305,6 @@ export default {
         return;
       }
       if (isUpdating === true) {
-        console.log("Updated plant list length");
         store.dispatch("settings/setValue", {
           input: "plantListLength",
           value: length,
@@ -299,9 +314,9 @@ export default {
     };
 
     /**
+     * Handle the sorting of the items list.
      * @function handleSorting
-     * @description Handle the sorting of the items list.
-     * @param {String} option - The sorting option.
+     * @param {string} option - The sorting option.
      */
     const handleSorting = async (option: string): Promise<void> => {
       const sortingKey = Object.keys(options).find(
@@ -314,10 +329,10 @@ export default {
     };
 
     /**
+     * Update the sorting option and fetch the plant list.
      * @function updateSorting
-     * @description Update the sorting option and fetch the plant list.
-     * @param {String} sortingKey - The sorting key.
-     * @param {String} sortingValue - The sorting value.
+     * @param {string} sortingKey - The sorting key.
+     * @param {string} sortingValue - The sorting value.
      */
     const updateSorting = async (
       sortingKey: string,
@@ -341,6 +356,7 @@ export default {
       }
     };
 
+    // Fetch settings and search query from local storage before mount
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "plantListLength",
@@ -364,11 +380,11 @@ export default {
     });
 
     /**
+     * Open the delete modal for a specific plant.
      * @function openDeleteModal
-     * @description Open the delete modal for a specific plant.
-     * @param {String} id - The ID of the plant to delete.
-     * @param {String} name - The name of the plant.
-     * @param {String} part - The part of the plant.
+     * @param {string} id - The ID of the plant to delete.
+     * @param {string} name - The name of the plant.
+     * @param {string} part - The part of the plant.
      */
     const openDeleteModal = (id: string, name: string, part: string): void => {
       selectedPlantId.value = id;
@@ -378,8 +394,8 @@ export default {
     };
 
     /**
+     * Close the delete modal.
      * @function closeDeleteModal
-     * @description Close the delete modal.
      */
     const closeDeleteModal = (): void => {
       selectedPlantId.value = "";
@@ -389,9 +405,9 @@ export default {
     };
 
     /**
+     * Delete the selected plant from the list.
      * @async
      * @function deletePlant
-     * @description Delete the selected plant from the list.
      * @returns {Promise<void>}
      */
     const deletePlant = async (): Promise<void> => {
@@ -403,7 +419,6 @@ export default {
         if (data.deletePlant) {
           deletePlantFromList(selectedPlantId.value);
           if (page.value > 1 && !plantList.value.length) {
-            console.log("pushing");
             page.value = page.value - 1;
             router.push({
               name: "PlantListPage",
@@ -411,7 +426,6 @@ export default {
             });
           } else {
             await fetchPlantList(searchQuery.value, sorting.value);
-            console.log("fetching");
           }
         }
         closeDeleteModal();
@@ -421,9 +435,9 @@ export default {
     };
 
     /**
-     * @function
-     * @description Remove the deleted plant from the plant list.
-     * @param {String} id - The ID of the deleted plant.
+     * Remove the deleted plant from the plant list.
+     * @function deletePlantFromList
+     * @param {string} id - The ID of the deleted plant.
      */
     const deletePlantFromList = (id: string): void => {
       plantList.value = plantList.value.filter((plant) => plant._id !== id);

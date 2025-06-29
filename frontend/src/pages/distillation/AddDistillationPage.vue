@@ -37,18 +37,14 @@
 import DistillationPlant from "../../components/destillation/DistillationPlant.vue";
 import DistillationProcess from "../../components/destillation/DistillationProcess.vue";
 import DistillationData from "../../components/destillation/DistillationData.vue";
-
 import { DistillationForm } from "@/types/forms/distillationForm";
-
 import { distillationFormValidation } from "@/helpers/formsValidation";
 import { initialDistillationForm } from "@/helpers/formsInitialState";
 import { mapDistillationForm } from "@/helpers/formsMapping";
 import { handleUserError } from "@/helpers/errorHandling";
 import { comingFromRouteGuard } from "@/helpers/routerGuards";
-
 import { CREATE_DISTILLATION } from "@/graphql/mutations/distillation";
 import { UPDATE_AVAILABLE_WEIGHT } from "@/graphql/mutations/plant";
-
 import { useStore } from "@/store/useStore";
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useMutation } from "@vue/apollo-composable";
@@ -61,9 +57,14 @@ import {
 import * as Sentry from "@sentry/vue";
 
 /**
- * @module AddDistillationPage
- * @description This component renders a destillation form and handles sending destillation data.
+ * @component AddDistillationPage
+ * @description This component renders a distillation form and handles sending distillation data, updating available plant weight, and navigation after submission.
+ * @see saveDistillation
+ * @see saveDistillationAddResults
+ * @see submitDistillationForm
+ * @see changeAvailableWeight
  */
+
 export default {
   name: "AddDistillationPage",
   components: { DistillationPlant, DistillationProcess, DistillationData },
@@ -77,10 +78,12 @@ export default {
       () => store.getters["distillation/distillationForm"]
     );
 
+    // Reference for the created distillation id
     const distillId = ref<string | null>(null);
 
     // Reactive reference to track form validity
     const isFormValid = ref<boolean>(false);
+    // Reactive reference to track if the form was submitted
     const wasSubmitted = ref<boolean>(false);
 
     // Router object for navigation
@@ -93,7 +96,7 @@ export default {
       wasSubmitted.value = false;
     });
 
-    // Using GraphQL mutation for creating a new plant
+    // Using GraphQL mutation for creating a new distillation
     const { mutate: createDistillation } = useMutation(CREATE_DISTILLATION);
 
     // Using GraphQL mutation for updating the available weight
@@ -102,14 +105,13 @@ export default {
     );
 
     /**
+     * Handles the submission of the distillation form, validates, and sends data to the backend.
      * @async
      * @function submitDistillationForm
-     * @description Function to handle the submission of the distillation form.
-     * @returns {Promise<void>} Resolves when the form submission process is complete.
+     * @returns {Promise<void>}
      * @throws {Error} Throws an error if the form submission fails.
      */
     const submitDistillationForm = async (): Promise<void> => {
-      // Validate the form
       wasSubmitted.value = true;
       isFormValid.value = distillationFormValidation(distillationForm.value);
       if (isFormValid.value) {
@@ -132,6 +134,12 @@ export default {
       }
     };
 
+    /**
+     * Updates the available weight for the selected plant after distillation.
+     * @async
+     * @function changeAvailableWeight
+     * @returns {Promise<void>}
+     */
     const changeAvailableWeight = async (): Promise<void> => {
       try {
         const availableWeight =
@@ -152,6 +160,12 @@ export default {
       }
     };
 
+    /**
+     * Saves the distillation, updates available weight, and navigates to the in-progress distillations page.
+     * @async
+     * @function saveDistillation
+     * @returns {Promise<void>}
+     */
     const saveDistillation = async (): Promise<void> => {
       try {
         await submitDistillationForm();
@@ -169,29 +183,20 @@ export default {
         return;
       }
     };
+
     /**
-     * Asynchronously saves the distillation add results.
-     *
-     * This function attempts to submit the distillation form and, if the form is valid,
-     * it updates the available weight for the distilled plant and navigates to the add
-     * distillation results page. If the form is not valid, it simply returns without
-     * performing any further actions.
-     *
+     * Saves the distillation, updates available weight, and navigates to the add results page.
      * @async
      * @function saveDistillationAddResults
-     * @returns {Promise<void>} - A promise that resolves when the operation is complete.
-     * @throws {Error} - Throws an error if the submission or weight change fails.
+     * @returns {Promise<void>}
      */
     const saveDistillationAddResults = async (): Promise<void> => {
       try {
-        // Submit the distillation form
         await submitDistillationForm();
         if (!isFormValid.value) {
           return;
         } else {
-          //change amount of available weight for distilled plant
           await changeAvailableWeight();
-          // If valid, navigate to the add distillation page
           router.push({
             name: "AddResultsPage",
             params: { distillId: distillId.value },
@@ -203,14 +208,14 @@ export default {
       }
     };
 
-    //Navigation guard that reset the form data in vuex state and local storage before navigating away from the route.
+    // Navigation guard that resets the form data in vuex state and local storage before navigating away from the route.
     onBeforeRouteLeave(async (to, from, next) => {
       if (to.path !== from.path) {
         // Dispatch Vuex action to reset the form in store
         store.dispatch("distillation/setDistillationForm");
-        // // Wait for the next tick to ensure state updates are complete
+        // Wait for the next tick to ensure state updates are complete
         await nextTick();
-        // // Removing distillation form value from local storage by its key
+        // Removing distillation form value from local storage by its key
         for (const key in initialDistillationForm) {
           localStorage.removeItem(key);
         }

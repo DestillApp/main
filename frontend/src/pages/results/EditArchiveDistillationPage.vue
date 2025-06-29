@@ -87,10 +87,17 @@ import { mapResultsForm } from "@/helpers/formsMapping";
 import * as Sentry from "@sentry/vue";
 
 /**
- * @module EditArchiveDistillationPage
- * @description This component renders a distillation form and handles sending distillation data.
+ * @component EditArchiveDistillationPage
+ * @description This component renders a distillation archive edit form and handles updating distillation data and results.
+ * @see fetchDistillationDetails
+ * @see editDistillationArchiveForm
+ * @see editDistillationArchive
  */
 
+/**
+ * Interface for results values excluding certain fields from DistillationArchive.
+ * @interface
+ */
 interface ResultsValues
   extends Omit<
     DistillationArchive,
@@ -117,34 +124,34 @@ export default {
     const router = useRouter();
     const route = useRoute();
 
-    // Reactive reference to store the distillation ID and page number from the route
+    // Archive distillation id from route
     const archiveId = ref<string | string[]>(route.params.archiveId);
-    // const page = ref(Number(route.params.page));
 
-    // Computed property to get distillation form data from Vuex store
+    // Computed property for distillation form from Vuex store
     const distillationForm = computed<ResultsForm>(
       () => store.getters["results/resultsForm"]
     );
 
-    // Reactive reference to store fetched distillation details
+    // Distillation details object
     const distillationDetails = ref<DistillationArchive | null>(null);
 
-    // Reactive reference to track form validity
+    // Ref for form validity
     const isFormValid = ref<boolean>(false);
-    // Reactive reference for loading state
+    // Ref for loading state
     const isLoading = ref<boolean>(true);
-    // Reactive reference to pass that this is an edit form
+    // Ref to indicate edit mode
     const isEditing = ref<boolean>(true);
-
+    // Ref to indicate results form
     const isResultsForm = ref<boolean>(true);
-
+    // Ref for submission state
     const wasSubmitted = ref<boolean>(false);
 
-    // Computed property to get the value from Vuex store
+    // Computed property for route guard state
     const comingFromRoute = computed<boolean>(
       () => store.getters.comingFromRoute
     );
 
+    // List of fields to normalize from the fetched plant details
     const fieldsToNormalize: (keyof GetPlantById)[] = [
       "harvestDate",
       "harvestStartTime",
@@ -154,10 +161,15 @@ export default {
       "plantProducer",
     ];
 
+    /**
+     * Fetches the archive distillation details by ID from GraphQL API.
+     * @async
+     * @function fetchDistillationDetails
+     * @returns {Promise<void>}
+     */
     const fetchDistillationDetails = async (): Promise<void> => {
       try {
         isLoading.value = true;
-        // Make a query to fetch distillation details by distillation ID from archive
         const { data } = await apolloClient.query({
           query: GET_ARCHIVE_DISTILLATION_BY_ID,
           variables: { id: archiveId.value, formatDistillDate: false },
@@ -171,8 +183,6 @@ export default {
             fieldsToNormalize
           ),
         };
-
-        console.log("distillation details", distillationDetails.value);
       } catch (error: any) {
         await handleUserError(error);
         distillationDetails.value = null;
@@ -182,12 +192,13 @@ export default {
       }
     };
 
-    // Lifecycle hook to reset form validity on component mount
+    // Lifecycle hook to reset form validity and fetch details on mount
     onMounted(async () => {
       isFormValid.value = false;
       if (comingFromRoute.value) {
         await fetchDistillationDetails();
         if (distillationDetails.value) {
+          // Set results values in store
           const resultsKeys = Object.keys(distillationDetails.value).filter(
             (key) =>
               key !== "_id" &&
@@ -201,7 +212,7 @@ export default {
               value: distillationDetails.value[key],
             });
           }
-
+          // Set distillation data in store
           const distilationKeys = Object.keys(
             distillationDetails.value.distillationData
           ).filter(
@@ -213,7 +224,7 @@ export default {
               value: distillationDetails.value.distillationData[key],
             });
           }
-
+          // Set plant data in store
           const plantKeys = Object.keys(
             distillationDetails.value.distilledPlant
           ).filter(
@@ -225,7 +236,7 @@ export default {
               value: distillationDetails.value.distilledPlant[key],
             });
           }
-
+          // Set distillation time in store
           const timeKeys: (keyof DistillationTime)[] = [
             "distillationHours",
             "distillationMinutes",
@@ -245,11 +256,17 @@ export default {
       }
     });
 
-    // Using GraphQL mutation for updating the distillation archive
+    // GraphQL mutation for updating the distillation archive
     const { mutate: updateDistillationArchive } = useMutation(
       UPDATE_DISTILLATION_ARCHIVE
     );
 
+    /**
+     * Handles the submission of the edit archive distillation form, validates, and sends data to the backend.
+     * @async
+     * @function editDistillationArchiveForm
+     * @returns {Promise<void>}
+     */
     const editDistillationArchiveForm = async (): Promise<void> => {
       wasSubmitted.value = true;
       isFormValid.value = editArchiveDistillationFormValidation(
@@ -260,7 +277,6 @@ export default {
           const distillationArchiveFormData = mapResultsForm(
             distillationForm.value
           );
-
           await updateDistillationArchive({
             id: archiveId.value,
             input: distillationArchiveFormData,
@@ -274,6 +290,12 @@ export default {
       }
     };
 
+    /**
+     * Edits the distillation archive and navigates to the distillation archives page.
+     * @async
+     * @function editDistillationArchive
+     * @returns {Promise<void>}
+     */
     const editDistillationArchive = async (): Promise<void> => {
       try {
         await editDistillationArchiveForm();
@@ -294,11 +316,8 @@ export default {
     // Navigation guard that resets the form data in Vuex state and local storage before navigating away from the route.
     onBeforeRouteLeave(async (to, from, next) => {
       if (to.path !== from.path) {
-        // Dispatch Vuex action to reset the form in store
         store.dispatch("results/setResultsForm");
-        // Wait for the next tick to ensure state updates are complete
         await nextTick();
-        // Removing results form value from local storage by its key
         for (const key in initialResultsForm) {
           localStorage.removeItem(key);
         }

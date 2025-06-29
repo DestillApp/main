@@ -15,6 +15,7 @@
         @blur="checkUsername"
         @focus="resetUsernameExists"
       >
+        <!-- Username validation messages -->
         <template v-slot:message>
           <span v-if="usernameExists"
             >Nazwa użytkownika już istnieje w bazie danych. Wpisz inną
@@ -34,6 +35,7 @@
         :invalidInput="(!isFormValid && !registrationForm.email) || emailExists"
         @focus="resetEmailExists"
       >
+        <!-- Email validation messages -->
         <template v-slot:message>
           <span v-if="emailExists"
             >Email już istnieje w bazie danych. Wpisz inny email.</span
@@ -52,6 +54,7 @@
         type="password"
         label="Hasło"
       >
+        <!-- Password validation messages -->
         <template v-slot:message>
           <span v-if="!isPasswordCorrect && registrationForm.password"
             >Wpisz poprawne hasło. Hasło musi zawierać conajmniej 8 znaków,
@@ -72,6 +75,7 @@
           (!isFormValid && !confirmPassword) || isPasswordMatch === false
         "
       >
+        <!-- Confirm password validation messages -->
         <template v-slot:message>
           <span v-if="isPasswordMatch === false">Hasła nie są takie same.</span>
           <span v-if="!isFormValid && !confirmPassword"
@@ -114,14 +118,24 @@ import * as Sentry from "@sentry/vue";
 /**
  * @component RegistrationForm
  * @description This component renders a registration form and handles user registration.
+ * @see checkUsername
+ * @see resetUsernameExists
+ * @see checkPassword
  * @see submitRegistrationForm
+ * @see resetEmailExists
+ * @see saveRegistration
  */
 
+/**
+ * Interface for registration form data.
+ * @interface
+ */
 interface RegistrationForm {
   username: string;
   email: string;
   password: string;
 }
+
 export default {
   name: "RegistrationForm",
 
@@ -133,23 +147,29 @@ export default {
     // Vuex store instance
     const store = useStore();
 
+    // Router instance
     const router = useRouter();
 
+    // Registration form state
     const registrationForm = ref<RegistrationForm>({
       username: "",
       email: "",
       password: "",
     });
 
-    // Reactive reference to track form validity
+    // Form validity state
     const isFormValid = ref<boolean>(true);
+    // Password correctness state
     const isPasswordCorrect = ref<boolean>(true);
 
+    // Email and username existence state
     const emailExists = ref<boolean>(false);
     const usernameExists = ref<boolean>(false);
 
+    // Confirm password state
     const confirmPassword = ref<string>("");
 
+    // GraphQL mutation for registering user
     const { mutate: registerUser } = useMutation(REGISTER_USER);
 
     // Computed property to check if passwords match
@@ -165,12 +185,10 @@ export default {
     });
 
     /**
-     * Function to handle the blur event on the username input.
      * Checks if the username already exists in the database.
      * @async
      * @function checkUsername
-     * @returns {Promise<void>} Resolves when the check is complete.
-     * @throws {Error} Throws an error if the check fails.
+     * @returns {Promise<void>}
      */
     const checkUsername = async (): Promise<void> => {
       try {
@@ -193,12 +211,17 @@ export default {
       }
     };
 
+    /**
+     * Resets the username existence state.
+     * @function resetUsernameExists
+     */
     const resetUsernameExists = (): void => {
       usernameExists.value = false;
     };
 
     /**
-     * Function to check if the password is correct on input change.
+     * Checks if the password is correct on input change.
+     * @function checkPassword
      */
     const checkPassword = (): void => {
       const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
@@ -208,25 +231,22 @@ export default {
     };
 
     /**
-     * Function to handle the submission of the registration form.
+     * Handles the submission of the registration form.
      * Sanitizes user input and sends a GraphQL mutation to register the user.
      * @async
      * @function submitRegistrationForm
-     * @returns {Promise<void>} Resolves when the form submission process is complete.
-     * @throws {Error} Throws an error if the form submission fails.
+     * @returns {Promise<void>}
      */
     const submitRegistrationForm = async (): Promise<void> => {
       try {
         const form = registrationForm.value;
 
-        // Create an object with sanitized form data
         const registrationFormData = {
           username: form.username,
           email: form.email,
           password: form.password,
         };
 
-        // Send the GraphQL mutation to register the user
         const result = await registerUser({
           userInput: {
             username: registrationFormData.username,
@@ -251,16 +271,19 @@ export default {
       }
     };
 
+    /**
+     * Resets the email existence state.
+     * @function resetEmailExists
+     */
     const resetEmailExists = (): void => {
       emailExists.value = false;
     };
 
     /**
-     * Function to validate the form and call submitRegistrationForm if valid.
+     * Validates the form and calls submitRegistrationForm if valid.
      * @async
      * @function saveRegistration
-     * @returns {Promise<void>} Resolves when the form validation and submission process is complete.
-     * @throws {Error} Throws an error if the form validation or submission fails.
+     * @returns {Promise<void>}
      */
     const saveRegistration = async (): Promise<void> => {
       const validationResults = registrationFormValidation(

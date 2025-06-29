@@ -35,16 +35,12 @@
 import PlantIdentification from "@/components/plant/form/PlantIdentification.vue";
 import PlantOrigin from "@/components/plant/form/PlantOrigin.vue";
 import PlantData from "@/components/plant/form/PlantData.vue";
-
 import { PlantForm } from "@/types/forms/plantForm";
-
 import { initialPlantForm } from "@/helpers/formsInitialState";
 import { plantFormValidation } from "@/helpers/formsValidation";
 import { mapPlantForm } from "@/helpers/formsMapping";
 import { handleUserError } from "@/helpers/errorHandling";
-
 import { CREATE_PLANT } from "@/graphql/mutations/plant";
-
 import { useStore } from "@/store/useStore";
 import { computed, ref, onMounted, nextTick } from "vue";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
@@ -53,7 +49,7 @@ import * as Sentry from "@sentry/vue";
 
 /**
  * @component AddPlantPage
- * @description This component renders a plant form and handles sending plant data.
+ * @description This component renders a plant form and handles sending plant data, validation, and navigation after submission.
  * @see plantFormValidation
  * @see submitPlantForm
  * @see savePlant
@@ -72,14 +68,16 @@ export default {
       () => store.getters["plant/plantForm"]
     );
 
+    // Reference for the created plant id
     const plantId = ref<string>("");
 
     // Reactive reference to track form validity
     const isFormValid = ref<boolean>(false);
 
-    //Reactive reference to track when component is resetting
+    // Reactive reference to track when component is resetting
     const isResetting = ref<boolean>(false);
 
+    // Reactive reference to track if the form was submitted
     const wasSubmitted = ref<boolean>(false);
 
     // Router object for navigation
@@ -94,26 +92,22 @@ export default {
     const { mutate: createPlant } = useMutation(CREATE_PLANT);
 
     /**
+     * Handles the submission of the plant form, validates, and sends data to the backend.
      * @async
      * @function submitPlantForm
-     * @description Function to handle the submission of the plant form.
-     * @returns {Promise<void>} Resolves when the form submission process is complete.
+     * @returns {Promise<void>}
      * @throws {Error} Throws an error if the form submission fails.
      */
     const submitPlantForm = async (): Promise<void> => {
-      // Validate the form
       wasSubmitted.value = true;
       isFormValid.value = plantFormValidation(plantForm.value);
 
       if (isFormValid.value) {
         try {
           const plantFormData = mapPlantForm(plantForm.value);
-
-          // Send the GraphQL mutation to create a new plant
           const result = await createPlant({
             input: plantFormData,
           });
-
           if (result?.data) {
             plantId.value = result.data.createPlant._id;
           }
@@ -127,17 +121,17 @@ export default {
     };
 
     /**
+     * Saves the plant and navigates to the plant list page.
+     * @async
      * @function savePlant
-     * @description Function to save creating plant and navigate to the plant list.
+     * @returns {Promise<void>}
      */
     const savePlant = async (): Promise<void> => {
       try {
-        // Submit the plant form
         await submitPlantForm();
         if (!isFormValid.value) {
           return;
         } else {
-          // If valid, navigate to the plant list page
           router.push({ name: "PlantListPage", params: { page: 1 } });
         }
       } catch (error) {
@@ -147,17 +141,17 @@ export default {
     };
 
     /**
+     * Saves the plant and navigates to the add distillation page.
+     * @async
      * @function savePlantAndDistill
-     * @description Function to save creating plant and navigate to the add distillation page.
+     * @returns {Promise<void>}
      */
     const savePlantAndDistill = async (): Promise<void> => {
       try {
-        // Submit the plant form
         await submitPlantForm();
         if (!isFormValid.value) {
           return;
         } else {
-          // If valid, navigate to the add distillation page
           router.push({
             name: "AddDistillationPage",
             params: {
@@ -171,15 +165,12 @@ export default {
       }
     };
 
-    //Navigation guard that reset the form data in vuex state and local storage before navigating away from the route.
+    // Navigation guard that resets the form data in vuex state and local storage before navigating away from the route.
     onBeforeRouteLeave(async (to, from, next) => {
       if (to.path !== from.path) {
         isResetting.value = true;
-        // Dispatch Vuex action to reset the form in store
         store.dispatch("plant/setPlantForm");
-        // Wait for the next tick to ensure state updates are complete
         await nextTick();
-        // Removing plant form value from local storage by its key
         for (const key in initialPlantForm) {
           localStorage.removeItem(key);
         }
