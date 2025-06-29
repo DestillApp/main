@@ -16,6 +16,7 @@
             placeholder="Wprowadź stare hasło"
             :invalidInput="!isFormValid && !oldPassword"
           >
+            <!-- Validation messages for old password -->
             <template v-slot:message>
               <span v-if="!isFormValid && !oldPassword"
                 >Wpisz stare hasło.</span
@@ -36,6 +37,7 @@
             @input="checkPassword"
             :invalidInput="!isFormValid && !newPassword"
           >
+            <!-- Validation messages for new password -->
             <template v-slot:message>
               <span v-if="!isPasswordCorrect && newPassword"
                 >Wpisz poprawne hasło. Hasło musi zawierać conajmniej 8 znaków,
@@ -54,6 +56,7 @@
             placeholder="Powtórz nowe hasło"
             :invalidInput="!isFormValid && !confirmNewPassword"
           >
+            <!-- Validation messages for confirm new password -->
             <template v-slot:message>
               <span
                 v-if="confirmNewPassword !== newPassword && confirmNewPassword"
@@ -85,6 +88,22 @@ import { CloseModal } from "@/types/events";
 import { changePasswordFormValidation } from "@/helpers/formsValidation";
 import * as Sentry from "@sentry/vue";
 
+/**
+ * @component PasswordChangeForm
+ * @description Modal form for changing the user's password. Handles validation, error display, and submission.
+ * @props none
+ * @emits close-modal - Event emitted when the modal is closed.
+ * @see checkPassword
+ * @see changePassword
+ * @see closeModal
+ */
+
+/**
+ * No props for PasswordChangeForm component.
+ * @interface
+ */
+interface Props {}
+
 export default {
   components: {
     BaseModal,
@@ -92,24 +111,41 @@ export default {
     BaseButton,
   },
   setup(_, context) {
+    // Vuex store instance
     const store = useStore();
 
+    // Emit function for modal events
     const emit = context.emit as CloseModal;
 
+    // Reactive reference for the old password input
     const oldPassword = ref<string>("");
+    // Reactive reference for the new password input
     const newPassword = ref<string>("");
+    // Reactive reference for the confirm new password input
     const confirmNewPassword = ref<string>("");
 
     // Reactive reference to track form validity
     const isFormValid = ref<boolean>(true);
+    // Reactive reference to track password format validity
     const isPasswordCorrect = ref<boolean>(true);
+    // Reactive reference to track if the old password is correct
     const isOldPasswordCorrect = ref<boolean>(true);
 
+    /**
+     * Checks if the new password meets the required format.
+     * @function checkPassword
+     */
     const checkPassword = (): void => {
       const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
       isPasswordCorrect.value = passwordRegex.test(newPassword.value);
     };
 
+    /**
+     * Handles password change form submission, validates input, and dispatches the change password action.
+     * @async
+     * @function changePassword
+     * @returns {Promise<void>}
+     */
     const changePassword = async (): Promise<void> => {
       const form: {
         oldPassword: string;
@@ -132,11 +168,9 @@ export default {
             newPassword: newPassword.value,
           });
           if (isAuthenticated === true) {
-            console.log("Password changed successfully");
             isOldPasswordCorrect.value = true;
             closeModal();
           } else if (isAuthenticated === "Invalid old password") {
-            console.error("Wrong old password");
             isOldPasswordCorrect.value = false;
           }
         } catch (error) {
@@ -148,6 +182,10 @@ export default {
       }
     };
 
+    /**
+     * Emits the close-modal event to close the modal.
+     * @function closeModal
+     */
     const closeModal = (): void => {
       emit("close-modal");
     };

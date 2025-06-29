@@ -12,6 +12,7 @@
       label="Właściwości organoleptyczne olejku eterycznego"
       id="oilDescription"
     >
+      <!-- Validation message for oil description -->
       <template v-slot:message>
         <span v-if="wasSubmitted && !isFormValid && !formData.oilDescription"
           >Wpisz właściwości organoleptyczne olejku eterycznego</span
@@ -33,6 +34,7 @@
       label="Właściwości organoleptyczne hydrolatu"
       id="hydrosolDescription"
     >
+      <!-- Validation message for hydrosol description -->
       <template v-slot:message>
         <span
           v-if="wasSubmitted && !isFormValid && !formData.hydrosolDescription"
@@ -51,10 +53,18 @@ import { ResultsForm } from "@/types/forms/resultsForm";
 
 /**
  * @component ResultsDescriptions
- * @description This component renders text areas for entering descriptions related to distillation results.
+ * @description This component renders text areas for entering descriptions related to distillation results, including oil and hydrosol descriptions.
+ * @props {boolean} isFormValid
+ * @props {boolean} wasSubmitted
  * @see setValue
  */
 
+/**
+ * Props for ResultsDescriptions component.
+ * @interface
+ * @property {boolean} isFormValid
+ * @property {boolean} wasSubmitted
+ */
 interface Props {
   isFormValid: boolean;
   wasSubmitted: boolean;
@@ -65,17 +75,22 @@ export default {
   components: { BaseTextArea },
   props: ["isFormValid", "wasSubmitted"],
   setup(props: Props) {
-    // Vuex store
+    // Vuex store instance
     const store = useStore();
     // Name of the vuex store module
     const storeName = "results";
 
-    // Computed properties to get form data from Vuex store
+    // Computed property to get form data from Vuex store
     const formData = computed<ResultsForm>(
       () => store.getters["results/resultsForm"]
     );
 
-    // Function to set value in Vuex store
+    /**
+     * Sets a value in the Vuex store for a given input field.
+     * @function setValue
+     * @param {string} value - The value to set.
+     * @param {string} id - The input field identifier.
+     */
     const setValue = (value: string, id: string): void => {
       store.dispatch("results/setValue", { input: id, value });
     };

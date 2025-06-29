@@ -1,5 +1,6 @@
 <template>
   <div class="distillation-plant">
+    <!-- Section: Plant selection with autocomplete and info display -->
     <h5 class="distillation-plant__title">surowiec</h5>
     <base-autocomplete-input
       v-model="plant"
@@ -17,6 +18,7 @@
       @choose:item="setPlant"
       @update:onBlur="onBlur"
     >
+      <!-- Validation and plant info messages -->
       <template v-slot:message>
         <span v-if="wasSubmitted && !isFormValid && !formData.choosedPlant.name"
           >Wybierz surowiec z magazynu</span
@@ -28,12 +30,14 @@
             { 'dark-distillation-plant__information': isDarkTheme },
           ]"
         >
+          <!-- Plant part info -->
           <div class="distillation-plant__information">
             <span>część rośliny: </span
             ><span class="distillation-plant__information-value">{{
               formData.choosedPlant.part
             }}</span>
           </div>
+          <!-- Harvest date info -->
           <div
             v-if="formData.choosedPlant.harvestDate"
             class="distillation-plant__information"
@@ -43,6 +47,7 @@
               formData.choosedPlant.harvestDate
             }}</span>
           </div>
+          <!-- Buy date info -->
           <div
             v-if="formData.choosedPlant.buyDate"
             class="distillation-plant__information"
@@ -52,6 +57,7 @@
               formData.choosedPlant.buyDate
             }}</span>
           </div>
+          <!-- Available weight info -->
           <div class="distillation-plant__information">
             <span>ilość surowca na stanie: </span
             ><span class="distillation-plant__information-value"
@@ -62,6 +68,8 @@
         <span v-else>&nbsp;</span>
       </template>
     </base-autocomplete-input>
+
+    <!-- Input for weight used in distillation -->
     <base-text-input
       v-model="formData.weightForDistillation"
       type="number"
@@ -82,9 +90,11 @@
       :max="formData.choosedPlant.availableWeight"
       step="0.1"
     >
+      <!-- Show unit 'kg' if value is present -->
       <template v-slot:unit>
         <div v-if="formData.weightForDistillation">kg</div>
       </template>
+      <!-- Validation messages for weight input -->
       <template v-slot:message>
         <span
           v-if="
@@ -101,6 +111,7 @@
       </template>
     </base-text-input>
     <div class="distillation-plant__checkbox-container">
+      <!-- Checkbox for soaking the plant -->
       <div class="distillation-plant__checkbox-container--isSoaked">
         <v-checkbox
           v-model="formData.isPlantSoaked"
@@ -109,10 +120,12 @@
           label="Surowiec namaczany przed destylacją"
           color="var(--secondary-color)"
         ></v-checkbox>
+        <!-- Inputs for soaking time and weight after soaking -->
         <div
           v-if="formData.isPlantSoaked"
           class="distillation-plant__container--isSoaked"
         >
+          <!-- Input for soaking time -->
           <base-text-input
             v-model="formData.soakingTime"
             type="number"
@@ -132,9 +145,11 @@
             min="1"
             step="1"
           >
+            <!-- Show unit 'h' if value is present -->
             <template v-slot:unit>
               <div v-if="formData.soakingTime">h</div>
             </template>
+            <!-- Validation message for soaking time -->
             <template v-slot:message>
               <span v-if="wasSubmitted && !isFormValid && !formData.soakingTime"
                 >Wpisz czas namaczania</span
@@ -142,6 +157,7 @@
               <span v-else>&nbsp;</span>
             </template>
           </base-text-input>
+          <!-- Input for weight after soaking -->
           <base-text-input
             v-model="formData.weightAfterSoaking"
             type="number"
@@ -161,9 +177,11 @@
             min="0.1"
             step="0.1"
           >
+            <!-- Show unit 'kg' if value is present -->
             <template v-slot:unit>
               <div v-if="formData.weightAfterSoaking">kg</div>
             </template>
+            <!-- Validation message for weight after soaking -->
             <template v-slot:message>
               <span
                 v-if="
@@ -176,6 +194,7 @@
           </base-text-input>
         </div>
       </div>
+      <!-- Checkbox for shredding the plant -->
       <v-checkbox
         v-model="formData.isPlantShredded"
         :class="{
@@ -219,10 +238,13 @@ import { GET_BASIC_PLANT_BY_ID } from "@/graphql/queries/plant";
  * @component DistillationPlant
  * @description This component manages the selection of plant material for distillation, including details like plant part, weight, and optional soaking or shredding steps.
  * It also interacts with Vuex for data persistence and handles the fetching of plants from an Apollo GraphQL server.
+ * @props {boolean} isFormValid - Indicates if the form is valid.
+ * @props {boolean} wasSubmitted - Indicates if the form was submitted.
+ * @props {boolean} [isEditing] - Indicates if the form is in editing mode.
  * @see fetchData
  * @see setPlantState
  * @see setPlant
- * @see fetchPlantList
+ * @see fetchPlants
  * @see onInput
  * @see onBlur
  * @see setNumberFormat
@@ -230,6 +252,13 @@ import { GET_BASIC_PLANT_BY_ID } from "@/graphql/queries/plant";
  * @see setKeyboardIntegerNumber
  */
 
+/**
+ * Props for DistillationPlant component.
+ * @interface
+ * @property {boolean} isFormValid - Indicates if the form is valid.
+ * @property {boolean} wasSubmitted - Indicates if the form was submitted.
+ * @property {boolean} [isEditing] - Indicates if the form is in editing mode.
+ */
 interface Props {
   isFormValid: boolean;
   wasSubmitted: boolean;
@@ -252,15 +281,20 @@ export default {
     // Name of the vuex store module
     const storeName = "distillation";
 
+    // Vue Router
     const router = useRouter();
     const route = useRoute();
 
+    // Search input value for plant autocomplete
     const searchQuery = ref<string>("");
+    // Selected plant name for autocomplete
     const plant = ref<string>("");
+    // List of plants for autocomplete results
     const plants = ref<BasicPlant[]>([]);
+    // Timeout ref for debouncing plant search
     const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
 
-    // Computed properties to get form data from Vuex store
+    // Computed properties to get data from Vuex store
     const formData = computed<DistillationForm>(
       () => store.getters["distillation/distillationForm"]
     );
@@ -274,6 +308,7 @@ export default {
       () => store.getters["settings/isDarkTheme"]
     );
 
+    // Mapping of plant fields for selection and formatting
     const plantFields: {
       key: keyof ChoosedPlant;
       valueKey: keyof BasicPlant;
@@ -306,15 +341,21 @@ export default {
       }
     });
 
+    // Get comingFromRoute state from Vuex store
     const comingFromRoute = computed<boolean>(
       () => store.getters.comingFromRoute
     );
 
+    // Handles keyboard events for integer-only input and prevents minus sign
     const handleKeyboard = (e: KeyboardEvent) => {
       setKeyboardIntegerNumber(e);
       preventMinusNumber(e);
     };
 
+    /**
+     * Gets plant data by ID from the GraphQL server.
+     * @returns {Promise<BasicPlant | undefined>}
+     */
     const getPlantData = async (): Promise<BasicPlant | undefined> => {
       try {
         const { data } = await apolloClient.query({
@@ -330,8 +371,7 @@ export default {
     };
 
     /**
-     * @function fetchData
-     * @description Fetches initial data from local storage via the Vuex store for a specified key.
+     * Fetches initial data from local storage via the Vuex store for a specified key.
      * @param {string} key - The key for the specific data to fetch.
      * @param {boolean} value - Indicates if the fetched data is related to plant information.
      */
@@ -342,7 +382,7 @@ export default {
       });
     };
 
-    // Fetch initial data from local storage on component mount
+    // Fetch initial data from local storage or API on component mount
     onMounted(async () => {
       if (comingFromRoute.value) {
         if (route.params.id) {
@@ -383,10 +423,9 @@ export default {
     });
 
     /**
-     * @function setPlantState
-     * @description Updates the selected plant's state in Vuex by dispatching key-value pairs.
-     * @param {string} key - The key of the plant attribute.
-     * @param {any} value - The value of the plant attribute.
+     * Updates the selected plant's state in Vuex by dispatching key-value pairs.
+     * @param {keyof FormChoosedPlant} key - The key of the plant attribute.
+     * @param {string | number | null} value - The value of the plant attribute.
      */
     const setPlantState = (
       key: keyof FormChoosedPlant,
@@ -399,9 +438,9 @@ export default {
     };
 
     /**
-     * @function setPlant
-     * @desctiption Sets the selected plant details in the form, including plant ID, name, part, and weight. Clears the search input and list of plants after selection.
-     * @param {Object} value - The selected plant object from the plant list.
+     * Sets the selected plant details in the form, including plant ID, name, part, and weight.
+     * Clears the search input and list of plants after selection.
+     * @param {BasicPlant} value - The selected plant object from the plant list.
      */
     const setPlant = (value: BasicPlant): void => {
       plantFields.forEach(({ key, valueKey }) => {
@@ -418,9 +457,9 @@ export default {
     };
 
     /**
+     * Fetch the list of plants from the GraphQL server by matching name.
      * @async
-     * @function fetchPlants
-     * @description Fetch the list of plants from the GraphQL server by matching name.
+     * @param {string} name - The plant name to search for.
      * @returns {Promise<void>}
      */
     const fetchPlants = async (name: string): Promise<void> => {
@@ -442,8 +481,10 @@ export default {
     };
 
     /**
-     * @function onInput
-     * @description Handles the input event for the search or autocomplete component. Updates the search query and manages the timer to limit the frequency of fetch requests.
+     * Handles the input event for the search or autocomplete component.
+     * Updates the search query and manages the timer to limit the frequency of fetch requests.
+     * @param {string} value - The input value.
+     * @param {string} input - The input field identifier.
      * @returns {void}
      */
     const onInput = (value: string, input: string): void => {
@@ -476,8 +517,8 @@ export default {
     };
 
     /**
-     * @function onBlur
-     * @description Handles the blur event when the input field loses focus. Clears the plant list and resets the input value if no plant is selected.
+     * Handles the blur event when the input field loses focus.
+     * Clears the plant list and resets the input value if no plant is selected.
      */
     const onBlur = () => {
       if (formData.value.choosedPlant.name === "") {
@@ -489,9 +530,8 @@ export default {
 
     // Watcher to handle changes in the isPlantSoaked state. Updates related fields and dispatches changes to the store.
     watch(
-      () => isPlantSoaked.value, // Watch the value of isPlantSoaked
+      () => isPlantSoaked.value,
       (newValue, oldValue) => {
-        // If the old value is false, update the soaked state in the store
         if (oldValue === false) {
           store.dispatch("distillation/setValue", {
             input: "isPlantSoaked",
@@ -500,7 +540,6 @@ export default {
         }
 
         if (newValue === false) {
-          // Clear soaking-related fields if the previous state was true
           if (oldValue === true) {
             store.dispatch("distillation/setValue", {
               input: "soakingTime",
@@ -521,9 +560,8 @@ export default {
 
     // Watcher to handle changes in the isPlantShredded state. Updates related field and dispatches changes to the store.
     watch(
-      () => isPlantShredded.value, // Watch the value of isPlantShredded
+      () => isPlantShredded.value,
       (newValue, oldValue) => {
-        // If the old value is false, update the soaked state in the store
         if (oldValue !== newValue) {
           store.dispatch("distillation/setValue", {
             input: "isPlantShredded",

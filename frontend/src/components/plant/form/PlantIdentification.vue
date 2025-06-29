@@ -12,6 +12,7 @@
       :invalidInput="wasSubmitted && !isFormValid && !formData.plantName"
       @update:modelValue="setValue"
     >
+      <!-- Validation message for plant name -->
       <template v-slot:message>
         <span v-if="wasSubmitted && !isFormValid && !formData.plantName"
           >Nazwa surowca jest wymagana</span
@@ -49,9 +50,17 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 /**
  * @component PlantIdentification
  * @description This component renders a form to input and manage data related to plant material used in distillation, including plant name and part.
+ * @props {boolean} isFormValid
+ * @props {boolean} wasSubmitted
  * @see setValue
  */
 
+/**
+ * Props for PlantIdentification component.
+ * @interface
+ * @property {boolean} isFormValid
+ * @property {boolean} wasSubmitted
+ */
 interface Props {
   isFormValid: boolean;
   wasSubmitted: boolean;
@@ -62,17 +71,18 @@ export default {
   components: { BaseTextInput },
   props: ["isFormValid", "wasSubmitted"],
   setup(props: Props) {
-    // Vuex store
+    // Vuex store instance
     const store = useStore();
+
     // Computed property to get form data from Vuex store
     const formData = computed<PlantForm>(
       () => store.getters["plant/plantForm"]
     );
 
     /**
-     * Function to dispatch an action to the Vuex store to set a specific value.
+     * Dispatches an action to the Vuex store to set a specific value.
      * @function setValue
-     * @param {any} currentValue - The current value to be set.
+     * @param {string} currentValue - The current value to be set.
      * @param {string} input - The input field name.
      */
     const setValue = (currentValue: string, input: string): void => {

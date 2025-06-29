@@ -30,14 +30,24 @@ import BaseModal from "@/ui/BaseModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 
 /**
- * @component DeleteModal
- * @description A confirmation modal for deleting a plant from the inventory.
- * @property {String} plantName - The name of the plant to be deleted.
- * @property {String} plantPart - The part of the plant to be deleted.
- * @emits close-modal - Event emitted when the modal is closed without deletion.
- * @emits handle-yes - Event emitted when the user confirms the plant deletion.
+ * @component AskModal
+ * @description A confirmation modal for restoring a plant and its weight to the inventory.
+ * @props {string} plantName - The name of the plant to be restored.
+ * @props {string} plantPart - The part of the plant to be restored.
+ * @props {number} distillationWeight - The weight of the plant to be restored.
+ * @emits close-modal - Event emitted when the modal is closed without restoration.
+ * @emits handle-yes - Event emitted when the user confirms the restoration.
+ * @see handleYes
+ * @see closeModal
  */
 
+/**
+ * Props for AskModal component.
+ * @interface
+ * @property {string} plantName
+ * @property {string} plantPart
+ * @property {number} distillationWeight
+ */
 interface Props {
   plantName: string;
   plantPart: string;
@@ -45,26 +55,27 @@ interface Props {
 }
 
 export default {
-  name: "ASKModal",
+  name: "AskModal",
   components: { BaseModal, BaseButton },
   props: ["plantName", "plantPart", "distillationWeight"],
   emits: ["close-modal", "handle-yes"],
   setup(props: Props, context) {
     const emit = context.emit as AskModalEvents;
+
     // Reactive reference for the lowercase version of plant name.
     const nameOfPlant = ref<string>(props.plantName.toLowerCase());
 
     /**
+     * Emits the handle-yes event to confirm plant restoration.
      * @function handleYes
-     * @description Emits the handle-yes event to confirm plant deletion.
      */
     const handleYes = () => {
       emit("handle-yes");
     };
 
     /**
+     * Emits the close-modal event to close the modal without restoration.
      * @function closeModal
-     * @description Emits the close-delete-modal event to close the modal without deletion.
      */
     const closeModal = () => {
       emit("close-modal");

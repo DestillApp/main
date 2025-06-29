@@ -1,8 +1,9 @@
 <template>
   <!-- Container for the plant data form -->
   <div class="plant-data">
-    <!-- Input field for entering the plant weight -->
+    <!-- Input fields for plant weight and available weight (if editing) -->
     <div class="plant-data__weights">
+      <!-- Input for plant weight -->
       <base-text-input
         v-model="formData.plantWeight"
         type="number"
@@ -20,9 +21,11 @@
         min="0.1"
         step="0.1"
       >
+        <!-- Show unit 'kg' if value is present -->
         <template v-slot:unit>
           <div v-if="formData.plantWeight">kg</div>
         </template>
+        <!-- Validation message for plant weight -->
         <template v-slot:message>
           <span v-if="wasSubmitted && !isFormValid && !formData.plantWeight"
             >Wpisz wagę surowca</span
@@ -30,6 +33,7 @@
           <span v-else>&nbsp;</span>
         </template>
       </base-text-input>
+      <!-- Input for available weight, only in edit mode -->
       <base-text-input
         v-if="isEditing"
         v-model="formData.availableWeight"
@@ -50,9 +54,11 @@
         min="0.1"
         step="0.1"
       >
+        <!-- Show unit 'kg' if value is present -->
         <template v-slot:unit>
           <div v-if="formData.availableWeight">kg</div>
         </template>
+        <!-- Validation message for available weight -->
         <template v-slot:message>
           <span v-if="wasSubmitted && !isFormValid && !formData.availableWeight"
             >Wpisz wagę surowca na stanie</span
@@ -61,7 +67,7 @@
         </template>
       </base-text-input>
     </div>
-    <!-- Container for plant state inputs -->
+    <!-- Section for plant state selection and related fields -->
     <div class="plant-data__state">
       <!-- Radio input for plant state selection -->
       <base-radio-input
@@ -72,6 +78,7 @@
         name="plantState"
         class="plant-data__state-radioinput"
       >
+        <!-- Validation message for plant state -->
         <template v-slot:message>
           <span v-if="wasSubmitted && !isFormValid && !formData.plantState"
             >Wybierz stan surowca</span
@@ -79,7 +86,7 @@
           <span v-else>&nbsp;</span>
         </template>
       </base-radio-input>
-      <!-- Input field for entering drying time, displayed if plant state is 'podsuszony' -->
+      <!-- Input for drying time, shown if state is 'podsuszony' -->
       <base-text-input
         v-if="formData.plantState === 'podsuszony'"
         v-model="formData.dryingTime"
@@ -98,9 +105,11 @@
         min="1"
         step="1"
       >
+        <!-- Show unit 'h' if value is present -->
         <template v-slot:unit>
           <div v-if="formData.dryingTime">h</div>
         </template>
+        <!-- Validation message for drying time -->
         <template v-slot:message>
           <span v-if="wasSubmitted && !isFormValid && !formData.dryingTime"
             >Wpisz czas podsuszania</span
@@ -108,7 +117,7 @@
           <span v-else>&nbsp;</span>
         </template>
       </base-text-input>
-      <!-- Input field for entering plant age, displayed if plant state is 'suchy' -->
+      <!-- Input for plant age, shown if state is 'suchy' and origin is 'kupno' -->
       <base-text-input
         v-if="
           formData.plantState === 'suchy' && formData.plantOrigin === 'kupno'
@@ -128,11 +137,13 @@
         min="1"
         step="1"
       >
+        <!-- Show unit with suffix if value is present -->
         <template v-slot:unit>
           <div v-if="formData.plantAge">
             {{ plantAgeWithSuffix(formData.plantAge) }}
           </div>
         </template>
+        <!-- Validation message for plant age -->
         <template v-slot:message>
           <span v-if="wasSubmitted && !isFormValid && !formData.plantAge"
             >Wpisz wiek surowca</span
@@ -159,18 +170,34 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 /**
  * @component PlantData
- * @description This component renders inputs and manage data related to plant material used in distillation, including weight, state, and soaking information.
+ * @description This component renders inputs and manages data related to plant material used in distillation, including weight, state, and drying/age information.
+ * @props {boolean} isFormValid
+ * @props {boolean} wasSubmitted
+ * @props {boolean} [isResetting]
+ * @props {boolean} [isEditing]
  * @see setNumberFormat
  * @see setIntegerNumber
  * @see setKeyboardIntegerNumber
+ * @see handleKeyboard
  */
 
+/**
+ * Enum for plant state options.
+ */
 enum PlantState {
   ŚWIEŻY = "świeży",
   PODSUSZONY = "podsuszony",
   SUCHY = "suchy",
 }
 
+/**
+ * Props for PlantData component.
+ * @interface
+ * @property {boolean} isFormValid
+ * @property {boolean} wasSubmitted
+ * @property {boolean} [isResetting]
+ * @property {boolean} [isEditing]
+ */
 interface Props {
   isFormValid: boolean;
   isResetting?: boolean;
@@ -182,6 +209,7 @@ export default {
   name: "PlantData",
   components: { BaseTextInput },
   props: ["isFormValid", "isResetting", "isEditing", "wasSubmitted"],
+
   setup(props: Props) {
     // Options for plant state
     const states = reactive<PlantState[]>([
@@ -197,14 +225,19 @@ export default {
     // Name of the vuex store module
     const storeName = "plant";
 
-    // Computed properties to get form data from Vuex store
+    // Computed property to get form data from Vuex store
     const formData = computed<PlantForm>(
       () => store.getters["plant/plantForm"]
     );
+    // Computed property for plant state
     const plantState = computed<PlantState | "">(
       () => store.getters["plant/plantState"]
     );
 
+    /**
+     * Handles keyboard events for integer-only input and prevents minus sign.
+     * @param {KeyboardEvent} e - The keyboard event.
+     */
     const handleKeyboard = (e: KeyboardEvent) => {
       setKeyboardIntegerNumber(e);
       preventMinusNumber(e);

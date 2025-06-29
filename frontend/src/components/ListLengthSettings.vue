@@ -19,8 +19,10 @@
         'list-length-settings__list--dark': isDarkTheme,
       }"
     >
+      <!-- List title -->
       <h3>{{ title }}</h3>
       <ul>
+        <!-- List length options -->
         <li
           v-for="length in lengths"
           :key="length"
@@ -44,8 +46,23 @@ import { useStore } from "@/store/useStore";
 import type { ListLengthSettingsEvents } from "@/types/events";
 
 /**
- * @interface Props
- * @description Props for ListLengthSettings component.
+ * @component ListLengthSettings
+ * @description Dropdown component for selecting the number of items displayed in a list. Allows the user to choose between different list lengths and emits the selected value.
+ * @props {string} title - The title displayed above the list.
+ * @props {"plant"|"distillation"|"results"} listColor - The color theme for the list.
+ * @props {number} chosenLength - The currently selected list length.
+ * @emits select-length - Emitted when a new list length is selected.
+ * @see toggleList
+ * @see selectLength
+ * @see handleClickOutside
+ */
+
+/**
+ * Props for ListLengthSettings component.
+ * @interface
+ * @property {string} title
+ * @property {"plant"|"distillation"|"results"} listColor
+ * @property {number} chosenLength
  */
 interface Props {
   title: string;
@@ -60,14 +77,23 @@ export default {
   emits: ["select-length"],
   setup(props: Props, { emit }) {
     const emitTyped = emit as ListLengthSettingsEvents;
+    // Vuex store instance
     const store = useStore();
+
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
 
+    // Ref for controlling the visibility of the list dropdown
     const isListVisible = ref<boolean>(false);
+    // Ref for the settings container element
     const settingsContainer = ref<HTMLElement | null>(null);
 
+    /**
+     * Toggles the visibility of the list dropdown and manages click outside event.
+     * @function toggleList
+     */
     const toggleList = (): void => {
       isListVisible.value = !isListVisible.value;
       if (isListVisible.value) {
@@ -77,11 +103,21 @@ export default {
       }
     };
 
+    /**
+     * Emits the selected list length and closes the dropdown.
+     * @function selectLength
+     * @param {number} length - The selected list length.
+     */
     const selectLength = (length: number): void => {
       emitTyped("select-length", length);
       isListVisible.value = false;
     };
 
+    /**
+     * Handles clicks outside the dropdown to close it.
+     * @function handleClickOutside
+     * @param {MouseEvent} event - The click event.
+     */
     const handleClickOutside = (event: MouseEvent): void => {
       if (
         settingsContainer.value &&
@@ -91,14 +127,18 @@ export default {
       }
     };
 
+    // Computed property for plant color theme
     const isPlantColor = computed<boolean>(() => props.listColor === "plant");
+    // Computed property for distillation color theme
     const isDistillationColor = computed<boolean>(
       () => props.listColor === "distillation"
     );
+    // Computed property for results color theme
     const isResultsColor = computed<boolean>(
       () => props.listColor === "results"
     );
 
+    // Available list length options
     const lengths = [10, 20, 30];
 
     return {

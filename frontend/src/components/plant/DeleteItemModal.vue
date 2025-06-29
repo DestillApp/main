@@ -1,5 +1,5 @@
 <template>
-  <!-- Modal container to confirm plant deletion-->
+  <!-- Modal container to confirm plant or distiller deletion -->
   <base-modal>
     <base-card
       :class="{
@@ -8,13 +8,14 @@
       }"
     >
       <div class="delete-item-modal__container">
-        <!-- Message asking user to confirm item deletion -->
+        <!-- Message for deleting plant from inventory -->
         <div
           class="delete-item-modal__text"
           v-if="!distillationDate && !distiller"
         >
           Czy chcesz usunąć {{ nameOfPlant }} {{ plantPart }} z magazynu?
         </div>
+        <!-- Message for deleting distillation record -->
         <div
           class="delete-item-modal__text"
           v-if="distillationDate && !distiller"
@@ -22,6 +23,7 @@
           Czy chcesz usunąć destylacje <br />
           {{ nameOfPlant }} {{ plantPart }} z dnia {{ distillationDate }}?
         </div>
+        <!-- Message for deleting distiller -->
         <div class="delete-item-modal__text" v-if="distiller">
           Czy chcesz usunąć zapisany destylator?
         </div>
@@ -51,14 +53,26 @@ import BaseModal from "@/ui/BaseModal.vue";
 import BaseButton from "@/ui/BaseButton.vue";
 
 /**
- * @component DeleteModal
- * @description A confirmation modal for deleting a plant from the inventory.
- * @property {String} plantName - The name of the plant to be deleted.
- * @property {String} plantPart - The part of the plant to be deleted.
+ * @component DeleteItemModal
+ * @description A confirmation modal for deleting a plant from the inventory, a distillation record, or a distiller.
+ * @props {string} [plantName] - The name of the plant to be deleted.
+ * @props {string} [plantPart] - The part of the plant to be deleted.
+ * @props {string} [distillationDate] - The date of the distillation to be deleted.
+ * @props {string} [distiller] - The distiller to be deleted.
  * @emits close-delete-modal - Event emitted when the modal is closed without deletion.
- * @emits delete-item - Event emitted when the user confirms the plant deletion.
+ * @emits delete-item - Event emitted when the user confirms the deletion.
+ * @see deleteItem
+ * @see closeDeleteModal
  */
 
+/**
+ * Props for DeleteItemModal component.
+ * @interface
+ * @property {string} [plantName]
+ * @property {string} [plantPart]
+ * @property {string} [distillationDate]
+ * @property {string} [distiller]
+ */
 interface Props {
   plantName?: string;
   plantPart?: string;
@@ -80,16 +94,16 @@ export default {
     );
 
     /**
+     * Emits the delete-item event to confirm deletion.
      * @function deleteItem
-     * @description Emits the delete-item event to confirm plant deletion.
      */
     const deleteItem = (): void => {
       emit("delete-item");
     };
 
     /**
+     * Emits the close-delete-modal event to close the modal without deletion.
      * @function closeDeleteModal
-     * @description Emits the close-delete-modal event to close the modal without deletion.
      */
     const closeDeleteModal = (): void => {
       emit("close-delete-modal");

@@ -1,8 +1,9 @@
 <template>
   <div class="results-data">
+    <!-- Title for results section, shown only in edit mode -->
     <h5 v-if="isEditing" class="results-data__title">wyniki</h5>
     <div class="results-data__content">
-      <!-- Input field for entering the distillation result -->
+      <!-- Input field for entering the distillation result (oil amount) -->
       <base-text-input
         v-model="formData.oilAmount"
         type="number"
@@ -20,9 +21,11 @@
         min="0.1"
         step="0.1"
       >
+        <!-- Show unit 'ml' if value is present -->
         <template v-slot:unit>
           <div v-if="formData.oilAmount">ml</div>
         </template>
+        <!-- Validation message for oil amount -->
         <template v-slot:message>
           <span v-if="wasSubmitted && !isFormValid && !formData.oilAmount"
             >Wpisz ilość olejku eterycznego</span
@@ -50,9 +53,11 @@
           min="0.1"
           step="0.1"
         >
+          <!-- Show unit 'l' if value is present -->
           <template v-slot:unit>
             <div v-if="formData.hydrosolAmount">l</div>
           </template>
+          <!-- Validation message for hydrosol amount -->
           <template v-slot:message>
             <span
               v-if="wasSubmitted && !isFormValid && !formData.hydrosolAmount"
@@ -60,7 +65,6 @@
             >
           </template>
         </base-text-input>
-
         <!-- Input field for entering the hydrosol pH -->
         <base-text-input
           v-model="formData.hydrosolpH"
@@ -83,11 +87,13 @@
           max="14"
           step="0.01"
         >
+          <!-- Validation messages for hydrosol pH -->
           <template v-slot:message>
             <span v-if="wasSubmitted && !isFormValid && !formData.hydrosolpH"
               >Wpisz pH hydrolatu</span
             >
             <span v-if="!isPhCorrect">pH musi być w zakresie 0-14</span>
+            <span v-else>&nbsp;</span>
           </template>
         </base-text-input>
       </div>
@@ -104,10 +110,21 @@ import { ResultsForm } from "@/types/forms/resultsForm";
 
 /**
  * @component ResultsData
- * @description This component renders inputs and manages data related to distillation results.
+ * @description This component renders inputs and manages data related to distillation results, including oil amount, hydrosol amount, and hydrosol pH.
+ * @props {boolean} isFormValid
+ * @props {boolean} [isEditing]
+ * @props {boolean} wasSubmitted
  * @see setNumberFormat
+ * @see preventMinusNumber
  */
 
+/**
+ * Props for ResultsData component.
+ * @interface
+ * @property {boolean} isFormValid
+ * @property {boolean} [isEditing]
+ * @property {boolean} wasSubmitted
+ */
 interface Props {
   isFormValid: boolean;
   isEditing?: boolean;
@@ -119,16 +136,17 @@ export default {
   components: { BaseTextInput },
   props: ["isFormValid", "isEditing", "wasSubmitted"],
   setup(props: Props) {
-    // Vuex store
+    // Vuex store instance
     const store = useStore();
     // Name of the vuex store module
     const storeName = "results";
 
-    // Computed properties to get form data from Vuex store
+    // Computed property to get form data from Vuex store
     const formData = computed<ResultsForm>(
       () => store.getters["results/resultsForm"]
     );
 
+    // Computed property to validate hydrosol pH range
     const isPhCorrect = computed<boolean>(() => {
       const ph = formData.value.hydrosolpH;
       if ((ph && ph < 0) || (ph && ph > 14)) {

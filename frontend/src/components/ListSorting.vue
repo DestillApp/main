@@ -52,8 +52,21 @@ import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import type { ListSortingEvents } from "@/types/events";
 
 /**
- * @interface Props
- * @description Props for ListSorting component.
+ * @component ListSorting
+ * @description Dropdown component for selecting a sorting option for a list. Displays the current sorting and emits the selected value.
+ * @props {string[]} options - Array of sorting options.
+ * @props {string} sorting - The currently selected sorting option.
+ * @emits choose:sorting - Emitted when a new sorting option is selected.
+ * @see toggleList
+ * @see selectOption
+ * @see handleClickOutside
+ */
+
+/**
+ * Props for ListSorting component.
+ * @interface
+ * @property {string[]} options
+ * @property {string} sorting
  */
 interface Props {
   options: string[];
@@ -67,15 +80,25 @@ export default {
   emits: ["choose:sorting"],
   setup(props: Props, { emit }) {
     const emitTyped = emit as ListSortingEvents;
+    // Vuex store instance
     const store = useStore();
+
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
 
+    // Ref for controlling the visibility of the dropdown
     const isOpen = ref<boolean>(false);
+    // Ref for the currently selected sorting option
     const selectedOption = ref<string>(props.sorting);
+    // Ref for the sorting container element
     const sortingContainer = ref<HTMLElement | null>(null);
 
+    /**
+     * Toggles the visibility of the sorting options dropdown.
+     * @function toggleList
+     */
     const toggleList = (): void => {
       isOpen.value = !isOpen.value;
       if (isOpen.value) {
@@ -85,12 +108,22 @@ export default {
       }
     };
 
+    /**
+     * Selects a sorting option, emits the event, and closes the dropdown.
+     * @function selectOption
+     * @param {string} option - The selected sorting option.
+     */
     const selectOption = (option: string): void => {
       selectedOption.value = option;
       isOpen.value = false;
       emitTyped("choose:sorting", option);
     };
 
+    /**
+     * Handles clicks outside the dropdown to close it.
+     * @function handleClickOutside
+     * @param {MouseEvent} event - The click event.
+     */
     const handleClickOutside = (event: MouseEvent): void => {
       if (
         sortingContainer.value &&

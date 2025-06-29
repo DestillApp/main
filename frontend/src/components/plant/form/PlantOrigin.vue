@@ -62,9 +62,11 @@
           max="40"
           step="1"
         >
+          <!-- Show unit '°C' if value is present -->
           <template v-slot:unit>
             <div v-if="formData.harvestTemperature">°C</div>
           </template>
+          <!-- Validation messages for harvest temperature -->
           <template v-slot:message>
             <span
               v-if="
@@ -93,6 +95,7 @@
             :step="15"
             color="var(--secondary-color)"
           >
+            <!-- Start time input (prepend slot) -->
             <template v-slot:prepend>
               <base-text-input
                 v-model="formData.harvestStartTime"
@@ -102,6 +105,7 @@
                 :disabled="disabled"
               ></base-text-input>
             </template>
+            <!-- End time input (append slot) -->
             <template v-slot:append>
               <base-text-input
                 v-model="formData.harvestEndTime"
@@ -112,7 +116,7 @@
               ></base-text-input>
             </template>
           </v-range-slider>
-
+          <!-- Start and end time inputs for mobile view -->
           <div class="plant-origin__slider-values">
             <base-text-input
               v-model="formData.harvestStartTime"
@@ -132,6 +136,7 @@
         </div>
       </div>
     </div>
+
     <!-- Container for purchase details, displayed if plant origin is 'kupno' -->
     <div v-if="formData.plantOrigin === 'kupno'" class="plant-origin__buy">
       <div>
@@ -166,6 +171,7 @@
           "
           @update:modelValue="setValue"
         >
+          <!-- Validation message for producer name -->
           <template v-slot:message>
             <span v-if="wasSubmitted && !isFormValid && !formData.plantProducer"
               >Wpisz nazwę producenta</span
@@ -185,6 +191,7 @@
           @choose:item="setCountry"
           @update:onBlur="onBlur"
         >
+          <!-- Validation message for country of origin -->
           <template v-slot:message>
             <span
               v-if="wasSubmitted && !isFormValid && !formData.countryOfOrigin"
@@ -216,17 +223,34 @@ import * as Sentry from "@sentry/vue";
 /**
  * @component PlantOrigin
  * @description This component renders a form to input and manage data related to plant used in distillation, including origin, harvest date, harvest temperature, harvest range, buy date and producer details.
+ * @props {boolean} isFormValid
+ * @props {boolean} [isResetting]
+ * @props {boolean} wasSubmitted
  * @see setValue
  * @see setIntegerNumber
  * @see setKeyboardIntegerNumber
  * @see storeDate
+ * @see setCountry
+ * @see fetchCountries
+ * @see onInput
+ * @see onBlur
  */
 
+/**
+ * Enum for plant origin options.
+ */
 enum PlantOrigin {
   ZBIÓR = "zbiór",
   KUPNO = "kupno",
 }
 
+/**
+ * Props for PlantOrigin component.
+ * @interface
+ * @property {boolean} isFormValid
+ * @property {boolean} [isResetting]
+ * @property {boolean} wasSubmitted
+ */
 interface Props {
   isFormValid: boolean;
   isResetting?: boolean;
@@ -237,7 +261,9 @@ export default {
   name: "PlantOrigin",
   components: { BaseInputDatePicker, BaseTextInput, BaseAutocompleteInput },
   props: ["isFormValid", "isResetting", "wasSubmitted"],
+
   setup(props: Props) {
+    // Apollo client instance
     const { resolveClient } = useApolloClient();
     const apolloClient = resolveClient();
 
@@ -253,7 +279,7 @@ export default {
       PlantOrigin.ZBIÓR,
       PlantOrigin.KUPNO,
     ]);
-    //Reactive references related to fetching country
+    // Reactive references related to fetching country
     const countryNames = ref<string[]>([]);
     const searchQuery = ref<string>("");
     const countryName = ref<string>("");
@@ -271,6 +297,7 @@ export default {
       () => store.getters["plant/plantOrigin"]
     );
 
+    // Computed property to validate temperature range
     const isTemperatureCorrect = computed<boolean>(() => {
       const temperature = formData.value.harvestTemperature;
       if (
@@ -349,9 +376,9 @@ export default {
     });
 
     /**
-     * Function to dispatch an action to the Vuex store to set a specific value.
+     * Dispatches an action to the Vuex store to set a specific value.
      * @function setValue
-     * @param {any} currentValue - The current value to be set.
+     * @param {string} currentValue - The current value to be set.
      * @param {string} input - The input field name.
      */
     const setValue = (currentValue: string, input: string): void => {
@@ -359,15 +386,21 @@ export default {
     };
 
     /**
-     * Function to store a date value in the Vuex store
+     * Stores a date value in the Vuex store.
      * @function storeDate
-     * @param {Date} date - The date value to be stored.
+     * @param {string} date - The date value to be stored.
      * @param {string} input - The input field name.
      */
     const storeDate = (date: string, input: string): void => {
       store.dispatch("plant/setValue", { input, value: date });
     };
 
+    /**
+     * Sets the selected country for the country autocomplete input.
+     * @function setCountry
+     * @param {string} currentValue - The selected country name.
+     * @param {string} input - The input field name.
+     */
     const setCountry = (currentValue: string, input: string): void => {
       setValue(currentValue, input);
       searchQuery.value = "";
@@ -400,9 +433,9 @@ export default {
     /**
      * Handles the input event for the search or autocomplete component.
      * Updates the search query and manages the timer to limit the frequency of fetch requests.
-     *
      * @function onInput
-     * @param {Event} e - The input event triggered by user interaction.
+     * @param {string} value - The input value.
+     * @param {string} input - The input field identifier.
      * @returns {void}
      */
     const onInput = (value: string, input: string): void => {
@@ -423,8 +456,10 @@ export default {
     };
 
     /**
+     * Handles the blur event for the country input field.
+     * When the input field loses focus, it checks whether the user has selected a country.
+     * If no country is selected, it clears the country list and resets the search query and country name.
      * @function onBlur
-     * @description Handles the blur event for the country input field. When the input field loses focus, it checks whether the user has selected a country. If no country is selected, it clears the country list and resets the search query and country name.
      * @returns {void}
      */
     const onBlur = (): void => {

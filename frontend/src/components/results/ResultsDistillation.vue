@@ -2,6 +2,7 @@
   <div class="results-distillation">
     <!-- Display distillation details -->
     <div class="results-distillation__details">
+      <!-- Section for process-related distillation details -->
       <div class="results-distillation__details-process">
         <p>
           <strong>data destylacji:</strong>
@@ -16,6 +17,7 @@
           {{ resultsForm.distillationData.waterForDistillation }} l
         </p>
       </div>
+      <!-- Section for plant-related distillation details -->
       <div class="results-distillation__details-plant">
         <p>
           <strong class>destylowany surowiec:</strong>
@@ -39,9 +41,16 @@ import { computed } from "vue";
 import { useStore } from "@/store/useStore";
 import { ResultsForm } from "@/types/forms/resultsForm";
 
+/**
+ * @component ResultsDistillation
+ * @description Displays a summary of distillation details, including process and plant-related information, based on the results form data from the Vuex store.
+ * @see resultsForm
+ */
+
 export default {
   name: "ResultsDistillation",
   setup() {
+    // Vuex store instance
     const store = useStore();
 
     // Computed property to get the results form data from Vuex store

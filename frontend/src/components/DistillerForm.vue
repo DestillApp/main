@@ -12,6 +12,7 @@
             placeholder="Wprowadź materiał destylatora"
             :invalidInput="isFormValid === false && material === ''"
           >
+            <!-- Validation message for material -->
             <template v-slot:message>
               <span v-if="isFormValid === false && material === ''"
                 >Wpisz materiał destylatora</span
@@ -31,6 +32,7 @@
             placeholder="Wprowadź pojemność"
             :invalidInput="isFormValid === false && !capacity"
           >
+            <!-- Validation message for capacity -->
             <template v-slot:message>
               <span v-if="isFormValid === false && !capacity"
                 >Wpisz pojemność destylatora</span
@@ -46,6 +48,7 @@
             placeholder="Wprowadź rodzaj ogrzewania"
             :invalidInput="isFormValid === false && heating === ''"
           >
+            <!-- Validation message for heating -->
             <template v-slot:message>
               <span v-if="isFormValid === false && heating === ''"
                 >Wpisz rodzaj ogrzewania</span
@@ -75,6 +78,34 @@ import { setKeyboardIntegerNumber } from "@/helpers/formatHelpers";
 import { distillerFormValidation } from "@/helpers/formsValidation";
 import * as Sentry from "@sentry/vue";
 
+/**
+ * @component DistillerForm
+ * @description Modal form for adding a new distiller, including material, capacity, and heating type. Handles validation and submission.
+ * @emits close-modal - Event emitted when the modal is closed.
+ * @see addDistiller
+ * @see closeModal
+ * @see setInteger
+ */
+
+/**
+ * No props for DistillerForm component.
+ * @interface
+ */
+interface Props {}
+
+/**
+ * Interface for distiller object.
+ * @interface
+ * @property {string} material
+ * @property {number} capacity
+ * @property {string} heating
+ */
+interface Distiller {
+  material: string;
+  capacity: number;
+  heating: string;
+}
+
 export default {
   components: {
     BaseModal,
@@ -82,18 +113,29 @@ export default {
     BaseButton,
   },
   setup(_, context) {
+    // Vuex store instance
     const store = useStore();
 
+    // Vue router instance
     const router = useRouter();
 
+    // Emit function for modal events
     const emit = context.emit as CloseModal;
 
+    // Reactive reference for distiller material
     const material = ref<string>("");
+    // Reactive reference for distiller capacity
     const capacity = ref<number | null>(null);
+    // Reactive reference for distiller heating type
     const heating = ref<string>("");
+    // Reactive reference for form validation state
     const isFormValid = ref<boolean>(true);
 
-    // Using the format function
+    /**
+     * Sets the integer value for the capacity input.
+     * @function setInteger
+     * @param {string} value - The value to convert to integer.
+     */
     const setInteger = (value: string): void => {
       if (!value) {
         capacity.value = null;
@@ -104,6 +146,12 @@ export default {
       }
     };
 
+    /**
+     * Handles form submission, validates input, and dispatches actions to add a distiller.
+     * @async
+     * @function addDistiller
+     * @returns {Promise<void>}
+     */
     const addDistiller = async (): Promise<void> => {
       const distiller: { material: string; capacity: number; heating: string } =
         {
@@ -143,6 +191,10 @@ export default {
       }
     };
 
+    /**
+     * Emits the close-modal event to close the modal.
+     * @function closeModal
+     */
     const closeModal = (): void => {
       emit("close-modal");
     };

@@ -1,8 +1,8 @@
 <template>
   <div class="results-plant">
-    <!--Title for plant part of distillation form-->
+    <!-- Title for plant part of distillation form -->
     <h5 class="results-plant__title">surowiec</h5>
-    <!-- Autocomplete input for the plants in the magazin-->
+    <!-- Autocomplete input for the plants in the magazin -->
     <base-text-input
       v-model="plantData.plantName"
       class="results-plant__name"
@@ -13,7 +13,9 @@
       :disabled="isEditing"
     >
       <template v-slot:message>
+        <!-- Display plant details if plant is selected -->
         <div v-if="plantData.plantName" class="results-plant__informations">
+          <!-- Plant part -->
           <div
             :class="[
               'results-plant__information',
@@ -25,6 +27,7 @@
               plantData.plantPart
             }}</span>
           </div>
+          <!-- Harvest date -->
           <div
             v-if="plantData.harvestDate"
             :class="[
@@ -37,6 +40,7 @@
               plantData.harvestDate
             }}</span>
           </div>
+          <!-- Buy date -->
           <div
             v-if="plantData.plantBuyDate"
             :class="[
@@ -52,7 +56,7 @@
         </div>
       </template>
     </base-text-input>
-    <!-- Input field for entering the plant weight that will be use for distillation-->
+    <!-- Input field for entering the plant weight that will be used for distillation -->
     <base-text-input
       v-model="distillationData.weightForDistillation"
       type="number"
@@ -70,6 +74,7 @@
     </base-text-input>
     <div class="results-plant__container">
       <div>
+        <!-- Soaking info -->
         <p
           class="results-plant__paragraph"
           v-if="distillationData.isPlantSoaked"
@@ -121,6 +126,7 @@
           </base-text-input>
         </div>
       </div>
+      <!-- Shredding info -->
       <p
         class="results-plant__paragraph"
         v-if="distillationData.isPlantShredded"
@@ -146,18 +152,27 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 import { ResultsPlant, ResultsDistillation } from "@/types/forms/resultsForm";
 
 /**
- * @component DistillationPlant
- * @description This component manages the selection of plant material for distillation, including details like plant part, weight, and optional soaking or shredding steps.
- * It also interacts with Vuex for data persistence and handles the fetching of plants from an Apollo GraphQL server.
+ * @component ResultsPlant
+ * @description Displays and manages the plant-related part of the distillation results, including plant selection, plant details, and soaking/shredding options.
+ * @props {boolean} isFormValid
+ * @props {boolean} [isEditing]
+ * @see fetchPlantData
+ * @see fetchDistillationData
  */
 
+/**
+ * Props for ResultsPlant component.
+ * @interface
+ * @property {boolean} isFormValid
+ * @property {boolean} [isEditing]
+ */
 interface Props {
   isFormValid: boolean;
   isEditing?: boolean;
 }
 
 export default {
-  name: "DistillationPlant",
+  name: "ResultsPlant",
   components: { BaseTextInput },
   props: ["isFormValid", "isEditing"],
 
@@ -165,26 +180,29 @@ export default {
     // Vuex store
     const store = useStore();
 
-    // Computed properties to get form data from Vuex store
+    // Computed property for plant data from Vuex store
     const plantData = computed<ResultsPlant>(
       () => store.getters["results/distilledPlant"]
     );
 
+    // Computed property for distillation data from Vuex store
     const distillationData = computed<ResultsDistillation>(
       () => store.getters["results/distillationData"]
     );
 
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
 
+    // Computed property for navigation state
     const comingFromRoute = computed<boolean>(
       () => store.getters.comingFromRoute
     );
 
     /**
-     * @function fetchData
-     * @description Fetches initial data from local storage via the Vuex store for a specified key.
+     * Fetches plant data from local storage for a given key.
+     * @function fetchPlantData
      * @param {string} key - The key for the specific data to fetch.
      */
     const fetchPlantData = (key: string): void => {
@@ -192,8 +210,8 @@ export default {
     };
 
     /**
+     * Fetches distillation data from local storage for a given key.
      * @function fetchDistillationData
-     * @description Fetches initial data from local storage via the Vuex store for a specified key.
      * @param {string} key - The key for the specific data to fetch.
      */
     const fetchDistillationData = (key: string): void => {

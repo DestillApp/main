@@ -1,9 +1,9 @@
 <template>
   <div class="distillation-process">
-    <!--Title for process part of distillation form-->
+    <!-- Title for process part of distillation form -->
     <h5 class="distillation-process__title">destylacja</h5>
     <div class="distillation-process__informations">
-      <!-- Autocomplete input for distillation Type -->
+      <!-- Autocomplete input for distillation type -->
       <base-autocomplete-input
         v-model="distillationType"
         class="distillation-process__type"
@@ -20,6 +20,7 @@
           wasSubmitted && !isFormValid && !formData.distillationType
         "
       >
+        <!-- Validation message for distillation type -->
         <template v-slot:message>
           <span
             v-if="wasSubmitted && !isFormValid && !formData.distillationType"
@@ -42,6 +43,7 @@
           "
           color="distillation"
         ></base-input-date-picker>
+        <!-- Validation message for distillation date -->
         <div class="distillation-process__message">
           <span
             v-if="wasSubmitted && !isFormValid && !formData.distillationDate"
@@ -67,6 +69,7 @@
         wasSubmitted && !isFormValid && !formData.distillationApparatus
       "
     >
+      <!-- Validation message for distillation apparatus -->
       <template v-slot:message>
         <span
           v-if="wasSubmitted && !isFormValid && !formData.distillationApparatus"
@@ -82,28 +85,40 @@
 import { computed, ref, onMounted, onBeforeMount, watch } from "vue";
 import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
-
 import { ResultsDistillation } from "@/types/forms/resultsForm";
 import { DistillationForm } from "@/types/forms/distillationForm";
-
 import { useStore } from "@/store/useStore";
 
 /**
  * @component DistillationProcess
- * @description This component handles the distillation process inputs, such as selecting the distillation type, apparatus, and setting the date.
- * It integrates with Vuex to store form data and manage state updates.
+ * @description Handles the distillation process inputs, such as selecting the distillation type, apparatus, and setting the date.
+ * Integrates with Vuex to store form data and manage state updates.
+ * @props {boolean} isFormValid
+ * @props {boolean} wasSubmitted
+ * @props {boolean} [isEditing]
  * @see fetchData
  * @see setValue
  * @see setDistillationType
  * @see setDistillationApparatus
  */
 
+/**
+ * Enum for available distillation types.
+ */
 enum DistillationType {
   WODNA = "wodna",
   WODNO_PAROWA = "wodno-parowa",
   PAROWA = "parowa",
 }
 
+/**
+ * Interface for distiller object.
+ * @interface
+ * @property {string} id
+ * @property {string} material
+ * @property {number} capacity
+ * @property {string} heating
+ */
 interface Distiller {
   id: string;
   material: string;
@@ -111,6 +126,13 @@ interface Distiller {
   heating: string;
 }
 
+/**
+ * Props for DistillationProcess component.
+ * @interface
+ * @property {boolean} isFormValid
+ * @property {boolean} wasSubmitted
+ * @property {boolean} [isEditing]
+ */
 interface Props {
   isFormValid: boolean;
   wasSubmitted: boolean;
@@ -122,47 +144,51 @@ export default {
   components: { BaseAutocompleteInput, BaseInputDatePicker },
   props: ["isFormValid", "wasSubmitted", "isEditing"],
   setup(props: Props) {
-    // Vuex store
+    // Vuex store instance
     const store = useStore();
 
-    // Computed properties to get form data from Vuex store
+    // Computed property for form data from Vuex
     const formData = computed<ResultsDistillation | DistillationForm>(() =>
       props.isEditing
         ? store.getters["results/distillationData"]
         : store.getters["distillation/distillationForm"]
     );
 
+    // Computed property for distillation date from Vuex
     const distillationDate = computed<string>(() =>
       props.isEditing
         ? store.getters["results/distillationDate"]
         : store.getters["distillation/distillationDate"]
     );
-    //Computed property to get the value from Vuex store
+
+    // Computed property for navigation state
     const comingFromRoute = computed<boolean>(
       () => store.getters.comingFromRoute
     );
 
-    // Flag to indicate if the autocomplete input should have the arrow input
+    // Ref for showing arrow in autocomplete
     const toChoose = ref<boolean>(true);
-    // Reference to indicate if the input is disabled
+    // Ref for disabling input
     const disabled = ref<boolean>(true);
 
-    //Reactive references related to choosing distillation type
+    // Ref for selected distillation type
     const distillationType = ref<DistillationType | "">("");
+    // Ref for available distillation types
     const distillationTypes = ref<DistillationType[]>([
       DistillationType.WODNA,
       DistillationType.WODNO_PAROWA,
       DistillationType.PAROWA,
     ]);
 
-    // Computed property to get distillerList from Vuex store
+    // Computed property for distiller list from Vuex
     const distillerList = computed<Distiller[]>(
       () => store.getters["settings/distillerList"]
     );
 
-    //Reactive references related to choosing distillation apparatus
+    // Ref for selected distillation apparatus
     const distillationApparatus = ref<string>("");
 
+    // Computed property for apparatus options
     const apparatus = computed<string[]>(() => {
       return distillerList.value
         ? distillerList.value.map(
@@ -172,7 +198,7 @@ export default {
         : [];
     });
 
-    // Watch for changes in the specific formData values
+    // Watch for changes in distillation type and update ref
     watch(
       () => formData.value.distillationType,
       (newDistillationType) => {
@@ -180,6 +206,7 @@ export default {
       }
     );
 
+    // Watch for changes in distillation apparatus and update ref
     watch(
       () => formData.value.distillationApparatus,
       (newDistillationApparatus: string) => {
@@ -188,8 +215,7 @@ export default {
     );
 
     /**
-     * @function fetchData
-     * @description Fetches initial data from local storage via the Vuex store for a specified key.
+     * Fetches initial data from local storage via the Vuex store for a specified key.
      * @param {string} key - The key for the specific data to fetch.
      * @param {boolean} value - Indicates if the fetched data is related to plant information.
      */
@@ -201,14 +227,14 @@ export default {
     };
 
     /**
-     * @function fetchArchiveData
-     * @description Fetches initial data from local storage via the Vuex store for a specified key.
+     * Fetches archive data from local storage via the Vuex store for a specified key.
      * @param {string} key - The key for the specific data to fetch.
      */
     const fetchArchiveData = (key: string): void => {
       store.dispatch("results/fetchDistillationDataFromLocalStorage", key);
     };
 
+    // Fetch distiller list before mount
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", {
         key: "distillerList",
@@ -240,8 +266,7 @@ export default {
     });
 
     /**
-     * @function setValue
-     * @description Updates the value of a specified input field in the Vuex store.
+     * Updates the value of a specified input field in the Vuex store.
      * @param {string} value - The value to set for the input.
      * @param {string} input - The key for the specific input field.
      */
@@ -257,8 +282,7 @@ export default {
     };
 
     /**
-     * @function setDistillationType
-     * @description Handles setting the selected distillation type and updating the store.
+     * Handles setting the selected distillation type and updating the store.
      * @param {string} value - The selected distillation type.
      * @param {string} input - The input field triggering the event.
      */
@@ -271,8 +295,7 @@ export default {
     };
 
     /**
-     * @function setDistillationApparatus
-     * @description Sets the selected distillation apparatus and updates the store.
+     * Sets the selected distillation apparatus and updates the store.
      * @param {string} value - The selected distillation apparatus.
      * @param {string} input - The input field triggering the event.
      */
