@@ -1,7 +1,7 @@
 <template>
-  <!-- This is a custom button component using Vuetify's v-btn with an outlined variant. -->
+  <!-- Custom button component using Vuetify's v-btn -->
   <v-btn class="button" variant="outlined">
-    <!-- Slot to display the content passed to the button component. -->
+    <!-- Slot for button content -->
     <slot></slot>
   </v-btn>
 </template>
@@ -12,8 +12,9 @@
  * @description A custom button component that uses Vuetify's v-btn component with an outlined variant. It accepts and displays content passed through a slot.
  */
 export default {
+  name: "BaseButton",
   setup() {
-    // The setup function is empty as this component does not require reactive data, methods, or lifecycle hooks.
+    // No reactive data, methods, or lifecycle hooks required for this component.
   },
 };
 </script>

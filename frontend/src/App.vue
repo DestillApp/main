@@ -1,6 +1,7 @@
 <template>
   <!-- Main application layout -->
   <the-header></the-header>
+  <!-- Route outlet for page components -->
   <router-view></router-view>
 </template>
 
@@ -10,10 +11,10 @@ import { useStore } from "@/store/useStore";
 import TheHeader from "./layout/TheHeader.vue";
 
 /**
- * Main application component.
  * @component App
- * @description The root component of the application layout, including the header, footer, and router view.
+ * @description The root component of the application layout, including the header and router view. Handles theme initialization and switching.
  */
+
 export default {
   name: "App",
   components: {
@@ -22,14 +23,17 @@ export default {
   setup() {
     const store = useStore();
 
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
 
+    // Fetch dark theme setting from local storage before mount
     onBeforeMount(() => {
       store.dispatch("settings/fetchLocalStorageData", { key: "isDarkTheme" });
     });
 
+    // Watch for changes in dark theme and update CSS variables accordingly.
     watch(isDarkTheme, (newValue) => {
       document.documentElement.style.setProperty(
         "--text-color",

@@ -46,8 +46,23 @@ import { mdiCalendarRange } from "@mdi/js";
 import { BaseInputDatePickerEvents } from "@/types/events";
 
 /**
+ * @component BaseInputDatePicker
+ * @description A component that combines a text input and a date picker modal for selecting and displaying dates.
+ * @props {string} label - The label for the input field.
+ * @props {string} title - The title for the date picker modal.
+ * @props {string} id - The id for the input field.
+ * @props {string} value - The selected date value.
+ * @props {boolean} invalidInput - Flag to indicate if the input is invalid.
+ * @props {string} color - The color context for styling (e.g., "plant", "distillation").
+ * @emits date:value - Emitted when the date value changes.
+ * @see changeVisibility
+ * @see closeModal
+ * @see updateDate
+ */
+
+/**
+ * Props for BaseInputDatePicker component.
  * @interface Props
- * @description Props for BaseInputDatePicker component.
  */
 interface Props {
   label?: string;
@@ -63,19 +78,35 @@ export default {
   props: ["label", "title", "id", "value", "invalidInput", "color"],
   setup(props: Props, context) {
     const emit = context.emit as BaseInputDatePickerEvents;
+
+    // Ref for disabling the input (always true for date picker)
     const disabled = ref<boolean>(true);
+    // Ref for calendar icon path
     const path = ref<string>(mdiCalendarRange);
+    // Ref for date picker modal open state
     const isOpen = ref<boolean>(false);
+    // Ref for the raw date value
     const date = ref<string>("");
 
+    /**
+     * Toggles the visibility of the date picker modal.
+     * @function changeVisibility
+     * @returns {void}
+     */
     const changeVisibility = (): void => {
       isOpen.value = !isOpen.value;
     };
 
+    /**
+     * Closes the date picker modal.
+     * @function closeModal
+     * @returns {void}
+     */
     const closeModal = (): void => {
       isOpen.value = false;
     };
 
+    // Watch for changes in the value prop and update the date ref
     watch(
       () => props.value,
       (newValue) => {
@@ -86,6 +117,7 @@ export default {
       { immediate: true }
     );
 
+    // Computed property for formatted date string (DD-MM-YYYY)
     const formatedDate = computed<string | undefined>(() => {
       if (date.value === "") {
         return;
@@ -98,23 +130,33 @@ export default {
       }
     });
 
+    /**
+     * Updates the date value when a new date is selected.
+     * @function updateDate
+     * @param {string} selectedDate - The selected date string.
+     * @returns {void}
+     */
     const updateDate = (selectedDate: string): void => {
       date.value = selectedDate;
     };
 
+    // Set initial date value on mount
     onMounted(() => {
       if (props.value !== "") {
         date.value = props.value as string;
       }
     });
 
+    // Emit the date value whenever the formatted date changes
     watch(formatedDate, () => {
       emit("date:value", date.value, props.id);
     });
 
+    // Computed property for distillation color context
     const distillationColor = computed<boolean>(
       () => props.color === "distillation"
     );
+    // Computed property for plant color context
     const plantColor = computed<boolean>(() => props.color === "plant");
 
     return {

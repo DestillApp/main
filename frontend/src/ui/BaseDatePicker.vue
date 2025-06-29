@@ -1,7 +1,7 @@
 <template>
-  <!--BaseModal component-->
+  <!-- BaseModal component as a wrapper for the date picker -->
   <base-modal>
-    <!--BaseCard component-->
+    <!-- BaseCard component for styling the date picker -->
     <base-card class="card">
       <!-- Vuetify date picker component bound to selectedDate -->
       <v-date-picker
@@ -26,8 +26,18 @@ import BaseModal from "./BaseModal.vue";
 import { BaseDatePickerEvents } from "@/types/events";
 
 /**
- * @interface Props
- * @description Props for BaseDatePicker component.
+ * @component BaseDatePicker
+ * @description A modal date picker component using Vuetify, supporting dark theme and color customization.
+ * @props {string} title - The title displayed in the date picker.
+ * @props {string} value - The selected date value.
+ * @props {string} color - The color context for styling (e.g., "plant", "distillation").
+ * @emits update:value - Emitted when the selected date changes.
+ * @see sendDate
+ */
+
+/**
+ * Props for BaseDatePicker component.
+ * @interface
  */
 interface Props {
   title?: string;
@@ -43,6 +53,8 @@ export default {
   setup(props: Props, context) {
     const emit = context.emit as BaseDatePickerEvents;
     const store = useStore();
+
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
@@ -53,11 +65,13 @@ export default {
     /**
      * Emit the selected date to the parent component.
      * @function sendDate
+     * @returns {void}
      */
     const sendDate = (): void => {
       emit("update:value", selectedDate.value);
     };
 
+    // Computed property for the color of the date picker
     const computedColor = computed<string>(() => {
       switch (props.color) {
         case "plant":

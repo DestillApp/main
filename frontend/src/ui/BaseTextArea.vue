@@ -32,8 +32,26 @@ import { useStore } from "@/store/useStore";
 import { BaseTextEvents } from "@/types/events";
 
 /**
+ * @component BaseTextArea
+ * @description A customizable text area component with support for validation, theming, and color context.
+ * @props {string} label - The label for the text area.
+ * @props {string} modelValue - The value bound to the text area.
+ * @props {string} id - The id for the text area.
+ * @props {string} placeholder - The placeholder text for the text area.
+ * @props {boolean} invalidInput - Flag to indicate if the input is invalid.
+ * @props {string} inputColor - The color context for the text area (e.g., "results").
+ * @props {string} storeName - The name of the store for value updates.
+ * @emits update:modelValue - Emitted when the text area value changes.
+ * @emits change:modelValue - Emitted when the text area loses focus and value changes.
+ * @emits set:keyboard - Emitted on keyboard events.
+ * @see updateValue
+ * @see setKeyboard
+ * @see changeValue
+ */
+
+/**
+ * Props for BaseTextArea component.
  * @interface Props
- * @description Props for BaseTextArea component.
  */
 interface Props {
   label?: string;
@@ -61,12 +79,16 @@ export default {
     const emit = context.emit as BaseTextEvents;
     const store = useStore();
 
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
 
     /**
-     * Updates the model value when text area changes
+     * Updates the model value when text area changes.
+     * @function updateValue
+     * @param {Event} e - The input event.
+     * @returns {void}
      */
     const updateValue = (e: Event): void => {
       const target = e.target as HTMLTextAreaElement;
@@ -74,14 +96,20 @@ export default {
     };
 
     /**
-     * Emits keyboard events
+     * Emits keyboard events.
+     * @function setKeyboard
+     * @param {Event} e - The keyboard event.
+     * @returns {void}
      */
     const setKeyboard = (e: Event): void => {
       emit("set:keyboard", e);
     };
 
     /**
-     * Emits value change events when text area loses focus
+     * Emits value change events when text area loses focus.
+     * @function changeValue
+     * @param {Event} e - The blur event.
+     * @returns {void}
      */
     const changeValue = (e: Event): void => {
       const target = e.target as HTMLTextAreaElement;

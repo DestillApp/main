@@ -51,8 +51,21 @@ import { useStore } from "@/store/useStore";
 import { BaseSearchEvents } from "@/types/events";
 
 /**
+ * @component BaseSearchItem
+ * @description A search input component with search and clear icons, supporting color context and keyboard shortcuts.
+ * @props {string} label - The label for the search input.
+ * @props {string} inputColor - The color context for the input (e.g., "plant", "distillation", "results").
+ * @emits search - Emitted when a search is performed.
+ * @emits clear - Emitted when the search is cleared.
+ * @see changeSearchQuery
+ * @see emitSearchQuery
+ * @see clearSearchQuery
+ * @see handleKeyPress
+ */
+
+/**
+ * Props for BaseSearchItem component.
  * @interface Props
- * @description Props for BaseSearchItem component.
  */
 interface Props {
   label?: string;
@@ -68,12 +81,19 @@ export default {
     const emit = context.emit as BaseSearchEvents;
     const store = useStore();
 
+    // Ref for the current input value
     const inputValue = ref<string>("");
+    // Ref to track if search has been emitted
     const isSearchEmitted = ref<boolean>(false);
 
     // Computed property to get searchQuery from Vuex store
     const searchQuery = computed<string>(() => store.getters.searchQuery);
 
+    /**
+     * Handles input changes and resets search state if needed.
+     * @function changeSearchQuery
+     * @returns {void}
+     */
     const changeSearchQuery = (): void => {
       if (isSearchEmitted.value) {
         isSearchEmitted.value = false;
@@ -83,6 +103,11 @@ export default {
       }
     };
 
+    /**
+     * Emits the search event and updates the store with the current input value.
+     * @function emitSearchQuery
+     * @returns {void}
+     */
     const emitSearchQuery = (): void => {
       if (inputValue.value) {
         store.dispatch("updateSearchQuery", inputValue.value);
@@ -91,6 +116,11 @@ export default {
       }
     };
 
+    /**
+     * Clears the search input and emits the clear event.
+     * @function clearSearchQuery
+     * @returns {void}
+     */
     const clearSearchQuery = (): void => {
       inputValue.value = "";
       store.dispatch("updateSearchQuery", "");
@@ -98,6 +128,12 @@ export default {
       emit("clear");
     };
 
+    /**
+     * Handles keyboard events for Enter (search) and Escape (clear).
+     * @function handleKeyPress
+     * @param {KeyboardEvent} event - The keyboard event.
+     * @returns {void}
+     */
     const handleKeyPress = (event: KeyboardEvent): void => {
       if (event.key === "Enter" && !isSearchEmitted.value) {
         emitSearchQuery();
@@ -109,17 +145,16 @@ export default {
 
     // Computed property to determine if input is for plant
     const isPlantInput = computed<boolean>(() => props.inputColor === "plant");
-
     // Computed property to determine if input is for distillation
     const isDistillationInput = computed<boolean>(
       () => props.inputColor === "distillation"
     );
-
     // Computed property to determine if input is for results
     const isResultsInput = computed<boolean>(
       () => props.inputColor === "results"
     );
 
+    // Fetch search query from local storage and initialize input value on mount
     onMounted(() => {
       store.dispatch("fetchSearchQueryFromLocalStorage");
       inputValue.value = searchQuery.value;

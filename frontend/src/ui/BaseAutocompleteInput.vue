@@ -9,7 +9,7 @@
         v-if="choose"
         class="autocomplete-input__input-container autocomplete-input__input-container--choose"
       >
-        <!-- Input field -->
+        <!-- Input field with dropdown icon for selection -->
         <input
           class="autocomplete-input__input"
           :class="{
@@ -49,7 +49,7 @@
         <slot name="unit"></slot>
       </div>
       <div v-if="!choose" class="autocomplete-input__input-container">
-        <!-- Input field -->
+        <!-- Input field for standard input mode -->
         <input
           class="autocomplete-input__input"
           :class="{
@@ -69,6 +69,7 @@
         <!-- Slot for optional unit display -->
         <slot name="unit"></slot>
       </div>
+      <!-- Dropdown list for distillation type or apparatus -->
       <ul
         v-if="
           (isOpen && id === 'distillationType') ||
@@ -90,6 +91,7 @@
           {{ result }}
         </li>
       </ul>
+      <!-- Dropdown list for country of origin -->
       <ul
         v-if="results?.length && modelValue !== '' && id === 'countryOfOrigin'"
         class="autocomplete-input__list"
@@ -108,6 +110,7 @@
           {{ result }}
         </li>
       </ul>
+      <!-- Dropdown list for plant selection -->
       <ul
         v-if="results?.length && modelValue !== '' && id === 'choosedPlant'"
         class="autocomplete-input__list"
@@ -164,23 +167,32 @@ import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiArrowDownBoldBox } from "@mdi/js";
 
 /**
- * @component BaseTextInput
- * @description A customizable text input component.
+ * @component BaseAutocompleteInput
+ * @description A customizable autocomplete input component with optional dropdown, validation, and theming.
  * @props {string} label - The label for the input field.
- * @props {string} modelValue - The model value bound to the input field.
+ * @props {string|number} modelValue - The model value bound to the input field.
  * @props {string} id - The id for the input field.
  * @props {boolean} disabled - Flag to indicate if the input is disabled.
  * @props {string} placeholder - The placeholder text for the input field.
- * @props {string} classType - The class type for conditional styling (e.g., "number" or "time").
+ * @props {string} classType - The class type for conditional styling.
+ * @props {string} color - The color context for styling (e.g., "plant", "distillation").
  * @props {boolean} invalidInput - Flag to indicate if the input is invalid.
+ * @props {any[]} results - List of results for the dropdown/autocomplete.
+ * @props {boolean} toChoose - If true, enables dropdown selection mode.
  * @emits update:modelValue - Emitted when the input value changes.
- * @emits choose:item - Emitted when the user click on the list item
- * @emits update:onBlur - Emitted when the input loose its focus and disableBlur is false
+ * @emits choose:item - Emitted when the user clicks on a list item.
+ * @emits update:onBlur - Emitted when the input loses focus and blur is not disabled.
+ * @emits open:list - Emitted when the dropdown list is opened.
  * @see updateValue
  * @see chooseItem
  * @see handleBlur
+ * @see openList
  */
 
+/**
+ * Props interface for BaseAutocompleteInput.
+ * @interface
+ */
 interface Props {
   label?: string;
   modelValue?: string | number;
@@ -195,6 +207,7 @@ interface Props {
 }
 
 export default {
+  name: "BaseAutocompleteInput",
   components: { SvgIcon },
   props: [
     "label",
@@ -213,15 +226,22 @@ export default {
     const emit = context.emit as InputEvents;
     const store = useStore();
 
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
+    // Ref to temporarily disable blur when selecting from dropdown
     const disableBlur = ref<boolean>(false);
+    // Ref to enable dropdown selection mode
     const choose = ref<boolean>(props.toChoose || false);
+    // Ref for dropdown open state
     const isOpen = ref<boolean>(false);
+    // Ref for the input value (syncs with modelValue)
     const inputValue = ref<string | number>(props.modelValue ?? "");
+    // Ref for the icon path
     const path = ref<string>(mdiArrowDownBoldBox);
 
+    // Watch for changes in modelValue and update inputValue accordingly
     watch(
       () => props.modelValue,
       (newValue) => {
@@ -230,8 +250,9 @@ export default {
     );
 
     /**
+     * Updates the model value when input changes.
      * @function updateValue
-     * @description Updates the model value when input changes
+     * @param {Event} e - The input event.
      * @returns {void}
      */
     const updateValue = (e: Event): void => {
@@ -240,16 +261,17 @@ export default {
     };
 
     /**
+     * Updates the model value after clicking a list item.
+     * Temporarily disables blur to prevent unintended triggers.
      * @function chooseItem
-     * @description Updates the model value after click on the list item. It temporarily disables the blur event to prevent unintended triggers when the user clicks on an item. After emitting the chosen item, blur is re-enabled after a short delay.
-     * @emits choose:item - Emits the selected item value and id to the parent component.
+     * @param {any} result - The selected result/item.
      * @returns {void}
      */
     const chooseItem = (result: any): void => {
       disableBlur.value = true;
       emit("choose:item", result, props.id);
       setTimeout(() => {
-        disableBlur.value = false; // Re-enable blur after a short delay
+        disableBlur.value = false;
       }, 500);
       if (props.toChoose) {
         isOpen.value = false;
@@ -257,9 +279,9 @@ export default {
     };
 
     /**
+     * Handles the blur event for the input field.
+     * Emits the onBlur event if blur is not disabled.
      * @function handleBlur
-     * @description Handles the blur event for the input field. It checks whether the blur event is disabled (when selecting an item). If blur is not disabled, it emits the onBlur event to the parent component.
-     * @emits update:onBlur - Emits the blur event to notify the parent component that the input has lost focus.
      * @returns {void}
      */
     const handleBlur = (): void => {
@@ -268,32 +290,22 @@ export default {
       }
     };
 
+    /**
+     * Opens or closes the dropdown list.
+     * @function openList
+     * @returns {void}
+     */
     const openList = (): void => {
       if (props.id === "distillationApparatus" && props.results?.length === 0) {
         return;
       }
-      if (!isOpen.value) {
-        isOpen.value = true;
-      } else {
-        isOpen.value = false;
-      }
+      isOpen.value = !isOpen.value;
     };
 
-    const distillationColor = computed<boolean>(() => {
-      if (props.color === "distillation") {
-        return true;
-      } else {
-        return false;
-      }
-    });
-
-    const plantColor = computed<boolean>(() => {
-      if (props.color === "plant") {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    // Computed property for distillation color context
+    const distillationColor = computed<boolean>(() => props.color === "distillation");
+    // Computed property for plant color context
+    const plantColor = computed<boolean>(() => props.color === "plant");
 
     return {
       isDarkTheme,

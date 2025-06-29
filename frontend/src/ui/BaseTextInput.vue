@@ -42,6 +42,30 @@ import { computed } from "vue";
 import { useStore } from "@/store/useStore";
 import { BaseTextEvents } from "@/types/events";
 
+/**
+ * @component BaseTextInput
+ * @description A customizable text input component with support for validation, theming, and color context.
+ * @props {string} label - The label for the input field.
+ * @props {string|number|null} modelValue - The value bound to the input field.
+ * @props {string} id - The id for the input field.
+ * @props {boolean} disabled - Flag to indicate if the input is disabled.
+ * @props {string} placeholder - The placeholder text for the input field.
+ * @props {string} classType - The class type for conditional styling (e.g., "number", "time", "results").
+ * @props {string} inputColor - The color context for the input (e.g., "plant", "distillation", "results").
+ * @props {boolean} invalidInput - Flag to indicate if the input is invalid.
+ * @props {string} storeName - The name of the store for value updates.
+ * @emits update:modelValue - Emitted when the input value changes.
+ * @emits change:modelValue - Emitted when the input loses focus and value changes.
+ * @emits set:keyboard - Emitted on keyboard events.
+ * @see updateValue
+ * @see setKeyboard
+ * @see changeValue
+ */
+
+/**
+ * Props for BaseTextInput component.
+ * @interface Props
+ */
 interface Props {
   label?: string;
   modelValue?: string | number | null;
@@ -72,12 +96,16 @@ export default {
     const emit = context.emit as BaseTextEvents;
     const store = useStore();
 
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
 
     /**
-     * Updates the model value when input changes
+     * Updates the model value when input changes.
+     * @function updateValue
+     * @param {Event} e - The input event.
+     * @returns {void}
      */
     const updateValue = (e: Event): void => {
       const target = e.target as HTMLInputElement;
@@ -85,29 +113,41 @@ export default {
     };
 
     /**
-     * Emits keyboard events
+     * Emits keyboard events.
+     * @function setKeyboard
+     * @param {Event} e - The keyboard event.
+     * @returns {void}
      */
     const setKeyboard = (e: Event): void => {
       emit("set:keyboard", e);
     };
 
     /**
-     * Emits value change events when input loses focus
+     * Emits value change events when input loses focus.
+     * @function changeValue
+     * @param {Event} e - The blur event.
+     * @returns {void}
      */
     const changeValue = (e: Event): void => {
       const target = e.target as HTMLInputElement;
       emit("change:modelValue", target.value, props.id, props.storeName);
     };
 
+    // Computed property for number input type
     const isNumberInput = computed<boolean>(() => props.classType === "number");
+    // Computed property for time input type
     const isTimeInput = computed<boolean>(() => props.classType === "time");
+    // Computed property for results input type
     const isResultsInput = computed<boolean>(
       () => props.classType === "results"
     );
+    // Computed property for plant color context
     const isPlantInput = computed<boolean>(() => props.inputColor === "plant");
+    // Computed property for distillation color context
     const isDistillationInput = computed<boolean>(
       () => props.inputColor === "distillation"
     );
+    // Computed property for results color context
     const isResultsInputColor = computed<boolean>(
       () => props.inputColor === "results"
     );

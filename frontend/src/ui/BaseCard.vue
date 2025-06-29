@@ -14,9 +14,14 @@ import { useStore } from "@/store/useStore";
  * @component BaseCard
  * @description A custom card component that provides a styled container for its content. The content is passed through a slot.
  */
+
 export default {
+  name: "BaseCard",
   setup() {
+    // Vuex store
     const store = useStore();
+
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );

@@ -32,8 +32,21 @@ import { useStore } from "@/store/useStore";
 import { BaseRadioInputEvents } from "@/types/events";
 
 /**
+ * @component BaseRadioInput
+ * @description A radio group component that allows selecting one option from a list of options.
+ * @props {string[]} options - The list of options to display as radio buttons.
+ * @props {string} modelValue - The currently selected value.
+ * @props {string} title - The label/title for the radio group.
+ * @props {string} [name] - The name attribute for the radio group.
+ * @props {string} [color] - The color for the radio buttons.
+ * @emits update:modelValue - Emitted when the selected option changes.
+ * @emits selectOption - Emitted when an option is selected.
+ * @see selectOption
+ */
+
+/**
+ * Props for BaseRadioInput component.
  * @interface Props
- * @description Props for BaseRadioInput component.
  */
 interface Props {
   options: string[];
@@ -51,6 +64,7 @@ export default {
     const emit = context.emit as BaseRadioInputEvents;
     const store = useStore();
 
+    // Computed property for dark theme state
     const isDarkTheme = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
@@ -66,7 +80,11 @@ export default {
       }
     );
 
-    // Watcher to emit events when selectOption changes
+    /**
+     * Emits events when the selected option changes.
+     * @function selectOption
+     * @param {string} newOption - The newly selected option.
+     */
     watch(selectOption, (newOption) => {
       emit("update:modelValue", newOption);
       emit("selectOption", newOption);

@@ -88,12 +88,6 @@ import * as Sentry from "@sentry/vue";
  */
 
 /**
- * No props for DistillerForm component.
- * @interface
- */
-interface Props {}
-
-/**
  * Interface for distiller object.
  * @interface
  * @property {string} material

@@ -3,7 +3,7 @@
   <teleport to="body">
     <!-- Modal backdrop -->
     <div class="modal-backdrop" @click.self="closeModal">
-      <!-- Modal content transition -->
+      <!-- Modal content transition and slot for modal content -->
       <transition name="modal">
         <slot></slot>
       </transition>
@@ -17,15 +17,21 @@ import { CloseModal } from "@/types/events";
 
 /**
  * @component BaseModal
- * @description A base modal component that provides a backdrop for modal content.
- * @see closeModal
+ * @description A base modal component that provides a backdrop for modal content and emits a close event when the backdrop is clicked.
  * @emits close-modal
+ * @see closeModal
  */
 export default {
   emits: ["close-modal"],
   setup(_, context) {
     const emit = context.emit as CloseModal;
-    const closeModal = () => {
+
+    /**
+     * Emits the close-modal event to notify parent to close the modal.
+     * @function closeModal
+     * @returns {void}
+     */
+    const closeModal = (): void => {
       emit("close-modal");
     };
 
