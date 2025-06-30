@@ -6,7 +6,7 @@
 
 # Interface: BaseTextEvents()
 
-Defined in: [types/events.ts:123](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L123)
+Defined in: [types/events.ts:123](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L123)
 
 Events emitted by the base text input.
 
@@ -54,7 +54,7 @@ The keyboard event.
 
 > **BaseTextEvents**(`e`, `value`, `id?`, `storeName?`): `void`
 
-Defined in: [types/events.ts:124](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L124)
+Defined in: [types/events.ts:124](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L124)
 
 Events emitted by the base text input.
 
@@ -124,7 +124,7 @@ The keyboard event.
 
 > **BaseTextEvents**(`e`, `value`, `id?`, `storeName?`): `void`
 
-Defined in: [types/events.ts:130](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L130)
+Defined in: [types/events.ts:130](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L130)
 
 Events emitted by the base text input.
 
@@ -194,7 +194,7 @@ The keyboard event.
 
 > **BaseTextEvents**(`e`, `event`): `void`
 
-Defined in: [types/events.ts:136](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L136)
+Defined in: [types/events.ts:136](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L136)
 
 Events emitted by the base text input.
 

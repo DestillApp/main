@@ -6,7 +6,7 @@
 
 # Interface: DistillationFormSubmit
 
-Defined in: [types/forms/distillationForm.ts:89](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L89)
+Defined in: [types/forms/distillationForm.ts:89](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L89)
 
 Interface representing the distillation form data for submission.
 
@@ -20,7 +20,7 @@ Interface representing the distillation form data for submission.
 
 > **choosedPlant**: [`FormChoosedPlant`](FormChoosedPlant.md)
 
-Defined in: [types/forms/distillationForm.ts:71](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L71)
+Defined in: [types/forms/distillationForm.ts:71](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L71)
 
 #### Inherited from
 
@@ -32,7 +32,7 @@ Defined in: [types/forms/distillationForm.ts:71](https://github.com/DestillApp/m
 
 > **distillationApparatus**: `string`
 
-Defined in: [types/forms/distillationForm.ts:80](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L80)
+Defined in: [types/forms/distillationForm.ts:80](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L80)
 
 #### Inherited from
 
@@ -44,7 +44,7 @@ Defined in: [types/forms/distillationForm.ts:80](https://github.com/DestillApp/m
 
 > **distillationDate**: `string`
 
-Defined in: [types/forms/distillationForm.ts:79](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L79)
+Defined in: [types/forms/distillationForm.ts:79](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L79)
 
 #### Inherited from
 
@@ -56,7 +56,7 @@ Defined in: [types/forms/distillationForm.ts:79](https://github.com/DestillApp/m
 
 > **distillationTime**: [`DistillationTime`](DistillationTime.md)
 
-Defined in: [types/forms/distillationForm.ts:82](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L82)
+Defined in: [types/forms/distillationForm.ts:82](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L82)
 
 #### Inherited from
 
@@ -68,7 +68,7 @@ Defined in: [types/forms/distillationForm.ts:82](https://github.com/DestillApp/m
 
 > **distillationType**: `string`
 
-Defined in: [types/forms/distillationForm.ts:78](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L78)
+Defined in: [types/forms/distillationForm.ts:78](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L78)
 
 #### Inherited from
 
@@ -80,7 +80,7 @@ Defined in: [types/forms/distillationForm.ts:78](https://github.com/DestillApp/m
 
 > **isPlantShredded**: `boolean`
 
-Defined in: [types/forms/distillationForm.ts:77](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L77)
+Defined in: [types/forms/distillationForm.ts:77](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L77)
 
 #### Inherited from
 
@@ -92,7 +92,7 @@ Defined in: [types/forms/distillationForm.ts:77](https://github.com/DestillApp/m
 
 > **isPlantSoaked**: `boolean`
 
-Defined in: [types/forms/distillationForm.ts:74](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L74)
+Defined in: [types/forms/distillationForm.ts:74](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L74)
 
 #### Inherited from
 
@@ -104,7 +104,7 @@ Defined in: [types/forms/distillationForm.ts:74](https://github.com/DestillApp/m
 
 > **soakingTime**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:75](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L75)
+Defined in: [types/forms/distillationForm.ts:75](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L75)
 
 #### Inherited from
 
@@ -116,7 +116,7 @@ Defined in: [types/forms/distillationForm.ts:75](https://github.com/DestillApp/m
 
 > **waterForDistillation**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:81](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L81)
+Defined in: [types/forms/distillationForm.ts:81](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L81)
 
 #### Inherited from
 
@@ -128,7 +128,7 @@ Defined in: [types/forms/distillationForm.ts:81](https://github.com/DestillApp/m
 
 > **weightAfterSoaking**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:76](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L76)
+Defined in: [types/forms/distillationForm.ts:76](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L76)
 
 #### Inherited from
 
@@ -140,7 +140,7 @@ Defined in: [types/forms/distillationForm.ts:76](https://github.com/DestillApp/m
 
 > **weightForDistillation**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:72](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L72)
+Defined in: [types/forms/distillationForm.ts:72](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L72)
 
 #### Inherited from
 

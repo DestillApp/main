@@ -6,7 +6,7 @@
 
 # Interface: DistillationArchivePlant
 
-Defined in: [types/forms/resultsForm.ts:49](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L49)
+Defined in: [types/forms/resultsForm.ts:49](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L49)
 
 Interface representing a plant in the distillation archive.
 
@@ -20,7 +20,7 @@ Interface representing a plant in the distillation archive.
 
 > **\_id**: `string`
 
-Defined in: [types/forms/plantForm.ts:125](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L125)
+Defined in: [types/forms/plantForm.ts:125](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L125)
 
 #### Inherited from
 
@@ -32,7 +32,7 @@ Defined in: [types/forms/plantForm.ts:125](https://github.com/DestillApp/main/bl
 
 > **countryOfOrigin**: `string`
 
-Defined in: [types/forms/plantForm.ts:131](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L131)
+Defined in: [types/forms/plantForm.ts:131](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L131)
 
 #### Inherited from
 
@@ -44,7 +44,7 @@ Defined in: [types/forms/plantForm.ts:131](https://github.com/DestillApp/main/bl
 
 > **dryingTime**: `null` \| `number`
 
-Defined in: [types/forms/plantForm.ts:139](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L139)
+Defined in: [types/forms/plantForm.ts:139](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L139)
 
 #### Inherited from
 
@@ -56,7 +56,7 @@ Defined in: [types/forms/plantForm.ts:139](https://github.com/DestillApp/main/bl
 
 > **harvestDate**: `string`
 
-Defined in: [types/forms/plantForm.ts:132](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L132)
+Defined in: [types/forms/plantForm.ts:132](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L132)
 
 #### Inherited from
 
@@ -68,7 +68,7 @@ Defined in: [types/forms/plantForm.ts:132](https://github.com/DestillApp/main/bl
 
 > **harvestEndTime**: `string`
 
-Defined in: [types/forms/plantForm.ts:135](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L135)
+Defined in: [types/forms/plantForm.ts:135](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L135)
 
 #### Inherited from
 
@@ -80,7 +80,7 @@ Defined in: [types/forms/plantForm.ts:135](https://github.com/DestillApp/main/bl
 
 > **harvestStartTime**: `string`
 
-Defined in: [types/forms/plantForm.ts:134](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L134)
+Defined in: [types/forms/plantForm.ts:134](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L134)
 
 #### Inherited from
 
@@ -92,7 +92,7 @@ Defined in: [types/forms/plantForm.ts:134](https://github.com/DestillApp/main/bl
 
 > **harvestTemperature**: `null` \| `number`
 
-Defined in: [types/forms/plantForm.ts:133](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L133)
+Defined in: [types/forms/plantForm.ts:133](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L133)
 
 #### Inherited from
 
@@ -104,7 +104,7 @@ Defined in: [types/forms/plantForm.ts:133](https://github.com/DestillApp/main/bl
 
 > **plantAge**: `null` \| `number`
 
-Defined in: [types/forms/plantForm.ts:140](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L140)
+Defined in: [types/forms/plantForm.ts:140](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L140)
 
 #### Inherited from
 
@@ -116,7 +116,7 @@ Defined in: [types/forms/plantForm.ts:140](https://github.com/DestillApp/main/bl
 
 > **plantBuyDate**: `string`
 
-Defined in: [types/forms/plantForm.ts:129](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L129)
+Defined in: [types/forms/plantForm.ts:129](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L129)
 
 #### Inherited from
 
@@ -128,7 +128,7 @@ Defined in: [types/forms/plantForm.ts:129](https://github.com/DestillApp/main/bl
 
 > **plantName**: `string`
 
-Defined in: [types/forms/plantForm.ts:126](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L126)
+Defined in: [types/forms/plantForm.ts:126](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L126)
 
 #### Inherited from
 
@@ -140,7 +140,7 @@ Defined in: [types/forms/plantForm.ts:126](https://github.com/DestillApp/main/bl
 
 > **plantOrigin**: `string`
 
-Defined in: [types/forms/plantForm.ts:128](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L128)
+Defined in: [types/forms/plantForm.ts:128](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L128)
 
 #### Inherited from
 
@@ -152,7 +152,7 @@ Defined in: [types/forms/plantForm.ts:128](https://github.com/DestillApp/main/bl
 
 > **plantPart**: `string`
 
-Defined in: [types/forms/plantForm.ts:127](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L127)
+Defined in: [types/forms/plantForm.ts:127](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L127)
 
 #### Inherited from
 
@@ -164,7 +164,7 @@ Defined in: [types/forms/plantForm.ts:127](https://github.com/DestillApp/main/bl
 
 > **plantProducer**: `string`
 
-Defined in: [types/forms/plantForm.ts:130](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L130)
+Defined in: [types/forms/plantForm.ts:130](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L130)
 
 #### Inherited from
 
@@ -176,7 +176,7 @@ Defined in: [types/forms/plantForm.ts:130](https://github.com/DestillApp/main/bl
 
 > **plantState**: `string`
 
-Defined in: [types/forms/plantForm.ts:138](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L138)
+Defined in: [types/forms/plantForm.ts:138](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L138)
 
 #### Inherited from
 

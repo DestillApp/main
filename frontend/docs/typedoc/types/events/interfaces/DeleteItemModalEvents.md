@@ -6,7 +6,7 @@
 
 # Interface: DeleteItemModalEvents()
 
-Defined in: [types/events.ts:28](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L28)
+Defined in: [types/events.ts:28](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L28)
 
 Events emitted by the delete item modal.
 
@@ -22,7 +22,7 @@ Delete the item.
 
 > **DeleteItemModalEvents**(`e`): `void`
 
-Defined in: [types/events.ts:29](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L29)
+Defined in: [types/events.ts:29](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L29)
 
 Events emitted by the delete item modal.
 
@@ -48,7 +48,7 @@ Delete the item.
 
 > **DeleteItemModalEvents**(`e`): `void`
 
-Defined in: [types/events.ts:30](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L30)
+Defined in: [types/events.ts:30](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L30)
 
 Events emitted by the delete item modal.
 

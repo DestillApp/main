@@ -8,7 +8,7 @@
 
 > **handleUserError**(`error`): `Promise`\<`void`\>
 
-Defined in: [helpers/errorHandling.ts:11](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/helpers/errorHandling.ts#L11)
+Defined in: [helpers/errorHandling.ts:11](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/helpers/errorHandling.ts#L11)
 
 Handles user errors by reporting them to Sentry, logging out the user if unauthorized,
 redirecting to the login page, or logging the error to the console.

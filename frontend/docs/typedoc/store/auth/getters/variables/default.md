@@ -8,7 +8,7 @@
 
 > **default**: `object`
 
-Defined in: [store/auth/getters.ts:7](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/store/auth/getters.ts#L7)
+Defined in: [store/auth/getters.ts:7](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/auth/getters.ts#L7)
 
 ## Type declaration
 

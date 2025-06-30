@@ -8,7 +8,7 @@
 
 > **updateListSorting**(`apolloClient`, `key`, `value`): `Promise`\<`string` \| `boolean`\>
 
-Defined in: [helpers/settingsFunctions.ts:14](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/helpers/settingsFunctions.ts#L14)
+Defined in: [helpers/settingsFunctions.ts:14](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/helpers/settingsFunctions.ts#L14)
 
 Updates the list sorting setting for the user.
 

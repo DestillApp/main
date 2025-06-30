@@ -6,7 +6,7 @@
 
 # Interface: GetPlantById
 
-Defined in: [types/forms/plantForm.ts:85](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L85)
+Defined in: [types/forms/plantForm.ts:85](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L85)
 
 Interface representing a plant fetched by ID.
 
@@ -16,7 +16,7 @@ Interface representing a plant fetched by ID.
 
 > **\_id**: `string`
 
-Defined in: [types/forms/plantForm.ts:86](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L86)
+Defined in: [types/forms/plantForm.ts:86](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L86)
 
 The unique identifier of the plant.
 
@@ -26,7 +26,7 @@ The unique identifier of the plant.
 
 > **availableWeight**: `number`
 
-Defined in: [types/forms/plantForm.ts:98](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L98)
+Defined in: [types/forms/plantForm.ts:98](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L98)
 
 The available weight of the plant.
 
@@ -36,7 +36,7 @@ The available weight of the plant.
 
 > **countryOfOrigin**: `null` \| `string`
 
-Defined in: [types/forms/plantForm.ts:92](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L92)
+Defined in: [types/forms/plantForm.ts:92](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L92)
 
 The country of origin.
 
@@ -46,7 +46,7 @@ The country of origin.
 
 > **dryingTime**: `null` \| `number`
 
-Defined in: [types/forms/plantForm.ts:100](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L100)
+Defined in: [types/forms/plantForm.ts:100](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L100)
 
 The drying time.
 
@@ -56,7 +56,7 @@ The drying time.
 
 > **harvestDate**: `null` \| `string`
 
-Defined in: [types/forms/plantForm.ts:93](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L93)
+Defined in: [types/forms/plantForm.ts:93](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L93)
 
 The date of harvest.
 
@@ -66,7 +66,7 @@ The date of harvest.
 
 > **harvestEndTime**: `null` \| `string`
 
-Defined in: [types/forms/plantForm.ts:96](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L96)
+Defined in: [types/forms/plantForm.ts:96](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L96)
 
 The end time of harvest.
 
@@ -76,7 +76,7 @@ The end time of harvest.
 
 > **harvestStartTime**: `null` \| `string`
 
-Defined in: [types/forms/plantForm.ts:95](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L95)
+Defined in: [types/forms/plantForm.ts:95](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L95)
 
 The start time of harvest.
 
@@ -86,7 +86,7 @@ The start time of harvest.
 
 > **harvestTemperature**: `null` \| `number`
 
-Defined in: [types/forms/plantForm.ts:94](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L94)
+Defined in: [types/forms/plantForm.ts:94](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L94)
 
 The temperature at harvest.
 
@@ -96,7 +96,7 @@ The temperature at harvest.
 
 > **plantAge**: `null` \| `number`
 
-Defined in: [types/forms/plantForm.ts:101](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L101)
+Defined in: [types/forms/plantForm.ts:101](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L101)
 
 The age of the plant.
 
@@ -106,7 +106,7 @@ The age of the plant.
 
 > **plantBuyDate**: `null` \| `string`
 
-Defined in: [types/forms/plantForm.ts:90](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L90)
+Defined in: [types/forms/plantForm.ts:90](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L90)
 
 The date the plant was bought.
 
@@ -116,7 +116,7 @@ The date the plant was bought.
 
 > **plantName**: `string`
 
-Defined in: [types/forms/plantForm.ts:87](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L87)
+Defined in: [types/forms/plantForm.ts:87](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L87)
 
 The name of the plant.
 
@@ -126,7 +126,7 @@ The name of the plant.
 
 > **plantOrigin**: `string`
 
-Defined in: [types/forms/plantForm.ts:89](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L89)
+Defined in: [types/forms/plantForm.ts:89](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L89)
 
 The origin of the plant.
 
@@ -136,7 +136,7 @@ The origin of the plant.
 
 > **plantPart**: `string`
 
-Defined in: [types/forms/plantForm.ts:88](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L88)
+Defined in: [types/forms/plantForm.ts:88](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L88)
 
 The part of the plant.
 
@@ -146,7 +146,7 @@ The part of the plant.
 
 > **plantProducer**: `null` \| `string`
 
-Defined in: [types/forms/plantForm.ts:91](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L91)
+Defined in: [types/forms/plantForm.ts:91](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L91)
 
 The producer of the plant.
 
@@ -156,7 +156,7 @@ The producer of the plant.
 
 > **plantState**: `string`
 
-Defined in: [types/forms/plantForm.ts:99](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L99)
+Defined in: [types/forms/plantForm.ts:99](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L99)
 
 The state of the plant.
 
@@ -166,6 +166,6 @@ The state of the plant.
 
 > **plantWeight**: `number`
 
-Defined in: [types/forms/plantForm.ts:97](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L97)
+Defined in: [types/forms/plantForm.ts:97](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L97)
 
 The weight of the plant.

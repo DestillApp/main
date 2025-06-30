@@ -6,7 +6,7 @@
 
 # Interface: DistillationArchive
 
-Defined in: [types/forms/resultsForm.ts:64](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L64)
+Defined in: [types/forms/resultsForm.ts:64](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L64)
 
 Interface representing a distillation archive entry.
 
@@ -16,7 +16,7 @@ Interface representing a distillation archive entry.
 
 > **\_id**: `string`
 
-Defined in: [types/forms/resultsForm.ts:65](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L65)
+Defined in: [types/forms/resultsForm.ts:65](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L65)
 
 The unique identifier for the archive entry.
 
@@ -26,7 +26,7 @@ The unique identifier for the archive entry.
 
 > **distillationData**: [`ResultsDistillation`](ResultsDistillation.md)
 
-Defined in: [types/forms/resultsForm.ts:71](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L71)
+Defined in: [types/forms/resultsForm.ts:71](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L71)
 
 The distillation data.
 
@@ -36,7 +36,7 @@ The distillation data.
 
 > **distilledPlant**: [`DistillationArchivePlant`](DistillationArchivePlant.md)
 
-Defined in: [types/forms/resultsForm.ts:72](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L72)
+Defined in: [types/forms/resultsForm.ts:72](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L72)
 
 The distilled plant data.
 
@@ -46,7 +46,7 @@ The distilled plant data.
 
 > **hydrosolAmount**: `number`
 
-Defined in: [types/forms/resultsForm.ts:67](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L67)
+Defined in: [types/forms/resultsForm.ts:67](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L67)
 
 The amount of hydrosol obtained.
 
@@ -56,7 +56,7 @@ The amount of hydrosol obtained.
 
 > **hydrosolDescription**: `string`
 
-Defined in: [types/forms/resultsForm.ts:70](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L70)
+Defined in: [types/forms/resultsForm.ts:70](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L70)
 
 The description of the hydrosol.
 
@@ -66,7 +66,7 @@ The description of the hydrosol.
 
 > **hydrosolpH**: `number`
 
-Defined in: [types/forms/resultsForm.ts:68](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L68)
+Defined in: [types/forms/resultsForm.ts:68](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L68)
 
 The pH of the hydrosol.
 
@@ -76,7 +76,7 @@ The pH of the hydrosol.
 
 > **oilAmount**: `number`
 
-Defined in: [types/forms/resultsForm.ts:66](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L66)
+Defined in: [types/forms/resultsForm.ts:66](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L66)
 
 The amount of oil obtained.
 
@@ -86,6 +86,6 @@ The amount of oil obtained.
 
 > **oilDescription**: `string`
 
-Defined in: [types/forms/resultsForm.ts:69](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/resultsForm.ts#L69)
+Defined in: [types/forms/resultsForm.ts:69](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/resultsForm.ts#L69)
 
 The description of the oil.

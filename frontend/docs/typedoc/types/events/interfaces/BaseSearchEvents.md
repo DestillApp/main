@@ -6,7 +6,7 @@
 
 # Interface: BaseSearchEvents()
 
-Defined in: [types/events.ts:102](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L102)
+Defined in: [types/events.ts:102](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L102)
 
 Events emitted by the base search component.
 
@@ -22,7 +22,7 @@ Clear the search.
 
 > **BaseSearchEvents**(`e`): `void`
 
-Defined in: [types/events.ts:103](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L103)
+Defined in: [types/events.ts:103](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L103)
 
 Events emitted by the base search component.
 
@@ -48,7 +48,7 @@ Clear the search.
 
 > **BaseSearchEvents**(`e`): `void`
 
-Defined in: [types/events.ts:104](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L104)
+Defined in: [types/events.ts:104](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L104)
 
 Events emitted by the base search component.
 

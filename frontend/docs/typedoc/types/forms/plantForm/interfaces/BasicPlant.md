@@ -6,7 +6,7 @@
 
 # Interface: BasicPlant
 
-Defined in: [types/forms/plantForm.ts:50](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L50)
+Defined in: [types/forms/plantForm.ts:50](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L50)
 
 Interface representing a basic plant.
 
@@ -16,7 +16,7 @@ Interface representing a basic plant.
 
 > **\_id**: `string`
 
-Defined in: [types/forms/plantForm.ts:51](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L51)
+Defined in: [types/forms/plantForm.ts:51](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L51)
 
 The unique identifier of the plant.
 
@@ -26,7 +26,7 @@ The unique identifier of the plant.
 
 > **availableWeight**: `number`
 
-Defined in: [types/forms/plantForm.ts:54](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L54)
+Defined in: [types/forms/plantForm.ts:54](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L54)
 
 The available weight of the plant.
 
@@ -36,7 +36,7 @@ The available weight of the plant.
 
 > `optional` **harvestDate**: `string`
 
-Defined in: [types/forms/plantForm.ts:55](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L55)
+Defined in: [types/forms/plantForm.ts:55](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L55)
 
 The date of harvest (optional).
 
@@ -46,7 +46,7 @@ The date of harvest (optional).
 
 > `optional` **plantBuyDate**: `string`
 
-Defined in: [types/forms/plantForm.ts:56](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L56)
+Defined in: [types/forms/plantForm.ts:56](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L56)
 
 The date the plant was bought (optional).
 
@@ -56,7 +56,7 @@ The date the plant was bought (optional).
 
 > **plantName**: `string`
 
-Defined in: [types/forms/plantForm.ts:52](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L52)
+Defined in: [types/forms/plantForm.ts:52](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L52)
 
 The name of the plant.
 
@@ -66,6 +66,6 @@ The name of the plant.
 
 > **plantPart**: `string`
 
-Defined in: [types/forms/plantForm.ts:53](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/plantForm.ts#L53)
+Defined in: [types/forms/plantForm.ts:53](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/plantForm.ts#L53)
 
 The part of the plant.

@@ -6,7 +6,7 @@
 
 # Interface: ShortPlant
 
-Defined in: [types/forms/distillationForm.ts:40](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L40)
+Defined in: [types/forms/distillationForm.ts:40](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L40)
 
 Interface representing a short version of a plant.
 
@@ -20,7 +20,7 @@ Interface representing a short version of a plant.
 
 > **id**: `string`
 
-Defined in: [types/forms/distillationForm.ts:30](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L30)
+Defined in: [types/forms/distillationForm.ts:30](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L30)
 
 #### Inherited from
 
@@ -32,7 +32,7 @@ Defined in: [types/forms/distillationForm.ts:30](https://github.com/DestillApp/m
 
 > **name**: `string`
 
-Defined in: [types/forms/distillationForm.ts:12](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L12)
+Defined in: [types/forms/distillationForm.ts:12](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L12)
 
 #### Inherited from
 
@@ -44,7 +44,7 @@ Defined in: [types/forms/distillationForm.ts:12](https://github.com/DestillApp/m
 
 > **part**: `string`
 
-Defined in: [types/forms/distillationForm.ts:13](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L13)
+Defined in: [types/forms/distillationForm.ts:13](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L13)
 
 #### Inherited from
 

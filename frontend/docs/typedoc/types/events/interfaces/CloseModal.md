@@ -6,7 +6,7 @@
 
 # Interface: CloseModal()
 
-Defined in: [types/events.ts:38](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L38)
+Defined in: [types/events.ts:38](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L38)
 
 Event emitted to close a modal.
 
@@ -16,7 +16,7 @@ Event emitted to close a modal.
 
 > **CloseModal**(`e`): `void`
 
-Defined in: [types/events.ts:39](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/events.ts#L39)
+Defined in: [types/events.ts:39](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/events.ts#L39)
 
 Event emitted to close a modal.
 

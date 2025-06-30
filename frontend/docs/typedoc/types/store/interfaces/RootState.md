@@ -6,7 +6,7 @@
 
 # Interface: RootState
 
-Defined in: [types/store/index.ts:22](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/store/index.ts#L22)
+Defined in: [types/store/index.ts:22](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/store/index.ts#L22)
 
 Shape of the entire Vuex state tree.
 
@@ -20,7 +20,7 @@ Shape of the entire Vuex state tree.
 
 > **auth**: `any`
 
-Defined in: [types/store/index.ts:24](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/store/index.ts#L24)
+Defined in: [types/store/index.ts:24](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/store/index.ts#L24)
 
 The auth module state.
 
@@ -30,7 +30,7 @@ The auth module state.
 
 > **comingFromRoute**: `boolean`
 
-Defined in: [types/store/index.ts:8](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/store/index.ts#L8)
+Defined in: [types/store/index.ts:8](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/store/index.ts#L8)
 
 Indicates if navigation came from a route change.
 
@@ -44,7 +44,7 @@ Indicates if navigation came from a route change.
 
 > **distillation**: `any`
 
-Defined in: [types/store/index.ts:25](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/store/index.ts#L25)
+Defined in: [types/store/index.ts:25](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/store/index.ts#L25)
 
 The distillation module state.
 
@@ -54,7 +54,7 @@ The distillation module state.
 
 > **plant**: `any`
 
-Defined in: [types/store/index.ts:23](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/store/index.ts#L23)
+Defined in: [types/store/index.ts:23](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/store/index.ts#L23)
 
 The plant module state.
 
@@ -64,7 +64,7 @@ The plant module state.
 
 > **results**: `any`
 
-Defined in: [types/store/index.ts:26](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/store/index.ts#L26)
+Defined in: [types/store/index.ts:26](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/store/index.ts#L26)
 
 The results module state.
 
@@ -74,7 +74,7 @@ The results module state.
 
 > **searchQuery**: `string`
 
-Defined in: [types/store/index.ts:9](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/store/index.ts#L9)
+Defined in: [types/store/index.ts:9](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/store/index.ts#L9)
 
 The current search query string.
 
@@ -88,6 +88,6 @@ The current search query string.
 
 > **settings**: `any`
 
-Defined in: [types/store/index.ts:27](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/store/index.ts#L27)
+Defined in: [types/store/index.ts:27](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/store/index.ts#L27)
 
 The settings module state.

@@ -6,7 +6,7 @@
 
 # Interface: ChoosedPlant
 
-Defined in: [types/forms/distillationForm.ts:29](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L29)
+Defined in: [types/forms/distillationForm.ts:29](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L29)
 
 Interface representing a selected plant with required fields.
 
@@ -20,7 +20,7 @@ Interface representing a selected plant with required fields.
 
 > **availableWeight**: `number`
 
-Defined in: [types/forms/distillationForm.ts:31](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L31)
+Defined in: [types/forms/distillationForm.ts:31](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L31)
 
 The available weight of the plant.
 
@@ -30,7 +30,7 @@ The available weight of the plant.
 
 > `optional` **buyDate**: `string`
 
-Defined in: [types/forms/distillationForm.ts:33](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L33)
+Defined in: [types/forms/distillationForm.ts:33](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L33)
 
 The date the plant was bought (optional).
 
@@ -40,7 +40,7 @@ The date the plant was bought (optional).
 
 > `optional` **harvestDate**: `string`
 
-Defined in: [types/forms/distillationForm.ts:32](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L32)
+Defined in: [types/forms/distillationForm.ts:32](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L32)
 
 The date the plant was harvested (optional).
 
@@ -50,7 +50,7 @@ The date the plant was harvested (optional).
 
 > **id**: `string`
 
-Defined in: [types/forms/distillationForm.ts:30](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L30)
+Defined in: [types/forms/distillationForm.ts:30](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L30)
 
 The unique identifier of the plant.
 
@@ -60,7 +60,7 @@ The unique identifier of the plant.
 
 > **name**: `string`
 
-Defined in: [types/forms/distillationForm.ts:12](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L12)
+Defined in: [types/forms/distillationForm.ts:12](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L12)
 
 The name of the plant.
 
@@ -74,7 +74,7 @@ The name of the plant.
 
 > **part**: `string`
 
-Defined in: [types/forms/distillationForm.ts:13](https://github.com/DestillApp/main/blob/76aba95a5d8c1d9174ebde73d7b50f0ea64b491a/frontend/src/types/forms/distillationForm.ts#L13)
+Defined in: [types/forms/distillationForm.ts:13](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L13)
 
 The part of the plant used.
 
