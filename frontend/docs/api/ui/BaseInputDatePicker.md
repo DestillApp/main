@@ -1,30 +1,29 @@
 # BaseInputDatePicker
 
+A component that combines a text input and a date picker modal for selecting and displaying dates.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `label` | `string` | no |  |
+| `title` | `string` | no |  |
+| `id` | `string` | no |  |
+| `value` | `string` | no |  |
+| `invalidInput` | `boolean` | no |  |
+| `color` | `string` | no |  |
+
 ## Exposed Methods
 
-### `function()`
+### `changeVisibility()`
 Toggles the visibility of the date picker modal.
 
-```ts
-const changeVisibility = (): void => {
-      isOpen.value = !isOpen.value;
-    };
-```
-
-### `function()`
+### `closeModal()`
 Closes the date picker modal.
 
-```ts
-const closeModal = (): void => {
-      isOpen.value = false;
-    };
-```
-
-### `function()`
+### `updateDate()`
 Updates the date value when a new date is selected.
 
-```ts
-const updateDate = (selectedDate: string): void => {
-      date.value = selectedDate;
-    };
-```
+**Parameters:**
+- `selectedDate` (`string`): The selected date string.

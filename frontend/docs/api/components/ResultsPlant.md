@@ -1,21 +1,25 @@
 # ResultsPlant
 
+Displays and manages the plant-related part of the distillation results, including plant selection, plant details, and soaking/shredding options.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `isFormValid` | `boolean` | yes |  |
+| `isEditing` | `boolean` | no |  |
+
 ## Exposed Methods
 
-### `function()`
+### `fetchPlantData()`
 Fetches plant data from local storage for a given key.
 
-```ts
-const fetchPlantData = (key: string): void => {
-      store.dispatch("results/fetchDistilledPlantFromLocalStorage", key);
-    };
-```
+**Parameters:**
+- `key` (`string`): The key for the specific data to fetch.
 
-### `function()`
+### `fetchDistillationData()`
 Fetches distillation data from local storage for a given key.
 
-```ts
-const fetchDistillationData = (key: string): void => {
-      store.dispatch("results/fetchDistillationDataFromLocalStorage", key);
-    };
-```
+**Parameters:**
+- `key` (`string`): The key for the specific data to fetch.

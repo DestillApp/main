@@ -50,15 +50,15 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 /**
  * @component PlantIdentification
  * @description This component renders a form to input and manage data related to plant material used in distillation, including plant name and part.
- * @props {boolean} isFormValid
- * @props {boolean} wasSubmitted
+ * @props {boolean} isFormValid -  Description
+ * @props {boolean} wasSubmitted - desc
  * @see setValue
  */
 
 /**
  * Props for PlantIdentification component.
  * @interface
- * @property {boolean} isFormValid
+ * @property {boolean} isFormValid - Description
  * @property {boolean} wasSubmitted
  */
 interface Props {

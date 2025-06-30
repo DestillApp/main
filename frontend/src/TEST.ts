@@ -1,13 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { parse } from "@vue/compiler-sfc";
-import {
-  Project,
-  SyntaxKind,
-  JSDocTag,
-  PropertySignature,
-  SourceFile,
-} from "ts-morph";
+import { Project, SyntaxKind, JSDocTag, PropertySignature } from "ts-morph";
 
 const srcDir = "src";
 const docsDir = "docs/api";
@@ -45,84 +39,30 @@ function extractPropsInterface(scriptContent: string) {
     .find((i) => i.getName() === "Props");
   if (!interfaceNode) return [];
 
-  // Aggregate all @property and @prop tags from all JSDoc blocks
+  const jsDocTags = interfaceNode.getJsDocs()[0]?.getTags() || [];
+
   const docMap: Record<string, string> = {};
-  interfaceNode.getJsDocs().forEach((jsdoc) => {
-    jsdoc.getTags().forEach((tag: JSDocTag) => {
-      if (tag.getTagName() === "property" || tag.getTagName() === "prop") {
-        const text = tag.getText();
-        // Try to match: {type} name - description
-        const match = /{[^}]+}\s+\[?(\w+)\]?\s*-\s*(.*)/.exec(text);
-        if (match) {
-          docMap[match[1]] = match[2].trim();
-        } else {
-          // fallback: {type} name
-          const fallbackMatch = /{[^}]+}\s+\[?(\w+)\]?/.exec(text);
-          if (fallbackMatch) {
-            docMap[fallbackMatch[1]] = "";
-          }
-        }
+  jsDocTags.forEach((tag: JSDocTag) => {
+    if (tag.getTagName() === "property") {
+      const text = tag.getText();
+      const match = /{[^}]+}\s+\[?(\w+)\]?\s*-\s*(.*)/.exec(text);
+      if (match) {
+        docMap[match[1]] = match[2].trim();
       }
-    });
+    }
   });
 
   return interfaceNode.getProperties().map((prop: PropertySignature) => {
     const name = prop.getName();
     const type = prop.getType().getText();
     const required = !prop.hasQuestionToken();
-    // Try to get inline doc if @property is missing
-    let comment = docMap[name] || "";
-    if (!comment) {
-      const propJsDoc = prop.getJsDocs()[0]?.getComment();
-      if (propJsDoc) comment = propJsDoc.trim();
-    }
     return {
       name,
       type,
       required: required ? "yes" : "no",
-      comment,
+      comment: docMap[name] || "",
     };
   });
-}
-
-// Utility to extract prop descriptions from JSDoc
-function extractPropDescriptions(
-  sourceFile: SourceFile
-): Record<string, string> {
-  const propDescriptions: Record<string, string> = {};
-
-  // Find all interfaces in the file
-  sourceFile.getInterfaces().forEach((iface) => {
-    const jsDocs = iface.getJsDocs();
-    jsDocs.forEach((doc) => {
-      const tags = doc.getTags();
-      tags.forEach((tag) => {
-        const tagName = tag.getTagName();
-        if (tagName === "property" || tagName === "prop") {
-          // @property {type} name - description
-          const text = tag.getText();
-          // Try to match: {type} name - description
-          const match = text.match(/^\{[^}]+\}\s+(\w+)\s*-\s*(.*)$/);
-          if (match) {
-            const [, name, desc] = match;
-            propDescriptions[name] = desc.trim();
-          } else {
-            // fallback: {type} name
-            const fallbackMatch = text.match(/^\{[^}]+\}\s+(\w+)/);
-            if (fallbackMatch) {
-              const [, name] = fallbackMatch;
-              propDescriptions[name] = "";
-            }
-          }
-        }
-      });
-    });
-  });
-
-  // Also check for JSDoc on the props array or object
-  // (if you support that in your codebase)
-
-  return propDescriptions;
 }
 
 function extractFunctionsFromSetup(scriptContent: string) {

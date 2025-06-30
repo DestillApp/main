@@ -1,141 +1,57 @@
 # DistillationPlant
 
+This component manages the selection of plant material for distillation, including details like plant part, weight, and optional soaking or shredding steps.
+ * It also interacts with Vuex for data persistence and handles the fetching of plants from an Apollo GraphQL server.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `isFormValid` | `boolean` | yes | Indicates if the form is valid. |
+| `wasSubmitted` | `boolean` | yes | Indicates if the form was submitted. |
+| `isEditing` | `boolean` | no | Indicates if the form is in editing mode. |
+
 ## Exposed Methods
 
-### `returns()`
+### `getPlantData()`
 Gets plant data by ID from the GraphQL server.
 
-```ts
-const getPlantData = async (): Promise<BasicPlant | undefined> => {
-      try {
-        const { data } = await apolloClient.query({
-          query: GET_BASIC_PLANT_BY_ID,
-          variables: { id: route.params.id, formatDates: false },
-        });
-
-        return data.getPlantById;
-      } catch (error) {
-        Sentry.captureException(error);
-        console.error("Failed to get plant details:", error);
-      }
-    };
-```
-
-### `param()`
+### `fetchData()`
 Fetches initial data from local storage via the Vuex store for a specified key.
 
-```ts
-const fetchData = (key: string, value: boolean): void => {
-      store.dispatch("distillation/fetchLocalStorageData", {
-        key: key,
-        isPlant: value,
-      });
-    };
-```
+**Parameters:**
+- `key` (`string`): The key for the specific data to fetch.
+- `value` (`boolean`): Indicates if the fetched data is related to plant information.
 
-### `param()`
+### `setPlantState()`
 Updates the selected plant's state in Vuex by dispatching key-value pairs.
 
-```ts
-const setPlantState = (
-      key: keyof FormChoosedPlant,
-      value: string | number | null
-    ): void => {
-      store.dispatch("distillation/setChoosedPlant", {
-        key: key,
-        value: value,
-      });
-    };
-```
+**Parameters:**
+- `key` (`keyof FormChoosedPlant`): The key of the plant attribute.
+- `value` (`string | number | null`): The value of the plant attribute.
 
-### `param()`
+### `setPlant()`
 Sets the selected plant details in the form, including plant ID, name, part, and weight.
 Clears the search input and list of plants after selection.
 
-```ts
-const setPlant = (value: BasicPlant): void => {
-      plantFields.forEach(({ key, valueKey }) => {
-        setPlantState(key, value[valueKey] ?? null);
-      });
-      searchQuery.value = "";
-      plant.value = value.plantName;
-      plants.value = [];
+**Parameters:**
+- `value` (`BasicPlant`): The selected plant object from the plant list.
 
-      const targetRoute = props.isEditing
-        ? "EditDistillationPage"
-        : "AddDistillationPage";
-      router.replace({ name: targetRoute, params: { id: value._id } });
-    };
-```
-
-### `async()`
+### `fetchPlants()`
 Fetch the list of plants from the GraphQL server by matching name.
 
-```ts
-const fetchPlants = async (name: string): Promise<void> => {
-      try {
-        const { data } = await apolloClient.query({
-          query: GET_PLANTS,
-          fetchPolicy: "network-only",
-          variables: {
-            fields: plantFields.map(({ valueKey }) => valueKey),
-            formatDates: true,
-            name: name,
-          },
-        });
-        plants.value = data.getPlants;
-      } catch (error: any) {
-        await handleUserError(error);
-        plants.value = [];
-      }
-    };
-```
+**Parameters:**
+- `name` (`string`): The plant name to search for.
 
-### `param()`
+### `onInput()`
 Handles the input event for the search or autocomplete component.
 Updates the search query and manages the timer to limit the frequency of fetch requests.
 
-```ts
-const onInput = (value: string, input: string): void => {
-      if (input === "choosedPlant") {
-        plantFields.forEach(({ key }) => {
-          key === "id" || key === "availableWeight"
-            ? setPlantState(key, null)
-            : setPlantState(key, "");
-        });
-      }
-
-      const routeName = props.isEditing
-        ? "EditDistillationPage"
-        : "AddDistillationPage";
-      router.replace({ name: routeName, params: { id: null } });
-
-      searchQuery.value = value;
-      plant.value = searchQuery.value;
-      if (timeout.value) {
-        clearTimeout(timeout.value);
-      }
-
-      timeout.value = setTimeout(() => {
-        if (searchQuery.value !== "") {
-          fetchPlants(searchQuery.value);
-        } else {
-          plants.value = [];
-        }
-      }, 500);
-    };
-```
+**Parameters:**
+- `value` (`string`): The input value.
+- `input` (`string`): The input field identifier.
 
 ### `onBlur()`
 Handles the blur event when the input field loses focus.
 Clears the plant list and resets the input value if no plant is selected.
-
-```ts
-const onBlur = () => {
-      if (formData.value.choosedPlant.name === "") {
-        plants.value = [];
-        searchQuery.value = "";
-        plant.value = "";
-      }
-    };
-```

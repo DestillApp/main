@@ -1,54 +1,48 @@
 # BaseAutocompleteInput
 
+A customizable autocomplete input component with optional dropdown, validation, and theming.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `label` | `string` | no |  |
+| `modelValue` | `string | number` | no |  |
+| `id` | `string` | no |  |
+| `disabled` | `boolean` | no |  |
+| `placeholder` | `string` | no |  |
+| `classType` | `string` | no |  |
+| `color` | `string` | no |  |
+| `invalidInput` | `boolean` | no |  |
+| `results` | `any[]` | no |  |
+| `toChoose` | `boolean` | no |  |
+
+## Emits
+
+- `update:modelValue`
+- `choose:item`
+- `update:onBlur`
+- `open:list`
+
 ## Exposed Methods
 
-### `function()`
+### `updateValue()`
 Updates the model value when input changes.
 
-```ts
-const updateValue = (e: Event): void => {
-      const target = e.target as HTMLInputElement;
-      emit("update:modelValue", target.value, props.id);
-    };
-```
+**Parameters:**
+- `e` (`Event`): The input event.
 
-### `function()`
+### `chooseItem()`
 Updates the model value after clicking a list item.
 Temporarily disables blur to prevent unintended triggers.
 
-```ts
-const chooseItem = (result: any): void => {
-      disableBlur.value = true;
-      emit("choose:item", result, props.id);
-      setTimeout(() => {
-        disableBlur.value = false;
-      }, 500);
-      if (props.toChoose) {
-        isOpen.value = false;
-      }
-    };
-```
+**Parameters:**
+- `result` (`any`): The selected result/item.
 
-### `function()`
+### `handleBlur()`
 Handles the blur event for the input field.
 Emits the onBlur event if blur is not disabled.
 
-```ts
-const handleBlur = (): void => {
-      if (!disableBlur.value) {
-        emit("update:onBlur");
-      }
-    };
-```
-
-### `function()`
+### `openList()`
 Opens or closes the dropdown list.
-
-```ts
-const openList = (): void => {
-      if (props.id === "distillationApparatus" && props.results?.length === 0) {
-        return;
-      }
-      isOpen.value = !isOpen.value;
-    };
-```

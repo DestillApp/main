@@ -1,21 +1,25 @@
 # AskModal
 
+A confirmation modal for restoring a plant and its weight to the inventory.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `plantName` | `string` | yes |  |
+| `plantPart` | `string` | yes |  |
+| `distillationWeight` | `number` | yes |  |
+
+## Emits
+
+- `close-modal`
+- `handle-yes`
+
 ## Exposed Methods
 
-### `function()`
+### `handleYes()`
 Emits the handle-yes event to confirm plant restoration.
 
-```ts
-const handleYes = () => {
-      emit("handle-yes");
-    };
-```
-
-### `function()`
+### `closeModal()`
 Emits the close-modal event to close the modal without restoration.
-
-```ts
-const closeModal = () => {
-      emit("close-modal");
-    };
-```

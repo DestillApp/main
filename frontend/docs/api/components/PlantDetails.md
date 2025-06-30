@@ -1,27 +1,17 @@
 # PlantDetails
 
+Displays detailed information about a plant, including origin, harvest/buy details, state, and age.
+ * Fetches plant details from the API or uses provided distilledPlant prop.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `plantId` | `string` | no |  |
+| `distilledPlant` | `DistillationArchivePlant` | no |  |
+
 ## Exposed Methods
 
-### `async()`
+### `fetchPlantDetails()`
 Fetches the plant details by plant ID from GraphQL API.
-
-```ts
-const fetchPlantDetails = async (): Promise<void> => {
-      try {
-        isLoading.value = true;
-        const { data } = await apolloClient.query({
-          query: GET_PLANT_BY_ID,
-          variables: { id: props.plantId, formatDates: true },
-        });
-        plantDetails.value = normalizeSelectedFields(
-          data.getPlantById,
-          fieldsToNormalize
-        );
-      } catch (error: any) {
-        await handleUserError(error);
-        plantDetails.value = null;
-      } finally {
-        isLoading.value = false;
-      }
-    };
-```

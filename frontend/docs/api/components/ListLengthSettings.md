@@ -1,41 +1,33 @@
 # ListLengthSettings
 
+Dropdown component for selecting the number of items displayed in a list. Allows the user to choose between different list lengths and emits the selected value.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `title` | `string` | yes |  |
+| `listColor` | `"plant" | "distillation" | "results"` | yes |  |
+| `chosenLength` | `number` | yes |  |
+
+## Emits
+
+- `select-length`
+
 ## Exposed Methods
 
-### `function()`
+### `toggleList()`
 Toggles the visibility of the list dropdown and manages click outside event.
 
-```ts
-const toggleList = (): void => {
-      isListVisible.value = !isListVisible.value;
-      if (isListVisible.value) {
-        document.addEventListener("click", handleClickOutside);
-      } else {
-        document.removeEventListener("click", handleClickOutside);
-      }
-    };
-```
-
-### `function()`
+### `selectLength()`
 Emits the selected list length and closes the dropdown.
 
-```ts
-const selectLength = (length: number): void => {
-      emitTyped("select-length", length);
-      isListVisible.value = false;
-    };
-```
+**Parameters:**
+- `length` (`number`): The selected list length.
 
-### `function()`
+### `handleClickOutside()`
 Handles clicks outside the dropdown to close it.
 
-```ts
-const handleClickOutside = (event: MouseEvent): void => {
-      if (
-        settingsContainer.value &&
-        !settingsContainer.value.contains(event.target as Node)
-      ) {
-        isListVisible.value = false;
-      }
-    };
-```
+**Parameters:**
+- `event` (`MouseEvent`): The click event.

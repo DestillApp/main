@@ -1,63 +1,49 @@
 # DistillationProcess
 
+Handles the distillation process inputs, such as selecting the distillation type, apparatus, and setting the date.
+ * Integrates with Vuex to store form data and manage state updates.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `isFormValid` | `boolean` | yes | Indicates if the form is valid. |
+| `wasSubmitted` | `boolean` | yes | Indicates if the form was submitted. |
+| `isEditing` | `boolean` | no | Indicates if the form is in editing mode. |
+
 ## Exposed Methods
 
-### `param()`
+### `fetchData()`
 Fetches initial data from local storage via the Vuex store for a specified key.
 
-```ts
-const fetchData = (key: string, value: boolean): void => {
-      store.dispatch("distillation/fetchLocalStorageData", {
-        key: key,
-        isPlant: value,
-      });
-    };
-```
+**Parameters:**
+- `key` (`string`): The key for the specific data to fetch.
+- `value` (`boolean`): Indicates if the fetched data is related to plant information.
 
-### `param()`
+### `fetchArchiveData()`
 Fetches archive data from local storage via the Vuex store for a specified key.
 
-```ts
-const fetchArchiveData = (key: string): void => {
-      store.dispatch("results/fetchDistillationDataFromLocalStorage", key);
-    };
-```
+**Parameters:**
+- `key` (`string`): The key for the specific data to fetch.
 
-### `param()`
+### `setValue()`
 Updates the value of a specified input field in the Vuex store.
 
-```ts
-const setValue = (value: string, input: string): void => {
-      if (props.isEditing) {
-        store.dispatch("results/setDistillationDataValue", {
-          input: input,
-          value: value,
-        });
-      } else {
-        store.dispatch("distillation/setValue", { input: input, value: value });
-      }
-    };
-```
+**Parameters:**
+- `value` (`string`): The value to set for the input.
+- `input` (`string`): The key for the specific input field.
 
-### `param()`
+### `setDistillationType()`
 Handles setting the selected distillation type and updating the store.
 
-```ts
-const setDistillationType = (
-      value: DistillationType,
-      input: string
-    ): void => {
-      setValue(value, input);
-      distillationType.value = value;
-    };
-```
+**Parameters:**
+- `value` (`string`): The selected distillation type.
+- `input` (`string`): The input field triggering the event.
 
-### `param()`
+### `setDistillationApparatus()`
 Sets the selected distillation apparatus and updates the store.
 
-```ts
-const setDistillationApparatus = (value: string, input: string): void => {
-      setValue(value, input);
-      distillationApparatus.value = value;
-    };
-```
+**Parameters:**
+- `value` (`string`): The selected distillation apparatus.
+- `input` (`string`): The input field triggering the event.

@@ -1,12 +1,9 @@
 # MyAccountPage
 
+Main account page layout with navigation sidebar and dynamic content area. Handles responsive navigation and highlights active sections.
+ *
+
 ## Exposed Methods
 
-### `function()`
+### `handleResize()`
 Handles window resize event to update tablet view state.
-
-```ts
-const handleResize = (): void => {
-      isTabletView.value = window.innerWidth <= 1024;
-    };
-```

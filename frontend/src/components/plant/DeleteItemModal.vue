@@ -68,10 +68,10 @@ import BaseButton from "@/ui/BaseButton.vue";
 /**
  * Props for DeleteItemModal component.
  * @interface
- * @property {string} [plantName]
- * @property {string} [plantPart]
- * @property {string} [distillationDate]
- * @property {string} [distiller]
+ * @property {string} [plantName] - The name of the plant to be deleted.
+ * @property {string} [plantPart] - The part of the plant to be deleted.
+ * @property {string} [distillationDate] - The date of the distillation to be deleted.
+ * @property {string} [distiller] - The distiller to be deleted.
  */
 interface Props {
   plantName?: string;

@@ -1,101 +1,33 @@
 # MyDataPage
 
+Displays user data, list of distillers, theme settings, and allows managing distillers and password. Handles fetching user info, theme switching, and modal dialogs.
+ *
+
 ## Exposed Methods
 
-### `async()`
+### `fetchUserDetails()`
 Fetches user details (username and email) from the server.
 
-```ts
-const fetchUserDetails = async (): Promise<void> => {
-      try {
-        const { data } = await apolloClient.query({
-          query: GET_USER_DETAILS,
-          fetchPolicy: "network-only",
-        });
-        username.value = data.getUserDetails.username;
-        email.value = data.getUserDetails.email;
-      } catch (error: any) {
-        await handleUserError(error);
-      }
-    };
-```
-
-### `function()`
+### `openDistillerForm()`
 Opens the distiller form modal.
 
-```ts
-const openDistillerForm = (): void => {
-      isDistillerFormOpen.value = true;
-    };
-```
-
-### `function()`
+### `closeDistillerForm()`
 Closes the distiller form modal.
 
-```ts
-const closeDistillerForm = (): void => {
-      isDistillerFormOpen.value = false;
-    };
-```
-
-### `function()`
+### `openDeleteModal()`
 Opens the delete distiller modal for a given distiller id.
 
-```ts
-const openDeleteModal = (id: string): void => {
-      selectedDistillerId.value = id;
-      isDeleteModalOpen.value = true;
-    };
-```
+**Parameters:**
+- `id` (`string`): The distiller id to delete.
 
-### `function()`
+### `closeDeleteModal()`
 Closes the delete distiller modal.
 
-```ts
-const closeDeleteModal = (): void => {
-      isDeleteModalOpen.value = false;
-      selectedDistillerId.value = "";
-    };
-```
-
-### `async()`
+### `deleteDistiller()`
 Deletes the selected distiller by id.
 
-```ts
-const deleteDistiller = async (): Promise<void> => {
-      try {
-        const deleteDistiller = await store.dispatch(
-          "settings/deleteDistillerById",
-          selectedDistillerId.value
-        );
-        if (deleteDistiller === "Unauthorized") {
-          await store.dispatch("auth/logout");
-          router.push("/login");
-          return;
-        } else {
-          closeDeleteModal();
-        }
-      } catch (error) {
-        Sentry.captureException(error);
-        console.error("Failed to delete distiller:", error);
-      }
-    };
-```
-
-### `function()`
+### `openPasswordChangeForm()`
 Opens the password change form modal.
 
-```ts
-const openPasswordChangeForm = (): void => {
-      isPasswordChangeFormOpen.value = true;
-    };
-```
-
-### `function()`
+### `closePasswordChangeForm()`
 Closes the password change form modal.
-
-```ts
-const closePasswordChangeForm = (): void => {
-      isPasswordChangeFormOpen.value = false;
-    };
-```

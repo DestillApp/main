@@ -1,29 +1,28 @@
 # DistillationData
 
+Handles the distillation data inputs, such as water used and distillation time.
+ * Integrates with Vuex to store form data and manage state updates.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `isFormValid` | `boolean` | yes | Indicates if the form is valid. |
+| `wasSubmitted` | `boolean` | yes | Indicates if the form was submitted. |
+| `isEditing` | `boolean` | no | Indicates if the form is in editing mode. |
+
 ## Exposed Methods
 
-### `param()`
+### `handleKeyboard()`
 Handles keyboard events for integer-only input and prevents minus sign.
 
-```ts
-const handleKeyboard = (e: KeyboardEvent) => {
-      setKeyboardIntegerNumber(e);
-      preventMinusNumber(e);
-    };
-```
+**Parameters:**
+- `e` (`KeyboardEvent`): The keyboard event.
 
-### `param()`
+### `saveTime()`
 Saves the distillation time (hours or minutes) to the store.
 
-```ts
-const saveTime = (value: string | number, key: string): void => {
-      const numericValue = typeof value === "string" ? Number(value) : value;
-      const isValid = !isNaN(numericValue) && numericValue >= 0;
-      const module = storeName.value;
-
-      store.dispatch(`${module}/setDistillationTime`, {
-        [module === "distillation" ? "key" : "input"]: key,
-        value: isValid ? numericValue : null,
-      });
-    };
-```
+**Parameters:**
+- `value` (`string | number`): The value to save.
+- `key` (`string`): The key for the time field.

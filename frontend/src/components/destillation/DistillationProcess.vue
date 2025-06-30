@@ -93,9 +93,9 @@ import { useStore } from "@/store/useStore";
  * @component DistillationProcess
  * @description Handles the distillation process inputs, such as selecting the distillation type, apparatus, and setting the date.
  * Integrates with Vuex to store form data and manage state updates.
- * @props {boolean} isFormValid
- * @props {boolean} wasSubmitted
- * @props {boolean} [isEditing]
+ * @props {boolean} isFormValid - Indicates if the form is valid.
+ * @props {boolean} wasSubmitted - Indicates if the form was submitted.
+ * @props {boolean} [isEditing] - Indicates if the form is in editing mode.
  * @see fetchData
  * @see setValue
  * @see setDistillationType
@@ -129,9 +129,9 @@ interface Distiller {
 /**
  * Props for DistillationProcess component.
  * @interface
- * @property {boolean} isFormValid
- * @property {boolean} wasSubmitted
- * @property {boolean} [isEditing]
+ * @property {boolean} isFormValid - Indicates if the form is valid.
+ * @property {boolean} wasSubmitted - Indicates if the form was submitted.
+ * @property {boolean} [isEditing] - Indicates if the form is in editing mode.
  */
 interface Props {
   isFormValid: boolean;

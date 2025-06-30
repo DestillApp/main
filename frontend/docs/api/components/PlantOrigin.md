@@ -1,90 +1,56 @@
 # PlantOrigin
 
+This component renders a form to input and manage data related to plant used in distillation, including origin, harvest date, harvest temperature, harvest range, buy date and producer details.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `isFormValid` | `boolean` | yes |  |
+| `isResetting` | `boolean` | no |  |
+| `wasSubmitted` | `boolean` | yes |  |
+
 ## Exposed Methods
 
-### `function()`
+### `setValue()`
 Dispatches an action to the Vuex store to set a specific value.
 
-```ts
-const setValue = (currentValue: string, input: string): void => {
-      store.dispatch("plant/setValue", { input, value: currentValue });
-    };
-```
+**Parameters:**
+- `currentValue` (`string`): The current value to be set.
+- `input` (`string`): The input field name.
 
-### `function()`
+### `storeDate()`
 Stores a date value in the Vuex store.
 
-```ts
-const storeDate = (date: string, input: string): void => {
-      store.dispatch("plant/setValue", { input, value: date });
-    };
-```
+**Parameters:**
+- `date` (`string`): The date value to be stored.
+- `input` (`string`): The input field name.
 
-### `function()`
+### `setCountry()`
 Sets the selected country for the country autocomplete input.
 
-```ts
-const setCountry = (currentValue: string, input: string): void => {
-      setValue(currentValue, input);
-      searchQuery.value = "";
-      countryName.value = currentValue;
-      countryNames.value = [];
-    };
-```
+**Parameters:**
+- `currentValue` (`string`): The selected country name.
+- `input` (`string`): The input field name.
 
-### `async()`
+### `fetchCountries()`
 Async function to fetch country names based on user input for the autocomplete component.
 
-```ts
-const fetchCountries = async (name: string): Promise<void> => {
-      try {
-        const { data } = await apolloClient.query({
-          query: GET_COUNTRY_NAMES,
-          variables: { name },
-        });
-        countryNames.value = data.getCountryNames.slice(0, 10);
-      } catch (error) {
-        Sentry.captureException(error);
-        console.error("Failed to get country names:", error);
-        countryNames.value = [];
-      }
-    };
-```
+**Parameters:**
+- `name` (`string`): The search query to fetch country names for.
 
-### `function()`
+**Returns:** Resolves when the country names are fetched and stored in the reactive variable.
+
+### `onInput()`
 Handles the input event for the search or autocomplete component.
 Updates the search query and manages the timer to limit the frequency of fetch requests.
 
-```ts
-const onInput = (value: string, input: string): void => {
-      setValue("", input);
-      searchQuery.value = value;
-      countryName.value = searchQuery.value;
-      if (timeout.value) {
-        clearTimeout(timeout.value);
-      }
+**Parameters:**
+- `value` (`string`): The input value.
+- `input` (`string`): The input field identifier.
 
-      timeout.value = setTimeout(() => {
-        if (searchQuery.value.length > 0) {
-          fetchCountries(searchQuery.value);
-        } else {
-          countryNames.value = [];
-        }
-      }, 500);
-    };
-```
-
-### `function()`
+### `onBlur()`
 Handles the blur event for the country input field.
 When the input field loses focus, it checks whether the user has selected a country.
 If no country is selected, it clears the country list and resets the search query and country name.
-
-```ts
-const onBlur = (): void => {
-      if (formData.value.countryOfOrigin === "") {
-        countryNames.value = [];
-        searchQuery.value = "";
-        countryName.value = "";
-      }
-    };
-```

@@ -1,12 +1,20 @@
 # PlantIdentification
 
+This component renders a form to input and manage data related to plant material used in distillation, including plant name and part.
+ *
+
+## Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `isFormValid` | `boolean` | yes | Description |
+| `wasSubmitted` | `boolean` | yes |  |
+
 ## Exposed Methods
 
-### `function()`
+### `setValue()`
 Dispatches an action to the Vuex store to set a specific value.
 
-```ts
-const setValue = (currentValue: string, input: string): void => {
-      store.dispatch("plant/setValue", { input, value: currentValue });
-    };
-```
+**Parameters:**
+- `currentValue` (`string`): The current value to be set.
+- `input` (`string`): The input field name.
