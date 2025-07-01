@@ -7,6 +7,9 @@ import {
   JSDocTag,
   PropertySignature,
   SourceFile,
+  ScriptTarget,
+  Block,
+  VariableStatement,
 } from "ts-morph";
 
 const srcDir = "src";
@@ -15,12 +18,16 @@ const allowedDirs = ["components", "pages", "layout", "ui"];
 const includedSingleFiles = ["App.vue"];
 
 const project = new Project({
-  compilerOptions: { allowJs: true, target: 99 },
+  compilerOptions: { allowJs: true, target: ScriptTarget.ES2018 },
 });
 
 function extractComponentInfo(scriptContent: string) {
   const commentRegex = /\/\*\*([\s\S]*?)\*\//gm;
-  const matches = [...scriptContent.matchAll(commentRegex)];
+  const matches: RegExpExecArray[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = commentRegex.exec(scriptContent)) !== null) {
+    matches.push(match);
+  }
 
   for (const match of matches) {
     if (match[0].includes("@component")) {
@@ -74,7 +81,11 @@ function extractPropsInterface(scriptContent: string) {
     let comment = docMap[name] || "";
     if (!comment) {
       const propJsDoc = prop.getJsDocs()[0]?.getComment();
-      if (propJsDoc) comment = propJsDoc.trim();
+      if (propJsDoc) {
+        comment = Array.isArray(propJsDoc)
+          ? propJsDoc.map(String).join("").trim()
+          : (propJsDoc || "").trim();
+      }
     }
     return {
       name,
@@ -139,7 +150,7 @@ function extractFunctionsFromSetup(scriptContent: string) {
 
   const results = [];
 
-  body.getStatements().forEach((stmt) => {
+  (body as Block).getStatements().forEach((stmt) => {
     const isFunction =
       stmt.getKind() === SyntaxKind.FunctionDeclaration ||
       stmt.getKind() === SyntaxKind.VariableStatement;
@@ -159,8 +170,8 @@ function extractFunctionsFromSetup(scriptContent: string) {
       if (stmt.getKind() === SyntaxKind.FunctionDeclaration) {
         fnName = stmt.getFirstChildByKind(SyntaxKind.Identifier)?.getText();
       } else if (stmt.getKind() === SyntaxKind.VariableStatement) {
-        const declaration = stmt.getDeclarations()[0];
-        fnName = declaration?.getName();
+        const declarations = (stmt as VariableStatement).getDeclarations();
+        fnName = declarations[0]?.getName();
       }
     }
 
