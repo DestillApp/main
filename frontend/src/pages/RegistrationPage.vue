@@ -113,6 +113,7 @@ import { scrollToTop } from "../helpers/displayHelpers";
 import { REGISTER_USER } from "@/graphql/mutations/auth";
 import { CHECK_USERNAME_EXISTENCE } from "@/graphql/queries/auth";
 import { registrationFormValidation } from "@/helpers/formsValidation";
+import { RegistrationForm } from "@/types/forms/registrationForm";
 import * as Sentry from "@sentry/vue";
 
 /**

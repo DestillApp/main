@@ -217,6 +217,7 @@ import {
   setKeyboardIntegerNumber,
 } from "@/helpers/formatHelpers";
 import { PlantForm } from "@/types/forms/plantForm";
+import { PlantOrigin } from "@/types/enums";
 import { GET_COUNTRY_NAMES } from "@/graphql/queries/country";
 import * as Sentry from "@sentry/vue";
 
@@ -235,14 +236,6 @@ import * as Sentry from "@sentry/vue";
  * @see onInput
  * @see onBlur
  */
-
-/**
- * Enum for plant origin options.
- */
-enum PlantOrigin {
-  ZBIÓR = "zbiór",
-  KUPNO = "kupno",
-}
 
 /**
  * Props for PlantOrigin component.

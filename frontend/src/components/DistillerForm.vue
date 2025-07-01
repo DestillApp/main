@@ -76,6 +76,7 @@ import BaseButton from "@/ui/BaseButton.vue";
 import { CloseModal } from "@/types/events";
 import { setKeyboardIntegerNumber } from "@/helpers/formatHelpers";
 import { distillerFormValidation } from "@/helpers/formsValidation";
+import { Distiller } from "@/types/distiller";
 import * as Sentry from "@sentry/vue";
 
 /**
@@ -86,19 +87,6 @@ import * as Sentry from "@sentry/vue";
  * @see closeModal
  * @see setInteger
  */
-
-/**
- * Interface for distiller object.
- * @interface
- * @property {string} material
- * @property {number} capacity
- * @property {string} heating
- */
-interface Distiller {
-  material: string;
-  capacity: number;
-  heating: string;
-}
 
 export default {
   components: {

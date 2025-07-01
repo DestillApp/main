@@ -53,6 +53,7 @@ import { ref, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "@/store/useStore";
 import { scrollToTop } from "../helpers/displayHelpers.js";
+import { LoginForm } from "@/types/forms/loginForm";
 import * as Sentry from "@sentry/vue";
 
 /**
@@ -61,15 +62,6 @@ import * as Sentry from "@sentry/vue";
  * @see loginFormValidation
  * @see loginUser
  */
-
-/**
- * Interface for login form data.
- * @interface
- */
-interface LoginForm {
-  email: string;
-  password: string;
-}
 
 export default {
   name: "LoginForm",

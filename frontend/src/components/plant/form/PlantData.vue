@@ -166,6 +166,7 @@ import {
 } from "@/helpers/formatHelpers";
 import { plantAgeWithSuffix } from "@/helpers/displayHelpers.js";
 import { PlantForm } from "@/types/forms/plantForm";
+import { PlantState } from "@/types/enums";
 import BaseTextInput from "@/ui/BaseTextInput.vue";
 
 /**
@@ -180,15 +181,6 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
  * @see setKeyboardIntegerNumber
  * @see handleKeyboard
  */
-
-/**
- * Enum for plant state options.
- */
-enum PlantState {
-  ŚWIEŻY = "świeży",
-  PODSUSZONY = "podsuszony",
-  SUCHY = "suchy",
-}
 
 /**
  * Props for PlantData component.

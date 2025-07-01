@@ -87,6 +87,8 @@ import BaseAutocompleteInput from "@/ui/BaseAutocompleteInput.vue";
 import BaseInputDatePicker from "@/ui/BaseInputDatePicker.vue";
 import { ResultsDistillation } from "@/types/forms/resultsForm";
 import { DistillationForm } from "@/types/forms/distillationForm";
+import { DistillationType } from "@/types/enums";
+import { DistillerWithId } from "@/types/distiller";
 import { useStore } from "@/store/useStore";
 
 /**
@@ -101,30 +103,6 @@ import { useStore } from "@/store/useStore";
  * @see setDistillationType
  * @see setDistillationApparatus
  */
-
-/**
- * Enum for available distillation types.
- */
-enum DistillationType {
-  WODNA = "wodna",
-  WODNO_PAROWA = "wodno-parowa",
-  PAROWA = "parowa",
-}
-
-/**
- * Interface for distiller object.
- * @interface
- * @property {string} id
- * @property {string} material
- * @property {number} capacity
- * @property {string} heating
- */
-interface Distiller {
-  id: string;
-  material: string;
-  capacity: number;
-  heating: string;
-}
 
 /**
  * Props for DistillationProcess component.
@@ -181,7 +159,7 @@ export default {
     ]);
 
     // Computed property for distiller list from Vuex
-    const distillerList = computed<Distiller[]>(
+    const distillerList = computed<DistillerWithId[]>(
       () => store.getters["settings/distillerList"]
     );
 
@@ -192,7 +170,7 @@ export default {
     const apparatus = computed<string[]>(() => {
       return distillerList.value
         ? distillerList.value.map(
-            (distiller: Distiller) =>
+            (distiller: DistillerWithId) =>
               `Destylator ${distiller.material} - ${distiller.capacity}l - ${distiller.heating}`
           )
         : [];

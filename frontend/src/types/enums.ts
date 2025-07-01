@@ -12,3 +12,29 @@ export enum ListSortingOptions {
   YoungDate = "youngDate",
   OldDate = "oldDate",
 }
+
+/**
+ * Enum for available distillation types.
+ */
+export enum DistillationType {
+  WODNA = "wodna",
+  WODNO_PAROWA = "wodno-parowa",
+  PAROWA = "parowa",
+}
+
+/**
+ * Enum for plant state options.
+ */
+export enum PlantState {
+  ŚWIEŻY = "świeży",
+  PODSUSZONY = "podsuszony",
+  SUCHY = "suchy",
+}
+
+/**
+ * Enum for plant origin options.
+ */
+export enum PlantOrigin {
+  ZBIÓR = "zbiór",
+  KUPNO = "kupno",
+}
