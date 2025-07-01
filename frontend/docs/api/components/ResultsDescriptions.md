@@ -7,8 +7,8 @@ This component renders text areas for entering descriptions related to distillat
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `isFormValid` | `boolean` | yes |  |
-| `wasSubmitted` | `boolean` | yes |  |
+| `isFormValid` | `boolean` | yes | Indicates if the form is valid. |
+| `wasSubmitted` | `boolean` | yes | Indicates if the form was submitted. |
 
 ## Exposed Methods
 

@@ -7,9 +7,9 @@ A modal date picker component using Vuetify, supporting dark theme and color cus
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `title` | `string` | no |  |
-| `value` | `string` | no |  |
-| `color` | `string` | no |  |
+| `title` | `string` | no | The title displayed in the date picker. |
+| `value` | `string` | no | The selected date value. |
+| `color` | `string` | no | The color context for styling (e.g., "plant", "distillation"). |
 
 ## Emits
 

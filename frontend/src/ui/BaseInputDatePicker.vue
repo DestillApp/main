@@ -62,7 +62,13 @@ import { BaseInputDatePickerEvents } from "@/types/events";
 
 /**
  * Props for BaseInputDatePicker component.
- * @interface Props
+ * @interface
+ * @property {string} label - The label for the input field.
+ * @property {string} title - The title for the date picker modal.
+ * @property {string} id - The id for the input field.
+ * @property {string} value - The selected date value.
+ * @property {boolean} invalidInput - Flag to indicate if the input is invalid.
+ * @property {string} color - The color context for styling (e.g., "plant", "distillation").
  */
 interface Props {
   label?: string;

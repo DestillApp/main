@@ -7,8 +7,8 @@ A search input component with search and clear icons, supporting color context a
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `label` | `string` | no |  |
-| `inputColor` | `string` | no |  |
+| `label` | `string` | no | The label for the search input. |
+| `inputColor` | `string` | no | The color context for the input (e.g., "plant", "distillation", "results"). |
 
 ## Emits
 

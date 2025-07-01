@@ -7,8 +7,8 @@ Dropdown component for selecting a sorting option for a list. Displays the curre
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `options` | `string[]` | yes |  |
-| `sorting` | `string` | yes |  |
+| `options` | `string[]` | yes | Array of sorting options. |
+| `sorting` | `string` | yes | The currently selected sorting option. |
 
 ## Emits
 

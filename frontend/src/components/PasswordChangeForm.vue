@@ -91,18 +91,11 @@ import * as Sentry from "@sentry/vue";
 /**
  * @component PasswordChangeForm
  * @description Modal form for changing the user's password. Handles validation, error display, and submission.
- * @props none
  * @emits close-modal - Event emitted when the modal is closed.
  * @see checkPassword
  * @see changePassword
  * @see closeModal
  */
-
-/**
- * No props for PasswordChangeForm component.
- * @interface
- */
-interface Props {}
 
 export default {
   components: {

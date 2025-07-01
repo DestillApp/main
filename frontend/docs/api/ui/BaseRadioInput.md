@@ -7,11 +7,11 @@ A radio group component that allows selecting one option from a list of options.
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `options` | `string[]` | yes |  |
-| `modelValue` | `string` | yes |  |
-| `title` | `string` | yes |  |
-| `name` | `string` | no |  |
-| `color` | `string` | no |  |
+| `options` | `string[]` | yes | The list of options to display as radio buttons. |
+| `modelValue` | `string` | yes | The currently selected value. |
+| `title` | `string` | yes | The label/title for the radio group. |
+| `name` | `string` | no | The name attribute for the radio group. |
+| `color` | `string` | no | The color for the radio buttons. |
 
 ## Emits
 

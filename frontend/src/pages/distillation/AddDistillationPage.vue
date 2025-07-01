@@ -52,7 +52,6 @@ import {
   onBeforeRouteLeave,
   useRouter,
   useRoute,
-  RouteLocationNormalizedLoaded,
 } from "vue-router";
 import * as Sentry from "@sentry/vue";
 

@@ -223,9 +223,9 @@ import * as Sentry from "@sentry/vue";
 /**
  * @component PlantOrigin
  * @description This component renders a form to input and manage data related to plant used in distillation, including origin, harvest date, harvest temperature, harvest range, buy date and producer details.
- * @props {boolean} isFormValid
- * @props {boolean} [isResetting]
- * @props {boolean} wasSubmitted
+ * @props {boolean} isFormValid - Indicates if the form is valid.
+ * @props {boolean} [isResetting] - Indicates if the form is being reset.
+ * @props {boolean} wasSubmitted - Indicates if the form was submitted.
  * @see setValue
  * @see setIntegerNumber
  * @see setKeyboardIntegerNumber
@@ -247,9 +247,9 @@ enum PlantOrigin {
 /**
  * Props for PlantOrigin component.
  * @interface
- * @property {boolean} isFormValid
- * @property {boolean} [isResetting]
- * @property {boolean} wasSubmitted
+ * @property {boolean} isFormValid - Indicates if the form is valid.
+ * @property {boolean} [isResetting] - Indicates if the form is being reset.
+ * @property {boolean} wasSubmitted - Indicates if the form was submitted.
  */
 interface Props {
   isFormValid: boolean;

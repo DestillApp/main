@@ -81,8 +81,14 @@ import { ToggleMenu } from "@/types/events";
 /**
  * @component MobileMenu
  * @description This component renders a side menu for mobile view, including navigation links and a logout button.
+ * @props {boolean} isOpen - Determines if the mobile menu is open.
  */
 
+/**
+ * Props for MobileMenu component.
+ * @interface
+ * @property {boolean} isOpen - Determines if the mobile menu is open.
+ */
 interface Props {
   isOpen: boolean;
 }

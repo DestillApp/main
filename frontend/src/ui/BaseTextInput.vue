@@ -64,7 +64,16 @@ import { BaseTextEvents } from "@/types/events";
 
 /**
  * Props for BaseTextInput component.
- * @interface Props
+ * @interface
+ * @property {string} label - The label for the input field.
+ * @property {string|number|null} modelValue - The value bound to the input field.
+ * @property {string} id - The id for the input field.
+ * @property {boolean} disabled - Flag to indicate if the input is disabled.
+ * @property {string} placeholder - The placeholder text for the input field.
+ * @property {string} classType - The class type for conditional styling (e.g., "number", "time", "results").
+ * @property {string} inputColor - The color context for the input (e.g., "plant", "distillation", "results").
+ * @property {boolean} invalidInput - Flag to indicate if the input is invalid.
+ * @property {string} storeName - The name of the store for value updates.
  */
 interface Props {
   label?: string;

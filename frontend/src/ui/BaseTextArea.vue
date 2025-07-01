@@ -51,7 +51,14 @@ import { BaseTextEvents } from "@/types/events";
 
 /**
  * Props for BaseTextArea component.
- * @interface Props
+ * @interface
+ * @property {string} label - The label for the text area.
+ * @property {string} modelValue - The value bound to the text area.
+ * @property {string} id - The id for the text area.
+ * @property {string} placeholder - The placeholder text for the text area.
+ * @property {boolean} invalidInput - Flag to indicate if the input is invalid.
+ * @property {string} inputColor - The color context for the text area (e.g., "results").
+ * @property {string} storeName - The name of the store for value updates.
  */
 interface Props {
   label?: string;

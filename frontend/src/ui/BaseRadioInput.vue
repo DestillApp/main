@@ -46,7 +46,12 @@ import { BaseRadioInputEvents } from "@/types/events";
 
 /**
  * Props for BaseRadioInput component.
- * @interface Props
+ * @interface
+ * @property {string[]} options - The list of options to display as radio buttons.
+ * @property {string} modelValue - The currently selected value.
+ * @property {string} title - The label/title for the radio group.
+ * @property {string} [name] - The name attribute for the radio group.
+ * @property {string} [color] - The color for the radio buttons.
  */
 interface Props {
   options: string[];

@@ -7,13 +7,13 @@ A customizable text area component with support for validation, theming, and col
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `label` | `string` | no |  |
-| `modelValue` | `string` | no |  |
-| `id` | `string` | no |  |
-| `placeholder` | `string` | no |  |
-| `invalidInput` | `boolean` | no |  |
-| `inputColor` | `string` | no |  |
-| `storeName` | `string` | no |  |
+| `label` | `string` | no | The label for the text area. |
+| `modelValue` | `string` | no | The value bound to the text area. |
+| `id` | `string` | no | The id for the text area. |
+| `placeholder` | `string` | no | The placeholder text for the text area. |
+| `invalidInput` | `boolean` | no | Flag to indicate if the input is invalid. |
+| `inputColor` | `string` | no | The color context for the text area (e.g., "results"). |
+| `storeName` | `string` | no | The name of the store for value updates. |
 
 ## Emits
 

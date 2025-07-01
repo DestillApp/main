@@ -60,9 +60,9 @@ import type { ListLengthSettingsEvents } from "@/types/events";
 /**
  * Props for ListLengthSettings component.
  * @interface
- * @property {string} title
- * @property {"plant"|"distillation"|"results"} listColor
- * @property {number} chosenLength
+ * @property {string} title - The title displayed above the list.
+ * @property {"plant"|"distillation"|"results"} listColor - The color theme for the list.
+ * @property {number} chosenLength - The currently selected list length.
  */
 interface Props {
   title: string;

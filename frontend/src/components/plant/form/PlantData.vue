@@ -171,10 +171,10 @@ import BaseTextInput from "@/ui/BaseTextInput.vue";
 /**
  * @component PlantData
  * @description This component renders inputs and manages data related to plant material used in distillation, including weight, state, and drying/age information.
- * @props {boolean} isFormValid
- * @props {boolean} wasSubmitted
- * @props {boolean} [isResetting]
- * @props {boolean} [isEditing]
+ * @props {boolean} isFormValid - Indicates if the form is valid.
+ * @props {boolean} wasSubmitted - Indicates if the form was submitted.
+ * @props {boolean} [isResetting] - Indicates if the form is being reset.
+ * @props {boolean} [isEditing] - Indicates if the form is in editing mode.
  * @see setNumberFormat
  * @see setIntegerNumber
  * @see setKeyboardIntegerNumber
@@ -193,10 +193,10 @@ enum PlantState {
 /**
  * Props for PlantData component.
  * @interface
- * @property {boolean} isFormValid
- * @property {boolean} wasSubmitted
- * @property {boolean} [isResetting]
- * @property {boolean} [isEditing]
+ * @property {boolean} isFormValid - Indicates if the form is valid.
+ * @property {boolean} wasSubmitted - Indicates if the form was submitted.
+ * @property {boolean} [isResetting] - Indicates if the form is being reset.
+ * @property {boolean} [isEditing] - Indicates if the form is in editing mode.
  */
 interface Props {
   isFormValid: boolean;

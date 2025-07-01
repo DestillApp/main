@@ -7,9 +7,9 @@ Dropdown component for selecting the number of items displayed in a list. Allows
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `title` | `string` | yes |  |
-| `listColor` | `"plant" | "distillation" | "results"` | yes |  |
-| `chosenLength` | `number` | yes |  |
+| `title` | `string` | yes | The title displayed above the list. |
+| `listColor` | `"plant" | "distillation" | "results"` | yes | The color theme for the list. |
+| `chosenLength` | `number` | yes | The currently selected list length. |
 
 ## Emits
 

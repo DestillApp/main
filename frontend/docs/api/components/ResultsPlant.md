@@ -7,8 +7,8 @@ Displays and manages the plant-related part of the distillation results, includi
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `isFormValid` | `boolean` | yes |  |
-| `isEditing` | `boolean` | no |  |
+| `isFormValid` | `boolean` | yes | Indicates if the form is valid. |
+| `isEditing` | `boolean` | no | Indicates if the form is in editing mode. |
 
 ## Exposed Methods
 

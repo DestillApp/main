@@ -44,8 +44,7 @@ import { DistillationArchivePlant } from "@/types/forms/resultsForm";
 
 /**
  * @component PlantDetails
- * @description Displays detailed information about a plant, including origin, harvest/buy details, state, and age.
- * Fetches plant details from the API or uses provided distilledPlant prop.
+ * @description Displays detailed information about a plant, including origin, harvest/buy details, state, and age. Fetches plant details from the API or uses provided distilledPlant prop.
  * @props {string} [plantId] - The ID of the plant to fetch details for.
  * @props {DistillationArchivePlant} [distilledPlant] - Pre-fetched plant details (used for distillation archive).
  * @see fetchPlantDetails
@@ -54,8 +53,8 @@ import { DistillationArchivePlant } from "@/types/forms/resultsForm";
 /**
  * Props for PlantDetails component.
  * @interface
- * @property {string} [plantId]
- * @property {DistillationArchivePlant} [distilledPlant]
+ * @property {string} [plantId] - The ID of the plant to fetch details for.
+ * @property {DistillationArchivePlant} [distilledPlant] - Pre-fetched plant details (used for distillation archive).
  */
 interface Props {
   plantId?: string;

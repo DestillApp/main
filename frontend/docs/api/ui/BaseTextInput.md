@@ -7,15 +7,15 @@ A customizable text input component with support for validation, theming, and co
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `label` | `string` | no |  |
-| `modelValue` | `string | number` | no |  |
-| `id` | `string` | no |  |
-| `disabled` | `boolean` | no |  |
-| `placeholder` | `string` | no |  |
-| `classType` | `string` | no |  |
-| `inputColor` | `string` | no |  |
-| `invalidInput` | `boolean` | no |  |
-| `storeName` | `string` | no |  |
+| `label` | `string` | no | The label for the input field. |
+| `modelValue` | `string | number` | no | The value bound to the input field. |
+| `id` | `string` | no | The id for the input field. |
+| `disabled` | `boolean` | no | Flag to indicate if the input is disabled. |
+| `placeholder` | `string` | no | The placeholder text for the input field. |
+| `classType` | `string` | no | The class type for conditional styling (e.g., "number", "time", "results"). |
+| `inputColor` | `string` | no | The color context for the input (e.g., "plant", "distillation", "results"). |
+| `invalidInput` | `boolean` | no | Flag to indicate if the input is invalid. |
+| `storeName` | `string` | no | The name of the store for value updates. |
 
 ## Emits
 

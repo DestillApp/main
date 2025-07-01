@@ -65,8 +65,8 @@ import type { ListSortingEvents } from "@/types/events";
 /**
  * Props for ListSorting component.
  * @interface
- * @property {string[]} options
- * @property {string} sorting
+ * @property {string[]} options - Array of sorting options.
+ * @property {string} sorting - The currently selected sorting option.
  */
 interface Props {
   options: string[];

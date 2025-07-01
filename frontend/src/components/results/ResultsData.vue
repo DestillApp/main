@@ -111,9 +111,9 @@ import { ResultsForm } from "@/types/forms/resultsForm";
 /**
  * @component ResultsData
  * @description This component renders inputs and manages data related to distillation results, including oil amount, hydrosol amount, and hydrosol pH.
- * @props {boolean} isFormValid
- * @props {boolean} [isEditing]
- * @props {boolean} wasSubmitted
+ * @props {boolean} isFormValid - Indicates if the form is valid.
+ * @props {boolean} [isEditing] - Indicates if the form is in editing mode.
+ * @props {boolean} wasSubmitted - Indicates if the form was submitted.
  * @see setNumberFormat
  * @see preventMinusNumber
  */
@@ -121,9 +121,9 @@ import { ResultsForm } from "@/types/forms/resultsForm";
 /**
  * Props for ResultsData component.
  * @interface
- * @property {boolean} isFormValid
- * @property {boolean} [isEditing]
- * @property {boolean} wasSubmitted
+ * @property {boolean} isFormValid - Indicates if the form is valid.
+ * @property {boolean} [isEditing] - Indicates if the form is in editing mode.
+ * @property {boolean} wasSubmitted - Indicates if the form was submitted.
  */
 interface Props {
   isFormValid: boolean;

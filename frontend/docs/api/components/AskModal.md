@@ -7,9 +7,9 @@ A confirmation modal for restoring a plant and its weight to the inventory.
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `plantName` | `string` | yes |  |
-| `plantPart` | `string` | yes |  |
-| `distillationWeight` | `number` | yes |  |
+| `plantName` | `string` | yes | The name of the plant to be restored. |
+| `plantPart` | `string` | yes | The part of the plant to be restored. |
+| `distillationWeight` | `number` | yes | The weight of the plant to be restored. |
 
 ## Emits
 

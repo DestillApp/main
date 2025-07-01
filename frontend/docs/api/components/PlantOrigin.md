@@ -7,9 +7,9 @@ This component renders a form to input and manage data related to plant used in 
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `isFormValid` | `boolean` | yes |  |
-| `isResetting` | `boolean` | no |  |
-| `wasSubmitted` | `boolean` | yes |  |
+| `isFormValid` | `boolean` | yes | Indicates if the form is valid. |
+| `isResetting` | `boolean` | no | Indicates if the form is being reset. |
+| `wasSubmitted` | `boolean` | yes | Indicates if the form was submitted. |
 
 ## Exposed Methods
 

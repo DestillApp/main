@@ -7,8 +7,8 @@ This component renders a form to input and manage data related to plant material
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `isFormValid` | `boolean` | yes | Description |
-| `wasSubmitted` | `boolean` | yes |  |
+| `isFormValid` | `boolean` | yes | Indicates if the form is valid. |
+| `wasSubmitted` | `boolean` | yes | Indicates if the form was submitted. |
 
 ## Exposed Methods
 

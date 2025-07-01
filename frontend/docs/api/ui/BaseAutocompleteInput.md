@@ -7,16 +7,16 @@ A customizable autocomplete input component with optional dropdown, validation, 
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `label` | `string` | no |  |
-| `modelValue` | `string | number` | no |  |
-| `id` | `string` | no |  |
-| `disabled` | `boolean` | no |  |
-| `placeholder` | `string` | no |  |
-| `classType` | `string` | no |  |
-| `color` | `string` | no |  |
-| `invalidInput` | `boolean` | no |  |
-| `results` | `any[]` | no |  |
-| `toChoose` | `boolean` | no |  |
+| `label` | `string` | no | The label for the input field. |
+| `modelValue` | `string | number` | no | The model value bound to the input field. |
+| `id` | `string` | no | The id for the input field. |
+| `disabled` | `boolean` | no | Flag to indicate if the input is disabled. |
+| `placeholder` | `string` | no | The placeholder text for the input field. |
+| `classType` | `string` | no | The class type for conditional styling. |
+| `color` | `string` | no | The color context for styling (e.g., "plant", "distillation"). |
+| `invalidInput` | `boolean` | no | Flag to indicate if the input is invalid. |
+| `results` | `any[]` | no | List of results for the dropdown/autocomplete. |
+| `toChoose` | `boolean` | no | If true, enables dropdown selection mode. |
 
 ## Emits
 

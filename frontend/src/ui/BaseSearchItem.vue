@@ -65,7 +65,9 @@ import { BaseSearchEvents } from "@/types/events";
 
 /**
  * Props for BaseSearchItem component.
- * @interface Props
+ * @interface
+ * @property {string} label - The label for the search input.
+ * @property {string} inputColor - The color context for the input (e.g., "plant", "distillation", "results").
  */
 interface Props {
   label?: string;

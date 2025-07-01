@@ -154,8 +154,8 @@ import { ResultsPlant, ResultsDistillation } from "@/types/forms/resultsForm";
 /**
  * @component ResultsPlant
  * @description Displays and manages the plant-related part of the distillation results, including plant selection, plant details, and soaking/shredding options.
- * @props {boolean} isFormValid
- * @props {boolean} [isEditing]
+ * @props {boolean} isFormValid - Indicates if the form is valid.
+ * @props {boolean} [isEditing] - Indicates if the form is in editing mode.
  * @see fetchPlantData
  * @see fetchDistillationData
  */
@@ -163,8 +163,8 @@ import { ResultsPlant, ResultsDistillation } from "@/types/forms/resultsForm";
 /**
  * Props for ResultsPlant component.
  * @interface
- * @property {boolean} isFormValid
- * @property {boolean} [isEditing]
+ * @property {boolean} isFormValid - Indicates if the form is valid.
+ * @property {boolean} [isEditing] - Indicates if the form is in editing mode.
  */
 interface Props {
   isFormValid: boolean;

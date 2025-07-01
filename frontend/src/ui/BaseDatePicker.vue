@@ -38,6 +38,9 @@ import { BaseDatePickerEvents } from "@/types/events";
 /**
  * Props for BaseDatePicker component.
  * @interface
+ * @property {string} title - The title displayed in the date picker.
+ * @property {string} value - The selected date value.
+ * @property {string} color - The color context for styling (e.g., "plant", "distillation").
  */
 interface Props {
   title?: string;

@@ -44,9 +44,9 @@ import BaseButton from "@/ui/BaseButton.vue";
 /**
  * Props for AskModal component.
  * @interface
- * @property {string} plantName
- * @property {string} plantPart
- * @property {number} distillationWeight
+ * @property {string} plantName - The name of the plant to be restored.
+ * @property {string} plantPart - The part of the plant to be restored.
+ * @property {number} distillationWeight - The weight of the plant to be restored.
  */
 interface Props {
   plantName: string;

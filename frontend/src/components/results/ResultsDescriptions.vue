@@ -54,16 +54,16 @@ import { ResultsForm } from "@/types/forms/resultsForm";
 /**
  * @component ResultsDescriptions
  * @description This component renders text areas for entering descriptions related to distillation results, including oil and hydrosol descriptions.
- * @props {boolean} isFormValid
- * @props {boolean} wasSubmitted
+ * @props {boolean} isFormValid - Indicates if the form is valid.
+ * @props {boolean} wasSubmitted - Indicates if the form was submitted.
  * @see setValue
  */
 
 /**
  * Props for ResultsDescriptions component.
  * @interface
- * @property {boolean} isFormValid
- * @property {boolean} wasSubmitted
+ * @property {boolean} isFormValid - Indicates if the form is valid.
+ * @property {boolean} wasSubmitted - Indicates if the form was submitted.
  */
 interface Props {
   isFormValid: boolean;

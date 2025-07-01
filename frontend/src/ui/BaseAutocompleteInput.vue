@@ -192,6 +192,16 @@ import { mdiArrowDownBoldBox } from "@mdi/js";
 /**
  * Props interface for BaseAutocompleteInput.
  * @interface
+ * @property {string} label - The label for the input field.
+ * @property {string|number} modelValue - The model value bound to the input field.
+ * @property {string} id - The id for the input field.
+ * @property {boolean} disabled - Flag to indicate if the input is disabled.
+ * @property {string} placeholder - The placeholder text for the input field.
+ * @property {string} classType - The class type for conditional styling.
+ * @property {string} color - The color context for styling (e.g., "plant", "distillation").
+ * @property {boolean} invalidInput - Flag to indicate if the input is invalid.
+ * @property {any[]} results - List of results for the dropdown/autocomplete.
+ * @property {boolean} toChoose - If true, enables dropdown selection mode.
  */
 interface Props {
   label?: string;
@@ -303,7 +313,9 @@ export default {
     };
 
     // Computed property for distillation color context
-    const distillationColor = computed<boolean>(() => props.color === "distillation");
+    const distillationColor = computed<boolean>(
+      () => props.color === "distillation"
+    );
     // Computed property for plant color context
     const plantColor = computed<boolean>(() => props.color === "plant");
 
