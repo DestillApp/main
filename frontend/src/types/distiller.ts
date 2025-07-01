@@ -13,8 +13,8 @@ export interface Distiller {
 }
 
 /**
+ *  Interface for a distiller object with an additional unique identifier.
  * @interface DistillerWithId
- * @description Interface for a distiller object with an additional unique identifier.
  * @property {string} id - The unique identifier for the distiller.
  * @property {string} material - The material of the distiller.
  * @property {number} capacity - The capacity of the distiller.

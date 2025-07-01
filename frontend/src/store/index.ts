@@ -4,6 +4,7 @@
  */
 
 import { createStore, Store } from "vuex";
+import type { ActionContext } from "vuex";
 import type { RootStateOnly } from "@/types/store/index";
 
 import plantModule from "./plant/index";
@@ -11,6 +12,8 @@ import authModule from "./auth/index";
 import distillationModule from "./distillation/index";
 import resultsModule from "./results/index";
 import settingsModule from "./settings/index";
+
+type RootActionContext = ActionContext<RootStateOnly, RootStateOnly>;
 
 /**
  * Creates the Vuex store with modules.
@@ -35,7 +38,7 @@ const store = createStore({
      * @param {boolean} value - The new value for comingFromRoute.
      * @returns {void}
      */
-    changeComingFromRoute(state, value: boolean): void {
+    changeComingFromRoute(state: RootStateOnly, value: boolean): void {
       state.comingFromRoute = value;
     },
     /**
@@ -44,7 +47,7 @@ const store = createStore({
      * @param {string} value - The new search query.
      * @returns {void}
      */
-    setSearchQuery(state, value: string): void {
+    setSearchQuery(state: RootStateOnly, value: string): void {
       state.searchQuery = value;
       localStorage.setItem("searchQuery", value);
     },
@@ -56,7 +59,7 @@ const store = createStore({
      * @param {boolean} value - The new value for comingFromRoute.
      * @returns {void}
      */
-    setComingFromRoute(context, value: boolean): void {
+    setComingFromRoute(context: RootActionContext, value: boolean): void {
       context.commit("changeComingFromRoute", value);
     },
     /**
@@ -65,7 +68,7 @@ const store = createStore({
      * @param {string} value - The new search query.
      * @returns {void}
      */
-    updateSearchQuery(context, value: string): void {
+    updateSearchQuery(context: RootActionContext, value: string): void {
       context.commit("setSearchQuery", value);
     },
     /**
@@ -73,7 +76,7 @@ const store = createStore({
      * @param {object} context - The Vuex context.
      * @returns {void}
      */
-    fetchSearchQueryFromLocalStorage(context): void {
+    fetchSearchQueryFromLocalStorage(context: RootActionContext): void {
       const value = localStorage.getItem("searchQuery");
       if (value) {
         context.commit("setSearchQuery", value);

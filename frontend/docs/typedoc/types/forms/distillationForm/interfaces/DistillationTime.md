@@ -6,7 +6,7 @@
 
 # Interface: DistillationTime
 
-Defined in: [types/forms/distillationForm.ts:49](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L49)
+Defined in: [types/forms/distillationForm.ts:49](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L49)
 
 Interface representing the structure of the distillation time.
 
@@ -16,7 +16,7 @@ Interface representing the structure of the distillation time.
 
 > **distillationHours**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:50](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L50)
+Defined in: [types/forms/distillationForm.ts:50](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L50)
 
 The number of hours for distillation.
 
@@ -26,6 +26,6 @@ The number of hours for distillation.
 
 > **distillationMinutes**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:51](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L51)
+Defined in: [types/forms/distillationForm.ts:51](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L51)
 
 The number of minutes for distillation.

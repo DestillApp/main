@@ -6,7 +6,7 @@
 
 # Interface: SettingsForm
 
-Defined in: [store/settings/index.ts:37](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L37)
+Defined in: [store/settings/index.ts:37](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L37)
 
 Represents the settings form state.
 
@@ -16,7 +16,7 @@ Represents the settings form state.
 
 > **archiveDistillationListSorting**: `string`
 
-Defined in: [store/settings/index.ts:43](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L43)
+Defined in: [store/settings/index.ts:43](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L43)
 
 The sorting method for the distillation archives list.
 
@@ -26,7 +26,7 @@ The sorting method for the distillation archives list.
 
 > **distillationArchivesListLength**: `number`
 
-Defined in: [store/settings/index.ts:40](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L40)
+Defined in: [store/settings/index.ts:40](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L40)
 
 The length of the distillation archives list.
 
@@ -36,7 +36,7 @@ The length of the distillation archives list.
 
 > **distillationListLength**: `number`
 
-Defined in: [store/settings/index.ts:39](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L39)
+Defined in: [store/settings/index.ts:39](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L39)
 
 The length of the distillation list.
 
@@ -46,7 +46,7 @@ The length of the distillation list.
 
 > **distillationListSorting**: `string`
 
-Defined in: [store/settings/index.ts:42](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L42)
+Defined in: [store/settings/index.ts:42](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L42)
 
 The sorting method for the distillation list.
 
@@ -56,7 +56,7 @@ The sorting method for the distillation list.
 
 > **distillerList**: [`Distiller`](Distiller.md)[]
 
-Defined in: [store/settings/index.ts:44](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L44)
+Defined in: [store/settings/index.ts:44](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L44)
 
 The list of distillers.
 
@@ -66,7 +66,7 @@ The list of distillers.
 
 > **isDarkTheme**: `boolean`
 
-Defined in: [store/settings/index.ts:45](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L45)
+Defined in: [store/settings/index.ts:45](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L45)
 
 Whether the dark theme is enabled.
 
@@ -76,7 +76,7 @@ Whether the dark theme is enabled.
 
 > **plantListLength**: `number`
 
-Defined in: [store/settings/index.ts:38](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L38)
+Defined in: [store/settings/index.ts:38](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L38)
 
 The length of the plant list.
 
@@ -86,6 +86,6 @@ The length of the plant list.
 
 > **plantListSorting**: `string`
 
-Defined in: [store/settings/index.ts:41](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L41)
+Defined in: [store/settings/index.ts:41](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L41)
 
 The sorting method for the plant list.

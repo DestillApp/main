@@ -23,7 +23,8 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "src/router.js"
+    "src/router.js",
+    "src/vuex-shim.d.ts"
   ], // Fixed include paths
   "exclude": ["node_modules"]
 }

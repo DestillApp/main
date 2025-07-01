@@ -6,7 +6,7 @@
 
 # Interface: DistillationForm
 
-Defined in: [types/forms/distillationForm.ts:70](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L70)
+Defined in: [types/forms/distillationForm.ts:70](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L70)
 
 Interface representing the structure of the distillation form.
 
@@ -16,7 +16,7 @@ Interface representing the structure of the distillation form.
 
 > **choosedPlant**: [`FormChoosedPlant`](FormChoosedPlant.md)
 
-Defined in: [types/forms/distillationForm.ts:71](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L71)
+Defined in: [types/forms/distillationForm.ts:71](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L71)
 
 The selected plant for distillation.
 
@@ -26,7 +26,7 @@ The selected plant for distillation.
 
 > **distillationApparatus**: `string`
 
-Defined in: [types/forms/distillationForm.ts:80](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L80)
+Defined in: [types/forms/distillationForm.ts:80](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L80)
 
 The apparatus used for distillation.
 
@@ -36,7 +36,7 @@ The apparatus used for distillation.
 
 > **distillationDate**: `string`
 
-Defined in: [types/forms/distillationForm.ts:79](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L79)
+Defined in: [types/forms/distillationForm.ts:79](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L79)
 
 The date of distillation.
 
@@ -46,7 +46,7 @@ The date of distillation.
 
 > **distillationTime**: [`DistillationTime`](DistillationTime.md)
 
-Defined in: [types/forms/distillationForm.ts:82](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L82)
+Defined in: [types/forms/distillationForm.ts:82](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L82)
 
 The distillation time.
 
@@ -56,7 +56,7 @@ The distillation time.
 
 > **distillationType**: `string`
 
-Defined in: [types/forms/distillationForm.ts:78](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L78)
+Defined in: [types/forms/distillationForm.ts:78](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L78)
 
 The type of distillation.
 
@@ -66,7 +66,7 @@ The type of distillation.
 
 > **initialWeightForDistillation**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:73](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L73)
+Defined in: [types/forms/distillationForm.ts:73](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L73)
 
 The initial weight for distillation.
 
@@ -76,7 +76,7 @@ The initial weight for distillation.
 
 > **isPlantShredded**: `boolean`
 
-Defined in: [types/forms/distillationForm.ts:77](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L77)
+Defined in: [types/forms/distillationForm.ts:77](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L77)
 
 Whether the plant is shredded.
 
@@ -86,7 +86,7 @@ Whether the plant is shredded.
 
 > **isPlantSoaked**: `boolean`
 
-Defined in: [types/forms/distillationForm.ts:74](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L74)
+Defined in: [types/forms/distillationForm.ts:74](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L74)
 
 Whether the plant is soaked.
 
@@ -96,7 +96,7 @@ Whether the plant is soaked.
 
 > **soakingTime**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:75](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L75)
+Defined in: [types/forms/distillationForm.ts:75](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L75)
 
 The soaking time in minutes.
 
@@ -106,7 +106,7 @@ The soaking time in minutes.
 
 > **waterForDistillation**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:81](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L81)
+Defined in: [types/forms/distillationForm.ts:81](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L81)
 
 The amount of water used for distillation.
 
@@ -116,7 +116,7 @@ The amount of water used for distillation.
 
 > **weightAfterSoaking**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:76](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L76)
+Defined in: [types/forms/distillationForm.ts:76](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L76)
 
 The weight after soaking.
 
@@ -126,6 +126,6 @@ The weight after soaking.
 
 > **weightForDistillation**: `null` \| `number`
 
-Defined in: [types/forms/distillationForm.ts:72](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/types/forms/distillationForm.ts#L72)
+Defined in: [types/forms/distillationForm.ts:72](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/types/forms/distillationForm.ts#L72)
 
 The weight used for distillation.

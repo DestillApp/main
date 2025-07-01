@@ -6,9 +6,9 @@
 
 # Variable: default
 
-> `const` **default**: `Store`\<[`RootStateOnly`](../../types/store/interfaces/RootStateOnly.md)\>
+> `const` **default**: `any`
 
-Defined in: [store/index.ts:19](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/index.ts#L19)
+Defined in: [store/index.ts:22](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/index.ts#L22)
 
 Creates the Vuex store with modules.
 

@@ -8,4 +8,4 @@
 
 > `const` **default**: `Router`
 
-Defined in: [router.js:38](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/router.js#L38)
+Defined in: [router.js:38](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/router.js#L38)

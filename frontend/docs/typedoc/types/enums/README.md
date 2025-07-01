@@ -8,4 +8,7 @@
 
 ## Enumerations
 
+- [DistillationType](enumerations/DistillationType.md)
 - [ListSortingOptions](enumerations/ListSortingOptions.md)
+- [PlantOrigin](enumerations/PlantOrigin.md)
+- [PlantState](enumerations/PlantState.md)

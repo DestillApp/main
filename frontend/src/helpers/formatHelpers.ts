@@ -1,4 +1,4 @@
-import type { Store } from "vuex";
+import { Store } from "vuex";
 import type { RootState } from "@/types/store/index";
 
 /**

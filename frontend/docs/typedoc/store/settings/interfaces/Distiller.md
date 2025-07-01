@@ -6,7 +6,7 @@
 
 # Interface: Distiller
 
-Defined in: [store/settings/index.ts:18](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L18)
+Defined in: [store/settings/index.ts:18](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L18)
 
 Represents a distiller object.
 
@@ -16,7 +16,7 @@ Represents a distiller object.
 
 > **capacity**: `number`
 
-Defined in: [store/settings/index.ts:20](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L20)
+Defined in: [store/settings/index.ts:20](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L20)
 
 The capacity of the distiller.
 
@@ -26,7 +26,7 @@ The capacity of the distiller.
 
 > **heating**: `string`
 
-Defined in: [store/settings/index.ts:21](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L21)
+Defined in: [store/settings/index.ts:21](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L21)
 
 The heating type of the distiller.
 
@@ -36,7 +36,7 @@ The heating type of the distiller.
 
 > **id**: `string`
 
-Defined in: [store/settings/index.ts:22](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L22)
+Defined in: [store/settings/index.ts:22](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L22)
 
 The unique identifier for the distiller.
 
@@ -46,6 +46,6 @@ The unique identifier for the distiller.
 
 > **material**: `string`
 
-Defined in: [store/settings/index.ts:19](https://github.com/DestillApp/main/blob/be94b1d93681946bd573e84cd8381ba32cee62b9/frontend/src/store/settings/index.ts#L19)
+Defined in: [store/settings/index.ts:19](https://github.com/DestillApp/main/blob/ec2df52a50a22efb35f12a0243274f6d03fbca52/frontend/src/store/settings/index.ts#L19)
 
 The material of the distiller.

@@ -7,6 +7,13 @@
   "excludePrivate": true,
   "excludeProtected": true,
   "excludeExternals": true,
-  "exclude": ["**/*.test.ts", "**/node_modules/**", "**/dist/**"],
+  "exclude": [
+    "**/*.test.ts",
+    "**/node_modules/**",
+    "**/dist/**",
+    "src/shims.d.ts",
+    "src/shims-vue-icon.d.ts",
+    "src/vuex-shim.d.ts"
+  ],
   "plugin": ["typedoc-plugin-markdown"]
 }
