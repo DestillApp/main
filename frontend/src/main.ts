@@ -31,7 +31,7 @@ import AskModal from "./components/AskModal.vue";
  * @type {import("@apollo/client/core").HttpLink}
  */
 const httpLink = createHttpLink({
-  uri: "http://localhost:3000/graphql",
+  uri: import.meta.env.VITE_GRAPHQL_URI,
   credentials: "include",
 });
 
@@ -152,12 +152,9 @@ import * as Sentry from "@sentry/vue";
  */
 Sentry.init({
   app,
-  dsn: "https://553bd7fe70d33389fa926cd0c7375239@o4509434011910144.ingest.de.sentry.io/4509434022985808",
+  dsn: import.meta.env.VITE_SENTRY_DSN,
   sendDefaultPii: true,
   integrations: [Sentry.browserTracingIntegration({ router })],
-  // Tracing
-  tracesSampleRate: 1.0,
-  tracePropagationTargets: ["localhost", /^http:\/\/localhost:3000\/graphql/],
 });
 
 // Use Vuetify, router, and store
