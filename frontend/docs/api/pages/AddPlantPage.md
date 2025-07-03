@@ -1,5 +1,7 @@
 # AddPlantPage
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/plant/AddPlantPage.vue)
+
 This component renders a plant form and handles sending plant data, validation, and navigation after submission.
  *
 

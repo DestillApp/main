@@ -1,5 +1,7 @@
 # DistillationData
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/destillation/DistillationData.vue)
+
 Handles the distillation data inputs, such as water used and distillation time.
  * Integrates with Vuex to store form data and manage state updates.
  *

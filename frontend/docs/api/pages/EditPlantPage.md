@@ -1,5 +1,7 @@
 # EditPlantPage
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/plant/EditPlantPage.vue)
+
 This component renders a plant form and handles editing and saving plant data.
  *
 

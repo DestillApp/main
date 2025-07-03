@@ -1,5 +1,7 @@
 # DistillerForm
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/DistillerForm.vue)
+
 Modal form for adding a new distiller, including material, capacity, and heating type. Handles validation and submission.
  *
 

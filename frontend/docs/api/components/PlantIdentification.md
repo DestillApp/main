@@ -1,5 +1,7 @@
 # PlantIdentification
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/plant/form/PlantIdentification.vue)
+
 This component renders a form to input and manage data related to plant material used in distillation, including plant name and part.
  *
 

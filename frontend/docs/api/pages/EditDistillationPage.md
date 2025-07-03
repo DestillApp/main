@@ -1,5 +1,7 @@
 # EditDistillationPage
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/distillation/EditDistillationPage.vue)
+
 This component renders a distillation form for editing an existing distillation, handles fetching, updating, and saving distillation data, and manages available plant weight.
  *
 

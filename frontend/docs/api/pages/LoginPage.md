@@ -1,5 +1,7 @@
 # LoginPage
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/LoginPage.vue)
+
 Login page component that handles user authentication and redirects after login.
  *
 

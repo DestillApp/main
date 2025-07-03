@@ -1,5 +1,7 @@
 # BaseSearchItem
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/ui/BaseSearchItem.vue)
+
 A search input component with search and clear icons, supporting color context and keyboard shortcuts.
  *
 

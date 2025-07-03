@@ -1,5 +1,7 @@
 # PlantDetailsPage
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/plant/PlantDetailsPage.vue)
+
 This component fetches and displays the details of a specific plant, allows for deleting the plant, and navigating to the distillation form.
  *
 

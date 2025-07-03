@@ -233,7 +233,11 @@ function generateDocs(filePath: string, relativeToSrc: string) {
     `📄 ${filePath} → props: ${props.length}, emits: ${emits.length}, fn: ${functions.length}`
   );
 
+  const githubBaseUrl = "https://github.com/DestillApp/main/blob/main/frontend/src";
+  const githubLink = `${githubBaseUrl}/${relativeToSrc.replace(/\\/g, "/")}`;
+
   const lines = [`# ${fileName}`, ""];
+  lines.push(`[View source on GitHub](${githubLink})`, "");
 
   if (componentInfo?.description) {
     lines.push(componentInfo.description, "");

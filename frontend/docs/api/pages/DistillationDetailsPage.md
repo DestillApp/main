@@ -1,5 +1,7 @@
 # DistillationDetailsPage
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/distillation/DistillationDetailsPage.vue)
+
 Displays details of a distillation, allows editing, deleting, and restoring plant weight. Handles fetching, deletion, and restoration logic.
  *
 

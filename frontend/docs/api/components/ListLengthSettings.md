@@ -1,5 +1,7 @@
 # ListLengthSettings
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/ListLengthSettings.vue)
+
 Dropdown component for selecting the number of items displayed in a list. Allows the user to choose between different list lengths and emits the selected value.
  *
 

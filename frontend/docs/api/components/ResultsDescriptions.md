@@ -1,5 +1,7 @@
 # ResultsDescriptions
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/results/ResultsDescriptions.vue)
+
 This component renders text areas for entering descriptions related to distillation results, including oil and hydrosol descriptions.
  *
 

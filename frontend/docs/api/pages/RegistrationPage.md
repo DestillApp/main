@@ -1,5 +1,7 @@
 # RegistrationPage
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/RegistrationPage.vue)
+
 This component renders a registration form and handles user registration.
  *
 

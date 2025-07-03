@@ -1,5 +1,7 @@
 # MyDataPage
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/my-account/MyDataPage.vue)
+
 Displays user data, list of distillers, theme settings, and allows managing distillers and password. Handles fetching user info, theme switching, and modal dialogs.
  *
 

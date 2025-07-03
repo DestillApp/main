@@ -1,5 +1,7 @@
 # BaseAutocompleteInput
 
+[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/ui/BaseAutocompleteInput.vue)
+
 A customizable autocomplete input component with optional dropdown, validation, and theming.
  *
 
