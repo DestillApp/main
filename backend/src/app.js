@@ -34,10 +34,22 @@ app.use(express.json());
 // Using cookie parser
 app.use(cookieParser());
 
-// Enable CORS with specific options
+// Read allowed origins from environment variable and split into array
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : [];
+
 const corsOptions = {
-  origin: "http://localhost:5173", // Allow requests from this origin
-  credentials: true, // Allow credentials (cookies, authorization headers)
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -86,7 +98,7 @@ const server = new ApolloServer({
 
 // Connecting to MongoDB database
 mongoose
-  .connect("mongodb://127.0.0.1:27017/destillit") // MongoDB connection string
+  .connect(process.env.MONGODB_URI) // Use the connection string from .env
   .then(async () => {
     await server.start();
 
@@ -112,7 +124,7 @@ mongoose
       })
     );
 
-    const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT;
     app.listen(PORT, () => {
       console.log(`Server ready at http://localhost:${PORT}/graphql`);
     });

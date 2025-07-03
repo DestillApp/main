@@ -11,7 +11,6 @@ const User = require("../../database/user");
 const DOMPurify = require("../../util/sanitizer");
 const { requireAuth } = require("../../util/authChecking");
 const { GraphQLError } = require("graphql");
-const { UserInputError } = require("@apollo/server/errors");
 
 /**
  * @function generateToken
