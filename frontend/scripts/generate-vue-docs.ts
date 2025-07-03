@@ -233,7 +233,8 @@ function generateDocs(filePath: string, relativeToSrc: string) {
     `📄 ${filePath} → props: ${props.length}, emits: ${emits.length}, fn: ${functions.length}`
   );
 
-  const githubBaseUrl = "https://github.com/DestillApp/main/blob/main/frontend/src";
+  const githubBaseUrl =
+    "https://github.com/DestillApp/main/blob/main/frontend/src";
   const githubLink = `${githubBaseUrl}/${relativeToSrc.replace(/\\/g, "/")}`;
 
   const lines = [`# ${fileName}`, ""];
@@ -249,7 +250,7 @@ function generateDocs(filePath: string, relativeToSrc: string) {
     lines.push("|------|------|----------|-------------|");
     for (const p of props) {
       // Escape pipe in type for Markdown tables
-      const safeType = p.type.replace(/\|/g, "&#124;");
+      const safeType = p.type.replace(/\|/g, "&");
       lines.push(
         `| \`${p.name}\` | \`${safeType}\` | ${p.required} | ${p.comment} |`
       );

@@ -10,7 +10,7 @@ A customizable text input component with support for validation, theming, and co
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `label` | `string` | no | The label for the input field. |
-| `modelValue` | `string &#124; number` | no | The value bound to the input field. |
+| `modelValue` | `string & number` | no | The value bound to the input field. |
 | `id` | `string` | no | The id for the input field. |
 | `disabled` | `boolean` | no | Flag to indicate if the input is disabled. |
 | `placeholder` | `string` | no | The placeholder text for the input field. |
