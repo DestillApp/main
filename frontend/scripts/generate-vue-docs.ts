@@ -15,7 +15,7 @@ import {
 const srcDir = "src";
 const docsDir = "docs/api";
 const allowedDirs = ["components", "pages", "layout", "ui"];
-const includedSingleFiles = ["App.vue"];
+const includedSingleFiles = [];
 
 const project = new Project({
   compilerOptions: { allowJs: true, target: ScriptTarget.ES2018 },
