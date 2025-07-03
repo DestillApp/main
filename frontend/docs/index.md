@@ -9,7 +9,7 @@ Here you'll find everything you need to explore the frontend codebase — from r
 
 - [Vue Components](/api/components/AskModal)
 - [App Entry](/api/App.vue/App)
-- [TypeScript API](/typedoc/store/README.md)
+- [TypeScript API](/typedoc/modules)
 
 Looking for a specific distillation form, modal, or UI element? Dive into the [Vue API](/api/) section and check the sidebar for available modules.
 

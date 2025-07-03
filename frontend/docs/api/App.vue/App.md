@@ -17,4 +17,4 @@ The `App` component is automatically used as the root component in the applicati
 
 ## Source
 
-See [`src/App.vue`](../../../src/App.vue) for the implementation.
+See [`src/App.vue`](https://github.com/DestillApp/main/blob/main/frontend/src/App.vue) for the implementation.

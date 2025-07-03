@@ -7,8 +7,8 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: "Guide", link: "/" },
-      { text: "Vue API", link: "/api/App.vue/App" },
-      { text: "TypeScript API", link: "/typedoc/store/README.md" },
+      { text: "Vue API", link: "/api/App.vue/App", activeMatch: "^/api/" },
+      { text: "TypeScript API", link: "/typedoc/modules", activeMatch: "^/typedoc/" },
     ],
     sidebar: {
       "/api/": [
@@ -147,6 +147,14 @@ export default defineConfig({
             { text: "Modules", link: "/typedoc/modules" },
             { text: "README", link: "/typedoc/README" },
           ],
+        },
+        {
+            text: "main",
+            link: "/typedoc/main/README.md",
+        },
+        {
+            text: "router",
+            link: "/typedoc/router/README.md"
         },
         {
           text: "Store",
