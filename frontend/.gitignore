@@ -27,3 +27,7 @@ pnpm-debug.log*
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+docs/.vitepress/deps/

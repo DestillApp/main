@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
+  base: "/main/",
   title: "DestillationApp Frontend Docs",
   description: "Documentation for the DestillationApp frontend",
   cleanUrls: true,
@@ -8,7 +9,11 @@ export default defineConfig({
     nav: [
       { text: "Guide", link: "/" },
       { text: "Vue API", link: "/api/App.vue/App", activeMatch: "^/api/" },
-      { text: "TypeScript API", link: "/typedoc/modules", activeMatch: "^/typedoc/" },
+      {
+        text: "TypeScript API",
+        link: "/typedoc/modules",
+        activeMatch: "^/typedoc/",
+      },
     ],
     sidebar: {
       "/api/": [
@@ -149,12 +154,12 @@ export default defineConfig({
           ],
         },
         {
-            text: "main",
-            link: "/typedoc/main/README.md",
+          text: "main",
+          link: "/typedoc/main/README.md",
         },
         {
-            text: "router",
-            link: "/typedoc/router/README.md"
+          text: "router",
+          link: "/typedoc/router/README.md",
         },
         {
           text: "Store",

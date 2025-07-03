@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "lint": "eslint . --ext .ts,.vue",
     "docs:vue": "tsx scripts/generate-vue-docs.ts",
-    "docs:dev": "vitepress dev docs"
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:deploy": "gh-pages -d docs/.vitepress/dist --add"
   },
   "dependencies": {
     "@apollo/client": "^3.11.8",
@@ -39,6 +41,7 @@
     "@vue/compiler-sfc": "^3.5.17",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "gh-pages": "^6.3.0",
     "ts-morph": "^26.0.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.3",

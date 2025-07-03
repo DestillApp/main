@@ -248,8 +248,10 @@ function generateDocs(filePath: string, relativeToSrc: string) {
     lines.push("| Name | Type | Required | Description |");
     lines.push("|------|------|----------|-------------|");
     for (const p of props) {
+      // Escape pipe in type for Markdown tables
+      const safeType = p.type.replace(/\|/g, "&#124;");
       lines.push(
-        `| \`${p.name}\` | \`${p.type}\` | ${p.required} | ${p.comment} |`
+        `| \`${p.name}\` | \`${safeType}\` | ${p.required} | ${p.comment} |`
       );
     }
     lines.push("");
