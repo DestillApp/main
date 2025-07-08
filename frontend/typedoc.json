@@ -9,6 +9,7 @@
   "excludeExternals": true,
   "exclude": [
     "**/*.test.ts",
+    "**/*.spec.ts",
     "**/node_modules/**",
     "**/dist/**",
     "src/shims.d.ts",
