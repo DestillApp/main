@@ -8,8 +8,11 @@
 const UserSettings = require("../../database/settings");
 
 // Importing required modules
+const { GraphQLError } = require("graphql");
 const { requireAuth } = require("../../util/authChecking");
-
+const {
+  sanitizeDistillerInput,
+} = require("../../util/sanitization/distillerSanitizer");
 
 const settingsResolvers = {
   Query: {
@@ -23,7 +26,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The user settings.
      */
     getUserSettings: async (_, __, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
       try {
         const userSettings = await UserSettings.findOne({ userId: user.id });
@@ -32,7 +35,7 @@ const settingsResolvers = {
         }
         return userSettings;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to fetch user settings");
@@ -50,7 +53,6 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The created user settings.
      */
     createSettings: async (_, { userId }) => {
-
       // Initial default settings data
       const defaultSettings = {
         userId: userId,
@@ -76,6 +78,9 @@ const settingsResolvers = {
         const result = await userSettings.save();
         return result;
       } catch (err) {
+        if (error instanceof GraphQLError) {
+          throw error;
+        }
         throw new Error("Failed to create user settings");
       }
     },
@@ -90,7 +95,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     updateListSettings: async (_, { input }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
       const { settingKey, settingValue } = input;
 
@@ -111,7 +116,7 @@ const settingsResolvers = {
 
         return updatedSettings;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to update user settings");
@@ -128,7 +133,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     updateListSorting: async (_, { input }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
       const { settingKey, settingValue } = input;
 
@@ -149,7 +154,7 @@ const settingsResolvers = {
 
         return updatedSettings;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to update user settings");
@@ -166,14 +171,17 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     addDistiller: async (_, { userId, distiller }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
+
+      // Sanitize distiller input
+      const sanitizedDistiller = sanitizeDistillerInput(distiller);
 
       try {
         // Find the user settings and add the new distiller
         const updatedSettings = await UserSettings.findOneAndUpdate(
           { userId: user.id },
           {
-            $push: { distillerList: distiller },
+            $push: { distillerList: sanitizedDistiller },
             $currentDate: { updatedAt: true },
           },
           { new: true }
@@ -185,7 +193,7 @@ const settingsResolvers = {
 
         return updatedSettings;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to add distiller");
@@ -202,7 +210,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     deleteDistiller: async (_, { userId, distillerId }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
       try {
         // Find the user settings and remove the distiller by its ID
@@ -221,7 +229,7 @@ const settingsResolvers = {
 
         return updatedSettings;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to delete distiller");
@@ -238,7 +246,7 @@ const settingsResolvers = {
      * @returns {Promise<Object>} The updated user settings.
      */
     updateDarkTheme: async (_, { isDarkTheme }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
       try {
         // Find the user settings and update the isDarkTheme setting
@@ -257,7 +265,7 @@ const settingsResolvers = {
 
         return updatedSettings;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to update dark theme setting");

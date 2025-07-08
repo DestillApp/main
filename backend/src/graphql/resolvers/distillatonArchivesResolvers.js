@@ -8,12 +8,18 @@
 const DistillationArchives = require("../../database/distillationArchives");
 
 const { filterData } = require("../../util/dataformating");
-const { formatDate, formatDateToString, parseDDMMYYYYtoDate } = require("../../util/dateformater");
+const {
+  formatDate,
+  formatDateToString,
+  parseDDMMYYYYtoDate,
+} = require("../../util/dateformater");
 
 // Importing required modules
-const DOMPurify = require("../../util/sanitizer");
+const { GraphQLError } = require("graphql");
 const { requireAuth } = require("../../util/authChecking");
-
+const {
+  sanitizeDistillationArchiveInput,
+} = require("../../util/sanitization/distillationArchiveSanitizer");
 
 const distillationArchivesResolvers = {
   Query: {
@@ -23,8 +29,12 @@ const distillationArchivesResolvers = {
      * @description Fetches all distillation archives from the database.
      * @returns {Promise<Array>} Array of distillation archives.
      */
-    getDistillationArchives: async (_, { fields, name, sorting, formatDates }, { user }) => {
- requireAuth(user);
+    getDistillationArchives: async (
+      _,
+      { fields, name, sorting, formatDates },
+      { user }
+    ) => {
+      requireAuth(user);
 
       try {
         // Build a projection object based on the fields argument
@@ -85,7 +95,7 @@ const distillationArchivesResolvers = {
           return formattedArchive;
         });
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error(
@@ -108,7 +118,7 @@ const distillationArchivesResolvers = {
       { id, formatDistillDate },
       { user }
     ) => {
- requireAuth(user);
+      requireAuth(user);
       try {
         const archive = await DistillationArchives.findOne({
           _id: id,
@@ -140,7 +150,7 @@ const distillationArchivesResolvers = {
 
         return archive;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error(
@@ -165,155 +175,21 @@ const distillationArchivesResolvers = {
       { distillationArchiveInput },
       { user }
     ) => {
- requireAuth(user);
+      requireAuth(user);
 
-      const sanitizedDate = DOMPurify.sanitize(
-        distillationArchiveInput.distillationData.distillationDate
+      // Sanitize all input fields
+      const sanitizedInput = sanitizeDistillationArchiveInput(
+        distillationArchiveInput
       );
 
-      console.log("Sanitized date:", sanitizedDate);
-      const validDate = parseDDMMYYYYtoDate(sanitizedDate);
-      console.log("Valid date:", validDate);
+      // Parse date for backend (from distillationData.distillationDate)
+      const sanitizedDate = sanitizedInput.distillationData?.distillationDate;
+      const validDate = sanitizedDate
+        ? parseDDMMYYYYtoDate(sanitizedDate)
+        : new Date();
 
-      // Sanitizing the input data
       const sanitizedData = {
-        oilAmount: distillationArchiveInput.oilAmount
-          ? Number(DOMPurify.sanitize(distillationArchiveInput.oilAmount))
-          : null,
-        hydrosolAmount: distillationArchiveInput.hydrosolAmount
-          ? Number(DOMPurify.sanitize(distillationArchiveInput.hydrosolAmount))
-          : null,
-        hydrosolpH: distillationArchiveInput.hydrosolpH
-          ? Number(DOMPurify.sanitize(distillationArchiveInput.hydrosolpH))
-          : null,
-        oilDescription: DOMPurify.sanitize(
-          distillationArchiveInput.oilDescription
-        ),
-        hydrosolDescription: DOMPurify.sanitize(
-          distillationArchiveInput.hydrosolDescription
-        ),
-        distillationData: {
-          weightForDistillation: distillationArchiveInput.distillationData
-            .weightForDistillation
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData
-                    .weightForDistillation
-                )
-              )
-            : null,
-          isPlantSoaked: Boolean(
-            DOMPurify.sanitize(
-              distillationArchiveInput.distillationData.isPlantSoaked
-            )
-          ),
-          soakingTime: distillationArchiveInput.distillationData.soakingTime
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData.soakingTime
-                )
-              )
-            : null,
-          weightAfterSoaking: distillationArchiveInput.distillationData
-            .weightAfterSoaking
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData.weightAfterSoaking
-                )
-              )
-            : null,
-          isPlantShredded: Boolean(
-            DOMPurify.sanitize(
-              distillationArchiveInput.distillationData.isPlantShredded
-            )
-          ),
-          distillationType: DOMPurify.sanitize(
-            distillationArchiveInput.distillationData.distillationType
-          ),
-          distillationDate: parseDDMMYYYYtoDate(distillationArchiveInput.distillationData
-            .distillationDate),
-          distillationApparatus: DOMPurify.sanitize(
-            distillationArchiveInput.distillationData.distillationApparatus
-          ),
-          waterForDistillation: distillationArchiveInput.distillationData
-            .waterForDistillation
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData.waterForDistillation
-                )
-              )
-            : null,
-          distillationTime: {
-            distillationHours: distillationArchiveInput.distillationData
-              .distillationTime.distillationHours
-              ? Number(
-                  DOMPurify.sanitize(
-                    distillationArchiveInput.distillationData.distillationTime
-                      .distillationHours
-                  )
-                )
-              : null,
-            distillationMinutes: distillationArchiveInput.distillationData
-              .distillationTime.distillationMinutes
-              ? Number(
-                  DOMPurify.sanitize(
-                    distillationArchiveInput.distillationData.distillationTime
-                      .distillationMinutes
-                  )
-                )
-              : null,
-          },
-        },
-        distilledPlant: {
-          plantName: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantName
-          ),
-          plantPart: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantPart
-          ),
-          plantOrigin: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantOrigin
-          ),
-          plantBuyDate: distillationArchiveInput.distilledPlant.plantBuyDate ? parseDDMMYYYYtoDate(distillationArchiveInput.distilledPlant.plantBuyDate) : "",
-          plantProducer: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantProducer
-          ),
-          countryOfOrigin: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.countryOfOrigin
-          ),
-          harvestDate: distillationArchiveInput.distilledPlant.harvestDate ? parseDDMMYYYYtoDate(distillationArchiveInput.distilledPlant.harvestDate) : "",
-          harvestTemperature: distillationArchiveInput.distilledPlant
-            .harvestTemperature
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.harvestTemperature
-                )
-              )
-            : null,
-          harvestStartTime: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.harvestStartTime
-          ),
-          harvestEndTime: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.harvestEndTime
-          ),
-          plantState: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantState
-          ),
-          dryingTime: distillationArchiveInput.distilledPlant.dryingTime
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.dryingTime
-                )
-              )
-            : null,
-          plantAge: distillationArchiveInput.distilledPlant.plantAge
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.plantAge
-                )
-              )
-            : null,
-        },
+        ...sanitizedInput,
         date: validDate,
         userId: user.id,
         createdAt: Date.now(),
@@ -331,7 +207,7 @@ const distillationArchivesResolvers = {
         const result = await distillationArchive.save();
         return result;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         console.error("Error details:", err);
@@ -353,176 +229,21 @@ const distillationArchivesResolvers = {
       { id, distillationArchiveInput },
       { user }
     ) => {
- requireAuth(user);
+      requireAuth(user);
 
-      const sanitizedDate = DOMPurify.sanitize(
-        distillationArchiveInput.distillationData.distillationDate
+      // Sanitize all input fields
+      const sanitizedInput = sanitizeDistillationArchiveInput(
+        distillationArchiveInput
       );
-      const validDate = parseDDMMYYYYtoDate(sanitizedDate);
 
-      // Sanitizing and filtering the nested input object
-      const sanitizedDistillationTime = distillationArchiveInput
-        .distillationData.distillationTime
-        ? {
-            distillationHours: distillationArchiveInput.distillationData
-              .distillationTime.distillationHours
-              ? Number(
-                  DOMPurify.sanitize(
-                    distillationArchiveInput.distillationData.distillationTime
-                      .distillationHours
-                  )
-                )
-              : null,
-            distillationMinutes: distillationArchiveInput.distillationData
-              .distillationTime.distillationMinutes
-              ? Number(
-                  DOMPurify.sanitize(
-                    distillationArchiveInput.distillationData.distillationTime
-                      .distillationMinutes
-                  )
-                )
-              : null,
-          }
-        : null;
+      // Parse date for backend (from distillationData.distillationDate)
+      const sanitizedDate = sanitizedInput.distillationData?.distillationDate;
+      const validDate = sanitizedDate
+        ? parseDDMMYYYYtoDate(sanitizedDate)
+        : new Date();
 
-      // Sanitizing the input data
       const sanitizedData = {
-        oilAmount: distillationArchiveInput.oilAmount
-          ? Number(DOMPurify.sanitize(distillationArchiveInput.oilAmount))
-          : null,
-        hydrosolAmount: distillationArchiveInput.hydrosolAmount
-          ? Number(DOMPurify.sanitize(distillationArchiveInput.hydrosolAmount))
-          : null,
-        hydrosolpH: distillationArchiveInput.hydrosolpH
-          ? Number(DOMPurify.sanitize(distillationArchiveInput.hydrosolpH))
-          : null,
-        oilDescription: DOMPurify.sanitize(
-          distillationArchiveInput.oilDescription
-        ),
-        hydrosolDescription: DOMPurify.sanitize(
-          distillationArchiveInput.hydrosolDescription
-        ),
-        distillationData: {
-          weightForDistillation: distillationArchiveInput.distillationData
-            .weightForDistillation
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData
-                    .weightForDistillation
-                )
-              )
-            : null,
-          isPlantSoaked: Boolean(
-            DOMPurify.sanitize(
-              distillationArchiveInput.distillationData.isPlantSoaked
-            )
-          ),
-          soakingTime: distillationArchiveInput.distillationData.soakingTime
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData.soakingTime
-                )
-              )
-            : null,
-          weightAfterSoaking: distillationArchiveInput.distillationData
-            .weightAfterSoaking
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData.weightAfterSoaking
-                )
-              )
-            : null,
-          isPlantShredded: Boolean(
-            DOMPurify.sanitize(
-              distillationArchiveInput.distillationData.isPlantShredded
-            )
-          ),
-          distillationType: DOMPurify.sanitize(
-            distillationArchiveInput.distillationData.distillationType
-          ),
-          distillationDate: distillationArchiveInput.distillationData
-            .distillationDate
-            ? formatDateToString(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData.distillationDate
-                )
-              )
-            : "",
-          distillationApparatus: DOMPurify.sanitize(
-            distillationArchiveInput.distillationData.distillationApparatus
-          ),
-          waterForDistillation: distillationArchiveInput.distillationData
-            .waterForDistillation
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distillationData.waterForDistillation
-                )
-              )
-            : null,
-          distillationTime: sanitizedDistillationTime,
-        },
-        distilledPlant: {
-          plantName: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantName
-          ),
-          plantPart: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantPart
-          ),
-          plantOrigin: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantOrigin
-          ),
-          plantBuyDate: distillationArchiveInput.distilledPlant.plantBuyDate
-            ? formatDateToString(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.plantBuyDate
-                )
-              )
-            : "",
-          plantProducer: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantProducer
-          ),
-          countryOfOrigin: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.countryOfOrigin
-          ),
-          harvestDate: distillationArchiveInput.distilledPlant.harvestDate
-            ? formatDateToString(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.harvestDate
-                )
-              )
-            : "",
-          harvestTemperature: distillationArchiveInput.distilledPlant
-            .harvestTemperature
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.harvestTemperature
-                )
-              )
-            : null,
-          harvestStartTime: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.harvestStartTime
-          ),
-          harvestEndTime: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.harvestEndTime
-          ),
-          plantState: DOMPurify.sanitize(
-            distillationArchiveInput.distilledPlant.plantState
-          ),
-          dryingTime: distillationArchiveInput.distilledPlant.dryingTime
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.dryingTime
-                )
-              )
-            : null,
-          plantAge: distillationArchiveInput.distilledPlant.plantAge
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationArchiveInput.distilledPlant.plantAge
-                )
-              )
-            : null,
-        },
+        ...sanitizedInput,
         date: validDate,
         userId: user.id,
       };
@@ -539,7 +260,7 @@ const distillationArchivesResolvers = {
           });
         return updatedDistillationArchive;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to update distillation archive");
@@ -547,7 +268,7 @@ const distillationArchivesResolvers = {
     },
 
     deleteDistillationArchive: async (_, { id }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
       try {
         await DistillationArchives.findOneAndDelete({
@@ -556,7 +277,7 @@ const distillationArchivesResolvers = {
         });
         return true;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         console.error("Failed to delete distillation archive:", error);

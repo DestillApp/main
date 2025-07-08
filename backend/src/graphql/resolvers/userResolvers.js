@@ -8,9 +8,9 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../database/user");
-const DOMPurify = require("../../util/sanitizer");
 const { requireAuth } = require("../../util/authChecking");
 const { GraphQLError } = require("graphql");
+const { escape, trim } = require("validator");
 
 /**
  * @function generateToken
@@ -62,7 +62,8 @@ const userResolver = {
      */
     checkUsernameExistence: async (_, { username }) => {
       try {
-        const sanitizedUsername = DOMPurify.sanitize(username);
+        // Sanitize username using validator before querying the database
+        const sanitizedUsername = escape(trim(username || ""));
         const user = await User.findOne({ username: sanitizedUsername });
         return !!user; // Return true if user exists, false otherwise
       } catch (error) {
@@ -110,19 +111,22 @@ const userResolver = {
      * @returns {Promise<Object>} The created user.
      */
     registerUser: async (_, { userInput }) => {
-      const { username, email, password } = userInput;
+      let { username, email, password } = userInput;
 
-      // Sanitizing input data
-      const sanitizedUsername = DOMPurify.sanitize(username);
-      const sanitizedEmail = DOMPurify.sanitize(email);
-      const sanitizedPassword = DOMPurify.sanitize(password);
+      // Sanitize input data using validator
+      const sanitizedUsername = escape(trim(username || ""));
+      const sanitizedEmail = escape(trim(email || ""));
+      const sanitizedPassword = escape(trim(password || ""));
 
       try {
         // Check if the email or username already exists in the database
         const existingEmail = await User.findOne({ email: sanitizedEmail });
         if (existingEmail) {
           throw new GraphQLError("Email already exists", {
-            extensions: { code: "BAD_USER_INPUT", invalidArgs: { email: sanitizedEmail } },
+            extensions: {
+              code: "BAD_USER_INPUT",
+              invalidArgs: { email: sanitizedEmail },
+            },
           });
         }
 
@@ -159,9 +163,9 @@ const userResolver = {
      * @throws {AuthenticationError} If the credentials are invalid.
      */
     login: async (_, { email, password }, { req, res }) => {
-      // Sanitize input data
-      const sanitizedEmail = DOMPurify.sanitize(email);
-      const sanitizedPassword = DOMPurify.sanitize(password);
+      // Sanitize input data using validator
+      const sanitizedEmail = escape(trim(email || ""));
+      const sanitizedPassword = escape(trim(password || ""));
 
       try {
         // Find user by email
@@ -228,9 +232,9 @@ const userResolver = {
 
       const { oldPassword, newPassword } = input;
 
-      // Sanitize input data
-      const sanitizedOldPassword = DOMPurify.sanitize(oldPassword);
-      const sanitizedNewPassword = DOMPurify.sanitize(newPassword);
+      // Sanitize input data using validator
+      const sanitizedOldPassword = escape(trim(oldPassword || ""));
+      const sanitizedNewPassword = escape(trim(newPassword || ""));
 
       try {
         // Find user by ID
