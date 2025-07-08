@@ -8,15 +8,19 @@
 const Distillation = require("../../database/distillation");
 
 // Importing required modules
-const DOMPurify = require("../../util/sanitizer");
+const { GraphQLError } = require("graphql");
 const { formatDate, formatDateToString } = require("../../util/dateformater");
 const { filterData } = require("../../util/dataformating");
 const { requireAuth } = require("../../util/authChecking");
 
+const {
+  sanitizeDistillationInput,
+} = require("../../util/sanitization/distillationSanitizer");
+
 const distillationResolvers = {
   Query: {
     getDistillations: async (_, { fields, name, sorting }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
       try {
         // Build a projection object based on the fields argument
@@ -39,7 +43,7 @@ const distillationResolvers = {
           sort = { "choosedPlant.name": 1 };
         } else if (sorting === "createdAt") {
           sort = { createdAt: 1 };
-        } else if (sorting === "youngDate") { 
+        } else if (sorting === "youngDate") {
           sort = { date: -1 };
         } else if (sorting === "oldDate") {
           sort = { date: 1 };
@@ -68,7 +72,7 @@ const distillationResolvers = {
           return formattedDistillation;
         });
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to fetch distillations: " + error.message);
@@ -76,7 +80,7 @@ const distillationResolvers = {
     },
 
     getDistillationById: async (_, { id, formatDates }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
       try {
         const distillation = await Distillation.findOne({
@@ -97,7 +101,7 @@ const distillationResolvers = {
         }
         return distillation;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to fetch distillation by ID: " + error.message);
@@ -116,95 +120,22 @@ const distillationResolvers = {
      * @returns {Promise<Object>} The created distillation.
      */
     createDistillation: async (_, { distillationInput }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
-      const sanitizedDate = DOMPurify.sanitize(
-        distillationInput.distillationDate
-      );
+      const sanitizedDistillation =
+        sanitizeDistillationInput(distillationInput);
+
+      // Parse date for backend
+      const sanitizedDate = sanitizedDistillation.distillationDate;
       const validDate = new Date(sanitizedDate);
 
-      // Sanitizing and filtering the nested input object
-      const sanitizedDistillationTime = distillationInput.distillationTime
-        ? {
-            distillationHours: distillationInput.distillationTime
-              .distillationHours
-              ? Number(
-                  DOMPurify.sanitize(
-                    distillationInput.distillationTime.distillationHours
-                  )
-                )
-              : null,
-            distillationMinutes: distillationInput.distillationTime
-              .distillationMinutes
-              ? Number(
-                  DOMPurify.sanitize(
-                    distillationInput.distillationTime.distillationMinutes
-                  )
-                )
-              : null,
-          }
-        : null;
-
-      // Sanitizing the input data
+      // Prepare sanitized data for DB
       const sanitizedData = {
-        choosedPlant: {
-          id: distillationInput.choosedPlant.id
-            ? DOMPurify.sanitize(distillationInput.choosedPlant.id)
-            : null,
-          name: DOMPurify.sanitize(distillationInput.choosedPlant.name || ""),
-          part: DOMPurify.sanitize(distillationInput.choosedPlant.part || ""),
-          availableWeight: distillationInput.choosedPlant.availableWeight
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationInput.choosedPlant.availableWeight
-                )
-              )
-            : null,
-          harvestDate: distillationInput.choosedPlant.harvestDate
-            ? formatDateToString(
-                DOMPurify.sanitize(distillationInput.choosedPlant.harvestDate)
-              )
-            : "",
-          buyDate: distillationInput.choosedPlant.buyDate
-            ? formatDateToString(
-                DOMPurify.sanitize(distillationInput.choosedPlant.buyDate)
-              )
-            : "",
-        },
-        weightForDistillation: distillationInput.weightForDistillation
-          ? Number(DOMPurify.sanitize(distillationInput.weightForDistillation))
-          : null,
-        isPlantSoaked: Boolean(
-          DOMPurify.sanitize(distillationInput.isPlantSoaked)
-        ),
-        soakingTime: distillationInput.soakingTime
-          ? Number(DOMPurify.sanitize(distillationInput.soakingTime))
-          : null,
-        weightAfterSoaking: distillationInput.weightAfterSoaking
-          ? Number(DOMPurify.sanitize(distillationInput.weightAfterSoaking))
-          : null,
-        isPlantShredded: Boolean(
-          DOMPurify.sanitize(distillationInput.isPlantShredded)
-        ),
-        distillationType: DOMPurify.sanitize(
-          distillationInput.distillationType
-        ),
-        distillationDate: DOMPurify.sanitize(
-          distillationInput.distillationDate
-        ),
-        distillationApparatus: DOMPurify.sanitize(
-          distillationInput.distillationApparatus
-        ),
-        waterForDistillation: distillationInput.waterForDistillation
-          ? Number(DOMPurify.sanitize(distillationInput.waterForDistillation))
-          : null,
-        distillationTime: sanitizedDistillationTime,
+        ...sanitizedDistillation,
         date: validDate.toISOString(),
         userId: user.id,
         createdAt: Date.now(),
       };
-
-      console.log("Sanitized Data:", sanitizedData);
 
       // Filtering out null or empty string values
       const filteredData = filterData(sanitizedData);
@@ -216,7 +147,7 @@ const distillationResolvers = {
         const result = await distillation.save();
         return result;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to create distillation: " + error.message);
@@ -234,88 +165,19 @@ const distillationResolvers = {
      * @returns {Promise<Object>} The updated distillation.
      */
     updateDistillation: async (_, { id, distillationInput }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
-      const sanitizedDate = DOMPurify.sanitize(
-        distillationInput.distillationDate
-      );
+      // Sanitize all input fields using your sanitizer
+      const sanitizedDistillation =
+        sanitizeDistillationInput(distillationInput);
+
+      // Parse date for backend
+      const sanitizedDate = sanitizedDistillation.distillationDate;
       const validDate = new Date(sanitizedDate);
 
-      // Sanitizing and filtering the nested input object
-      const sanitizedDistillationTime = distillationInput.distillationTime
-        ? {
-            distillationHours: distillationInput.distillationTime
-              .distillationHours
-              ? Number(
-                  DOMPurify.sanitize(
-                    distillationInput.distillationTime.distillationHours
-                  )
-                )
-              : null,
-            distillationMinutes: distillationInput.distillationTime
-              .distillationMinutes
-              ? Number(
-                  DOMPurify.sanitize(
-                    distillationInput.distillationTime.distillationMinutes
-                  )
-                )
-              : null,
-          }
-        : null;
-
-      // Sanitizing the input data
+      // Prepare sanitized data for DB
       const sanitizedData = {
-        choosedPlant: {
-          id: distillationInput.choosedPlant.id
-            ? DOMPurify.sanitize(distillationInput.choosedPlant.id)
-            : null,
-          name: DOMPurify.sanitize(distillationInput.choosedPlant.name || ""),
-          part: DOMPurify.sanitize(distillationInput.choosedPlant.part || ""),
-          availableWeight: distillationInput.choosedPlant.availableWeight
-            ? Number(
-                DOMPurify.sanitize(
-                  distillationInput.choosedPlant.availableWeight
-                )
-              )
-            : null,
-          harvestDate: distillationInput.choosedPlant.harvestDate
-            ? formatDateToString(
-                DOMPurify.sanitize(distillationInput.choosedPlant.harvestDate)
-              )
-            : "",
-          buyDate: distillationInput.choosedPlant.buyDate
-            ? formatDateToString(
-                DOMPurify.sanitize(distillationInput.choosedPlant.buyDate)
-              )
-            : "",
-        },
-        weightForDistillation: distillationInput.weightForDistillation
-          ? Number(DOMPurify.sanitize(distillationInput.weightForDistillation))
-          : null,
-        isPlantSoaked: Boolean(
-          DOMPurify.sanitize(distillationInput.isPlantSoaked)
-        ),
-        soakingTime: distillationInput.soakingTime
-          ? Number(DOMPurify.sanitize(distillationInput.soakingTime))
-          : null,
-        weightAfterSoaking: distillationInput.weightAfterSoaking
-          ? Number(DOMPurify.sanitize(distillationInput.weightAfterSoaking))
-          : null,
-        isPlantShredded: Boolean(
-          DOMPurify.sanitize(distillationInput.isPlantShredded)
-        ),
-        distillationType: DOMPurify.sanitize(
-          distillationInput.distillationType
-        ),
-        distillationDate: DOMPurify.sanitize(
-          distillationInput.distillationDate
-        ),
-        distillationApparatus: DOMPurify.sanitize(
-          distillationInput.distillationApparatus
-        ),
-        waterForDistillation: distillationInput.waterForDistillation
-          ? Number(DOMPurify.sanitize(distillationInput.waterForDistillation))
-          : null,
+        ...sanitizedDistillation,
         date: validDate.toISOString(),
         userId: user.id,
       };
@@ -341,7 +203,7 @@ const distillationResolvers = {
 
         return updatedDistillation;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to update distillation: " + error.message);
@@ -349,13 +211,13 @@ const distillationResolvers = {
     },
 
     deleteDistillation: async (_, { id }, { user }) => {
- requireAuth(user);
+      requireAuth(user);
 
       try {
         await Distillation.findOneAndDelete({ _id: id, userId: user.id });
         return true;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         console.error("Failed to delete distillation:", error);

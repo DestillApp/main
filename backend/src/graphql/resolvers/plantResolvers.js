@@ -8,9 +8,14 @@
 const Plant = require("../../database/plant");
 
 // Importing required modules
-const DOMPurify = require("../../util/sanitizer");
 const { formatDate } = require("../../util/dateformater");
 const { requireAuth } = require("../../util/authChecking");
+const { GraphQLError } = require("graphql");
+const { trim } = require("validator");
+
+const {
+  sanitizePlantInput,
+} = require("../../util/sanitization/plantSanitizator");
 
 // Utility function to filter data
 function filterPlantData(data) {
@@ -98,7 +103,7 @@ const plantResolver = {
           return formattedPlant;
         });
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to fetch plants: " + error.message);
@@ -126,7 +131,7 @@ const plantResolver = {
         }
         return plant;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to fetch plant by ID: " + error.message);
@@ -147,50 +152,28 @@ const plantResolver = {
     createPlant: async (_, { plantInput }, { user }) => {
       requireAuth(user);
 
-      // Sanitizing the input data
+      // Sanitize all input fields
+      const sanitizedPlant = sanitizePlantInput(plantInput);
+
+      // Add backend-only fields, including the required date
       const sanitizedData = {
-        plantName: DOMPurify.sanitize(plantInput.plantName),
-        plantPart: DOMPurify.sanitize(plantInput.plantPart),
-        plantOrigin: DOMPurify.sanitize(plantInput.plantOrigin),
-        plantBuyDate: DOMPurify.sanitize(plantInput.plantBuyDate),
-        plantProducer: DOMPurify.sanitize(plantInput.plantProducer),
-        countryOfOrigin: DOMPurify.sanitize(plantInput.countryOfOrigin),
-        harvestDate: DOMPurify.sanitize(plantInput.harvestDate),
-        harvestTemperature: plantInput.harvestTemperature
-          ? Number(DOMPurify.sanitize(plantInput.harvestTemperature))
-          : null,
-        harvestStartTime: DOMPurify.sanitize(plantInput.harvestStartTime),
-        harvestEndTime: DOMPurify.sanitize(plantInput.harvestEndTime),
-        plantWeight: plantInput.plantWeight
-          ? Number(DOMPurify.sanitize(plantInput.plantWeight))
-          : null,
-        availableWeight: plantInput.plantWeight
-          ? Number(DOMPurify.sanitize(plantInput.plantWeight))
-          : null,
-        plantState: DOMPurify.sanitize(plantInput.plantState),
-        dryingTime: plantInput.dryingTime
-          ? Number(DOMPurify.sanitize(plantInput.dryingTime))
-          : null,
-        plantAge: plantInput.plantAge
-          ? Number(DOMPurify.sanitize(plantInput.plantAge))
-          : null,
-        date: plantInput.plantBuyDate
-          ? new Date(DOMPurify.sanitize(plantInput.plantBuyDate))
-          : new Date(DOMPurify.sanitize(plantInput.harvestDate)),
+        ...sanitizedPlant,
+        date: sanitizedPlant.plantBuyDate
+          ? new Date(sanitizedPlant.plantBuyDate)
+          : new Date(sanitizedPlant.harvestDate),
         userId: user.id,
         createdAt: Date.now(),
       };
-      // Filtering out null or empty string values
+
+      // Optionally filter out null/empty values
       const filteredData = filterPlantData(sanitizedData);
 
       try {
-        // Creating a new Plant instance
         const plant = new Plant(filteredData);
-        // Saving the plant to the database
         const result = await plant.save();
         return result;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to create plant: " + error.message);
@@ -201,36 +184,15 @@ const plantResolver = {
     updatePlant: async (_, { id, plantInput }, { user }) => {
       requireAuth(user);
 
-      // Sanitizing the input data
+      // Sanitize all input fields
+      const sanitizedPlant = sanitizePlantInput(plantInput);
+
+      // Add backend-only fields, including the required date
       const sanitizedData = {
-        plantName: DOMPurify.sanitize(plantInput.plantName),
-        plantPart: DOMPurify.sanitize(plantInput.plantPart),
-        plantOrigin: DOMPurify.sanitize(plantInput.plantOrigin),
-        plantBuyDate: DOMPurify.sanitize(plantInput.plantBuyDate),
-        plantProducer: DOMPurify.sanitize(plantInput.plantProducer),
-        countryOfOrigin: DOMPurify.sanitize(plantInput.countryOfOrigin),
-        harvestDate: DOMPurify.sanitize(plantInput.harvestDate),
-        harvestTemperature: plantInput.harvestTemperature
-          ? Number(DOMPurify.sanitize(plantInput.harvestTemperature))
-          : null,
-        harvestStartTime: DOMPurify.sanitize(plantInput.harvestStartTime),
-        harvestEndTime: DOMPurify.sanitize(plantInput.harvestEndTime),
-        plantWeight: plantInput.plantWeight
-          ? Number(DOMPurify.sanitize(plantInput.plantWeight))
-          : null,
-        availableWeight: plantInput.availableWeight
-          ? Number(DOMPurify.sanitize(plantInput.availableWeight))
-          : null,
-        plantState: DOMPurify.sanitize(plantInput.plantState),
-        dryingTime: plantInput.dryingTime
-          ? Number(DOMPurify.sanitize(plantInput.dryingTime))
-          : null,
-        plantAge: plantInput.plantAge
-          ? Number(DOMPurify.sanitize(plantInput.plantAge))
-          : null,
-        date: plantInput.plantBuyDate
-          ? new Date(DOMPurify.sanitize(plantInput.plantBuyDate))
-          : new Date(DOMPurify.sanitize(plantInput.harvestDate)),
+        ...sanitizedPlant,
+        date: sanitizedPlant.plantBuyDate
+          ? new Date(sanitizedPlant.plantBuyDate)
+          : new Date(sanitizedPlant.harvestDate),
         userId: user.id,
       };
 
@@ -245,7 +207,7 @@ const plantResolver = {
         });
         return updatedPlant;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error("Failed to update plant: " + error.message);
@@ -259,7 +221,7 @@ const plantResolver = {
         await Plant.findOneAndDelete({ _id: id, userId: user.id });
         return true;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         console.error("Failed to delete plant:", error);
@@ -270,21 +232,23 @@ const plantResolver = {
     updateAvailableWeight: async (_, { input }, { user }) => {
       requireAuth(user);
 
-      try {
-        const sanitizedId = DOMPurify.sanitize(input.id);
-        const sanitizedAvailableWeight = Number(
-          DOMPurify.sanitize(input.availableWeight)
-        );
+      // Sanitize input fields using validator (no error throwing here)
+      const sanitizedId = trim(input.id || "");
+      const sanitizedAvailableWeight = trim(String(input.availableWeight));
 
+      // Convert to number after sanitization
+      const availableWeightNumber = parseFloat(sanitizedAvailableWeight);
+
+      try {
         // Find plant by ID and update availableWeight
         const updatedPlant = await Plant.findOneAndUpdate(
           { _id: sanitizedId, userId: user.id },
-          { availableWeight: sanitizedAvailableWeight },
+          { availableWeight: availableWeightNumber },
           { new: true } // Returns the updated document
         );
         return updatedPlant;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
         throw new Error(
@@ -297,10 +261,11 @@ const plantResolver = {
       requireAuth(user);
 
       try {
-        const sanitizedId = DOMPurify.sanitize(input.id);
-        const sanitizedAvailableWeight = Number(
-          DOMPurify.sanitize(input.availableWeight)
-        );
+        // Sanitize and validate input fields using validator
+        const sanitizedId = trim(input.id || "");
+        const sanitizedAvailableWeight = trim(String(input.availableWeight));
+
+        const availableWeightNumber = parseFloat(sanitizedAvailableWeight);
 
         // Find the plant by its ID
         const plant = await Plant.findOne({
@@ -309,11 +274,13 @@ const plantResolver = {
         });
 
         if (!plant) {
-          throw new Error("Plant not found");
+          throw new GraphQLError("Plant not found", {
+            extensions: { code: "NOT_FOUND" },
+          });
         }
 
         plant.availableWeight = parseFloat(
-          (plant.availableWeight + sanitizedAvailableWeight).toFixed(1)
+          (plant.availableWeight + availableWeightNumber).toFixed(1)
         );
 
         // Save the updated plant document
@@ -321,10 +288,9 @@ const plantResolver = {
 
         return updatedPlant;
       } catch (error) {
-        if (error instanceof AuthenticationError) {
+        if (error instanceof GraphQLError) {
           throw error;
         }
-        console.error("Error in changeAvailableWeight resolver:", error);
         throw new Error(
           "Failed to change plant's available weight: " + error.message
         );
