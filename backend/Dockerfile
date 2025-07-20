@@ -1,20 +1,16 @@
-# Use an official Node.js runtime as a parent image
 FROM node:18-alpine
-
-# Set the working directory
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files
-COPY package*.json ./
+# Install only production deps
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
+# Copy source
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 3000 27017 8080
+# Backend listens on 3000 for GraphQL and 4000 for any other endpoints
+EXPOSE 3000 4000
 
-# Start the backend application
-CMD ["npm", "start"]
+# Use a non-dev watcher in prod
+CMD ["node", "src/app.js"]
+

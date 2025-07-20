@@ -1,21 +1,24 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18-alpine
-
-# Set the working directory inside the container
+# 1) Build the Vite app
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Install deps
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Install project dependencies
-RUN npm install
-
-# Copy the rest of the application code to the working directory
+# Build
 COPY . .
+RUN npm run build
 
-# Expose port 3000 for development
-EXPOSE 3000 8080
+# 2) Serve statics with "serve"
+FROM node:18-alpine
+WORKDIR /app
 
-# Run the application in development mode
-CMD ["npm", "run", "serve"]
+# globally install serve
+RUN npm install -g serve
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 8080
+CMD ["serve", "-s", "dist", "-l", "8080"]
 

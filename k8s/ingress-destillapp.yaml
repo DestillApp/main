@@ -1,0 +1,28 @@
+# k8s/08-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: destill-ingress
+  namespace: destillapp
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: destill.local       # for local testing—you can edit later
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 8080
+      - path: /graphql
+        pathType: Prefix
+        backend:
+          service:
+            name: backend
+            port:
+              number: 3000
+
