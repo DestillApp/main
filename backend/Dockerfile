@@ -1,16 +1,21 @@
 FROM node:18-alpine
 WORKDIR /app
 
-# Install only production deps
+# Install production dependencies only
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# Copy source
+# Copy source code
 COPY . .
 
-# Backend listens on 3000 for GraphQL and 4000 for any other endpoints
-EXPOSE 3000 4000
+# Default to production environment
+ENV NODE_ENV=production
 
-# Use a non-dev watcher in prod
-CMD ["node", "src/app.js"]
+# Expose GraphQL and REST ports
+EXPOSE 3000
+EXPOSE 4000
+
+# Start the server
+# (app.js reads process.env.MONGODB_URI and process.env.JWT_SECRET) :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+CMD ["npm start"]
 
