@@ -5,20 +5,13 @@ metadata:
   namespace: destillapp
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
-    traefik.ingress.kubernetes.io/router.priority: "100"
 spec:
   ingressClassName: traefik
   rules:
-  - host: destillapp.local
+  # Access via server IP
+  - host: 192.168.100.53.nip.io
     http:
       paths:
-      - path: /graphql
-        pathType: Exact
-        backend:
-          service:
-            name: backend
-            port:
-              number: 3000
       - path: /
         pathType: Prefix
         backend:
@@ -26,24 +19,26 @@ spec:
             name: frontend
             port:
               number: 8080
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: destillapp-backend-ingress
-  namespace: destillapp
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
-    traefik.ingress.kubernetes.io/router.priority: "200"
-    traefik.ingress.kubernetes.io/router.rule: "Host(`destillapp.local`) && Path(`/graphql`)"
-spec:
-  ingressClassName: traefik
-  rules:
+      - path: /graphql
+        pathType: Prefix
+        backend:
+          service:
+            name: backend
+            port:
+              number: 3000
+  # Also keep local access
   - host: destillapp.local
     http:
       paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 8080
       - path: /graphql
-        pathType: Exact
+        pathType: Prefix
         backend:
           service:
             name: backend
