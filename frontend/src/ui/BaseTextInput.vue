@@ -118,7 +118,11 @@ export default {
      */
     const updateValue = (e: Event): void => {
       const target = e.target as HTMLInputElement;
-      emit("update:modelValue", target.value, props.id, props.storeName);
+      let value: string | number = target.value;
+      if (props.classType === "number") {
+        value = value === "" ? null : Number(value);
+      }
+      emit("update:modelValue", value, props.id, props.storeName);
     };
 
     /**
