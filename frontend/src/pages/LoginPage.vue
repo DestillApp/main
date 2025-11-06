@@ -30,6 +30,9 @@
       >
       <!-- Button to submit the login form -->
       <base-button class="login__button" type="submit">Zaloguj się</base-button>
+      <base-button class="login__button login__demo" @click="loginUser(true)"
+        >Wypróbuj demo</base-button
+      >
     </form>
     <div class="login__links">
       <!-- Link to the password help -->
@@ -102,15 +105,19 @@ export default {
      * @returns {Promise<void>} Resolves when the login process is complete.
      * @throws {Error} Throws an error if the login fails.
      */
-    const loginUser = async (): Promise<void> => {
-      await loginFormValidation();
+    const loginUser = async (isDemo: boolean = false): Promise<void> => {
+      if (isDemo) {
+        isLoginFormValid.value = true;
+      } else {
+        await loginFormValidation();
+      }
       if (isLoginFormValid.value) {
         try {
           const form = loginForm.value;
 
           const isAuthenticated = await store.dispatch("auth/login", {
-            email: form.email,
-            password: form.password,
+            email: isDemo ? "demoUser@mail.com" : form.email,
+            password: isDemo ? "demoPassword123" : form.password,
           });
 
           if (isAuthenticated === true) {
@@ -172,6 +179,10 @@ export default {
   color: var(--primary-color);
 }
 
+.login__demo {
+  width: 50%;
+}
+
 .login__links {
   display: flex;
   flex-direction: column;
@@ -196,6 +207,10 @@ export default {
   .login__button {
     width: 40%;
   }
+
+  .login__demo {
+    width: 50%;
+  }
 }
 
 @media (max-width: 600px) {
@@ -208,6 +223,10 @@ export default {
 
   .login__button {
     width: 50%;
+  }
+
+  .login__demo {
+    width: 60%;
   }
 }
 </style>

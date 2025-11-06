@@ -59,6 +59,7 @@
       <base-button
         class="my-data__settings-button"
         @click="openPasswordChangeForm"
+        :disabled="isDemoUser"
         >Zmień hasło</base-button
       >
     </div>
@@ -146,6 +147,13 @@ export default {
     const isDarkThemeStored = computed<boolean>(
       () => store.getters["settings/isDarkTheme"]
     );
+
+    // Computed property to check if current user is demo user
+    const isDemoUser = computed<boolean>(() => {
+      return (
+        username.value === "DemoUser" && email.value === "demoUser@mail.com"
+      );
+    });
 
     /**
      * Fetches user details (username and email) from the server.
@@ -282,6 +290,7 @@ export default {
       isDeleteModalOpen,
       isPasswordChangeFormOpen,
       isDarkTheme,
+      isDemoUser,
       openDistillerForm,
       closeDistillerForm,
       openDeleteModal,
