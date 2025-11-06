@@ -59,10 +59,12 @@
       <base-button
         class="my-data__settings-button"
         @click="openPasswordChangeForm"
-        :disabled="isDemoUser"
         >Zmień hasło</base-button
       >
     </div>
+    <p v-if="isDemo">
+      Przepraszam, ta funkcja nie jest dostępna w wersji demo.
+    </p>
     <!-- Distiller form modal -->
     <distiller-form
       v-if="isDistillerFormOpen"
@@ -148,12 +150,7 @@ export default {
       () => store.getters["settings/isDarkTheme"]
     );
 
-    // Computed property to check if current user is demo user
-    const isDemoUser = computed<boolean>(() => {
-      return (
-        username.value === "DemoUser" && email.value === "demoUser@mail.com"
-      );
-    });
+    const isDemo = ref<boolean>(false);
 
     /**
      * Fetches user details (username and email) from the server.
@@ -171,6 +168,7 @@ export default {
         email.value = data.getUserDetails.email;
       } catch (error: any) {
         await handleUserError(error);
+        isUserDataLoaded.value = true;
       }
     };
 
@@ -239,6 +237,13 @@ export default {
      * @function openPasswordChangeForm
      */
     const openPasswordChangeForm = (): void => {
+      if (
+        username.value === "DemoUser" &&
+        email.value === "demoUser@mail.com"
+      ) {
+        isDemo.value = true;
+        return;
+      }
       isPasswordChangeFormOpen.value = true;
     };
 
@@ -290,7 +295,7 @@ export default {
       isDeleteModalOpen,
       isPasswordChangeFormOpen,
       isDarkTheme,
-      isDemoUser,
+      isDemo,
       openDistillerForm,
       closeDistillerForm,
       openDeleteModal,

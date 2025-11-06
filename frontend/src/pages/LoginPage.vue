@@ -3,7 +3,7 @@
     <!-- Title for the login form -->
     <h3>Logowanie</h3>
     <!-- Login form -->
-    <form @submit.prevent="loginUser" class="login__form">
+    <form @submit.prevent="loginUser(false)" class="login__form">
       <!-- Input field for entering the email -->
       <base-text-input
         v-model="loginForm.email"
