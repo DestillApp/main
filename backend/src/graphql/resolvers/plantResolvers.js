@@ -39,15 +39,17 @@ const plantResolver = {
     /**
      * @async
      * @function getPlants
-     * @param {Object} _ - Unused parameter.
-     * @param {Object} args - An object containing query arguments.
-     * @param {Array<string>} args.fields - Fields to include in the result.
-     * @param {boolean} args.formatDates - Whether to format date fields.
-     * @param {string} args.name - Name of the plant to filter by.
-     * @param {string} args.sorting - Sorting criteria.
-     * @param {Object} context - Context object containing the request user.
+     * @description Fetches all plants from the database with optional filtering, sorting, and date formatting.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Query arguments.
+     * @param {string[]} args.fields - Array of fields to include in the response.
+     * @param {boolean} args.formatDates - Whether to format date fields for display.
+     * @param {string} [args.name] - Optional plant name filter for case-insensitive search.
+     * @param {string} [args.sorting] - Optional sorting parameter (plantName, youngDate, oldDate, createdAt).
+     * @param {Object} context - GraphQL context object.
      * @param {Object} context.user - The authenticated user.
-     * @returns {Promise<Array<Object>>} A promise resolving to a list of plants.
+     * @returns {Promise<Array>} Array of plant objects with optional formatted dates.
+     * @throws {GraphQLError} When authentication fails or database operation fails.
      */
     getPlants: async (_, { fields, formatDates, name, sorting }, { user }) => {
       requireAuth(user);
@@ -110,6 +112,19 @@ const plantResolver = {
       }
     },
 
+    /**
+     * @async
+     * @function getPlantById
+     * @description Fetches a specific plant by its ID with optional date formatting.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Query arguments.
+     * @param {string} args.id - The ID of the plant to fetch.
+     * @param {boolean} args.formatDates - Whether to format date fields for display.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Object>} The plant object with optional formatted dates.
+     * @throws {GraphQLError} When authentication fails or plant is not found.
+     */
     getPlantById: async (_, { id, formatDates }, { user }) => {
       requireAuth(user);
 
@@ -144,10 +159,13 @@ const plantResolver = {
      * @async
      * @function createPlant
      * @description Creates a new plant and saves it to the database.
-     * @param {Object} _ - Unused.
-     * @param {Object} plantInput - Input data for the new plant.
-     * @param {Object} context - The Apollo Server context containing the request and user objects.
-     * @returns {Promise<Object>} The created plant.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.plantInput - Input data for the new plant.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user creating the plant.
+     * @returns {Promise<Object>} The created plant object.
+     * @throws {GraphQLError} When authentication fails or creation fails.
      */
     createPlant: async (_, { plantInput }, { user }) => {
       requireAuth(user);
@@ -180,7 +198,19 @@ const plantResolver = {
       }
     },
 
-    // Update an existing plant
+    /**
+     * @async
+     * @function updatePlant
+     * @description Updates an existing plant and saves it to the database.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {string} args.id - ID of the plant to update.
+     * @param {Object} args.plantInput - Input data for the plant update.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user updating the plant.
+     * @returns {Promise<Object>} The updated plant object.
+     * @throws {GraphQLError} When authentication fails or update fails.
+     */
     updatePlant: async (_, { id, plantInput }, { user }) => {
       requireAuth(user);
 
@@ -214,6 +244,18 @@ const plantResolver = {
       }
     },
 
+    /**
+     * @async
+     * @function deletePlant
+     * @description Deletes a plant from the database.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {string} args.id - ID of the plant to delete.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user deleting the plant.
+     * @returns {Promise<boolean>} True if deletion was successful, false otherwise.
+     * @throws {GraphQLError} When authentication fails.
+     */
     deletePlant: async (_, { id }, { user }) => {
       requireAuth(user);
 
@@ -229,6 +271,20 @@ const plantResolver = {
       }
     },
 
+    /**
+     * @async
+     * @function updateAvailableWeight
+     * @description Updates the available weight of a specific plant.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.input - Input object containing plant ID and new available weight.
+     * @param {string} args.input.id - ID of the plant to update.
+     * @param {number} args.input.availableWeight - New available weight value.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user updating the plant.
+     * @returns {Promise<Object>} The updated plant object.
+     * @throws {GraphQLError} When authentication fails or update fails.
+     */
     updateAvailableWeight: async (_, { input }, { user }) => {
       requireAuth(user);
 
@@ -257,6 +313,20 @@ const plantResolver = {
       }
     },
 
+    /**
+     * @async
+     * @function changeAvailableWeight
+     * @description Changes the available weight of a plant by adding/subtracting from current weight.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.input - Input object containing plant ID and weight change amount.
+     * @param {string} args.input.id - ID of the plant to update.
+     * @param {number} args.input.availableWeight - Amount to add to current available weight.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user updating the plant.
+     * @returns {Promise<Object>} The updated plant object.
+     * @throws {GraphQLError} When authentication fails, plant not found, or update fails.
+     */
     changeAvailableWeight: async (_, { input }, { user }) => {
       requireAuth(user);
 

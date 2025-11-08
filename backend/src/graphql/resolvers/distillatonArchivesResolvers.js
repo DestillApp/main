@@ -26,8 +26,17 @@ const distillationArchivesResolvers = {
     /**
      * @async
      * @function getDistillationArchives
-     * @description Fetches all distillation archives from the database.
-     * @returns {Promise<Array>} Array of distillation archives.
+     * @description Fetches all distillation archives from the database with optional filtering and sorting.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Query arguments.
+     * @param {string[]} args.fields - Array of fields to include in the response.
+     * @param {string} [args.name] - Optional plant name filter for case-insensitive search.
+     * @param {string} [args.sorting] - Optional sorting parameter (plantName, createdAt, youngDate, oldDate).
+     * @param {boolean} args.formatDates - Whether to format date fields for display.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Array>} Array of distillation archive objects with optional formatted dates.
+     * @throws {GraphQLError} When authentication fails or database operation fails.
      */
     getDistillationArchives: async (
       _,
@@ -107,11 +116,15 @@ const distillationArchivesResolvers = {
     /**
      * @async
      * @function getArchiveDistillationById
-     * @description Fetches a distillation archive by ID from the database.
-     * @param {Object} _ - Unused.
-     * @param {Object} id - ID of the distillation archive to fetch.
-     * @param {Boolean} formatDates - Whether to format the date fields.
-     * @returns {Promise<Object>} The fetched distillation archive.
+     * @description Fetches a specific distillation archive by its ID with optional date formatting.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Query arguments.
+     * @param {string} args.id - The ID of the distillation archive to fetch.
+     * @param {boolean} args.formatDistillDate - Whether to format distillation date fields for display.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Object>} The distillation archive object with optional formatted dates.
+     * @throws {GraphQLError} When authentication fails or archive is not found.
      */
     getArchiveDistillationById: async (
       _,
@@ -165,10 +178,13 @@ const distillationArchivesResolvers = {
      * @async
      * @function createDistillationArchive
      * @description Creates a new distillation archive and saves it to the database.
-     * @param {Object} _ - Unused.
-     * @param {Object} distillationArchiveInput - Input data for the new distillation archive.
-     * @param {Object} user - The user creating the distillation archive.
-     * @returns {Promise<Object>} The created distillation archive.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.distillationArchiveInput - Input data for the new distillation archive.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user creating the distillation archive.
+     * @returns {Promise<Object>} The created distillation archive object.
+     * @throws {GraphQLError} When authentication fails or creation fails.
      */
     createDistillationArchive: async (
       _,
@@ -219,10 +235,14 @@ const distillationArchivesResolvers = {
      * @async
      * @function updateDistillationArchive
      * @description Updates an existing distillation archive and saves it to the database.
-     * @param {Object} _ - Unused.
-     * @param {Object} id - ID of the distillation archive to update.
-     * @param {Object} distillationArchiveInput - Input data for the distillation archive update.
-     * @returns {Promise<Object>} The updated distillation archive.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {string} args.id - ID of the distillation archive to update.
+     * @param {Object} args.distillationArchiveInput - Input data for the distillation archive update.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user updating the distillation archive.
+     * @returns {Promise<Object>} The updated distillation archive object.
+     * @throws {GraphQLError} When authentication fails or update fails.
      */
     updateDistillationArchive: async (
       _,
@@ -267,6 +287,18 @@ const distillationArchivesResolvers = {
       }
     },
 
+    /**
+     * @async
+     * @function deleteDistillationArchive
+     * @description Deletes a distillation archive from the database.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {string} args.id - ID of the distillation archive to delete.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user deleting the distillation archive.
+     * @returns {Promise<boolean>} True if deletion was successful, false otherwise.
+     * @throws {GraphQLError} When authentication fails.
+     */
     deleteDistillationArchive: async (_, { id }, { user }) => {
       requireAuth(user);
 

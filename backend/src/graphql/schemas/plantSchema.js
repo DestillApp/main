@@ -1,10 +1,39 @@
 /**
  * @module graphql/schemas/plantSchema
- * @description Defines the GraphQL schema for the Plant type.
+ * @description Defines the GraphQL schema for plant-related operations.
+ * Provides types, queries and mutations for managing plant records.
  */
 
 const gql = require("graphql-tag");
 
+/**
+ * @typedef {Object} PlantSchema
+ * @description GraphQL schema definition for plant operations.
+ * Contains plant types with complete plant information and CRUD operations.
+ * 
+ * @example
+ * // Example query usage:
+ * query GetPlants($fields: [String]!, $formatDates: Boolean!) {
+ *   getPlants(fields: $fields, formatDates: $formatDates) {
+ *     _id
+ *     plantName
+ *     plantPart
+ *     availableWeight
+ *     harvestDate
+ *   }
+ * }
+ * 
+ * @example
+ * // Example mutation usage:
+ * mutation CreatePlant($input: PlantInput!) {
+ *   createPlant(plantInput: $input) {
+ *     _id
+ *     plantName
+ *     plantPart
+ *     availableWeight
+ *   }
+ * }
+ */
 const plantSchema = gql`
   type Plant {
     _id: ID!

@@ -20,10 +20,12 @@ const settingsResolvers = {
      * @async
      * @function getUserSettings
      * @description Fetches the user settings for the authenticated user.
-     * @param {Object} _ - Unused.
-     * @param {Object} __ - Unused.
-     * @param {Object} user - The authenticated user.
-     * @returns {Promise<Object>} The user settings.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} __ - Unused args parameter.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Object>} The user settings object.
+     * @throws {GraphQLError} When authentication fails or user settings are not found.
      */
     getUserSettings: async (_, __, { user }) => {
       requireAuth(user);
@@ -48,9 +50,11 @@ const settingsResolvers = {
      * @async
      * @function createSettings
      * @description Creates initial default settings for a user and saves them to the database.
-     * @param {Object} _ - Unused.
-     * @param {Object} userId - The authenticated user.
-     * @returns {Promise<Object>} The created user settings.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {string} args.userId - The user ID for which to create settings.
+     * @returns {Promise<Object>} The created user settings object.
+     * @throws {GraphQLError} When creation fails.
      */
     createSettings: async (_, { userId }) => {
       // Initial default settings data
@@ -89,10 +93,15 @@ const settingsResolvers = {
      * @async
      * @function updateListSettings
      * @description Updates a specific item in the listSettings object and updates the updatedAt date.
-     * @param {Object} _ - Unused.
-     * @param {Object} input - The input data containing the setting to update.
-     * @param {Object} user - The authenticated user.
-     * @returns {Promise<Object>} The updated user settings.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.input - The input data containing the setting to update.
+     * @param {string} args.input.settingKey - The key of the setting to update.
+     * @param {number} args.input.settingValue - The new value for the setting.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Object>} The updated user settings object.
+     * @throws {GraphQLError} When authentication fails or update fails.
      */
     updateListSettings: async (_, { input }, { user }) => {
       requireAuth(user);
@@ -127,10 +136,15 @@ const settingsResolvers = {
      * @async
      * @function updateListSorting
      * @description Updates a specific item in the listSorting object and updates the updatedAt date.
-     * @param {Object} _ - Unused.
-     * @param {Object} input - The input data containing the setting to update.
-     * @param {Object} user - The authenticated user.
-     * @returns {Promise<Object>} The updated user settings.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.input - The input data containing the setting to update.
+     * @param {string} args.input.settingKey - The key of the sorting setting to update.
+     * @param {string} args.input.settingValue - The new value for the sorting setting.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Object>} The updated user settings object.
+     * @throws {GraphQLError} When authentication fails or update fails.
      */
     updateListSorting: async (_, { input }, { user }) => {
       requireAuth(user);
@@ -165,10 +179,16 @@ const settingsResolvers = {
      * @async
      * @function addDistiller
      * @description Adds a new distiller to the distillerList and updates the updatedAt date.
-     * @param {Object} _ - Unused.
-     * @param {Object} userId - The authenticated user.
-     * @param {Object} distiller - The distiller data to add.
-     * @returns {Promise<Object>} The updated user settings.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.distiller - The distiller data to add.
+     * @param {string} args.distiller.material - The material of the distiller.
+     * @param {number} args.distiller.capacity - The capacity of the distiller.
+     * @param {string} args.distiller.heating - The heating type of the distiller.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Object>} The updated user settings object.
+     * @throws {GraphQLError} When authentication fails or adding distiller fails.
      */
     addDistiller: async (_, { userId, distiller }, { user }) => {
       requireAuth(user);
@@ -204,10 +224,13 @@ const settingsResolvers = {
      * @async
      * @function deleteDistiller
      * @description Deletes a distiller from the distillerList by its ID and updates the updatedAt date.
-     * @param {Object} _ - Unused.
-     * @param {Object} userId - The authenticated user.
-     * @param {ID} distillerId - The ID of the distiller to delete.
-     * @returns {Promise<Object>} The updated user settings.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {string} args.distillerId - The ID of the distiller to delete.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Object>} The updated user settings object.
+     * @throws {GraphQLError} When authentication fails or deletion fails.
      */
     deleteDistiller: async (_, { userId, distillerId }, { user }) => {
       requireAuth(user);
@@ -240,10 +263,13 @@ const settingsResolvers = {
      * @async
      * @function updateDarkTheme
      * @description Updates the isDarkTheme setting and updates the updatedAt date.
-     * @param {Object} _ - Unused.
-     * @param {Boolean} isDarkTheme - The new value for the isDarkTheme setting.
-     * @param {Object} user - The authenticated user.
-     * @returns {Promise<Object>} The updated user settings.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {boolean} args.isDarkTheme - The new value for the isDarkTheme setting.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Object>} The updated user settings object.
+     * @throws {GraphQLError} When authentication fails or update fails.
      */
     updateDarkTheme: async (_, { isDarkTheme }, { user }) => {
       requireAuth(user);

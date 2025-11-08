@@ -1,7 +1,7 @@
 /**
  * @module graphql/resolvers/userResolvers
- * @description User resolvers for GraphQL mutations.
- * Handles user registration.
+ * @description User resolvers for GraphQL queries and mutations.
+ * Handles user authentication, registration, password management, and user details.
  */
 
 // Importing required modules
@@ -14,9 +14,12 @@ const { escape, trim } = require("validator");
 
 /**
  * @function generateToken
- * @description Generates a JWT token for a user.
+ * @description Generates a JWT token for a user with user ID and role information.
  * @param {Object} user - The user object containing user details.
- * @returns {String} The generated JWT token.
+ * @param {string} user._id - The user's unique identifier.
+ * @param {string} [user.role] - The user's role (optional).
+ * @returns {string} The generated JWT token that expires in 1 hour.
+ * @throws {Error} When JWT signing fails.
  */
 const generateToken = (user) => {
   const payload = {
@@ -35,10 +38,14 @@ const userResolver = {
     /**
      * @function verifyAuth
      * @description Verifies the user's authentication status based on the provided token.
-     * @param {Object} parent - Unused.
-     * @param {Object} args - Unused.
+     * @param {Object} parent - Unused parent parameter.
+     * @param {Object} args - Unused arguments parameter.
      * @param {Object} context - The GraphQL context containing the request object.
+     * @param {Object} context.req - The HTTP request object.
+     * @param {Object} context.req.cookies - The request cookies.
+     * @param {string} context.req.cookies.authToken - The authentication token from cookies.
      * @returns {Object} An object indicating whether the user is authenticated.
+     * @returns {boolean} returns.isAuthenticated - True if token is valid, false otherwise.
      */
     verifyAuth: (parent, args, context) => {
       const token = context.req.cookies.authToken;
@@ -54,11 +61,14 @@ const userResolver = {
     },
 
     /**
+     * @async
      * @function checkUsernameExistence
      * @description Checks if the username exists in the database.
-     * @param {Object} _ - Unused.
-     * @param {String} username - The username to check.
-     * @returns {Promise<Boolean>} True if the username exists, false otherwise.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Query arguments.
+     * @param {string} args.username - The username to check for existence.
+     * @returns {Promise<boolean>} True if the username exists, false otherwise.
+     * @throws {Error} When database query fails.
      */
     checkUsernameExistence: async (_, { username }) => {
       try {
@@ -73,12 +83,18 @@ const userResolver = {
     },
 
     /**
+     * @async
      * @function getUserDetails
      * @description Fetches the username and email of the authenticated user.
-     * @param {Object} _ - Unused.
-     * @param {Object} __ - Unused.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} __ - Unused arguments parameter.
      * @param {Object} context - The GraphQL context containing the authenticated user.
+     * @param {Object} context.user - The authenticated user object.
+     * @param {string} context.user.id - The authenticated user's ID.
      * @returns {Promise<Object>} An object containing the username and email.
+     * @returns {string} returns.username - The user's username.
+     * @returns {string} returns.email - The user's email address.
+     * @throws {GraphQLError} When authentication fails or user is not found.
      */
     getUserDetails: async (_, __, { user }) => {
       requireAuth(user);
@@ -105,10 +121,18 @@ const userResolver = {
     /**
      * @async
      * @function registerUser
-     * @description Registers a new user and saves it to the database.
-     * @param {Object} _ - Unused.
-     * @param {Object} userInput - Input data for the new user.
-     * @returns {Promise<Object>} The created user.
+     * @description Registers a new user and saves it to the database with input validation and sanitization.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.userInput - Input data for the new user.
+     * @param {string} args.userInput.username - The desired username.
+     * @param {string} args.userInput.email - The user's email address.
+     * @param {string} args.userInput.password - The user's password (will be hashed).
+     * @returns {Promise<Object>} The created user object.
+     * @returns {string} returns._id - The created user's ID.
+     * @returns {string} returns.username - The created user's username.
+     * @returns {string} returns.email - The created user's email.
+     * @throws {GraphQLError} When email already exists or creation fails.
      */
     registerUser: async (_, { userInput }) => {
       let { username, email, password } = userInput;
@@ -155,12 +179,16 @@ const userResolver = {
     /**
      * @async
      * @function login
-     * @description Logs in a user and returns a JWT token.
-     * @param {Object} _ - Unused.
-     * @param {String} email - The user's email.
-     * @param {String} password - The user's password.
-     * @returns {Promise<String>} The JWT token.
-     * @throws {AuthenticationError} If the credentials are invalid.
+     * @description Logs in a user and returns a JWT token with secure cookie setting.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {string} args.email - The user's email address.
+     * @param {string} args.password - The user's password.
+     * @param {Object} context - The GraphQL context.
+     * @param {Object} context.req - The HTTP request object.
+     * @param {Object} context.res - The HTTP response object.
+     * @returns {Promise<string>} The JWT token.
+     * @throws {GraphQLError} When credentials are invalid or login fails.
      */
     login: async (_, { email, password }, { req, res }) => {
       // Sanitize input data using validator
@@ -208,10 +236,12 @@ const userResolver = {
      * @async
      * @function logout
      * @description Logs out a user by clearing the authentication cookie.
-     * @param {Object} _ - Unused.
-     * @param {Object} __ - Unused.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} __ - Unused arguments parameter.
      * @param {Object} context - The GraphQL context containing the request and response objects.
-     * @returns {Promise<Boolean>} A boolean indicating whether the logout was successful.
+     * @param {Object} context.req - The HTTP request object.
+     * @param {Object} context.res - The HTTP response object.
+     * @returns {Promise<boolean>} A boolean indicating whether the logout was successful.
      */
     logout: async (_, __, { req, res }) => {
       res.clearCookie("authToken");
@@ -222,10 +252,16 @@ const userResolver = {
      * @async
      * @function changePassword
      * @description Changes the user's password if the old password is correct.
-     * @param {Object} _ - Unused.
-     * @param {Object} input - The input data containing the old and new passwords.
-     * @param {Object} user - The authenticated user.
-     * @returns {Promise<Boolean>} True if the password was changed successfully, false otherwise.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.input - The input data containing the old and new passwords.
+     * @param {string} args.input.oldPassword - The user's current password.
+     * @param {string} args.input.newPassword - The user's new password.
+     * @param {Object} context - The GraphQL context.
+     * @param {Object} context.user - The authenticated user object.
+     * @param {string} context.user.id - The authenticated user's ID.
+     * @returns {Promise<boolean>} True if the password was changed successfully.
+     * @throws {GraphQLError} When authentication fails, old password is invalid, or update fails.
      */
     changePassword: async (_, { input }, { user }) => {
       requireAuth(user);

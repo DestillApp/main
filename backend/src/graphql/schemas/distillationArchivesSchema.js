@@ -1,9 +1,29 @@
 /**
  * @module graphql/schemas/distillationArchivesSchema
- * @description Defines the GraphQL schema for the Distillation Archives type.
+ * @description Defines the GraphQL schema for distillation archives operations.
+ * Provides types, queries and mutations for managing distillation archive records.
  */
 
 const gql = require("graphql-tag");
+
+/**
+ * @typedef {Object} DistillationArchivesSchema
+ * @description GraphQL schema definition for distillation archives operations.
+ * 
+ * @example
+ * // Example query usage:
+ * query GetDistillationArchives($fields: [String]!, $formatDates: Boolean!) {
+ *   getDistillationArchives(fields: $fields, formatDates: $formatDates) {
+ *     _id
+ *     oilAmount
+ *     hydrosolAmount
+ *     distillationData {
+ *       distillationType
+ *       distillationDate
+ *     }
+ *   }
+ * }
+ */
 
 const distillationArchivesSchema = gql`
   type DistilledPlant {

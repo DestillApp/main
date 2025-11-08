@@ -19,6 +19,20 @@ const {
 
 const distillationResolvers = {
   Query: {
+    /**
+     * @async
+     * @function getDistillations
+     * @description Fetches all distillations from the database with optional filtering and sorting.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Query arguments.
+     * @param {string[]} args.fields - Array of fields to include in the response.
+     * @param {string} [args.name] - Optional plant name filter for case-insensitive search.
+     * @param {string} [args.sorting] - Optional sorting parameter (plantName, createdAt, youngDate, oldDate).
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Array>} Array of distillation objects with formatted dates.
+     * @throws {GraphQLError} When authentication fails or database operation fails.
+     */
     getDistillations: async (_, { fields, name, sorting }, { user }) => {
       requireAuth(user);
 
@@ -79,6 +93,19 @@ const distillationResolvers = {
       }
     },
 
+    /**
+     * @async
+     * @function getDistillationById
+     * @description Fetches a specific distillation by its ID with optional date formatting.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Query arguments.
+     * @param {string} args.id - The ID of the distillation to fetch.
+     * @param {boolean} args.formatDates - Whether to format date fields for display.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user.
+     * @returns {Promise<Object>} The distillation object with optional formatted dates.
+     * @throws {GraphQLError} When authentication fails or distillation is not found.
+     */
     getDistillationById: async (_, { id, formatDates }, { user }) => {
       requireAuth(user);
 
@@ -114,10 +141,13 @@ const distillationResolvers = {
      * @async
      * @function createDistillation
      * @description Creates a new distillation and saves it to the database.
-     * @param {Object} _ - Unused.
-     * @param {Object} distillationInput - Input data for the new distillation.
-     * @param {Object} context.user - The authenticated user.
-     * @returns {Promise<Object>} The created distillation.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {Object} args.distillationInput - Input data for the new distillation.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user creating the distillation.
+     * @returns {Promise<Object>} The created distillation object.
+     * @throws {GraphQLError} When authentication fails or creation fails.
      */
     createDistillation: async (_, { distillationInput }, { user }) => {
       requireAuth(user);
@@ -158,11 +188,14 @@ const distillationResolvers = {
      * @async
      * @function updateDistillation
      * @description Updates an existing distillation and saves it to the database.
-     * @param {Object} _ - Unused.
-     * @param {Object} id - ID of the distillation to update.
-     * @param {Object} distillationInput - Input data for the distillation update.
-     * @param {Object} user - The authenticated user.
-     * @returns {Promise<Object>} The updated distillation.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {string} args.id - ID of the distillation to update.
+     * @param {Object} args.distillationInput - Input data for the distillation update.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user updating the distillation.
+     * @returns {Promise<Object>} The updated distillation object.
+     * @throws {GraphQLError} When authentication fails or update fails.
      */
     updateDistillation: async (_, { id, distillationInput }, { user }) => {
       requireAuth(user);
@@ -210,6 +243,18 @@ const distillationResolvers = {
       }
     },
 
+    /**
+     * @async
+     * @function deleteDistillation
+     * @description Deletes a distillation from the database.
+     * @param {Object} _ - Unused parent parameter.
+     * @param {Object} args - Mutation arguments.
+     * @param {string} args.id - ID of the distillation to delete.
+     * @param {Object} context - GraphQL context object.
+     * @param {Object} context.user - The authenticated user deleting the distillation.
+     * @returns {Promise<boolean>} True if deletion was successful, false otherwise.
+     * @throws {GraphQLError} When authentication fails.
+     */
     deleteDistillation: async (_, { id }, { user }) => {
       requireAuth(user);
 

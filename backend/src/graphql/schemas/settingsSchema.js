@@ -1,10 +1,48 @@
 /**
  * @module graphql/schemas/settingsSchema
- * @description Defines the GraphQL schema for the User Settings type.
+ * @description Defines the GraphQL schema for user settings operations.
+ * Provides types, queries and mutations for managing user settings, list configurations, and distillers.
  */
 
 const gql = require("graphql-tag");
 
+/**
+ * @typedef {Object} SettingsSchema
+ * @description GraphQL schema definition for user settings operations.
+ * Contains settings types for list configurations, sorting preferences, and distiller management.
+ * 
+ * @example
+ * // Example query usage:
+ * query GetUserSettings {
+ *   getUserSettings {
+ *     listSettings {
+ *       plantListLength
+ *       distillationListLength
+ *     }
+ *     listSorting {
+ *       plantListSorting
+ *       distillationListSorting
+ *     }
+ *     distillerList {
+ *       id
+ *       material
+ *       capacity
+ *       heating
+ *     }
+ *     isDarkTheme
+ *   }
+ * }
+ * 
+ *  * @example
+ * // Example mutation usage:
+ * mutation UpdateListSettings($input: UpdateListSettingsInput!) {
+ *   updateListSettings(input: $input) {
+ *     listSettings {
+ *       plantListLength
+ *     }
+ *   }
+ * }
+ */
 const settingsSchema = gql`
   type ListSettings {
     plantListLength: Int!
