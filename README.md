@@ -7,8 +7,8 @@ It consists of a **frontend** built with Vue 3 and a **backend** built with Node
 
 ## 🏗️ Project Structure
 
-frontend/ # Frontend application (Vue 3, TypeScript, Vite, Vuetify)
-backend/ # Backend API (Node.js, Express, GraphQL, MongoDB)
+- `frontend/` – Frontend application (Vue 3, TypeScript, Vite, Vuetify)  
+- `backend/` – Backend API (Node.js, Express, GraphQL, MongoDB)
 
 ---
 
