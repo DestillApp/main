@@ -1,7 +1,12 @@
 const { escape, trim, toFloat, toInt } = require("validator");
 
+/**
+ * @function sanitizeDistillationInput
+ * @description Sanitizes and validates distillation input data for security.
+ * @param {Object} input - Raw distillation input data
+ * @returns {Object} Sanitized distillation data
+ */
 function sanitizeDistillationArchiveInput(input) {
-  console.log("INPUT", input);
   return {
     oilAmount:
       input.oilAmount !== null && input.oilAmount !== undefined

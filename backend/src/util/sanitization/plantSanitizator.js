@@ -1,5 +1,11 @@
 const { escape, trim } = require("validator");
 
+/**
+ * @function sanitizePlantInput
+ * @description Sanitizes and validates plant input data for security.
+ * @param {Object} input - Raw plant input data from GraphQL
+ * @returns {Object} Sanitized plant data safe for database storage
+ */
 function sanitizePlantInput(input) {
   return {
     plantName: escape(trim(input.plantName || "")),

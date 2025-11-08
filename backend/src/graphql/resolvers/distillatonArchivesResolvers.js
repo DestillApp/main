@@ -214,8 +214,6 @@ const distillationArchivesResolvers = {
       // Filtering out null or empty string values
       const filteredData = filterData(sanitizedData);
 
-      console.log(filterData, "filtered data");
-
       try {
         // Creating a new DistillationArchives instance
         const distillationArchive = new DistillationArchives(filteredData);

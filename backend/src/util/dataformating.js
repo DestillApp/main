@@ -1,3 +1,9 @@
+/**
+ * @function filterData
+ * @description Filters out null and empty string values from data objects, including nested objects.
+ * @param {Object} data - The data object to filter
+ * @returns {Object} Filtered data object without null or empty string values
+ */
 const filterData = (data) => {
   const filteredData = {};
 

@@ -74,10 +74,6 @@ const distillationResolvers = {
 
           // Format specific date field
           if (formattedDistillation.distillationDate) {
-            console.log(
-              "distillationDate before format:",
-              formattedDistillation.distillationDate
-            );
             formattedDistillation.distillationDate = formatDate(
               formattedDistillation.distillationDate
             );

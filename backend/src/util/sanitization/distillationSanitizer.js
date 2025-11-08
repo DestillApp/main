@@ -1,5 +1,11 @@
 const { escape, trim, toFloat, toInt } = require("validator");
 
+/**
+ * @function sanitizeDistillationInput
+ * @description Sanitizes and validates distillation input data for security.
+ * @param {Object} input - Raw distillation input data from GraphQL
+ * @returns {Object} Sanitized distillation data safe for database storage
+ */
 function sanitizeDistillationInput(input) {
   return {
     choosedPlant: {
