@@ -1,14 +1,14 @@
 /**
  * @module database/distillation
- * @description Defines the Mongoose schema for the Distillation model.
+ * @description Mongoose schema for distillation process records.
  */
 
-// Importing mongoose module
 const mongoose = require("mongoose");
-
-// Destructuring Schema from mongoose
 const Schema = mongoose.Schema;
 
+/**
+ * Schema for plant selected for distillation.
+ */
 const choosedPlantSchema = new Schema({
   id: { type: Schema.Types.ObjectId, ref: "Plant", required: true },
   name: { type: String, required: true },
@@ -18,12 +18,17 @@ const choosedPlantSchema = new Schema({
   buyDate: { type: String, required: false },
 });
 
+/**
+ * Schema for distillation time duration.
+ */
 const distillationTimeSchema = new Schema({
   distillationHours: { type: Number, required: false },
   distillationMinutes: { type: Number, required: false },
 });
 
-// Defining the Distillation schema
+/**
+ * Main schema for distillation process records.
+ */
 const distillationSchema = new Schema({
   choosedPlant: { type: choosedPlantSchema, required: true },
   weightForDistillation: { type: Number, required: true },
@@ -41,5 +46,4 @@ const distillationSchema = new Schema({
   createdAt: { type: Date, required: true },
 });
 
-// Exporting the Distillation model based on the distillationSchema
 module.exports = mongoose.model("Distillation", distillationSchema);

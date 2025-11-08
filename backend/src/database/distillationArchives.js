@@ -1,14 +1,15 @@
 /**
  * @module database/distillationArchives
- * @description Defines the Mongoose schema for the Distillation Archives model.
+ * @description Mongoose schema for distillation archives records.
+ * Stores completed distillation results with plant and process data.
  */
 
-// Importing mongoose module
 const mongoose = require("mongoose");
-
-// Destructuring Schema from mongoose
 const Schema = mongoose.Schema;
 
+/**
+ * Schema for distilled plant information in archives.
+ */
 const distilledPlantSchema = new Schema({
   plantName: { type: String, required: true },
   plantPart: { type: String, required: true },
@@ -25,12 +26,17 @@ const distilledPlantSchema = new Schema({
   plantAge: { type: Number, required: false },
 });
 
+/**
+ * Schema for distillation time duration in archives.
+ */
 const distillationTimeSchema = new Schema({
   distillationHours: { type: Number, required: false },
   distillationMinutes: { type: Number, required: false },
 });
 
-// Defining the DistillationData schema based on the distillation schema but without choosedPlant key
+/**
+ * Schema for distillation process data in archives.
+ */
 const distillationDataSchema = new Schema({
   weightForDistillation: { type: Number, required: true },
   isPlantSoaked: { type: Boolean, required: true },
@@ -44,7 +50,9 @@ const distillationDataSchema = new Schema({
   distillationTime: { type: distillationTimeSchema, required: true },
 });
 
-// Defining the Distillation Archives schema
+/**
+ * Main schema for distillation archives with results.
+ */
 const distillationArchivesSchema = new Schema({
   oilAmount: { type: Number, required: true },
   hydrosolAmount: { type: Number, required: true },
@@ -58,7 +66,5 @@ const distillationArchivesSchema = new Schema({
   createdAt: { type: Date, required: true },
 });
 
-module.exports = mongoose.model(
-  "DistillationArchives",
-  distillationArchivesSchema
-);
+// Exporting the DistillationArchives model
+module.exports = mongoose.model("DistillationArchives", distillationArchivesSchema);

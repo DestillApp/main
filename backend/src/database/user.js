@@ -1,15 +1,15 @@
 /**
  * @module database/user
- * @description Defines the Mongoose schema for the User model.
+ * @description Mongoose schema for user records.
+ * Stores user authentication data and profile information.
  */
 
-// Importing mongoose module
 const mongoose = require("mongoose");
-
-// Destructuring Schema from mongoose
 const Schema = mongoose.Schema;
 
-// Defining the User schema
+/**
+ * Main schema for user records with authentication credentials.
+ */
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
@@ -17,5 +17,5 @@ const userSchema = new Schema({
   role: { type: String, default: "user" },
 });
 
-// Exporting the User model based on the userSchema
+// Exporting the User model
 module.exports = mongoose.model("User", userSchema);

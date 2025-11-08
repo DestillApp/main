@@ -1,15 +1,15 @@
 /**
  * @module database/plant
- * @description Defines the Mongoose schema for the Plant model.
+ * @description Mongoose schema for plant records.
+ * Stores plant data including identification, origin, harvest/purchase details, and weight.
  */
 
-// Importing mongoose module
 const mongoose = require("mongoose");
-
-// Destructuring Schema from mongoose
 const Schema = mongoose.Schema;
 
-// Defining the Plant schema
+/**
+ * Main schema for plant records with complete plant information.
+ */
 const plantSchema = new Schema({
   plantName: { type: String, required: true },
   plantPart: { type: String, required: true },
@@ -31,5 +31,5 @@ const plantSchema = new Schema({
   createdAt: { type: Date, required: true },
 });
 
-// Exporting the Plant model based on the plantSchema
+// Exporting the Plant model
 module.exports = mongoose.model("Plant", plantSchema);
