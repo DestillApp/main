@@ -40,7 +40,7 @@ It includes:
 - Modular architecture for resolvers and schemas
 
 📖 [Read more in the backend README](backend/README.md)  
-💻 [Backend Docs](backend/docs/jsdoc/index.html)
+💻 [Backend Docs](https://destillapp.github.io/main/backend/)
 
 ---
 
@@ -49,4 +49,4 @@ It includes:
 - [Frontend README](frontend/README.md)  
 - [Backend README](backend/README.md)  
 - [Frontend VitePress Docs](https://destillapp.github.io/main/)  
-- [Backend JSDoc Docs](backend/docs/jsdoc/index.html)
+- [Backend JSDoc Docs](https://destillapp.github.io/main/backend/)
