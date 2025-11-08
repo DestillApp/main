@@ -1,44 +1,46 @@
 /**
- * @module graphql/schemas/distillationArchivesSchema
- * @description Defines the GraphQL schema for distillation archives operations.
- * Provides types, queries and mutations for managing distillation archive records.
+ * @module graphql/schemas/distillationSchema
+ * @description Defines the GraphQL schema for distillation operations.
+ * Provides types, queries and mutations for managing distillation processes.
  */
 
 const gql = require("graphql-tag");
 
 /**
- * @typedef {Object} DistillationArchivesSchema
- * @description GraphQL schema definition for distillation archives operations.
- * Contains complete distillation archive types with results data, process data, and plant information.
- * 
- * @example
- * // Example query usage:
- * query GetDistillationArchives($fields: [String]!, $formatDates: Boolean!) {
- *   getDistillationArchives(fields: $fields, formatDates: $formatDates) {
- *     _id
- *     oilAmount
- *     hydrosolAmount
- *     distillationData {
- *       distillationType
- *       distillationDate
- *     }
- *     distilledPlant {
- *       plantName
- *       plantPart
- *     }
- *   }
- * }
+ * @typedef {Object} DistillationSchema
+ * @description GraphQL schema definition for distillation operations.
  * 
  * @example
  * // Example mutation usage:
- * mutation CreateDistillationArchive($input: DistillationArchiveInput!) {
- *   createDistillationArchive(distillationArchiveInput: $input) {
+ * mutation CreateDistillation($input: DistillationInput!) {
+ *   createDistillation(distillationInput: $input) {
  *     _id
- *     oilAmount
- *     hydrosolAmount
+ *     choosedPlant {
+ *       id
+ *       name
+ *       part
+ *       availableWeight
+ *       harvestDate
+ *       buyDate
+ *     }
+ *     weightForDistillation
+ *     isPlantSoaked
+ *     soakingTime
+ *     weightAfterSoaking
+ *     isPlantShredded
+ *     distillationType
+ *     distillationDate
+ *     distillationApparatus
+ *     waterForDistillation
+ *     distillationTime {
+ *       distillationHours
+ *       distillationMinutes
+ *     }
  *   }
  * }
  */
+
+
 const distillationSchema = gql`
   type ChoosedPlant {
     id: ID!

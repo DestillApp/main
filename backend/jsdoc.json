@@ -1,6 +1,6 @@
 {
   "source": {
-    "include": ["src", "src/database", "src/graphql", "src/graphql/resolvers", "src/graphql/schemas"]
+    "include": ["src", "src/database", "src/graphql", "src/graphql/resolvers", "src/graphql/schemas", "src/util", "src/util/sanitization"] 
   },
   "opts": {
     "destination": "docs"

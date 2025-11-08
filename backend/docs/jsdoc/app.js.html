@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module app
+ * @description Entry point of the application.
+ * Initializes the Express server with Apollo Server for handling GraphQL requests.
+ * Connects to the MongoDB database.
+ */
+
+console.log("Hello from Node.js!");
+
+// Importowanie pakietu dotenv
+require("dotenv").config({ path: "./.env" });
+
+// Importing required modules
+const express = require("express");
+const { ApolloServer } = require("@apollo/server");
+const { expressMiddleware } = require("@as-integrations/express4");
+const cookieParser = require("cookie-parser");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const passport = require("passport");
+const { Strategy: JwtStrategy, ExtractJwt } = require("passport-jwt");
+
+// Importing GraphQL schema and resolvers
+const { typeDefs, resolvers } = require("./graphql/index.js");
+
+// Importing the User model
+const User = require("./database/user");
+
+// Creating an Express application
+const app = express();
+
+app.use(express.json());
+
+// Using cookie parser
+app.use(cookieParser());
+
+// Read allowed origins from environment variable and split into array
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : [];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+// Passport.js configuration
+passport.use(
+  new JwtStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET,
+    },
+    async (jwtPayload, done) => {
+      try {
+        const user = await User.findById(jwtPayload.id);
+        if (user) {
+          return done(null, user);
+        } else {
+          return done(null, false);
+        }
+      } catch (error) {
+        return done(error, false);
+      }
+    }
+  )
+);
+
+app.use(passport.initialize());
+
+// Middleware to set x-public-route header for specific operations
+app.use((req, res, next) => {
+  console.log("Request body:", req.body);
+  if (req.body &amp;&amp; req.body.operationName) {
+    const publicOperations = ["registerUser", "Login"];
+    if (publicOperations.includes(req.body.operationName)) {
+      req.headers["x-public-route"] = "true";
+    }
+  }
+  next();
+});
+
+// Creating an Apollo Server instance
+const server = new ApolloServer({
+  typeDefs: typeDefs,
+  resolvers: resolvers,
+});
+
+// Connecting to MongoDB database
+mongoose
+  .connect(process.env.MONGODB_URI) // Use the connection string from .env
+  .then(async () => {
+    await server.start();
+
+    app.use(
+      "/graphql",
+      express.json(),
+      expressMiddleware(server, {
+        context: async ({ req, res }) => {
+          return new Promise((resolve, reject) => {
+            passport.authenticate(
+              "jwt",
+              { session: false },
+              (err, user, info) => {
+                if (err) {
+                  console.log("Error in passport.authenticate:", err);
+                  reject(err);
+                }
+                resolve({ req, res, user });
+              }
+            )(req, res);
+          });
+        },
+      })
+    );
+
+    const PORT = process.env.PORT;
+    app.listen(PORT, () => {
+      console.log(`Server ready at http://localhost:${PORT}/graphql`);
+    });
+  })
+  .catch((err) => {
+    // If there's an error in connecting to the database
+    console.log("Failed to connect to MongoDB:", err);
+  });
+
+// Middleware Passport.js for authentication
+const authenticate = passport.authenticate("jwt", { session: false });
+
+//Routes protect middlewares
+//Post protect middlewares
+app.post("/add-plant", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.post("/edit-plant/:page/:id", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.post("/add-distillation/:id?", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.post(
+  "/edit-distillation/:page/:distillId/:id?",
+  authenticate,
+  (req, res) => {
+    res.send("This is a protected route");
+  }
+);
+
+app.post("/add-results/:distillId", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.post(
+  "/edit-archive-distillation/:page/:archiveId",
+  authenticate,
+  (req, res) => {
+    res.send("This is a protected route");
+  }
+);
+
+//Get protect middlewares
+app.get("/my-account", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get(
+  "/my-account/destillations-in-progress/:page",
+  authenticate,
+  (req, res) => {
+    res.send("This is a protected route");
+  }
+);
+
+app.get(
+  "/my-account/distillation-details/:page/:distillId",
+  authenticate,
+  (req, res) => {
+    res.send("This is a protected route");
+  }
+);
+
+app.get("/my-account/plant-list/:page", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get("/my-account/plant-details/:page/:id", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get("/my-account/distillation-archives/:page", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+
+app.get(
+  "/my-account/archive-distillation/:page/:archiveId",
+  authenticate,
+  (req, res) => {
+    res.send("This is a protected route");
+  }
+);
+
+app.get("/my-account/my-data", authenticate, (req, res) => {
+  res.send("This is a protected route");
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-database_distillation.html">database/distillation</a></li><li><a href="module-database_distillationArchives.html">database/distillationArchives</a></li><li><a href="module-database_plant.html">database/plant</a></li><li><a href="module-database_settings.html">database/settings</a></li><li><a href="module-database_user.html">database/user</a></li><li><a href="module-graphql_index.html">graphql/index</a></li><li><a href="module-graphql_resolvers_countryResolvers.html">graphql/resolvers/countryResolvers</a></li><li><a href="module-graphql_resolvers_distillationArchivesResolvers.html">graphql/resolvers/distillationArchivesResolvers</a></li><li><a href="module-graphql_resolvers_distillationResolvers.html">graphql/resolvers/distillationResolvers</a></li><li><a href="module-graphql_resolvers_index.html">graphql/resolvers/index</a></li><li><a href="module-graphql_resolvers_plantResolvers.html">graphql/resolvers/plantResolvers</a></li><li><a href="module-graphql_resolvers_settingsResolvers.html">graphql/resolvers/settingsResolvers</a></li><li><a href="module-graphql_resolvers_userResolvers.html">graphql/resolvers/userResolvers</a></li><li><a href="module-graphql_schemas_countrySchema.html">graphql/schemas/countrySchema</a></li><li><a href="module-graphql_schemas_distillationArchivesSchema.html">graphql/schemas/distillationArchivesSchema</a></li><li><a href="module-graphql_schemas_distillationSchema.html">graphql/schemas/distillationSchema</a></li><li><a href="module-graphql_schemas_index.html">graphql/schemas/index</a></li><li><a href="module-graphql_schemas_plantSchema.html">graphql/schemas/plantSchema</a></li><li><a href="module-graphql_schemas_settingsSchema.html">graphql/schemas/settingsSchema</a></li><li><a href="module-graphql_schemas_userSchema.html">graphql/schemas/userSchema</a></li><li><a href="module-util_dateformater.html">util/dateformater</a></li></ul><h3>Global</h3><ul><li><a href="global.html#filterData">filterData</a></li><li><a href="global.html#requireAuth">requireAuth</a></li><li><a href="global.html#sanitizeDistillationInput">sanitizeDistillationInput</a></li><li><a href="global.html#sanitizeDistillerInput">sanitizeDistillerInput</a></li><li><a href="global.html#sanitizePlantInput">sanitizePlantInput</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sat Nov 08 2025 13:57:28 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

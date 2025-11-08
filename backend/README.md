@@ -33,15 +33,32 @@ npm start
 
 ## 📚 Documentation
 
-Generate API documentation using JSDoc:
+The API is documented using **JSDoc** with auto-generated documentation.
+
+### Generate Documentation
 
 ```sh
-npx jsdoc -c jsdoc.json
+npm run docs:js
 ```
 
-View documentation: `docs/index.html`
+### View Documentation
 
----
+**Option 1: Direct file access**
+```sh
+# Open in browser
+open docs/jsdoc/index.html
+```
+
+**Option 2: Serve documentation locally**
+```sh
+# Install serve globally (one time only)
+npm install -g serve
+
+# Serve documentation on localhost
+npx serve docs/jsdoc
+```
+
+Then visit `http://localhost:3000` to browse the interactive documentation.
 
 ## 📦 Directory Structure
 

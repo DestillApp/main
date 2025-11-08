@@ -32,8 +32,8 @@ const gql = require("graphql-tag");
  *     isDarkTheme
  *   }
  * }
- * 
- *  * @example
+ *
+ * @example
  * // Example mutation usage:
  * mutation UpdateListSettings($input: UpdateListSettingsInput!) {
  *   updateListSettings(input: $input) {

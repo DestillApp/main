@@ -13,26 +13,18 @@ const gql = require("graphql-tag");
  * 
  * @example
  * // Example query usage:
- * query GetPlants($fields: [String]!, $formatDates: Boolean!) {
- *   getPlants(fields: $fields, formatDates: $formatDates) {
- *     _id
- *     plantName
- *     plantPart
- *     availableWeight
- *     harvestDate
+ * export const GET_BASIC_PLANT_BY_ID = gql`
+ *   query GetPlantById($id: ID!, $formatDates: Boolean!) {
+ *     getPlantById(id: $id, formatDates: $formatDates) {
+ *       _id
+ *       plantName
+ *       plantPart
+ *       availableWeight
+ *       plantBuyDate
+ *       harvestDate
+ *     }
  *   }
- * }
- * 
- * @example
- * // Example mutation usage:
- * mutation CreatePlant($input: PlantInput!) {
- *   createPlant(plantInput: $input) {
- *     _id
- *     plantName
- *     plantPart
- *     availableWeight
- *   }
- * }
+ * `;
  */
 const plantSchema = gql`
   type Plant {

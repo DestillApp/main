@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: util/sanitization/distillationArchiveSanitizer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: util/sanitization/distillationArchiveSanitizer.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { escape, trim, toFloat, toInt } = require("validator");
+
+/**
+ * @function sanitizeDistillationInput
+ * @description Sanitizes and validates distillation input data for security.
+ * @param {Object} input - Raw distillation input data
+ * @returns {Object} Sanitized distillation data
+ */
+function sanitizeDistillationArchiveInput(input) {
+  return {
+    oilAmount:
+      input.oilAmount !== null &amp;&amp; input.oilAmount !== undefined
+        ? toFloat(String(input.oilAmount))
+        : null,
+    hydrosolAmount:
+      input.hydrosolAmount !== null &amp;&amp; input.hydrosolAmount !== undefined
+        ? toFloat(String(input.hydrosolAmount))
+        : null,
+    hydrosolpH:
+      input.hydrosolpH !== null &amp;&amp; input.hydrosolpH !== undefined
+        ? toFloat(String(input.hydrosolpH))
+        : null,
+    oilDescription: escape(trim(input.oilDescription || "")),
+    hydrosolDescription: escape(trim(input.hydrosolDescription || "")),
+    distillationData: input.distillationData
+      ? {
+          weightForDistillation:
+            input.distillationData.weightForDistillation !== null &amp;&amp;
+            input.distillationData.weightForDistillation !== undefined
+              ? toFloat(String(input.distillationData.weightForDistillation))
+              : null,
+          isPlantSoaked: Boolean(input.distillationData.isPlantSoaked),
+          soakingTime:
+            input.distillationData.soakingTime !== null &amp;&amp;
+            input.distillationData.soakingTime !== undefined
+              ? toInt(String(input.distillationData.soakingTime))
+              : null,
+          weightAfterSoaking:
+            input.distillationData.weightAfterSoaking !== null &amp;&amp;
+            input.distillationData.weightAfterSoaking !== undefined
+              ? toFloat(String(input.distillationData.weightAfterSoaking))
+              : null,
+          isPlantShredded: Boolean(input.distillationData.isPlantShredded),
+          distillationType: escape(
+            trim(input.distillationData.distillationType || "")
+          ),
+          distillationDate: escape(
+            trim(input.distillationData.distillationDate || "")
+          ),
+          distillationApparatus: escape(
+            trim(input.distillationData.distillationApparatus || "")
+          ),
+          waterForDistillation:
+            input.distillationData.waterForDistillation !== null &amp;&amp;
+            input.distillationData.waterForDistillation !== undefined
+              ? toFloat(String(input.distillationData.waterForDistillation))
+              : null,
+          distillationTime: input.distillationData.distillationTime
+            ? {
+                distillationHours:
+                  input.distillationData.distillationTime.distillationHours !==
+                    null &amp;&amp;
+                  input.distillationData.distillationTime.distillationHours !==
+                    undefined
+                    ? toInt(
+                        String(
+                          input.distillationData.distillationTime
+                            .distillationHours
+                        )
+                      )
+                    : null,
+                distillationMinutes:
+                  input.distillationData.distillationTime
+                    .distillationMinutes !== null &amp;&amp;
+                  input.distillationData.distillationTime
+                    .distillationMinutes !== undefined
+                    ? toInt(
+                        String(
+                          input.distillationData.distillationTime
+                            .distillationMinutes
+                        )
+                      )
+                    : null,
+              }
+            : null,
+        }
+      : null,
+    distilledPlant: input.distilledPlant
+      ? {
+          plantName: escape(trim(input.distilledPlant.plantName || "")),
+          plantPart: escape(trim(input.distilledPlant.plantPart || "")),
+          plantOrigin: escape(trim(input.distilledPlant.plantOrigin || "")),
+          plantBuyDate: input.distilledPlant.plantBuyDate
+            ? escape(trim(input.distilledPlant.plantBuyDate))
+            : "",
+          plantProducer: escape(trim(input.distilledPlant.plantProducer || "")),
+          countryOfOrigin: escape(
+            trim(input.distilledPlant.countryOfOrigin || "")
+          ),
+          harvestDate: input.distilledPlant.harvestDate
+            ? escape(trim(input.distilledPlant.harvestDate))
+            : "",
+          harvestTemperature:
+            input.distilledPlant.harvestTemperature !== null &amp;&amp;
+            input.distilledPlant.harvestTemperature !== undefined
+              ? toFloat(String(input.distilledPlant.harvestTemperature))
+              : null,
+          harvestStartTime: escape(
+            trim(input.distilledPlant.harvestStartTime || "")
+          ),
+          harvestEndTime: escape(
+            trim(input.distilledPlant.harvestEndTime || "")
+          ),
+          plantState: escape(trim(input.distilledPlant.plantState || "")),
+          dryingTime:
+            input.distilledPlant.dryingTime !== null &amp;&amp;
+            input.distilledPlant.dryingTime !== undefined
+              ? toFloat(String(input.distilledPlant.dryingTime))
+              : null,
+          plantAge:
+            input.distilledPlant.plantAge !== null &amp;&amp;
+            input.distilledPlant.plantAge !== undefined
+              ? toFloat(String(input.distilledPlant.plantAge))
+              : null,
+        }
+      : null,
+  };
+}
+
+module.exports = { sanitizeDistillationArchiveInput };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-database_distillation.html">database/distillation</a></li><li><a href="module-database_distillationArchives.html">database/distillationArchives</a></li><li><a href="module-database_plant.html">database/plant</a></li><li><a href="module-database_settings.html">database/settings</a></li><li><a href="module-database_user.html">database/user</a></li><li><a href="module-graphql_index.html">graphql/index</a></li><li><a href="module-graphql_resolvers_countryResolvers.html">graphql/resolvers/countryResolvers</a></li><li><a href="module-graphql_resolvers_distillationArchivesResolvers.html">graphql/resolvers/distillationArchivesResolvers</a></li><li><a href="module-graphql_resolvers_distillationResolvers.html">graphql/resolvers/distillationResolvers</a></li><li><a href="module-graphql_resolvers_index.html">graphql/resolvers/index</a></li><li><a href="module-graphql_resolvers_plantResolvers.html">graphql/resolvers/plantResolvers</a></li><li><a href="module-graphql_resolvers_settingsResolvers.html">graphql/resolvers/settingsResolvers</a></li><li><a href="module-graphql_resolvers_userResolvers.html">graphql/resolvers/userResolvers</a></li><li><a href="module-graphql_schemas_countrySchema.html">graphql/schemas/countrySchema</a></li><li><a href="module-graphql_schemas_distillationArchivesSchema.html">graphql/schemas/distillationArchivesSchema</a></li><li><a href="module-graphql_schemas_distillationSchema.html">graphql/schemas/distillationSchema</a></li><li><a href="module-graphql_schemas_index.html">graphql/schemas/index</a></li><li><a href="module-graphql_schemas_plantSchema.html">graphql/schemas/plantSchema</a></li><li><a href="module-graphql_schemas_settingsSchema.html">graphql/schemas/settingsSchema</a></li><li><a href="module-graphql_schemas_userSchema.html">graphql/schemas/userSchema</a></li><li><a href="module-util_dateformater.html">util/dateformater</a></li></ul><h3>Global</h3><ul><li><a href="global.html#filterData">filterData</a></li><li><a href="global.html#requireAuth">requireAuth</a></li><li><a href="global.html#sanitizeDistillationInput">sanitizeDistillationInput</a></li><li><a href="global.html#sanitizeDistillerInput">sanitizeDistillerInput</a></li><li><a href="global.html#sanitizePlantInput">sanitizePlantInput</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sat Nov 08 2025 13:57:28 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

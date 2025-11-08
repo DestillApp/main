@@ -26,6 +26,7 @@ const gql = require("graphql-tag");
  *     _id
  *     username
  *     email
+ *     password
  *   }
  * }
  */
