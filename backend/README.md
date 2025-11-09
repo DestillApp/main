@@ -34,14 +34,15 @@ npm start
 ## 📚 Documentation
 
 The API is documented using **JSDoc** with auto-generated documentation.
+You can also view the docs online: [DestillationApp Backend Docs](https://destillapp.github.io/main/backend/)
 
-### Generate Documentation
+### Generate Documentation Locally
 
 ```sh
 npm run docs:js
 ```
 
-### View Documentation
+### View Documentation Locally
 
 **Option 1: Direct file access**
 ```sh
