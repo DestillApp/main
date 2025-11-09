@@ -3,7 +3,7 @@
   <header class="header">
     <nav class="header__nav">
       <!-- Title of the application -->
-      <h1 class="header__title">Distill It</h1>
+      <h1 class="header__title">DestillationApp</h1>
       <!-- Navigation list -->
       <ul class="header__list" v-if="!isMobileView">
         <!-- Link to the add plant page -->
