@@ -1,9 +1,0 @@
-# k8s/03-configmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: app-config
-  namespace: destillapp
-data:
-  # Frontend build-time URL (will be baked into Vite at docker build)
-  VITE_APP_GRAPHQL_URL: "http://backend.destillapp.svc.cluster.local:3000/graphql"
