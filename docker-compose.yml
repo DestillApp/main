@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"  # Map frontend's internal port 80 to host port 8080
+    networks:
+      - destill-net
+
+  backend:
+    build: ./backend
+    ports:
+      - "4000:4000"  # Map backend's internal port 4000 to host port 4000
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/destillit  # Updated to use the correct service name
+    networks:
+      - destill-net
+    depends_on:
+      mongodb:
+        condition: service_healthy  # Wait for MongoDB to be healthy before starting the backend
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"  # Expose MongoDB on port 27017
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - destill-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+
+volumes:
+  mongo_data:
+    driver: local
+
