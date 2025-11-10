@@ -1,28 +1,21 @@
-# Stage 1: build the Vite app
-FROM node:18-alpine AS builder
-WORKDIR /app
-
-# Install dependencies
-COPY package.json package-lock.json ./
-RUN npm ci
-
-# Build into /app/dist
-COPY . .
-RUN npm run build
-
-# Stage 2: serve the compiled assets
+# Use an official Node.js runtime as a parent image
 FROM node:18-alpine
+
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install 'serve' to host static files
-RUN npm install --global serve
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
-# Copy built files
-COPY --from=builder /app/dist ./dist
+# Install project dependencies
+RUN npm install
 
-# Expose the port for k8s Service
-EXPOSE 8080
+# Copy the rest of the application code to the working directory
+COPY . .
 
-# Serve in single-page-app mode
-CMD ["serve", "-s", "dist", "-l", "8080"]
+# Expose port 3000 for development
+EXPOSE 3000 8080
+
+# Run the application in development mode
+CMD ["npm", "run", "serve"]
 
