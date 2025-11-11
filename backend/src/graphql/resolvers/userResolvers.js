@@ -183,13 +183,17 @@ const userResolver = {
         // Generate and return a JWT token
         const token = generateToken(user);
 
-        // Setting cookie JWT
+        // Setting cookie JWT with environment-appropriate security
+        const isProduction = process.env.NODE_ENV === "production";
+        const isDevelopment = process.env.NODE_ENV === "development";
+        
         res.cookie("authToken", token, {
-          httpOnly: false,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "Lax",
+          httpOnly: !isDevelopment, // Allow JS access in development for debugging
+          secure: isProduction, // HTTPS only in production
+          sameSite: isDevelopment ? "Lax" : (isProduction ? "Strict" : "Lax"), // Lax for dev, Strict for prod
           maxAge: 3600000, // 1 hour
           path: "/",
+          domain: isProduction ? process.env.COOKIE_DOMAIN : undefined,
         });
 
         return token;
