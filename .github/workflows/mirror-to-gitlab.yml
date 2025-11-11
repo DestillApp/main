@@ -3,10 +3,7 @@ name: Mirror to GitLab
 on:
   push:
     branches:
-      - '**'  # Mirrors all branches
-  delete:
-    branches:
-      - '**'  # Handles branch deletions
+      - '**'
 
 jobs:
   mirror:
@@ -15,11 +12,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Get full git history
+          fetch-depth: 0
           
-      - name: Mirror to GitLab
+      - name: Push to GitLab
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
           git remote add gitlab https://oauth2:${GITLAB_TOKEN}@gitlab.com/krrem1/destillapp-mirror.git
-          git push gitlab --mirror --force
+          git push gitlab --all --force
+          git push gitlab --tags --force
