@@ -19,6 +19,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const passport = require("passport");
 const { Strategy: JwtStrategy, ExtractJwt } = require("passport-jwt");
+const jwt = require("jsonwebtoken");
 
 // Importing GraphQL schema and resolvers
 const { typeDefs, resolvers } = require("./graphql/index.js");
@@ -34,26 +35,8 @@ app.use(express.json());
 // Using cookie parser
 app.use(cookieParser());
 
-// Read allowed origins from environment variable and split into array
-// const allowedOrigins = process.env.ALLOWED_ORIGINS
-//   ? process.env.ALLOWED_ORIGINS.split(",")
-//   : [];
-
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     // Allow requests with no origin (like mobile apps or curl requests)
-//     if (!origin) return callback(null, true);
-//     if (allowedOrigins.includes(origin)) {
-//       return callback(null, true);
-//     } else {
-//       return callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   credentials: true,
-// };
-
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
+  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
   : [];
 
 const corsOptions = {
@@ -62,7 +45,9 @@ const corsOptions = {
 
     const normalizedOrigin = origin.replace(/\/$/, "");
 
-    const isAllowed = allowedOrigins.some(o => o.replace(/\/$/, "") === normalizedOrigin);
+    const isAllowed = allowedOrigins.some(
+      (o) => o.replace(/\/$/, "") === normalizedOrigin
+    );
 
     if (isAllowed) {
       return callback(null, true);
@@ -72,7 +57,6 @@ const corsOptions = {
   },
   credentials: true,
 };
-
 
 app.use(cors(corsOptions));
 
@@ -129,19 +113,18 @@ mongoose
       express.json(),
       expressMiddleware(server, {
         context: async ({ req, res }) => {
-          return new Promise((resolve, reject) => {
-            passport.authenticate(
-              "jwt",
-              { session: false },
-              (err, user, info) => {
-                if (err) {
-                  console.log("Error in passport.authenticate:", err);
-                  reject(err);
-                }
-                resolve({ req, res, user });
-              }
-            )(req, res);
-          });
+          let user = null;
+
+          const token = req.cookies.authToken;
+          if (token) {
+            try {
+              user = jwt.verify(token, process.env.JWT_SECRET);
+            } catch (err) {
+              console.log("Invalid token:", err);
+            }
+          }
+
+          return { req, res, user };
         },
       })
     );
@@ -237,3 +220,5 @@ app.get(
 app.get("/my-account/my-data", authenticate, (req, res) => {
   res.send("This is a protected route");
 });
+
+
