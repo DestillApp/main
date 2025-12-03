@@ -213,9 +213,9 @@ const userResolver = {
 
         // Setting cookie JWT
         res.cookie("authToken", token, {
-          httpOnly: false,
+          httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          sameSite: "Lax",
+          sameSite: "none",
           maxAge: 3600000, // 1 hour
           path: "/",
         });
@@ -244,7 +244,13 @@ const userResolver = {
      * @returns {Promise<boolean>} A boolean indicating whether the logout was successful.
      */
     logout: async (_, __, { req, res }) => {
-      res.clearCookie("authToken");
+      res.clearCookie("authToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        path: "/",
+      });
+
       return true;
     },
 
