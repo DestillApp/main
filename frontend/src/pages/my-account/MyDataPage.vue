@@ -283,7 +283,6 @@ export default {
     onMounted(() => {
       fetchUserDetails();
       isDarkTheme.value = isDarkThemeStored.value;
-      console.log("distillers in MyDataPage", distillers.value);
     });
 
     return {

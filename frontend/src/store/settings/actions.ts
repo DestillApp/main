@@ -64,7 +64,6 @@ export default {
         mutation: CREATE_SETTINGS,
         variables: { userId },
       });
-      console.log("Initial settings created:", data.createSettings);
     } catch (error) {
       Sentry.captureException(error);
       console.error("Error creating settings:", error);
@@ -170,7 +169,6 @@ export default {
         mutation: ADD_DISTILLER,
         variables: { distiller },
       });
-      console.log("Distiller added:", data.addDistiller);
     } catch (error: any) {
       Sentry.captureException(error);
       if (error.message === "Unauthorized") {
@@ -196,7 +194,6 @@ export default {
         variables: { distillerId: id },
       });
       context.commit("removeDistillerById", id);
-      console.log("Distiller deleted:", data.deleteDistiller);
     } catch (error: any) {
       Sentry.captureException(error);
       if (error.message === "Unauthorized") {

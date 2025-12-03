@@ -132,11 +132,6 @@ export default {
         mutation: CHANGE_PASSWORD,
         variables: { input: { oldPassword, newPassword } },
       });
-
-      console.log(
-        "Password changed successfully:",
-        response.data.changePassword
-      );
       return true;
     } catch (error: any) {
       Sentry.captureException(error);
