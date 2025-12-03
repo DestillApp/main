@@ -35,15 +35,36 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Read allowed origins from environment variable and split into array
+// const allowedOrigins = process.env.ALLOWED_ORIGINS
+//   ? process.env.ALLOWED_ORIGINS.split(",")
+//   : [];
+
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     // Allow requests with no origin (like mobile apps or curl requests)
+//     if (!origin) return callback(null, true);
+//     if (allowedOrigins.includes(origin)) {
+//       return callback(null, true);
+//     } else {
+//       return callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true,
+// };
+
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
+  ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
   : [];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+
+    const normalizedOrigin = origin.replace(/\/$/, "");
+
+    const isAllowed = allowedOrigins.some(o => o.replace(/\/$/, "") === normalizedOrigin);
+
+    if (isAllowed) {
       return callback(null, true);
     } else {
       return callback(new Error("Not allowed by CORS"));
@@ -51,6 +72,7 @@ const corsOptions = {
   },
   credentials: true,
 };
+
 
 app.use(cors(corsOptions));
 
