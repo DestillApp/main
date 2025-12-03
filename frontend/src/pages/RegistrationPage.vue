@@ -99,6 +99,9 @@
         >Zaloguj się!</router-link
       >
     </div>
+    <p v-if="isServerSlow" class="registration__slow-server-message">
+      ⏳ Demo backend się wybudza — może to potrwać kilka sekund…
+    </p>
   </base-card>
 </template>
 
@@ -170,6 +173,9 @@ export default {
     // Confirm password state
     const confirmPassword = ref<string>("");
 
+    // Server slow response state
+    const isServerSlow = ref<boolean>(false);
+
     // GraphQL mutation for registering user
     const { mutate: registerUser } = useMutation(REGISTER_USER);
 
@@ -239,6 +245,10 @@ export default {
      * @returns {Promise<void>}
      */
     const submitRegistrationForm = async (): Promise<void> => {
+      const timer = setTimeout(() => {
+        isServerSlow.value = true;
+      }, 2000);
+
       try {
         const form = registrationForm.value;
 
@@ -269,6 +279,9 @@ export default {
         if (error.message == "Email already exists") {
           emailExists.value = true;
         }
+      } finally {
+        clearTimeout(timer);
+        isServerSlow.value = false;
       }
     };
 
@@ -313,6 +326,7 @@ export default {
       usernameExists,
       confirmPassword,
       isPasswordMatch,
+      isServerSlow,
       scrollToTop,
       checkUsername,
       resetUsernameExists,
@@ -360,6 +374,10 @@ export default {
 
 .registration__link-login {
   color: var(--primary-color);
+}
+
+.registration__slow-server-message {
+  margin-block: 20px;
 }
 
 @media (max-width: 1024px) {

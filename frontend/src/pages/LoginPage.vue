@@ -48,6 +48,9 @@
         >w Distill It!</span
       >
     </div>
+    <p v-if="isServerSlow" class="login__slow-server-message">
+      ⏳ Demo backend się wybudza — może to potrwać kilka sekund…
+    </p>
   </base-card>
 </template>
 
@@ -77,6 +80,8 @@ export default {
 
     // Reactive reference to track form validity
     const isLoginFormValid = ref<boolean | null>(null);
+
+    const isServerSlow = ref<boolean>(false);
 
     // Reactive reference to store login form data
     const loginForm = ref<LoginForm>({
@@ -112,6 +117,9 @@ export default {
         await loginFormValidation();
       }
       if (isLoginFormValid.value) {
+        const timer = setTimeout(() => {
+          isServerSlow.value = true;
+        }, 2000);
         try {
           const form = loginForm.value;
 
@@ -139,13 +147,22 @@ export default {
         } catch (error) {
           Sentry.captureException(error);
           console.error("Error occured while logging in", error);
+        } finally {
+          clearTimeout(timer);
+          isServerSlow.value = false;
         }
       } else {
         return;
       }
     };
 
-    return { loginForm, isLoginFormValid, scrollToTop, loginUser };
+    return {
+      loginForm,
+      isLoginFormValid,
+      isServerSlow,
+      scrollToTop,
+      loginUser,
+    };
   },
 };
 </script>
@@ -196,6 +213,9 @@ export default {
   color: var(--primary-color);
 }
 
+.login__slow-server-message {
+  margin-block: 20px;
+}
 @media (max-width: 1024px) {
   .login__card {
     width: 70%;

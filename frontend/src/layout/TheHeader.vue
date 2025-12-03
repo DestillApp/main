@@ -3,7 +3,9 @@
   <header class="header">
     <nav class="header__nav">
       <!-- Title of the application -->
-      <h1 class="header__title">DestillationApp</h1>
+      <router-link to="/" class="header__title"
+        ><h1>DestillApp</h1></router-link
+      >
       <!-- Navigation list -->
       <ul class="header__list" v-if="!isMobileView">
         <!-- Link to the add plant page -->
