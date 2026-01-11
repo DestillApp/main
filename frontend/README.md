@@ -51,7 +51,7 @@ npx vitest run
 
 ## 📚 Documentation
 
-- **Frontend Docs**: [View VitePress Docs](https://destillapp.github.io/main/)
+- **Frontend Docs**: [View VitePress Docs](https://destillapp.github.io/destill-app-fullstack/)
 
 To build and preview documentation locally:
 
