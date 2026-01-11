@@ -24,7 +24,7 @@ It includes:
 - Vite for fast development and build tooling
 
 📖 [Read more in the frontend README](frontend/README.md)  
-💻 [Frontend Docs](https://destillapp.github.io/main/)
+💻 [Frontend Docs](https://destillapp.github.io/destill-app-fullstack/)
 
 ---
 
@@ -40,7 +40,7 @@ It includes:
 - Modular architecture for resolvers and schemas
 
 📖 [Read more in the backend README](backend/README.md)  
-💻 [Backend Docs](https://destillapp.github.io/main/backend/)
+💻 [Backend Docs](https://destillapp.github.io/destill-app-fullstack/backend/)
 
 ---
 
@@ -48,5 +48,5 @@ It includes:
 
 - [Frontend README](frontend/README.md)  
 - [Backend README](backend/README.md)  
-- [Frontend VitePress Docs](https://destillapp.github.io/main/)  
-- [Backend JSDoc Docs](https://destillapp.github.io/main/backend/)
+- [Frontend VitePress Docs](https://destillapp.github.io/destill-app-fullstack/)  
+- [Backend JSDoc Docs](https://destillapp.github.io/destill-app-fullstack/backend/)
