@@ -1,7 +1,7 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
-  base: "/main/",
+  base: "/destill-app-fullstack/",
   title: "DestillationApp Frontend Docs",
   description: "Documentation for the DestillationApp frontend",
   cleanUrls: true,
