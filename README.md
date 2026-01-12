@@ -11,7 +11,7 @@ It consists of a **frontend** built with Vue 3 and a **backend** built with Node
 
 - **Frontend**: Deployed on Netlify
 - **Backend**: Deployed on Render
-- **Demo Account**: Click "Try Demo" or use `demoUser@mail.com` / `demoPassword123`
+- **Demo Account**: Click "Wypróbuj Demo" or use `demoUser@mail.com` / `demoPassword123`
 
 ---
 
