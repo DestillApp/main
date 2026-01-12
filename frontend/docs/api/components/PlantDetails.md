@@ -1,6 +1,6 @@
 # PlantDetails
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/plant/PlantDetails.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/plant/PlantDetails.vue)
 
 Displays detailed information about a plant, including origin, harvest/buy details, state, and age. Fetches plant details from the API or uses provided distilledPlant prop.
  *

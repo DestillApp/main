@@ -1,6 +1,6 @@
 # DeleteItemModal
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/plant/DeleteItemModal.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/plant/DeleteItemModal.vue)
 
 A confirmation modal for deleting a plant from the inventory, a distillation record, or a distiller.
  *

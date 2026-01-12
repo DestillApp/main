@@ -1,6 +1,6 @@
 # DistillationPlant
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/destillation/DistillationPlant.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/destillation/DistillationPlant.vue)
 
 This component manages the selection of plant material for distillation, including details like plant part, weight, and optional soaking or shredding steps.
  * It also interacts with Vuex for data persistence and handles the fetching of plants from an Apollo GraphQL server.

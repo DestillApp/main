@@ -1,6 +1,6 @@
 # PasswordChangeForm
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/PasswordChangeForm.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/PasswordChangeForm.vue)
 
 Modal form for changing the user's password. Handles validation, error display, and submission.
  *

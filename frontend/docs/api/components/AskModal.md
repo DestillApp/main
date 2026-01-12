@@ -1,6 +1,6 @@
 # AskModal
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/AskModal.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/AskModal.vue)
 
 A confirmation modal for restoring a plant and its weight to the inventory.
  *

@@ -234,7 +234,7 @@ function generateDocs(filePath: string, relativeToSrc: string) {
   );
 
   const githubBaseUrl =
-    "https://github.com/DestillApp/main/blob/main/frontend/src";
+    "https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src";
   const githubLink = `${githubBaseUrl}/${relativeToSrc.replace(/\\/g, "/")}`;
 
   const lines = [`# ${fileName}`, ""];

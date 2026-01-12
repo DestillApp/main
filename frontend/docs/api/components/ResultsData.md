@@ -1,6 +1,6 @@
 # ResultsData
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/results/ResultsData.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/results/ResultsData.vue)
 
 This component renders inputs and manages data related to distillation results, including oil amount, hydrosol amount, and hydrosol pH.
  *

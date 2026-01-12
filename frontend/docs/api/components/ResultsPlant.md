@@ -1,6 +1,6 @@
 # ResultsPlant
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/results/ResultsPlant.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/results/ResultsPlant.vue)
 
 Displays and manages the plant-related part of the distillation results, including plant selection, plant details, and soaking/shredding options.
  *

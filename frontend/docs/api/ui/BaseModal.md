@@ -1,6 +1,6 @@
 # BaseModal
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/ui/BaseModal.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/ui/BaseModal.vue)
 
 A base modal component that provides a backdrop for modal content and emits a close event when the backdrop is clicked.
  *

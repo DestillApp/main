@@ -1,6 +1,6 @@
 # PlantData
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/plant/form/PlantData.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/plant/form/PlantData.vue)
 
 This component renders inputs and manages data related to plant material used in distillation, including weight, state, and drying/age information.
  *

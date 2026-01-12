@@ -1,6 +1,6 @@
 # MobileMenu
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/layout/MobileMenu.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/layout/MobileMenu.vue)
 
 This component renders a side menu for mobile view, including navigation links and a logout button.
  *

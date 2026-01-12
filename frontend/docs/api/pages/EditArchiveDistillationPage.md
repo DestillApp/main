@@ -1,6 +1,6 @@
 # EditArchiveDistillationPage
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/results/EditArchiveDistillationPage.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/pages/results/EditArchiveDistillationPage.vue)
 
 This component renders a distillation archive edit form and handles updating distillation data and results.
  *

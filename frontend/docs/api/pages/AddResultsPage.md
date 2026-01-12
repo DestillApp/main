@@ -1,6 +1,6 @@
 # AddResultsPage
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/results/AddResultsPage.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/pages/results/AddResultsPage.vue)
 
 This component renders a form for adding distillation results, handles validation, saving, and navigation after submission.
  *

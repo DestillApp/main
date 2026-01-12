@@ -1,3 +1,3 @@
 # TabletAccountMenu
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/layout/TabletAccountMenu.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/layout/TabletAccountMenu.vue)

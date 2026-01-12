@@ -1,6 +1,6 @@
 # ListSorting
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/ListSorting.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/ListSorting.vue)
 
 Dropdown component for selecting a sorting option for a list. Displays the current sorting and emits the selected value.
  *

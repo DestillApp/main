@@ -1,6 +1,6 @@
 # DistillationProcess
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/destillation/DistillationProcess.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/destillation/DistillationProcess.vue)
 
 Handles the distillation process inputs, such as selecting the distillation type, apparatus, and setting the date.
  * Integrates with Vuex to store form data and manage state updates.

@@ -1,6 +1,6 @@
 # AddDistillationPage
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/distillation/AddDistillationPage.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/pages/distillation/AddDistillationPage.vue)
 
 This component renders a distillation form and handles sending distillation data, updating available plant weight, and navigation after submission.
  *

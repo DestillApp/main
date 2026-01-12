@@ -1,6 +1,6 @@
 # PlantOrigin
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/components/plant/form/PlantOrigin.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/components/plant/form/PlantOrigin.vue)
 
 This component renders a form to input and manage data related to plant used in distillation, including origin, harvest date, harvest temperature, harvest range, buy date and producer details.
  *

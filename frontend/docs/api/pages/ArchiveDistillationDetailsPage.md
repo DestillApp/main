@@ -1,6 +1,6 @@
 # ArchiveDistillationDetailsPage
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/results/ArchiveDistillationDetailsPage.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/pages/results/ArchiveDistillationDetailsPage.vue)
 
 Displays details of a distillation archive, allows editing, deleting, and viewing plant details.
  *

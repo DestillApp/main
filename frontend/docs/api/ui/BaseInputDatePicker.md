@@ -1,6 +1,6 @@
 # BaseInputDatePicker
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/ui/BaseInputDatePicker.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/ui/BaseInputDatePicker.vue)
 
 A component that combines a text input and a date picker modal for selecting and displaying dates.
  *

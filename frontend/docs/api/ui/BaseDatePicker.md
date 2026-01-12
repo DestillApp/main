@@ -1,6 +1,6 @@
 # BaseDatePicker
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/ui/BaseDatePicker.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/ui/BaseDatePicker.vue)
 
 A modal date picker component using Vuetify, supporting dark theme and color customization.
  *

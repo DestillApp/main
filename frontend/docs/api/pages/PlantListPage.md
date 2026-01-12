@@ -1,6 +1,6 @@
 # PlantListPage
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/my-account/PlantListPage.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/pages/my-account/PlantListPage.vue)
 
 This component displays a paginated, searchable, and sortable list of plants. Allows deletion of plants and manages list settings.
  *

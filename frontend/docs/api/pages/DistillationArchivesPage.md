@@ -1,6 +1,6 @@
 # DistillationArchivesPage
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/pages/my-account/DistillationArchivesPage.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/pages/my-account/DistillationArchivesPage.vue)
 
 Displays a paginated, searchable, and sortable list of distillation archives. Allows deletion of archives and manages list settings.
  *

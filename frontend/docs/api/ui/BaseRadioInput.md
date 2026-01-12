@@ -1,6 +1,6 @@
 # BaseRadioInput
 
-[View source on GitHub](https://github.com/DestillApp/main/blob/main/frontend/src/ui/BaseRadioInput.vue)
+[View source on GitHub](https://github.com/DestillApp/destill-app-fullstack/blob/main/frontend/src/ui/BaseRadioInput.vue)
 
 A radio group component that allows selecting one option from a list of options.
  *
