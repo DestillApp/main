@@ -5,6 +5,16 @@ It consists of a **frontend** built with Vue 3 and a **backend** built with Node
 
 ---
 
+## 🌐 Live Demo
+
+**🚀 [Try the Live App](https://destillapp.netlify.app/)**
+
+- **Frontend**: Deployed on Netlify
+- **Backend**: Deployed on Render
+- **Demo Account**: Click "Try Demo" or use `demoUser@mail.com` / `demoPassword123`
+
+---
+
 ## 🏗️ Project Structure
 
 - `frontend/` – Frontend application (Vue 3, TypeScript, Vite, Vuetify)  
