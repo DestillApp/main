@@ -5,6 +5,14 @@ It provides a robust API for managing distillation processes, plants, results, u
 
 ---
 
+## 🚀 Deployment / Live API
+
+The backend API is deployed and accessible at:
+
+🌐 **Live API:** [https://destillapp.onrender.com/graphql](https://destillapp.onrender.com/graphql)
+
+---
+
 ## 🚀 Features
 
 - **GraphQL API**: Modern GraphQL API with Apollo Server
