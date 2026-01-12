@@ -5,6 +5,14 @@ It provides a modern UI for managing distillation processes, plants, results, an
 
 ---
 
+## 🚀 Live Demo
+
+The frontend is deployed on **Netlify**:
+
+🌐 **Live App:** [https://destillapp.netlify.app/](https://destillapp.netlify.app/)
+
+---
+
 ## 🚀 Features
 
 - **Vue 3 + TypeScript**: Modern, type-safe frontend stack
